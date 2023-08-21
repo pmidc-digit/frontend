@@ -14,7 +14,7 @@ function App() {
     
    <Grid className="app-grid">
     
-   {/* // <LandingPage /> */}
+   {/* // my change <LandingPage /> */}
    <div>
    <Header />
    <Testimonials />
