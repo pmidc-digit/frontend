@@ -117,7 +117,22 @@ export default function CenteredGrid() {
               >
                 PMIDC
               </a><br />
-               
+              <a
+                href="https://lgpunjab.gov.in/cms/contact-us.php"
+                id ="flink"
+                //className={classes.block}
+                target="_blank"
+              >
+                Contact Us
+              </a><br />
+              <a
+                href="https://lgpunjab.gov.in/cms/website-policy.php"
+                id ="flink"
+                //className={classes.block}
+                target="_blank"
+              >
+                Privacy policy
+              </a><br />  
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
         
@@ -194,7 +209,22 @@ export default function CenteredGrid() {
               >
               About eGov Foundation
               </a> <br />
-
+              <a
+                href="https://lgpunjab.gov.in/cms/transparency-act.php"
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+              >
+              Transparency Act
+              </a> <br />
+              <a
+                href="https://punjab.gov.in/wp-content/uploads/2022/12/Holidays-List-2023-Pbi-and-Eng_0001.pdf"
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+              >
+              Holiday List
+              </a> <br />
 
             </Grid>
 
@@ -202,7 +232,9 @@ export default function CenteredGrid() {
       <center style={{color:"#ffffff"}}>Information provided online is update and no physical visit is required</center> <br />    
       {/* <center style={{color:"#ffffff"}}>Last Updated July 2021</center> <br />     */}
       <center style={{color:"#ffffff"}}><span style={{color:"red"}}>*</span>Supported browser versions</center> <br />    
-      <center ><table >
+      <center >
+      <center style={{color:"#ffffff"}}>Number of Visitor 101</center> <br /> 
+        <table >
       <tr >
           <td style={{color:"#ffffff", width: "100px"}}><center> <img src={chrome}     /></center></td>
           {/* <td style={{color:"#ffffff", width: "100px"}}> <center><img src={edge}   /></center></td> */}
