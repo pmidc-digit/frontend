@@ -1,0 +1,13 @@
+.footerchange {
+    font-size: 14px;
+    font-weight: 600;
+    background: #0000004f;
+    height: 30px;
+}
+img.wz {
+    width: 50px;
+    height: auto;
+}
+a#flink {
+    color: white;
+}
