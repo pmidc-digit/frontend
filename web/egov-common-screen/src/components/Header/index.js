@@ -1,5 +1,5 @@
 import React from "react";
-import "./index.css";
+import "./myindex.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   Grid,
@@ -117,7 +117,7 @@ class Header extends React.Component {
      <div>
      <div className="hearderchange">
       <div class="container">
-      <div className="row">
+      {/* <div className="row">
       
             <div className="col-sm-12 col-md-6">
               <a href="#"><img src={homeicon} width="25px"/></a>
@@ -132,7 +132,7 @@ class Header extends React.Component {
              <a href="#">+A</a>
              </div>
               </div>
-              </div>
+              </div> */}
               </div>
               </div>
         <div className="row">
@@ -155,52 +155,7 @@ class Header extends React.Component {
 
           </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-  //     <div style={{backgroundColor: "#f3f4f5 !important"}}>
-  //     <div id="flex-container">
-  //     <div style={{width: "30%", float:"left", marginLeft: "10%"}}><img
-  //                       src={leftImage}
-  //                       alt="..."
-  //                       style={{
-  //                         width: "60px",
-  //                         height: "60px",
-  //                         left: "130px",
-  //                         top: "7px",
-                        
-  //                       }}
-  //                     /></div>
-  
-  //   <div style={{width: "70%", float:"right", marginRight: "10%",}}>
-  //     <div id = "links" > <p id="emplogin">
-  //       <a href="/employee/user/login"   >Employee Login </a></p>
-  //       </div>
-  //       <img
-  //                       src={rightImage}
-  //                       alt="..."
-  //                       id="rightimg"
-  //                       style={{  
-  //                       }}
-  //                 /></div>
-  // </div>
-  //             <div id="bannerimage">
-  //             <img
-  //                       src={bannerImage}
-  //                       alt="..."
-  //                       style={{ maxWidth: "100%",
-  //                       maxHeight: "100%", width: "inherit"}}                        
-  //                 />
-  // </div>
-  // </div>
-     
+      
     );
   }
 }

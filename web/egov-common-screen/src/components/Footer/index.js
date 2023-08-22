@@ -255,7 +255,7 @@ export default function CenteredGrid() {
         <p>© {currentyear} PMIDC, GOVERNMENT OF PUNJAB. All Rights Reserved by PMIDC</p>
         </div>
         <div className="col-sm-12 col-md-6">
-        <p>Last updated on : 2023-08-10 | This site is best viewed in Mozilla Firefox and Google Chrome <img src={wz} className="wz"/></p>
+        <p>Last updated on : 2023-08-10 | <img src={wz} className="wz"/></p>
         </div>
         </div>
         </div>
