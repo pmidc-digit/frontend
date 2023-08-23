@@ -117,7 +117,7 @@ class Header extends React.Component {
      <div>
      <div className="hearderchange">
       <div class="container">
-      {/* <div className="row">
+      <div className="row">
       
             <div className="col-sm-12 col-md-6">
               <a href="#"><img src={homeicon} width="25px"/></a>
@@ -132,7 +132,7 @@ class Header extends React.Component {
              <a href="#">+A</a>
              </div>
               </div>
-              </div> */}
+              </div>
               </div>
               </div>
         <div className="row">

@@ -113,6 +113,25 @@
 .cardservice {
     text-align: center;
 }
+.hearderchange {
+    background: #f47738;
+}
+.hearderchange img {
+    margin-left: 70px;
+}
+.langu {
+    width: 160px;
+    float: left;
+    color: white;
+}
+.langu a {
+    color: white;
+}
+.boldText a {
+    color: white;
+    font-size: 14px;
+    padding-left: 10px;
+}
 /* end */
 .secondpart {
     padding-bottom: 40px;
