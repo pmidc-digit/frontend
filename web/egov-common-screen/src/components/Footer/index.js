@@ -64,6 +64,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//var counterContainer = document.querySelector(".website-counter");
+var counterContainer;
+var resetButton = document.querySelector("#reset");
+var visitCount = localStorage.getItem("page_view");
+
+// Check if page_view entry is present
+if (visitCount) {
+  visitCount = Number(visitCount) + 1;
+  localStorage.setItem("page_view", visitCount);
+} else {
+  visitCount = 1;
+  localStorage.setItem("page_view", 1);
+}
+counterContainer= visitCount;
+
+// Adding onClick event listener
+// resetButton.addEventListener("click", () => {
+//   visitCount = 1;
+//   localStorage.setItem("page_view", 1);
+//   counterContainer = visitCount;
+// });
+
 export default function CenteredGrid() {
   const classes = useStyles();
   const dateyear = new Date();
@@ -233,7 +255,7 @@ export default function CenteredGrid() {
       {/* <center style={{color:"#ffffff"}}>Last Updated July 2021</center> <br />     */}
       <center style={{color:"#ffffff"}}><span style={{color:"red"}}>*</span>Supported browser versions</center> <br />    
       <center >
-      <center style={{color:"#ffffff"}}>Number of Visitor 101</center> <br /> 
+      <center style={{color:"#ffffff"}}>Number of Visitor {counterContainer}</center> <br /> 
         <table >
       <tr >
           <td style={{color:"#ffffff", width: "100px"}}><center> <img src={chrome}     /></center></td>
