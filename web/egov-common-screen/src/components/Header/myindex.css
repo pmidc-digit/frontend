@@ -3,7 +3,7 @@
     height: auto;
     left: 130px;
     top: 7px;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-bottom: 5px;    
 }
 /* image rotate */
@@ -114,7 +114,7 @@
     text-align: center;
 }
 .hearderchange {
-    background: #f47738;
+    background: #064199;
 }
 .hearderchange img {
     margin-left: 70px;
@@ -123,6 +123,7 @@
     width: 160px;
     float: left;
     color: white;
+    text-align: center;
 }
 .langu a {
     color: white;
@@ -152,8 +153,9 @@
 
 .rightharder a {
     position: relative;
-    top: 10px;
-    color: #f47738;
+    top: 0px;
+    color: #0b519e;
+    font-weight: 600;
 }
 .row.features {
     padding-top: 50px;

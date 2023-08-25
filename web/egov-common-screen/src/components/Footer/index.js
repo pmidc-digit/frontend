@@ -20,7 +20,7 @@ import chrome from "../../img/chrome.png";
 import edge from "../../img/edge.png";
 import mozilla from "../../img/mozilla.png";
 import wz from "../../img/w3c.jpg";
-
+import gigw from "../../img/GIGW_LOGO.png";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -110,7 +110,7 @@ export default function CenteredGrid() {
                 </p>
                 <p className={classes.paragraph} >
                 Email Us:<br />
-                < a href="mailto:pgrs.lg@punjab.gov.in">pgrs.lg@punjab.gov.in</a>
+                <a href="mailto:pgrs.lg@punjab.gov.in" className='email'>pgrs.lg@punjab.gov.in</a>
                 <br />  
                 <a href="https://www.facebook.com/pmidc1/" target='_blank'>                
                 <img src={facebook}   style={{width: "6%", marginRight: "6%"}}   /></a>
@@ -251,16 +251,18 @@ export default function CenteredGrid() {
             </Grid>
 
       </Grid><br />
+      <div className='infofoot'>
       <center style={{color:"#ffffff"}}>Information provided online is update and no physical visit is required</center> <br />    
       {/* <center style={{color:"#ffffff"}}>Last Updated July 2021</center> <br />     */}
+      <center style={{color:"#ffffff"}}>Number of Visitor {counterContainer}</center> <br /> 
       <center style={{color:"#ffffff"}}><span style={{color:"red"}}>*</span>Supported browser versions</center> <br />    
       <center >
-      <center style={{color:"#ffffff"}}>Number of Visitor {counterContainer}</center> <br /> 
+     
         <table >
       <tr >
-          <td style={{color:"#ffffff", width: "100px"}}><center> <img src={chrome}     /></center></td>
+          <td style={{color:"#ffffff", width: "100px"}}><center> <img src={chrome}     width='60px'/></center></td>
           {/* <td style={{color:"#ffffff", width: "100px"}}> <center><img src={edge}   /></center></td> */}
-          <td style={{color:"#ffffff", width: "100px"}}> <center><img src={mozilla}   /></center></td>
+          <td style={{color:"#ffffff", width: "100px"}}> <center><img src={mozilla}  width='30px'  /></center></td>
           </tr>
         <tr >
           <td style={{color:"#ffffff", width: "100px"}}><center> &gt;V-81</center></td>
@@ -269,6 +271,7 @@ export default function CenteredGrid() {
           </tr>
           
           </table>     </center>
+          </div>
           <div class="footerchange">
           <div class="container">
           <div className="row ">
@@ -277,7 +280,7 @@ export default function CenteredGrid() {
         <p>© {currentyear} PMIDC, GOVERNMENT OF PUNJAB. All Rights Reserved by PMIDC</p>
         </div>
         <div className="col-sm-12 col-md-6">
-        <p>Last updated on : 2023-08-10 | <img src={wz} className="wz"/></p>
+        <p>Last updated on : 2023-08-10 | <img src={wz} className="wz"/> <img src={gigw} className="wz"/></p>
         </div>
         </div>
         </div>

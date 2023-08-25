@@ -18,6 +18,7 @@ import Sewargeimg from'../../img/icons/7.png';
 import Fireimg from'../../img/icons/9.png';
 import Petimg from'../../img/icons/11.png';
 import obps from'../../img/icons/13.png';
+import pgr from'../../img/icons/1q.png';
 import "./index.css";
 
 
@@ -92,8 +93,8 @@ export default function CenteredGrid() {
                         </div> 
                         <div class="col-sm-12 col-md-3">
                           <div class="cardservice ">
-                                <img src={obps} class="propertyimgone"/>
-                                <h5 class="card-title">Trade license</h5>
+                                <img src={pgr} class="propertyimgone"/>
+                                <h5 class="card-title">Public Grievance</h5>
                                             
                             </div>
                           </div> 
