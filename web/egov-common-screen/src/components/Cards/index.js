@@ -43,27 +43,31 @@ export default function CenteredGrid() {
       <div class="row features">
       <div class="col-sm-12 col-md-3">
           <div class="cardservice ">
+          <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                 <img src={Propertyimg} class="propertyimgone"/>
-                <h5 class="card-title">Property Tax</h5>
+                <h5 class="card-title">Property Tax</h5></a>
                             
             </div>
           </div>
           <div class="col-sm-12 col-md-3">
             <div class="cardservice ">
-                  <img src={Tradeimg} class="propertyimgone"/>
-                  <h5 class="card-title">Trade license</h5>
+            <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
+                  <img src={Tradeimg} class="propertyimgone"/>                  
+                  <h5 class="card-title">Trade license</h5></a>
                               
               </div>
             </div>  <div class="col-sm-12 col-md-3">
               <div class="cardservice ">
+              <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                     <img src={waterimg} class="propertyimgone"/>
-                    <h5 class="card-title">Water</h5>
+                    <h5 class="card-title">Water</h5></a>
                                 
                 </div>
               </div>  <div class="col-sm-12 col-md-3">
                 <div class="cardservice ">
+                <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                       <img src={Sewargeimg} class="propertyimgone"/>
-                      <h5 class="card-title">Sewarge</h5>
+                      <h5 class="card-title">Sewarge</h5></a>
                                   
                   </div>
                 </div>
@@ -72,29 +76,33 @@ export default function CenteredGrid() {
               <div class="row featuresthree">
                 <div class="col-sm-12 col-md-3">
                     <div class="cardservice ">
+                    <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                           <img src={Fireimg} class="propertyimgone"/>
-                          <h5 class="card-title">Fire Noc</h5>
+                          <h5 class="card-title">Fire Noc</h5></a>
                                       
                       </div>
                     </div>
                     <div class="col-sm-12 col-md-3">
                       <div class="cardservice ">
+                      <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                             <img src={Petimg} class="propertyimgone"/>
-                            <h5 class="card-title">Pet license</h5>
+                            <h5 class="card-title">Pet license</h5></a>
                                         
                         </div>
                       </div> 
                       <div class="col-sm-12 col-md-3">
                         <div class="cardservice ">
+                        <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                               <img src={obps} class="propertyimgone"/>
-                              <h5 class="card-title">E-Naksha</h5>
+                              <h5 class="card-title">E-Naksha</h5></a>
                                           
                           </div>
                         </div> 
                         <div class="col-sm-12 col-md-3">
                           <div class="cardservice ">
+                          <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                                 <img src={pgr} class="propertyimgone"/>
-                                <h5 class="card-title">Public Grievance</h5>
+                                <h5 class="card-title">Public Grievance</h5></a>
                                             
                             </div>
                           </div> 
