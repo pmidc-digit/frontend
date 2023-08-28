@@ -14,7 +14,6 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import rightImage from "../../img/pmidc - final logo.png";
-import bannerImage from "../../img/banner.jpeg";
 import leftImage from "../../img/Govt. of Punjab.png";
 import slideone from '../../img/pmidcgurughar.jpg';
 import homeicon from '../../img/homepage-icon.png';
@@ -138,7 +137,7 @@ class Header extends React.Component {
         <div className="row">
             <div className="col-sm-12 col-md-6">
                 <div className="msewa-logo-postion">
-                <img className="msewalogo" src={leftImage} />
+                <img className="msewalogo" src={leftImage} alt="PMIDC" />
             </div>
             </div>
             <div className="col-sm-12 col-md-6">
@@ -149,7 +148,7 @@ class Header extends React.Component {
             </div>
             <div className="row">
             <div className="col-sm-12 col-md-12">
-            <img class="d-block w-100" src={slideone} alt="First slide" />
+            <img class="d-block w-100" src={slideone} alt="PMIDC" />
               </div>
               </div>
 

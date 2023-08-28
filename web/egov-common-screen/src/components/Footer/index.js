@@ -113,9 +113,9 @@ export default function CenteredGrid() {
                 <a href="mailto:pgrs.lg@punjab.gov.in" className='email'>pgrs.lg@punjab.gov.in</a>
                 <br />  
                 <a href="https://www.facebook.com/pmidc1/" target='_blank'>                
-                <img src={facebook}   style={{width: "6%", marginRight: "6%"}}   /></a>
+                <img src={facebook}   style={{width: "6%", marginRight: "6%"}}  alt='mSewa Punjab' /></a>
                 <a href="https://twitter.com/pmidcpunjab" target='_blank'>                                 
-                <img src={twitter}   style={{width: "6%"}}   /></a>           
+                <img src={twitter}   style={{width: "6%"}} alt='mSewa Punjab' /></a>           
                 </p> 
                    </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -260,9 +260,9 @@ export default function CenteredGrid() {
      
         <table >
       <tr >
-          <td style={{color:"#ffffff", width: "100px"}}><center> <img src={chrome}     width='60px'/></center></td>
+          <td style={{color:"#ffffff", width: "100px"}}><center> <img src={chrome}  alt='mSewa Punjab'   width='60px'/></center></td>
           {/* <td style={{color:"#ffffff", width: "100px"}}> <center><img src={edge}   /></center></td> */}
-          <td style={{color:"#ffffff", width: "100px"}}> <center><img src={mozilla}  width='30px'  /></center></td>
+          <td style={{color:"#ffffff", width: "100px"}}> <center><img src={mozilla} alt='mSewa Punjab' width='30px'  /></center></td>
           </tr>
         <tr >
           <td style={{color:"#ffffff", width: "100px"}}><center> &gt;V-81</center></td>
@@ -280,7 +280,7 @@ export default function CenteredGrid() {
         <p>© {currentyear} PMIDC, GOVERNMENT OF PUNJAB. All Rights Reserved by PMIDC</p>
         </div>
         <div className="col-sm-12 col-md-6">
-        <p>Last updated on : 2023-08-10 | <img src={wz} className="wz"/> <img src={gigw} className="wz"/></p>
+        <p>Last updated on : 2023-08-10 | <img src={wz} alt='mSewa Punjab' className="wz"/> <img src={gigw} alt='mSewa Punjab' className="wz"/></p>
         </div>
         </div>
         </div>

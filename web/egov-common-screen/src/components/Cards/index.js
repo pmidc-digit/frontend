@@ -44,7 +44,7 @@ export default function CenteredGrid() {
       <div class="col-sm-12 col-md-3">
           <div class="cardservice ">
           <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                <img src={Propertyimg} class="propertyimgone"/>
+                <img src={Propertyimg} class="propertyimgone" alt='Punjab Property Tax'/>
                 <h5 class="card-title">Property Tax</h5></a>
                             
             </div>
@@ -52,21 +52,21 @@ export default function CenteredGrid() {
           <div class="col-sm-12 col-md-3">
             <div class="cardservice ">
             <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                  <img src={Tradeimg} class="propertyimgone"/>                  
+                  <img src={Tradeimg} class="propertyimgone" alt='Punjab Trade license'/>                  
                   <h5 class="card-title">Trade license</h5></a>
                               
               </div>
             </div>  <div class="col-sm-12 col-md-3">
               <div class="cardservice ">
               <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                    <img src={waterimg} class="propertyimgone"/>
+                    <img src={waterimg} class="propertyimgone" alt='Punjab Water'/>
                     <h5 class="card-title">Water</h5></a>
                                 
                 </div>
               </div>  <div class="col-sm-12 col-md-3">
                 <div class="cardservice ">
                 <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                      <img src={Sewargeimg} class="propertyimgone"/>
+                      <img src={Sewargeimg} class="propertyimgone" alt='Punjab Water'/>
                       <h5 class="card-title">Sewarge</h5></a>
                                   
                   </div>
@@ -77,7 +77,7 @@ export default function CenteredGrid() {
                 <div class="col-sm-12 col-md-3">
                     <div class="cardservice ">
                     <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                          <img src={Fireimg} class="propertyimgone"/>
+                          <img src={Fireimg} class="propertyimgone" alt='Punjab Fire Noc'/>
                           <h5 class="card-title">Fire Noc</h5></a>
                                       
                       </div>
@@ -85,7 +85,7 @@ export default function CenteredGrid() {
                     <div class="col-sm-12 col-md-3">
                       <div class="cardservice ">
                       <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                            <img src={Petimg} class="propertyimgone"/>
+                            <img src={Petimg} class="propertyimgone" alt='Punjab Pet license'/>
                             <h5 class="card-title">Pet license</h5></a>
                                         
                         </div>
@@ -93,7 +93,7 @@ export default function CenteredGrid() {
                       <div class="col-sm-12 col-md-3">
                         <div class="cardservice ">
                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                              <img src={obps} class="propertyimgone"/>
+                              <img src={obps} class="propertyimgone" alt='Punjab E-Naksha'/>
                               <h5 class="card-title">E-Naksha</h5></a>
                                           
                           </div>
@@ -101,7 +101,7 @@ export default function CenteredGrid() {
                         <div class="col-sm-12 col-md-3">
                           <div class="cardservice ">
                           <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                                <img src={pgr} class="propertyimgone"/>
+                                <img src={pgr} class="propertyimgone" alt='Punjab Public Grievance'/>
                                 <h5 class="card-title">Public Grievance</h5></a>
                                             
                             </div>
