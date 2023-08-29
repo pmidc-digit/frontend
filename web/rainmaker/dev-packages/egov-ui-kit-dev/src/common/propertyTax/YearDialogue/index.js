@@ -162,13 +162,13 @@ class YearDialog extends Component {
                       alert('Please Select a Financial Year and Enter Survey Id');
                     }
                   } else{
-                  if (this.state.selectedYear !== '') {
-                    this.resetForm()
-                    history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
-                  }
-                  else {
-                    alert('Please Select a Financial Year!');
-                  }
+                  // if (this.state.selectedYear !== '') {
+                  //   this.resetForm()
+                  //   history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
+                  // }
+                  // else {
+                    alert('Please Select a Financial Year! and Enter Survey Id');
+                  //}
                 }
                 }}></Button>
             </div>
