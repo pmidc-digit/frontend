@@ -150,7 +150,7 @@ class YearDialog extends Component {
                   }
                    
                  if(isLocMatch){
-                    if ( isLocMatch && this.state.selectedYear !== '' && surveyIdcode != null) {
+                    if (isLocMatch && this.state.selectedYear !== '' && surveyIdcode != null) {
                       this.resetForm()
                       history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
                     }

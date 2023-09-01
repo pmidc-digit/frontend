@@ -382,6 +382,7 @@ const getBuildings = data => {
   return retbuildings;
 };
 const getApplicationData = async (transformedData, ulbLogo, type) => {
+  debugger;
   console.log("transformedData33", transformedData);
   const ddi=transformedData.buildings[0].uoms;
   var NoBase=0,NoHeight=0;
@@ -558,6 +559,73 @@ transformedData.buildings[0].uoms=reasonss;
       layout: borderLayout
     }
   ];
+  var buildAreaData =[];
+  var buildtableHead = [];
+  // ---- head table----
+    buildtableHead.push([
+      {
+        text: "Name of Building",
+        border: [true, true, true, true]
+      },
+      {
+        text: "No of Floors",
+        border: [true, true, true, true]
+      },
+      {
+        text: "Area (sq. mtr.)",
+        border: [true, true, true, true]
+      }
+    ]);
+    // -----------------
+  if(transformedData.buildings.length > 1){
+    
+  for(let mybuldingdata of transformedData.buildings){
+    console.log(mybuldingdata);
+    buildAreaData.push( [
+      {
+        text: mybuldingdata.name,
+        border: [true, true, true, true],
+        style: "receipt-table-value"
+      },
+      {
+        text: mybuldingdata.uoms.NO_OF_FLOORS,
+        border: [true, true, true, true],
+        style: "receipt-table-value"
+      },
+      {
+        text: mybuldingdata.uoms.BUILTUP_AREA,
+        border: [true, true, true, true],
+        style: "receipt-table-value"
+      },
+    ]);
+    
+  }
+  }
+console.log("mydata", transformedData);
+  // ------------------------my details---------------------------
+ 
+  let nocDetailsmy = [];
+  if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title-my"
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+  }
+
+  // -------------------------------------------------------------
   let propertyDetails = [
     {
       text: "PROPERTY DETAILS",
@@ -1186,6 +1254,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -1391,6 +1461,8 @@ transformedData.buildings[0].uoms=reasonss;
         columns: nocSubheadTwo
       },
      ...nocDetails,
+     ...nocDetailsmy,
+     ...buildAreaData,
      ...propertyDetails,
      ...propertyLocationDetails,
      ...applicantDetails,
@@ -1696,7 +1768,71 @@ transformedData.buildings[0].uoms=reasonss;
      // layout: borderLayout
     }
   ];
+// ------------------------my details---------------------------
+var buildAreaData =[];
+var buildtableHead = [];
+// ---- head table----
+buildtableHead.push([
+  {
+    text: "Name of Building",
+    border: [true, true, true, true]
+  },
+  {
+    text: "No of Floors",
+    border: [true, true, true, true]
+  },
+  {
+    text: "Area (sq. mtr.)",
+    border: [true, true, true, true]
+  }
+]);
+// -----------------
+if(transformedData.buildings.length > 1){
 
+for(let mybuldingdata of transformedData.buildings){
+  console.log(mybuldingdata);
+  buildAreaData.push( [
+    {
+      text: mybuldingdata.name,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.NO_OF_FLOORS,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.BUILTUP_AREA,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+  ]);
+  
+}
+}
+
+let nocDetailsmy = [];
+if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title"
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+}
+// -------------------------------------------------------------
   let space = [
     {
       text: "",
@@ -2307,6 +2443,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -3350,7 +3488,73 @@ transformedData.buildings[0].uoms=reasonss;
      // layout: borderLayout
     }
   ];
+// ------------------------my details---------------------------
+var buildAreaData =[];
+var buildtableHead = [];
+// ---- head table----
+buildtableHead.push([
+  {
+    text: "Name of Building",
+    border: [true, true, true, true]
+  },
+  {
+    text: "No of Floors",
+    border: [true, true, true, true]
+  },
+  {
+    text: "Area (sq. mtr.)",
+    border: [true, true, true, true]
+  }
+]);
+// -----------------
+if(transformedData.buildings.length > 1){
+  
+for(let mybuldingdata of transformedData.buildings){
+  console.log(mybuldingdata);
+  buildAreaData.push( [
+    {
+      text: mybuldingdata.name,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.NO_OF_FLOORS,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.BUILTUP_AREA,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+  ]);
+  
+}
+}
 
+let nocDetailsmy = [];
+if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title",
+    alignment: "left",
+    margin: [10, 0, 0, 0],
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+}
+// -------------------------------------------------------------
   let space = [
     {
       text: "",
@@ -3961,6 +4165,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -5008,7 +5214,72 @@ transformedData.buildings[0].uoms=reasonss;
      // layout: borderLayout
     }
   ];
+// ------------------------my details---------------------------
+console.log("aaaa", transformedData);
+var buildAreaData =[];
+var buildtableHead = [];
+// ---- head table----
+buildtableHead.push([
+  {
+    text: "Name of Building",
+    border: [true, true, true, true]
+  },
+  {
+    text: "No of Floors",
+    border: [true, true, true, true]
+  },
+  {
+    text: "Area (sq. mtr.)",
+    border: [true, true, true, true]
+  }
+]);
+// -----------------
+if(transformedData.buildings.length > 1){
 
+
+for(let mybuldingdata of transformedData.buildings){
+  console.log(mybuldingdata);
+  buildAreaData.push( [
+    {
+      text: mybuldingdata.name,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.NO_OF_FLOORS,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.BUILTUP_AREA,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+  ]);
+  
+}
+}
+let nocDetailsmy = [];
+if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title"
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+}
+// -------------------------------------------------------------
   let space = [
     {
       text: "",
@@ -5621,6 +5892,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -6029,7 +6302,7 @@ transformedData.buildings[0].uoms=reasonss;
 
         layout: {},
       },
-
+...nocDetailsmy,
       {
         style: "noc-head-new",
         table: {
@@ -6038,7 +6311,7 @@ transformedData.buildings[0].uoms=reasonss;
 
             [
               {
-                text: [{ text:"Provisional NOC", bold:true  }, " is issued subject to following conditions:"],
+                text: [{ text:"Provisional NOC ", bold:true  }, " is issued subject to following conditions:"],
                 border: [true, false, true, false],
                 alignment: "left",
               },
@@ -6064,9 +6337,6 @@ transformedData.buildings[0].uoms=reasonss;
                 alignment: "left",
               },
            ],
-
-
-
           ]
         },
 
@@ -6142,7 +6412,6 @@ transformedData.buildings[0].uoms=reasonss;
 
         layout: {},
       },
-
       {
         style: "noc-head-new",
         table: {
@@ -6158,9 +6427,6 @@ transformedData.buildings[0].uoms=reasonss;
 
               },
            ],
-
-
-
           ]
         },
 
@@ -6527,11 +6793,26 @@ transformedData.buildings[0].uoms=reasonss;
         color: "#484848",
         fontWeight: 500
       },
+      "noc-title-my":{
+        fontSize: 10,
+        bold: true,
+        width: 150,
+        marginleft : 40,
+        alignment: "center",
+        color: "#484848",
+        fontWeight: 500
+      },
+      "noc-table-my":{
+        fontSize: 10,
+        width: 60,
+        margin:[100, 0, 0, 0]
+      },
       "noc-table": {
         fontSize: 10,
         color: "#484848",
         margin: [-20, -2, -8, -8]
       },
+      
       "receipt-header-details": {
         fontSize: 9,
         margin: [0, 0, 0, 8],
