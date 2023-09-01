@@ -33,12 +33,8 @@ function App() {
                 </div> 
    <Faqs />
 <Footer /> 
-<div style={{backgroundColor:"#ffffff"}}>
-  <br />
-          <center><a href="https://www.digit.org/" target="_blank"><img style ={{height:"1.4em"}}src={digitLogo}   /></a></center> <br />    
-          </div>
- </div>
-    </Grid>
+ </div>  
+  </Grid>
   );
 }
 export default App;

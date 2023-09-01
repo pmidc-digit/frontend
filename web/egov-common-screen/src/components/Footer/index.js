@@ -279,7 +279,7 @@ export default function CenteredGrid() {
       <div className="col-sm-12 col-md-6">
         <p>© {currentyear} PMIDC, GOVERNMENT OF PUNJAB. All Rights Reserved by PMIDC</p>
         </div>
-        <div className="col-sm-12 col-md-6">
+        <div className="col-sm-12 col-md-6 lupwz">
         <p>Last updated on : 2023-08-10 | <img src={wz} alt='mSewa Punjab' className="wz"/> <img src={gigw} alt='mSewa Punjab' className="wz"/></p>
         </div>
         </div>
