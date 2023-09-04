@@ -18,8 +18,8 @@ var surveyIdcode = null;
 var editlocalityCode = null;
 const mapStateToProps = (state) => {
   debugger;
-  localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
-editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
+  // localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
+//  editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
 ;
 
   surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
@@ -149,19 +149,20 @@ class YearDialog extends Component {
                     await getUserDataFromUuid();
                   }
                    
-                 if(isLocMatch){
-                    if (isLocMatch && this.state.selectedYear !== '' && surveyIdcode != null) {
+                //  if(isLocMatch){
+                    if (this.state.selectedYear !== '' && surveyIdcode != null) {
                       this.resetForm()
                       history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
                     }
-                    else if(this.state.selectedYear !== '' && editlocalityCode != null){
-                      this.resetForm()
-                      history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
-                    }
-                    else {
-                      alert('Please Select a Financial Year and Enter Survey Id');
-                    }
-                  } else{
+                    // else if(this.state.selectedYear !== ''){
+                    //   this.resetForm()
+                    //   history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
+                    // }
+                  //   else {
+                  //     alert('Please Select a Financial Year and Enter Survey Id');
+                  //   }
+                  // } 
+                  else{
                   // if (this.state.selectedYear !== '') {
                   //   this.resetForm()
                   //   history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
