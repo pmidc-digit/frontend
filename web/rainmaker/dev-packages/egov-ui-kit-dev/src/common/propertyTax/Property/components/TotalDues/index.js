@@ -9,6 +9,7 @@ import { routeToCommonPay } from "egov-ui-kit/utils/PTCommon/FormWizardUtils/for
 import Label from "egov-ui-kit/utils/translationNode";
 import get from "lodash/get";
 import React from "react";
+import { httpRequest } from "../../../../../utils/api"
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { TotalDuesButton } from "./components";
@@ -49,6 +50,7 @@ const getUserDataFromUuid = async (state, dispatch) => {
       [],
       request);
     if (response) {
+      console.log("sss"  ,response);
       const data = response.data.find(obj => {
         return obj.locality == localityCode;
       });
@@ -59,10 +61,10 @@ const getUserDataFromUuid = async (state, dispatch) => {
   }
 }
 };
-getUserDataFromUuid();
-// if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
-//   getUserDataFromUuid();
-// }
+
+if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+  getUserDataFromUuid();
+}
 const labelStyle = {
   color: "rgba(0, 0, 0, 0.6)",
   fontWeight: 400,
@@ -186,11 +188,11 @@ class TotalDues extends React.Component {
                 labelText="PT_TOTALDUES_PAY"
                 onClickAction={() => {
                  
-                    if (isLocMatch && surveyIdcode == null) {
-                      alert("Please Enter Survey Id");
+                    if (isLocMatch && surveyIdcode != 'null') {
+                       payAction(consumerCode, tenantId);
                     }
                     else{
-                      payAction(consumerCode, tenantId);
+                      alert("Please Enter Survey Id");
                     }
                   
                 
