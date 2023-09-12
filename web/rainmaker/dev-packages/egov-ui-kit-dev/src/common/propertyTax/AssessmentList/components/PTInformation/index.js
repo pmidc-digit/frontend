@@ -123,14 +123,11 @@ class PTInformation extends React.Component {
     // if (purpose != PROPERTY_FORM_PURPOSE.CREATE) {
       const payloadProperty = await httpRequest(FETCHBILL.GET.URL, FETCHBILL.GET.ACTION, fetchBillQueryObject);
       let paymentDueYears = "";
-      debugger;
-      if (payloadProperty.Bill != null && payloadProperty.Bill.length > 0) {
-        debugger;
-        payloadProperty.Bill[0].billDetails.map((item) => {
+      if (payloadProperty.Bill != null && payloadProperty.Bill.length >= 0) {
+          payloadProperty.Bill[0].billDetails.map((item) => {
           console.log(item.toPeriod);
           console.log(item.fromPeriod);
           if (item.amount > 0) {
-            debugger;
             let toDate = convertEpochToDate(item.toPeriod).split("/")[2];
             let fromDate = convertEpochToDate(item.fromPeriod).split("/")[2];
             paymentDueYears = paymentDueYears == "" ? fromDate + "-" + toDate + "(Rs." + item.amount + ")" : paymentDueYears + "," + fromDate + "-" + toDate + "(Rs." + item.amount + ")";
