@@ -124,7 +124,7 @@ class PTInformation extends React.Component {
       const payloadProperty = await httpRequest(FETCHBILL.GET.URL, FETCHBILL.GET.ACTION, fetchBillQueryObject);
       let paymentDueYears = "";
       debugger;
-      if (payloadProperty.Bill != null && payloadProperty.Bill.length >= 0) {
+      if (payloadProperty.Bill != null && payloadProperty.Bill.length > 0) {
         debugger;
         payloadProperty.Bill[0].billDetails.map((item) => {
           console.log(item.toPeriod);

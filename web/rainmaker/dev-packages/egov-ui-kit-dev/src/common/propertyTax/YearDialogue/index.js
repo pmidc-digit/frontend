@@ -19,7 +19,7 @@ var editlocalityCode = null;
 const mapStateToProps = (state) => {
   debugger;
 localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
- editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
+editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
 ;
 surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
   const { common, form } = state;
@@ -153,10 +153,10 @@ class YearDialog extends Component {
                       this.resetForm()
                       history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
                     }
-                    else if(this.state.selectedYear !== ''){
-                      this.resetForm()
-                      history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
-                    }
+                    // else if(this.state.selectedYear !== ''){
+                    //   this.resetForm()
+                    //   history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
+                    // }
                     else {
                       alert('Please Select a Financial Year and Enter Survey Id');
                     }
