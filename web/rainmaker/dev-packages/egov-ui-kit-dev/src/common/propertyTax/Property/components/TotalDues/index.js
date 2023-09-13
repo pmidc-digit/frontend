@@ -187,15 +187,17 @@ class TotalDues extends React.Component {
                 
                 labelText="PT_TOTALDUES_PAY"
                 onClickAction={() => {
-                 
+                  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
                     if (isLocMatch && surveyIdcode != 'null') {
                        payAction(consumerCode, tenantId);
                     }
                     else{
                       alert("Please Enter Survey Id");
                     }
-                  
-                
+                  }
+                else{
+                  payAction(consumerCode, tenantId);
+                }
                   // 
                   
                 }}
