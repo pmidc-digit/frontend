@@ -21,6 +21,8 @@ import edge from "../../img/edge.png";
 import mozilla from "../../img/mozilla.png";
 import wz from "../../img/w3c.jpg";
 import gigw from "../../img/GIGW_LOGO.png";
+import privacy from "../../img/Data-Policy.pdf";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -247,14 +249,21 @@ export default function CenteredGrid() {
               >
               Holiday List
               </a> <br />
-
+              <a
+                href={privacy}
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+              >
+              Data Policy
+              </a> <br />
             </Grid>
 
       </Grid><br />
       <div className='infofoot'>
       <center style={{color:"#ffffff"}}>Information provided online is update and no physical visit is required</center> <br />    
       {/* <center style={{color:"#ffffff"}}>Last Updated July 2021</center> <br />     */}
-      <center style={{color:"#ffffff"}}>Number of Visitor {counterContainer}</center> <br /> 
+      <center style={{color:"#ffffff"}}>Number of Visitor 524{counterContainer}</center> <br /> 
       <center style={{color:"#ffffff"}}><span style={{color:"red"}}>*</span>Supported browser versions</center> <br />    
       <center >
      
