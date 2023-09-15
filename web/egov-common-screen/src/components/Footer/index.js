@@ -24,7 +24,7 @@ import gigw from "../../img/GIGW_LOGO.png";
 import privacy from "../../img/Data-Policy.pdf";
 import BlockchainStrategy from "../../img/BlockchainStrategymerged.pdf";
 import AIStrategy from "../../img/AIStrategymerged.pdf";
-
+import Emerging from "../../img/Emerging-Technologies.pdf";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -184,24 +184,29 @@ export default function CenteredGrid() {
                 Property Tax Demand Registers
               </a><br />
               <a
-                href="#"
+                href={AIStrategy}
                 //className={classes.block}
                 target="_blank"
                 id ="flink"
-
               >
-                Trade Licence
-              </a><br />
-
+              AI Strategy
+              </a> <br />
               <a
-                href="#"
+                href={BlockchainStrategy}
                 //className={classes.block}
                 target="_blank"
                 id ="flink"
-
               >
-                Road Cutting
-              </a><br />  
+              Block Chain Strategy
+              </a> <br />
+              <a
+                href={Emerging}
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+              >
+              Emerging Technologies
+              </a> <br />
               <a
                 href="https://www.youtube.com/@eSewaPunjabDOLGPunjab"
                 //className={classes.block}
@@ -259,22 +264,7 @@ export default function CenteredGrid() {
               >
               Data Security Policy
               </a> <br />
-              <a
-                href={AIStrategy}
-                //className={classes.block}
-                target="_blank"
-                id ="flink"
-              >
-              AI Strategy
-              </a> <br />
-              <a
-                href={BlockchainStrategy}
-                //className={classes.block}
-                target="_blank"
-                id ="flink"
-              >
-              Block Chain Strategy
-              </a> <br />
+              
             </Grid>
 
       </Grid><br />
