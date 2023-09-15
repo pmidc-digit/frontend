@@ -22,6 +22,8 @@ import mozilla from "../../img/mozilla.png";
 import wz from "../../img/w3c.jpg";
 import gigw from "../../img/GIGW_LOGO.png";
 import privacy from "../../img/Data-Policy.pdf";
+import BlockchainStrategy from "../../img/BlockchainStrategymerged.pdf";
+import AIStrategy from "../../img/AIStrategymerged.pdf";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -255,7 +257,23 @@ export default function CenteredGrid() {
                 target="_blank"
                 id ="flink"
               >
-              Data Policy
+              Data Security Policy
+              </a> <br />
+              <a
+                href={AIStrategy}
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+              >
+              AI Strategy
+              </a> <br />
+              <a
+                href={BlockchainStrategy}
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+              >
+              Block Chain Strategy
               </a> <br />
             </Grid>
 
