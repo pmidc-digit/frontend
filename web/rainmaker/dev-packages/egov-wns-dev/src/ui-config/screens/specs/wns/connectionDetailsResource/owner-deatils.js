@@ -322,12 +322,112 @@ export const connHolderDetailsSummary = () => {
 
 
 export const connectionHolderSameAsOwnerDetails={
- sameAsOwnerDetails : getLabelWithValue(
-    {
-      labelKey: "WS_CONN_HOLDER_SAME_AS_OWNER_DETAILS"
-    },
-    { jsonPath: "WaterConnection[0].sameAsPropertyAddress" }
-  )
+//  sameAsOwnerDetails : getLabelWithValue(
+//     {
+//       labelKey: "WS_CONN_HOLDER_SAME_AS_OWNER_DETAILS"
+//     },
+//     { jsonPath: "WaterConnection[0].sameAsPropertyAddress" }
+//   )
+
+mobileNumber: getLabelWithValueForModifiedLabel(
+  {
+    labelKey: "WS_CONN_HOLDER_OWN_DETAIL_MOBILE_NO_LABEL"
+  },
+  { jsonPath: "WaterConnection[0].connectionHolders[0].mobileNumber", callBack: handleNA },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  { jsonPath: "applyScreenOld.connectionHolders[0].mobileNumber", callBack: handleNA }
+  
+),
+name: getLabelWithValueForModifiedLabel(
+  {
+    labelName: "Name",
+    labelKey: "WS_CONN_HOLDER_OWN_DETAIL_OWN_NAME_LABEL"
+  },
+  { jsonPath: "WaterConnection[0].connectionHolders[0].name", callBack: handleNA },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  { jsonPath: "applyScreenOld.connectionHolders[0].name", callBack: handleNA }
+  
+),
+gender: getLabelWithValueForModifiedLabel(
+  {
+    labelKey: "WS_CONN_HOLDER_OWN_DETAIL_GENDER_LABEL"
+  },
+  {
+    jsonPath: "WaterConnection[0].connectionHolders[0].gender",
+    callBack: handleNA,
+    localePrefix: {
+      moduleName: "COMMON",
+      masterName: "GENDER"
+    }
+  },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  {
+    jsonPath: "applyScreenOld.connectionHolders[0].gender",
+    callBack: handleNA,
+    localePrefix: {
+      moduleName: "COMMON",
+      masterName: "GENDER"
+    }
+  },
+),
+fatherName: getLabelWithValueForModifiedLabel(
+  {
+    labelKey: "WS_CONN_HOLDER_COMMON_FATHER_OR_HUSBAND_NAME"
+  },
+  { jsonPath: "WaterConnection[0].connectionHolders[0].fatherOrHusbandName", callBack: handleNA },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  { jsonPath: "applyScreenOld.connectionHolders[0].fatherOrHusbandName", callBack: handleNA }
+),
+relationship: getLabelWithValueForModifiedLabel(
+  {
+    labelKey: "WS_CONN_HOLDER_OWN_DETAIL_RELATION_LABEL"
+  },
+  { jsonPath: "WaterConnection[0].connectionHolders[0].relationship", callBack: handleNA },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  { jsonPath: "applyScreenOld.connectionHolders[0].relationship", callBack: handleNA }
+),
+correspondenceAddress: getLabelWithValueForModifiedLabel(
+  {
+    labelKey: "WS_CONN_HOLDER_OWN_DETAIL_CROSADD"
+  },
+  {
+    jsonPath: "WaterConnection[0].connectionHolders[0].correspondenceAddress",
+    callBack: handleNA
+  },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  {
+    jsonPath: "applyScreenOld.connectionHolders[0].correspondenceAddress",
+    callBack: handleNA
+  }
+),
+specialApplicantCategory: getLabelWithValueForModifiedLabel(
+  {
+    labelKey: "WS_CONN_HOLDER_OWN_DETAIL_SPECIAL_APPLICANT_LABEL"
+  },
+  {
+    jsonPath: "WaterConnection[0].connectionHolders[0].ownerType",
+    callBack: handleNA
+  },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  {
+    jsonPath: "applyScreenOld.connectionHolders[0].ownerType",
+    callBack: handleNA
+  }
+)
 } 
 
 export const connHolderDetailsSameAsOwnerSummary = () => {
@@ -351,17 +451,45 @@ export const connHolderDetailsSameAsOwnerSummary = () => {
         }
       }
     },
-    connHoldDetail: {
+    // connHoldDetail: {
+    //   uiFramework: "custom-containers",
+    //   componentPath: "MultiItem",
+    //   props: {
+    //     scheama: getCommonGrayCard({
+    //       sameAsOwnerDetails:getCommonContainer(connectionHolderSameAsOwnerDetails),
+    //     }),
+    //     items: [],
+    //     hasAddItem: false,
+    //     sourceJsonPath: "WaterConnection[0].sameAsPropertyAddress",
+    //     prefixSourceJsonPath: "children.cardContent.children.sameAsOwnerDetails.children",
+    //     afterPrefixJsonPath: "children.value.children.key"
+    //   },
+    //   type: "array"
+    // }
+    connHoldDetails: {
       uiFramework: "custom-containers",
       componentPath: "MultiItem",
       props: {
         scheama: getCommonGrayCard({
-          sameAsOwnerDetails:getCommonContainer(connectionHolderSameAsOwnerDetails),
+          viewFive: getCommonContainer({
+            ownerMobileNumber,
+            ownerName,
+            gender,
+            guardian,
+            guardianName,
+            ownerCategory,
+            email,
+            correspondenceAddress
+          }),
         }),
+        scheama: getCommonGrayCard({
+          viewFive: getCommonContainer(connectionHolderSameAsOwnerDetails),
+        }),
+
         items: [],
         hasAddItem: false,
-        sourceJsonPath: "WaterConnection[0].sameAsPropertyAddress",
-        prefixSourceJsonPath: "children.cardContent.children.sameAsOwnerDetails.children",
+        sourceJsonPath: "WaterConnection[0].connectionHolders",
+        prefixSourceJsonPath: "children.cardContent.children.connHoldDetails.children",
         afterPrefixJsonPath: "children.value.children.key"
       },
       type: "array"
