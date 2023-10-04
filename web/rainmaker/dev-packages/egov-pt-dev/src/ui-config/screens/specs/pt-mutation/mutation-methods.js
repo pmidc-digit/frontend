@@ -141,8 +141,12 @@ export const resetFields = (state, dispatch) => {
 
 };
 
-export const test = () =>{
-  alert("testing");
+export const test =()=>{
+  return(
+    <h1>Hello test</h1>
+    
+  )
+  
 }
 export const searchPropertyDetails = getCommonCard({
   subHeader: getCommonTitle({
@@ -154,6 +158,10 @@ export const searchPropertyDetails = getCommonCard({
     labelName: "Provide at least one non-mandatory parameter to search for an application (In case of Search by locality and name . please select city name again)",
    //labelKey: "PT_HOME_SEARCH_RESULTS_DESC"
     labelKey: "Provide at least one non-mandatory parameter to search for an application (In case of search by locality and name . please select city name again)"
+  }),
+  subParagraphaa: getCommonParagraph({
+    labelName:"One Time settlement for Property Tax has been implemented in mSeva. You requested check and Re-Assess your property before paying tax .",
+    labelKey:"One Time settlement for Property Tax has been implemented in mSeva. You requested check and Re-Assess your property before paying tax ."
   }),
   ulbCityContainer: getCommonContainer({
     ulbCity: {
