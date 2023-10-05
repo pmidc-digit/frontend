@@ -133,6 +133,7 @@ class Header extends React.Component {
               </div>
               </div>
               </div>
+              
               </div>
         <div className="row">
             <div className="col-sm-12 col-md-6">
@@ -145,6 +146,11 @@ class Header extends React.Component {
                 <a href="https://mseva.lgpunjab.gov.in/employee/language-selection" target="_blank">Employee Login </a><img id="rightimg" src={rightImage} />
                 </div>
             </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <marquee id="note">Dear Citizen , One Time settlement for Property Tax has been implemented in mSeva. You requested check and Re-Assess your property before paying tax .</marquee>
+              </div>
             </div>
             <div className="row">
             <div className="col-sm-12 col-md-12">

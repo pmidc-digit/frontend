@@ -67,7 +67,7 @@ export default function CenteredGrid() {
                 <div class="cardservice ">
                 <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                       <img src={Sewargeimg} class="propertyimgone" alt='Punjab Water'/>
-                      <h5 class="card-title">Sewarge</h5></a>
+                      <h5 class="card-title">Sewerage</h5></a>
                                   
                   </div>
                 </div>
