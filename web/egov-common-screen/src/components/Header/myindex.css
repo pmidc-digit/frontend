@@ -6,6 +6,9 @@
     margin-top: 10px;
     margin-bottom: 5px;    
 }
+#note{
+    color:red;
+}
 /* image rotate */
 @-webkit-keyframes rotate {
     0% { -webkit-transform: rotate(0deg) scale(1.0); }
