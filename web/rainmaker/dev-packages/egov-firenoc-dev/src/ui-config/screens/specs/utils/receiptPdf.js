@@ -2681,7 +2681,7 @@ nocDetailsmy.push([
               {
 
                // text: `NOC Type: ${transformedData.nocType}`,
-                text: [  "NOC Typeoooooo: " ,
+                text: [  "NOC Type: " ,
                 { text: `${transformedData.nocType}`,
                 bold:true },
                 ],
