@@ -4,7 +4,8 @@ import { Grid, Typography, Button } from "@material-ui/core";
 import { Container } from "egov-ui-framework/ui-atoms";
 import {
   LabelContainer,
-  TextFieldContainer
+  TextFieldContainer,
+  
 } from "egov-ui-framework/ui-containers";
 import { Dialog, DialogContent } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -31,6 +32,26 @@ const fieldConfig = {
       labelKey: "WF_ASSIGNEE_NAME_PLACEHOLDER"
     }
   },
+  Respresntativename: {
+    label: {
+      labelName: "Name",
+      labelKey: "Name"
+    },
+    placeholder: {
+      labelName: "Enter Name",
+      labelKey: "Enter Name"
+    }
+  },
+  datetime: {
+    label: {
+      labelName: "Date",
+      labelKey: "Date"
+    },
+    placeholder: {
+      labelName: "Enter Date",
+      labelKey: "Enter Date"
+    }
+  },
   comments: {
     label: {
       labelName: "Comments",
@@ -41,6 +62,7 @@ const fieldConfig = {
       labelKey: "WF_ADD_HOC_CHARGES_POPUP_COMMENT_LABEL"
     }
   }
+
 };
 
 class ActionDialog extends React.Component {
@@ -216,6 +238,29 @@ class ActionDialog extends React.Component {
                       placeholder={fieldConfig.comments.placeholder}
                     />
                   </Grid>
+                  <Grid item sm="6">
+                    <TextFieldContainer
+                      InputLabelProps={{ shrink: true }}
+                      label={fieldConfig.Respresntativename.label} 
+                      onChange={e =>
+                        handleFieldChange(`${dataPath}.name`, e.target.value)
+                      }
+                      jsonPath={`${dataPath}.name`}
+                      placeholder={fieldConfig.Respresntativename.placeholder} 
+                    />
+                  </Grid>
+                  <Grid item sm="6">
+                    <TextFieldContainer
+                      InputLabelProps={{ shrink: true }}
+                      label={fieldConfig.datetime.label}
+                      onChange={e =>
+                        handleFieldChange(`${dataPath}.date`, e.target.value)
+                      }
+                      jsonPath={`${dataPath}.date`}
+                      placeholder={fieldConfig.datetime.placeholder}
+                    />
+                  </Grid>
+                  
                   <Grid item sm="12">
                     <Typography
                       component="h3"
@@ -259,6 +304,7 @@ class ActionDialog extends React.Component {
                         accept: "image/*, .pdf, .png, .jpeg"
                       }}
                       buttonLabel={{ labelName: "UPLOAD FILES",labelKey : "TL_UPLOAD_FILES_BUTTON" }}
+                      required ={true}
                       jsonPath={wfDocumentsPath}
                       maxFileSize={5000}
                     />
@@ -266,6 +312,7 @@ class ActionDialog extends React.Component {
                       <Button
                         variant={"contained"}
                         color={"primary"}
+                        required ={true}
                         style={{
                           minWidth: "200px",
                           height: "48px"
