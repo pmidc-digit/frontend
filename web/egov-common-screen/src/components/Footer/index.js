@@ -159,6 +159,14 @@ export default function CenteredGrid() {
               >
                 Privacy policy
               </a><br />  
+              <a
+                href="https://nesda.centralindia.cloudapp.azure.com/#/citizen-survey"
+                id ="flink"
+                //className={classes.block}
+                target="_blank"
+              >
+                Citizen Survey
+              </a><br />  
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
         
