@@ -84,7 +84,7 @@ export default function CenteredGrid() {
                     </div>
                     <div class="col-sm-12 col-md-3">
                       <div class="cardservice ">
-                      <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
+                      <a href='http://petlicense.punjab.gov.in:8080/pet-license/' target="_new">
                             <img src={Petimg} class="propertyimgone" alt='Punjab Pet license'/>
                             <h5 class="card-title">Pet license</h5></a>
                                         
@@ -92,7 +92,7 @@ export default function CenteredGrid() {
                       </div> 
                       <div class="col-sm-12 col-md-3">
                         <div class="cardservice ">
-                        <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
+                        <a href='https://enaksha.lgpunjab.gov.in/' target="_new">
                               <img src={obps} class="propertyimgone" alt='Punjab E-Naksha'/>
                               <h5 class="card-title">E-Naksha</h5></a>
                                           
