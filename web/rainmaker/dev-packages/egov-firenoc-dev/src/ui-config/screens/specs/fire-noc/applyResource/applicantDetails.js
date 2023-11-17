@@ -301,38 +301,38 @@ const commonApplicantInformation = () => {
           className:"applicant-details-error"
         }
       }),
-      specialApplicantCategory: {
-          uiFramework: "custom-containers-local",
-          moduleName: "egov-firenoc",
-          componentPath: "AutosuggestContainer",
-          props: {
-            label: {
-              labelName: "Special Applicant Category",
-              labelKey: "NOC_SPECIAL_APPLICANT_CATEGORY_LABEL"
-            },
-            placeholder: {
-              labelName: "Select Special Applicant Category",
-              labelKey: "NOC_SPECIAL_APPLICANT_CATEGORY_PLACEHOLDER"
-            },
-            localePrefix: {
-              moduleName: "common-masters",
-              masterName: "OwnerType"
-            },
-            sourceJsonPath: "applyScreenMdmsData.common-masters.OwnerType",
-            jsonPath: "FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].ownerType",
-            // required: true,
-            isClearable: true,
-            labelsFromLocalisation: true,
-            className: "autocomplete-dropdown",
-          },
-          // required: true,
-        jsonPath: "FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].ownerType",
-        gridDefination: {
-          xs: 12,
-          sm: 12,
-          md: 6
-        }
-      }
+      // specialApplicantCategory: {
+      //     uiFramework: "custom-containers-local",
+      //     moduleName: "egov-firenoc",
+      //     componentPath: "AutosuggestContainer",
+      //     props: {
+      //       label: {
+      //         labelName: "Special Applicant Category",
+      //         labelKey: "NOC_SPECIAL_APPLICANT_CATEGORY_LABEL"
+      //       },
+      //       placeholder: {
+      //         labelName: "Select Special Applicant Category",
+      //         labelKey: "NOC_SPECIAL_APPLICANT_CATEGORY_PLACEHOLDER"
+      //       },
+      //       localePrefix: {
+      //         moduleName: "common-masters",
+      //         masterName: "OwnerType"
+      //       },
+      //       sourceJsonPath: "applyScreenMdmsData.common-masters.OwnerType",
+      //       jsonPath: "FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].ownerType",
+      //       // required: true,
+      //       isClearable: true,
+      //       labelsFromLocalisation: true,
+      //       className: "autocomplete-dropdown",
+      //     },
+      //     // required: true,
+      //   jsonPath: "FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].ownerType",
+      //   gridDefination: {
+      //     xs: 12,
+      //     sm: 12,
+      //     md: 6
+      //   }
+      // }
     })
   });
 };
