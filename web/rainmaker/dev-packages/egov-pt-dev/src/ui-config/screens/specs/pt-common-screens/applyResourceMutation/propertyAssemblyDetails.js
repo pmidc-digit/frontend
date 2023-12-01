@@ -195,6 +195,22 @@ export const propertyAssemblyDetails = getCommonCard({
                 rendersubUsageType(action.value, propType, dispatch, state)
             }
         },
+        surveyid: getTextField({
+            label: {
+                labelName: "Enter Survey Id/UID",
+                labelKey: "Enter Survey Id/UID"
+            },
+            props: {
+            },
+            placeholder: {
+                labelName: "Enter Survey Id/UID",
+                labelKey: "Enter Survey Id/UID"
+            },
+            required: false,
+            pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
+            errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+            jsonPath: "Property.surayid"
+        }),
         subUsageType: {
             uiFramework: "custom-containers-local",
             moduleName: "egov-pt",
