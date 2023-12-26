@@ -46,9 +46,9 @@ async function dummy(action, state, dispatch) {
           "applyScreenMdmsData.tenant.localities", datalocality
         )
       );
-      dispatch(
-        fetchLocalizationLabel(getLocale(), action.value, action.value)
-      );
+      // dispatch(
+      //   fetchLocalizationLabel(getLocale(), action.value, action.value)
+      // );
 
     } catch (e) {
       console.log(e);
