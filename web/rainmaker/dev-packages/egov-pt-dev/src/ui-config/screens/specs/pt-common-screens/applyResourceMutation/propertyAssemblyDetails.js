@@ -209,7 +209,7 @@ export const propertyAssemblyDetails = getCommonCard({
             required: false,
             pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
             errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-            jsonPath: "Property.surayid"
+            jsonPath: "Property.surveyId"
         }),
         subUsageType: {
             uiFramework: "custom-containers-local",
