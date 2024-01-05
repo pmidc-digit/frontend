@@ -20,21 +20,35 @@ import {
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getHeaderSideText } from "../../utils";
 import get from 'lodash/get';
-//import { handleFieldChange, setFieldProperty } from "../../../../../../../../dev-packages/egov-ui-kit-dev/src/redux/form/actions";
+import { handleFieldChange, setFieldProperty } from "../../../../../../../../dev-packages/egov-ui-kit-dev/src/redux/form/actions";
 //../../../../../../../egov-ui-kit-dev/src/redux/form/actions
 
 //dev-packages\egov-ui-kit-dev\src\redux\form
-import { httpRequest } from '../../../../../ui-utils/index';
+//import { httpRequest } from '../../../../../ui-utils/index';
 import set from 'lodash/set';
 import { getTodaysDateInYMD, getQueryArg, getObjectKeys, getObjectValues } from 'egov-ui-framework/ui-utils/commons';
 import { isModifyMode } from "../../../../../ui-utils/commons";
 import {WSledgerId,WSBillingAmount,WSbillingType,WScompositionFee,WSMeterMakes,WSunitUsageType,WSsubUsageType} from "../ImpelExtendedFeature/fields";
-//import { setFieldProperty } from "../../../../../../../../packages/employee/src/redux/store/actions";
+//import { setFieldProperty } from "egov-ui-kit/redux/form/actions";
 //egov-ui-kit/redux/form/actions
 let isMode = isModifyMode();
 //roadcuthidevb();
-//dispatch(setFieldProperty(formKey, "roadCuttingChargeContainer", "required", data ? true : false));
-  //dispatch(setFieldProperty(formKey, "multipleApplicantInfo", "disabled", true ));
+// const aaa = (state, dispatch) =>{
+//   debugger;
+
+//   // dispatch(
+//   //   handleField(
+//   //     "propertySearch",
+//   //     "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.userCharges",
+//   //     "isDisabled",
+//   //     true
+//   //   )
+//   // );
+//  //dispatch(setFieldProperty(formKey, "roadCuttingChargeContainer", "visible", data ? false : false));
+//   //dispatch(setFieldProperty(formKey, "userCharges", "visible", false));
+// //dispatch(setFieldProperty(formKey, "multipleApplicantInfo", "disabled", true ));
+// }
+// aaa();
 const getPlumberRadioButton = {
   uiFramework: "custom-containers-local",
   moduleName: "egov-wns",
@@ -446,8 +460,9 @@ export const additionDetails = getCommonCard({
              
     header: getCommonSubHeader(
       {
-        labelName: "Road Cutting Charge",
-        labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILS"
+        labelName: "Road Water Cutting Charge",
+        //labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILS"
+        labelKey:"Road Water Cutting Charge"
       },
       {
         style: {
@@ -464,6 +479,7 @@ export const additionDetails = getCommonCard({
             // display: "none"
             // width: 
           },
+          
           },
         
         children: {
@@ -478,7 +494,8 @@ export const additionDetails = getCommonCard({
                 labelKey: "WS_ADD_ROAD_TYPE_LABEL"
               },
               isReviewPage: false,
-              sourceJsonPath: "applyScreen.roadCuttingInfo",
+              
+              sourceJsonPath: "applyScreen.roadCuttingInfows",
               prefixSourceJsonPath: "children.cardContent.children.roadDetails.children"
             },
             type: "array"
@@ -487,58 +504,162 @@ export const additionDetails = getCommonCard({
       },
     }),
     roadDetails: getCommonContainer({
-      ...WScompositionFee,
-      // compositionFee: getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_DETAILS_COMPOSITION_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: getPattern("Amount"),
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.compositionFee"
-      // }),
-      // userCharges: getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_USER_CHARGES_LABEL"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_USER_CHARGES_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: getPattern("Amount"),
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.userCharges"
-      // }),
-      // othersFee : getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_OTHER_FEE_LABEL"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_OTHER_FEE_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: getPattern("Amount"),
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.othersFee"
-      // })
+      
+      //...WScompositionFee,
+      compositionFee: getTextField({
+        label: {
+          labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_DETAILS_COMPOSITION_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.compositionFeews"
+      }),
+      userCharges: getTextField({
+        label: {
+          labelKey: "WS_ADDN_USER_CHARGES_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_USER_CHARGES_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.userChargesws"
+      }),
+      othersFee : getTextField({
+        label: {
+          labelKey: "WS_ADDN_OTHER_FEE_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_OTHER_FEE_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.othersFeews"
+      })
     }),
     
   }),
+  //water road cutting end
+  roadCuttingChargeContainerSW: getCommonGrayCard({
+             
+    header: getCommonSubHeader(
+      {
+        labelName: "Road Sewerage Cutting Charge",
+       // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILS"
+       labelKey: "Road Sewerage Cutting Charge"
+      },
+      {
+        style: {
+          marginBottom: 18
+        }
+      }
+    ),
+    applicantTypeContainer: getCommonContainer({
+      roadCuttingChargeInfoCard : {
+        uiFramework: "custom-atoms",
+        componentPath: "Div",
+        props: {
+          style: {
+            // display: "none"
+            // width: 
+          },
+          
+          },
+        
+        children: {
+          multipleApplicantInfo: {
+            uiFramework: "custom-containers",
+            componentPath: "MultiItem",
+            props: {
+              scheama: commonRoadCuttingChargeInformation(),
+              items: [],
+              addItemLabel: {
+                labelName: "Add Road Type",
+                labelKey: "WS_ADD_ROAD_TYPE_LABEL"
+              },
+              isReviewPage: false,
+              
+              sourceJsonPath: "applyScreen.roadCuttingInfosw",
+              prefixSourceJsonPath: "children.cardContent.children.roadDetails.children"
+            },
+            type: "array"
+          }
+        }
+      },
+    }),
+    roadDetails: getCommonContainer({
+      
+      //...WScompositionFee,
+      compositionFee: getTextField({
+        label: {
+          labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_DETAILS_COMPOSITION_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.compositionFeesw"
+      }),
+      userCharges: getTextField({
+        label: {
+          labelKey: "WS_ADDN_USER_CHARGES_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_USER_CHARGES_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.userChargessw"
+      }),
+      othersFee : getTextField({
+        label: {
+          labelKey: "WS_ADDN_OTHER_FEE_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_OTHER_FEE_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.othersFeesw"
+      })
+    }),
+    
+  }),
+  //sewarage road cutting
   activationDetailsContainer: getCommonGrayCard({
     subHeader: getCommonTitle({
       labelKey: "WS_ACTIVATION_DETAILS"
