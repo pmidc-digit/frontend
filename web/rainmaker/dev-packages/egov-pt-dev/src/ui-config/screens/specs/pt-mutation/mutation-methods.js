@@ -303,6 +303,7 @@ export const searchPropertyDetails = getCommonCard({
       required: false,
       pattern: getPattern("MobileNo"),
       jsonPath: "ptSearchScreen.mobileNumber",
+      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       errorMessage: "ERR_INVALID_MOBILE_NUMBER"
     }),
     propertyTaxUniqueId: getTextField({
