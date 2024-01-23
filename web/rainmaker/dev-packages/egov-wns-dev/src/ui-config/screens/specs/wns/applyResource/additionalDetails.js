@@ -20,7 +20,7 @@ import {
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getHeaderSideText } from "../../utils";
 import get from 'lodash/get';
-import { handleFieldChange, setFieldProperty } from "../../../../../../../../dev-packages/egov-ui-kit-dev/src/redux/form/actions";
+import { handleFieldChange, setFieldProperty } from "egov-ui-kit/redux/form/actions";
 //../../../../../../../egov-ui-kit-dev/src/redux/form/actions
 
 //dev-packages\egov-ui-kit-dev\src\redux\form
