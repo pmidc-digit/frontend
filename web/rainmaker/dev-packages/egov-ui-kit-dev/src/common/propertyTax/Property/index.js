@@ -155,6 +155,7 @@ class Property extends Component {
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
     if (selPropertyDetails.status == "ACTIVE") {
       selPropertyDetails.status="INACTIVE";
+      selPropertyDetails.mystatus="INACT"
         let payload = null;
         let queryObject = [
           {
@@ -197,6 +198,7 @@ onStatusChangePropertyClickToActive = async() => {
   const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
   if (selPropertyDetails.status == "INACTIVE") {
     selPropertyDetails.status="ACTIVE";
+    selPropertyDetails.mystatus="NACT"
       let payload = null;
       let queryObject = [
         {
@@ -413,6 +415,26 @@ alert("This operation is not allowed as Property is not already active.");
         }
         <div id="tax-wizard-buttons" className="wizard-footer col-sm-16" style={{ textAlign: "right" }}>
           <div className="button-container col-5 property-info-access-btn" style={{ float: "right" }}>
+          <Button
+               label={
+                 <Label buttonLabel={true}
+                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
+                  label={'Make Property Active'} fontSize="11px"
+                   color="#fe7a51" />
+               }
+               onClick={() => 
+                { 
+                  if (process.env.REACT_APP_NAME == "Citizen") {
+                    alert("Action to activate property is not allowed for citizen");
+                  }
+                  else{
+                  if(window.confirm("Are you sure you want to make property active?")){
+                this.onStatusChangePropertyClickToActive()}
+                }}}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
+              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
+            />
             <Button
                label={
                  <Label buttonLabel={true}
