@@ -81,6 +81,10 @@ class Footer extends React.Component {
       state,
       "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicationNumber"
     );
+    const firenocstatus = get(
+      state,
+      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.status"
+    );
     if(getdate){
     const cd= getdate.split("PB-FN-");
     const appActualDate=cd[1].slice(0,10);
@@ -92,6 +96,7 @@ class Footer extends React.Component {
     console.log(diffTime + " milliseconds");
     console.log(diffDays + " days");
     }
+    if(firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED-DV" || firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED"){
     if (diffDays>=90){
       alert("You are not eligible for Re-Submit ");
       }
@@ -203,6 +208,113 @@ class Footer extends React.Component {
     }
     // this.setState({ open: true, data: item, employeeList });
   }
+}
+else{
+  const { handleFieldChange, setRoute, dataPath,onDialogButtonClick  } = this.props;
+  let employeeList = [],empList=[]; 
+  if (item.buttonLabel === "ACTIVATE_CONNECTION") {
+    if (item.moduleName === "NewWS1" || item.moduleName === "NewSW1") {
+      item.showEmployeeList = false;
+    }
+  }
+  if (dataPath === "BPA") {
+    handleFieldChange(`${dataPath}.comment`, "");
+    handleFieldChange(`${dataPath}.assignees`, "");
+  } else {
+    handleFieldChange(`${dataPath}[0].comment`, "");
+    handleFieldChange(`${dataPath}[0].assignee`, []);
+  }
+
+  if (item.isLast) {
+    let url =
+      process.env.NODE_ENV === "development"
+        ? item.buttonUrl
+        : item.buttonUrl;
+
+    /* Quick fix for edit mutation application */
+    if (url.includes('pt-mutation/apply')) {
+      url = url + '&mode=MODIFY';
+      window.location.href = url.replace("/pt-mutation/", '');
+      return;
+    }
+
+    setRoute(url);
+    return;
+  }
+  if (item.showEmployeeList) {
+    const tenantId = getTenantId();
+    const queryObj = [
+      {
+        key: "roles",
+        value: item.roles
+      },
+      {
+        key: "tenantId",
+        value: tenantId
+      }
+    ];
+  //   const payload = await httpRequest(
+  //     "post",
+  //     "/egov-hrms/employees/_search",
+  //     "",
+  //     queryObj
+  //   );
+  //   employeeList =
+  //     payload &&
+  //     payload.Employees.map((item, index) => {
+  //       const name = get(item, "user.name");
+  //       return {
+  //         value: item.uuid,
+  //         label: name
+  //       };
+  //     });
+  // }
+
+  const payload = await httpRequest(
+    "post",
+    "/egov-hrms/employees/_search",
+    "",
+    queryObj
+  );
+  empList =payload && payload.Employees.map((item, index) => {
+  // Add only User With Active Status 
+   const active = JSON.stringify(item.user.active);
+    if(active=="true")
+    {
+      const name = get(item, "user.name");
+      return {
+        value: item.uuid,
+        label: name
+      };
+    }
+    else{
+      return { value: item.uuid,
+               label: 'blank'
+    };
+  }
+  });
+   empList.forEach((res, index) => {
+    if (res.label=='blank') {
+      empList.splice(index, 1) // remove element
+};
+})
+  for (var i of empList) {
+employeeList.push(i);
+}  
+}
+
+  if(label === "APPROVE"){
+    this.setState({ data: item, employeeList });
+   
+    onDialogButtonClick(label,false);
+
+  }
+  else{
+    this.setState({ open : true,data: item, employeeList });
+
+  }
+  // this.setState({ open: true, data: item, employeeList });
+}
   };
 
   onClose = () => {
