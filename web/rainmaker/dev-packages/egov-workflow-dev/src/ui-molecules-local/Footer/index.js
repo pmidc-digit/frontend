@@ -96,7 +96,8 @@ class Footer extends React.Component {
     console.log(diffTime + " milliseconds");
     console.log(diffDays + " days");
     }
-    if(firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED-DV" || firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED"){
+    //if(firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED-DV" || firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED"){
+    if(true){
     if (diffDays>=90){
       alert("You are not eligible for Re-Submit ");
       }
