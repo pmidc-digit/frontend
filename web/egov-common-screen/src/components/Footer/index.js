@@ -115,7 +115,12 @@ export default function CenteredGrid() {
                 <p className={classes.paragraph} >
                 Email Us:<br />
                 <a href="mailto:pgrs.lg@punjab.gov.in" className='email'>pgrs.lg@punjab.gov.in</a>
-                <br />  
+                <br /></p>  
+                <p className={classes.paragraph} >
+                For any  issues regarding online payments:<br />
+                <p>
+                <a href="mailto:egovdolg@gmail.com" className='email'>egovdolg@gmail.com</a>
+                <br /> </p>
                 <a href="https://www.facebook.com/pmidc1/" target='_blank'>                
                 <img src={facebook}   style={{width: "6%", marginRight: "6%"}}  alt='mSewa Punjab' /></a>
                 <a href="https://twitter.com/pmidcpunjab" target='_blank'>                                 
@@ -128,7 +133,7 @@ export default function CenteredGrid() {
                 <h5 className={classes.header} style={{fontSize: "1rem" , marginTop: "-5px"}}><b>Other Departments</b></h5>
               </p>
               <a
-                href="https://mseva.lgpunjab.gov.in/"
+                href="https://lgpunjab.gov.in/"
                 id ="flink"
                 //className={classes.block}
                 target="_blank"
@@ -279,7 +284,7 @@ export default function CenteredGrid() {
       <div className='infofoot'>
       <center style={{color:"#ffffff"}}>Information provided online is update and no physical visit is required</center> <br />    
       {/* <center style={{color:"#ffffff"}}>Last Updated July 2021</center> <br />     */}
-      <center style={{color:"#ffffff"}}>Number of Visitor 524{counterContainer}</center> <br /> 
+      <center style={{color:"#ffffff"}}>Number of Visitor 1224{counterContainer}</center> <br /> 
       <center style={{color:"#ffffff"}}><span style={{color:"red"}}>*</span>Supported browser versions</center> <br />    
       <center >
      
@@ -305,7 +310,7 @@ export default function CenteredGrid() {
         <p>© {currentyear} PMIDC, GOVERNMENT OF PUNJAB. All Rights Reserved by PMIDC</p>
         </div>
         <div className="col-sm-12 col-md-6 lupwz">
-        <p>Last updated on : 2023-08-10 | <img src={wz} alt='mSewa Punjab' className="wz"/> <img src={gigw} alt='mSewa Punjab' className="wz"/></p>
+        <p>Last updated on : 01-02-2024 | <img src={wz} alt='mSewa Punjab' className="wz"/> <img src={gigw} alt='mSewa Punjab' className="wz"/></p>
         </div>
         </div>
         </div>
