@@ -179,7 +179,7 @@ export default function CenteredGrid() {
                 <h5 className={classes.header} style={{fontSize: "1rem", marginTop: "-5px"}}><b>User Manuals</b></h5>
               </p>       
               <a
-                href="#"
+                href="https://urban.digit.org/products/modules/property-tax"
                 //className={classes.block}
                 target="_blank"
                 id ="flink"
@@ -188,13 +188,40 @@ export default function CenteredGrid() {
                 Property Tax
               </a><br />
               <a
-                href="#"
+                href="https://urban.digit.org/products/modules/trade-license-tl"
                 //className={classes.block}
                 target="_blank"
                 id ="flink"
 
               >
-                Property Tax Demand Registers
+                Trade Licence
+              </a><br />
+              <a
+                href="https://urban.digit.org/products/modules/water-and-sewerage"
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+
+              >
+                Water & Sewerage
+              </a><br />
+              <a
+                href="https://urban.digit.org/products/modules/public-grievances-and-redressal"
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+
+              >
+                Public Grievances & Redressal
+              </a><br />
+               <a
+                href="https://urban.digit.org/products/modules/fire-noc"
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+
+              >
+               Fire NOC
               </a><br />
               <a
                 href={AIStrategy}
@@ -254,13 +281,22 @@ export default function CenteredGrid() {
               About eGov Foundation
               </a> <br />
               <a
+                href="https://mseva.lgpunjab.gov.in/citizen/language-selection"
+                //className={classes.block}
+                target="_blank"
+                id ="flink"
+              >
+              What's New
+              </a> <br />
+              <a
                 href="https://lgpunjab.gov.in/cms/transparency-act.php"
                 //className={classes.block}
                 target="_blank"
                 id ="flink"
               >
-              Transparency Act
+              Service Delivery Charter
               </a> <br />
+              
               <a
                 href="https://punjab.gov.in/wp-content/uploads/2022/12/Holidays-List-2023-Pbi-and-Eng_0001.pdf"
                 //className={classes.block}
