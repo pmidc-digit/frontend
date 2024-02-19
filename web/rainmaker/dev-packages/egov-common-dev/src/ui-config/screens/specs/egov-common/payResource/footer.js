@@ -235,7 +235,7 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
           //   window.location = redirectionUrl;
           //   }
     
-             if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing")         {
+             if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" ||  get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar")         {
               window.location = redirectionUrl;  
              }
              else{
