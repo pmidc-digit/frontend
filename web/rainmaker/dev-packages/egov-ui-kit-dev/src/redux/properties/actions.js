@@ -771,6 +771,8 @@ export const downloadReceiptpt = (receiptQueryString) => {
          assessmentYearForReceipt=fromDate+"-"+toDate;
          rebate=0;
          rebateT=0;
+         interest=0
+         interestT=0;
     element.billAccountDetails.map(ele => {
     if(ele.taxHeadCode == "PT_TAX")
     {tax=ele.adjustedAmount;
@@ -919,9 +921,11 @@ export const downloadReceiptpt = (receiptQueryString) => {
             "roundoff":roundoffT,
             "total":payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].amount
             };
+           
           arrearArray.push(arrearRow);
           taxArray.push(taxRow);
   }  
+  
           const details = {
         "assessmentYears": assessmentYear,
         "arrearArray":arrearArray,
