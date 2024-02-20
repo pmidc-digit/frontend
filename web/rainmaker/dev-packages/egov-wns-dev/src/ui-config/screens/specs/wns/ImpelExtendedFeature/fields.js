@@ -104,7 +104,8 @@ export const WSsubUsageType = {
         errorMessage: "ERR_INVALID_BILLING_PERIOD",
         jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
         props: {
-          disabled: true
+          disabled: false
+          
         }
       }),
     }

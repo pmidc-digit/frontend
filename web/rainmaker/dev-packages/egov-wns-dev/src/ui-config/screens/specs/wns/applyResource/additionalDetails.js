@@ -337,7 +337,7 @@ export const additionDetails = getCommonCard({
         props: {
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "WS_SERV_DETAIL_PIPE_SIZE", labelName: "Pipe Size" },
-          placeholder: { labelKey: "WS_SERV_DETAIL_PIPE_SIZE_PLACEHOLDER", labelName: "Select Pipe Size" },
+          placeholder: { labelKey: "WS_SERV_DETAIL_PIPE_SIZE_PLACEHOLDERbbbb", labelName: "Select Pipe Sizecccc" },
           required: true,
           isClearable: true,
           labelsFromLocalisation: true,
