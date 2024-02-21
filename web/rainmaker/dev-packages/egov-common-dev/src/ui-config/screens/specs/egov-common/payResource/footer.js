@@ -40,18 +40,12 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
 
 
   export const callPGService = async (state, dispatch) => {
-    //alert("test date");
-    // console.log(dispatch("screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill"),"dispactchaa");
-    // console.log(get(state, "screenConfiguration"),"dummy");
-    // console.log(get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].consumerCode"),"cdata");
-    const BusinessService=get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
+   const BusinessService=get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
     var diffDays;
     if(BusinessService.toUpperCase() =="FIRENOC"){
     var getdate=get(state, "screenConfiguration.preparedFinalObject.FireNOCs[0].auditDetails.createdTime");
     debugger;
-    // const cd= getdate.split("PB-FN-");
-    // const appActualDate=cd[1].slice(0,10);
-    // console.log(appActualDate);
+    
 
     const currentDate = new Date();
     const appDate = new Date(getdate);
@@ -226,7 +220,9 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
             )
           );
         } else {
+          
           const redirectionUrl = get(goToPaymentGateway, "Transaction.redirectUrl") || get(goToPaymentGateway, "Transaction.callbackUrl");
+          console.log("reurl", redirectionUrl);
           // if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.mohali" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.moga" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.khanna" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.hoshiarpur" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.kapurthala" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.mandigobindgarh"|| get(goToPaymentGateway, "Transaction.tenantId")=="pb.handiaya"|| get(goToPaymentGateway, "Transaction.tenantId")=="pb.sultanpurlodhi")
           //   {
           //    displayRazorpay(goToPaymentGateway);
@@ -235,10 +231,16 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
           //   window.location = redirectionUrl;
           //   }
     
-             if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" ||  get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar")         {
+             if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" )         {
+             debugger;
               window.location = redirectionUrl;  
              }
+             else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
+             // alert("testing ASR2");
+              window.location = redirectionUrl; 
+               }
              else{
+             
               displayRazorpay(goToPaymentGateway);
             
              }
