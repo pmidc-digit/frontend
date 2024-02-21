@@ -208,6 +208,7 @@ export const callPGService = async (state, dispatch) => {
          }
          else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
         //alert("testing ASR");
+        window.location = redirectionUrl;  
          }
          else{
           
