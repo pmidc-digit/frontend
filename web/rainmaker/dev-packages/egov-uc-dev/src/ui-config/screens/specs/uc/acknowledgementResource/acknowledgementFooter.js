@@ -206,10 +206,10 @@ export const callPGService = async (state, dispatch) => {
                  
           window.location = redirectionUrl;  
          }
-         else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
-        //alert("testing ASR");
-        window.location = redirectionUrl;  
-         }
+        //  else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
+        // //alert("testing ASR");
+        // window.location = redirectionUrl;  
+        //  }
          else{
           
           displayRazorpay(goToPaymentGateway);

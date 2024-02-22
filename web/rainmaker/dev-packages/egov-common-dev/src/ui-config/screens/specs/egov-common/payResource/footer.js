@@ -160,24 +160,46 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
       const buttonJsonpath = paybuttonJsonpath + `${(process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER")) ? "makePayment" : "generateReceipt"}`;
       try {
         dispatch(handleField("pay", buttonJsonpath, "props.disabled", true));
-    
-        const requestBody = {
-          Transaction: {
-            tenantId,
-            txnAmount: amtToPay,
-            module: businessService,
-            billId: get(billPayload, "Bill[0].id"),
-            consumerCode: consumerCode,
-            productInfo: "Common Payment",
-            gateway: "RAZORPAY",
-            taxAndPayments,
-            user,
-            callbackUrl,
-            businessService: bankBusinessService,
-            additionalDetails: { isWhatsapp: localStorage.getItem('pay-channel') == 'whatsapp' ? true : false,
-            paidBy:payerInfo }
-          }
-        };
+        let requestBody;
+        
+        if(true){
+          requestBody = {
+            Transaction: {
+              tenantId,
+              txnAmount: amtToPay,
+              module: businessService,
+              billId: get(billPayload, "Bill[0].id"),
+              consumerCode: consumerCode,
+              productInfo: "Common Payment",
+              gateway: "PAYU",
+              taxAndPayments,
+              user,
+              callbackUrl,
+              businessService: bankBusinessService,
+              additionalDetails: { isWhatsapp: localStorage.getItem('pay-channel') == 'whatsapp' ? true : false,
+              paidBy:payerInfo }
+            }
+          };
+        }
+        else{
+          requestBody = {
+            Transaction: {
+              tenantId,
+              txnAmount: amtToPay,
+              module: businessService,
+              billId: get(billPayload, "Bill[0].id"),
+              consumerCode: consumerCode,
+              productInfo: "Common Payment",
+              gateway: "RAZORPAY",
+              taxAndPayments,
+              user,
+              callbackUrl,
+              businessService: bankBusinessService,
+              additionalDetails: { isWhatsapp: localStorage.getItem('pay-channel') == 'whatsapp' ? true : false,
+              paidBy:payerInfo }
+            }
+          };
+        }
         const goToPaymentGateway = await httpRequest(
           "post",
           "pg-service/transaction/v1/_create",
@@ -235,10 +257,10 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
              debugger;
               window.location = redirectionUrl;  
              }
-             else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
-             // alert("testing ASR2");
-              window.location = redirectionUrl; 
-               }
+            //  else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
+            //  // alert("testing ASR2");
+            //   window.location = redirectionUrl; 
+            //    }
              else{
              
               displayRazorpay(goToPaymentGateway);
