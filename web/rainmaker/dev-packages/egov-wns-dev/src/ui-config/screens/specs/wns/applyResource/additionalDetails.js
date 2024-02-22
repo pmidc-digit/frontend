@@ -152,6 +152,52 @@ export const commonRoadCuttingChargeInformation = () => {
     })
   })
 }
+// sw comom
+export const commonRoadCuttingChargeInformationSW = () => {
+  return getCommonGrayCard({
+    roadDetails: getCommonContainer({
+      roadType: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-wns",
+        componentPath: "AutosuggestContainer",
+        jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
+        props: {
+          className: "hr-generic-selectfield autocomplete-dropdown",
+          label: { labelKey: "WS_ADDN_DETAIL_ROAD_TYPE", labelName: "Road Type" },
+          placeholder: { labelKey: "WS_ADDN_DETAILS_ROAD_TYPE_PLACEHOLDER", labelName: "Select Road Type" },
+          required: false,
+          isClearable: true,
+          labelsFromLocalisation: true,
+          jsonPath: "applyScreen.roadCuttingInfo[0].roadTypeSW",
+          sourceJsonPath: "applyScreenMdmsData.sw-services-calculation.RoadType",    
+        },
+        required: false,
+        gridDefination: {
+          xs: 12,
+          sm: 12,
+          md: 6
+        },
+      },
+      enterArea: getTextField({
+        label: {
+          labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_DETAILS_AREA_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.roadCuttingInfo[0].roadCuttingAreaSW"
+      })
+    })
+  })
+}
+// end SW
 //}
 export const additionDetails = getCommonCard({
   header: getCommonHeader({
@@ -591,7 +637,7 @@ export const additionDetails = getCommonCard({
             uiFramework: "custom-containers",
             componentPath: "MultiItem",
             props: {
-              scheama: commonRoadCuttingChargeInformation(),
+              scheama: commonRoadCuttingChargeInformationSW(),
               items: [],
               addItemLabel: {
                 labelName: "Add Road Type",
