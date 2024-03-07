@@ -115,7 +115,7 @@ export const commonRoadCuttingChargeInformation = () => {
         uiFramework: "custom-containers-local",
         moduleName: "egov-wns",
         componentPath: "AutosuggestContainer",
-        jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
+        jsonPath: "applyScreen.roadTypeWS",
         props: {
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "WS_ADDN_DETAIL_ROAD_TYPE", labelName: "Road Type" },
@@ -123,7 +123,7 @@ export const commonRoadCuttingChargeInformation = () => {
           required: false,
           isClearable: true,
           labelsFromLocalisation: true,
-          jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
+          jsonPath: "applyScreen.roadTypeWS",
           sourceJsonPath: "applyScreenMdmsData.sw-services-calculation.RoadType",    
         },
         required: false,
@@ -147,7 +147,7 @@ export const commonRoadCuttingChargeInformation = () => {
         required: false,
         pattern: getPattern("Amount"),
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-        jsonPath: "applyScreen.roadCuttingInfo[0].roadCuttingArea"
+        jsonPath: "applyScreen.roadCuttingAreaWS"
       })
     })
   })
@@ -160,7 +160,7 @@ export const commonRoadCuttingChargeInformationSW = () => {
         uiFramework: "custom-containers-local",
         moduleName: "egov-wns",
         componentPath: "AutosuggestContainer",
-        jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
+        jsonPath: "applyScreen.roadTypeSW",
         props: {
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "WS_ADDN_DETAIL_ROAD_TYPE", labelName: "Road Type" },
@@ -168,7 +168,7 @@ export const commonRoadCuttingChargeInformationSW = () => {
           required: false,
           isClearable: true,
           labelsFromLocalisation: true,
-          jsonPath: "applyScreen.roadCuttingInfo[0].roadTypeSW",
+          jsonPath: "applyScreen.roadTypeSW",
           sourceJsonPath: "applyScreenMdmsData.sw-services-calculation.RoadType",    
         },
         required: false,
@@ -192,7 +192,7 @@ export const commonRoadCuttingChargeInformationSW = () => {
         required: false,
         pattern: getPattern("Amount"),
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-        jsonPath: "applyScreen.roadCuttingInfo[0].roadCuttingAreaSW"
+        jsonPath: "applyScreen.roadCuttingAreaSW"
       })
     })
   })

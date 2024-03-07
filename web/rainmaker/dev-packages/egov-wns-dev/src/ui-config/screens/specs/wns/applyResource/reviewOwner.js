@@ -26,15 +26,15 @@ const getHeader = label => {
 };
 
 const connectionDetailsHeader = getHeader({
-  labelKey: "WS_COMMON_CONNECTION_DETAILS"
+  labelKey: "WS_COMMON_CONNECTION_DETAILSsss"
 });
 
 const connectionChargeDetailsHeader = getHeader({
-  labelKey: "WS_COMMON_PLUMBER_DETAILS"
+  labelKey: "WS_COMMON_PLUMBER_DETAILSsss"
 });
 
 const roadCuttingChargesHeader = getHeader({
-  labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILS"
+  labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
 });
 
 const activationDetailsHeader = getHeader({
@@ -165,14 +165,14 @@ export const reviewCompositionFee = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
   },
   {
-    jsonPath: "applyScreen.additionalDetails.compositionFee",
+    jsonPath: "applyScreen.additionalDetails.compositionFeews",
     callBack: handleNA
   },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
   {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.compositionFee",
+    jsonPath: "WaterConnectionOld[0].additionalDetails.compositionFeews",
     callBack: handleNA
   }
 );
@@ -182,14 +182,14 @@ export const reviewUserCharges = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_USER_CHARGES_LABEL"
   },
   {
-    jsonPath: "applyScreen.additionalDetails.userCharges",
+    jsonPath: "applyScreen.additionalDetails.userChargesws",
     callBack: handleNA
   },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
   {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.userCharges",
+    jsonPath: "WaterConnectionOld[0].additionalDetails.userChargesws",
     callBack: handleNA
   }
 );
@@ -199,14 +199,14 @@ export const reviewOthersFee = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_OTHER_FEE_LABEL"
   },
   {
-    jsonPath: "applyScreen.additionalDetails.othersFee",
+    jsonPath: "applyScreen.additionalDetails.othersFeews",
     callBack: handleNA
   },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
   {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.othersFee",
+    jsonPath: "WaterConnectionOld[0].additionalDetails.othersFeews",
     callBack: handleNA
   }
 );
@@ -430,7 +430,7 @@ export const reviewRoadType = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_DETAIL_ROAD_TYPE"
   },
   {
-    jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
+    jsonPath: "applyScreen.roadTypeWS",
     // localePrefix: {
     //   moduleName: "WS",
     //   masterName: "ROADTYPE"
@@ -452,7 +452,7 @@ export const reviewArea = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
   },
   {
-    jsonPath: "applyScreen.roadCuttingInfo[0].roadCuttingArea",
+    jsonPath: "applyScreen.roadCuttingAreaWS",
     callBack: handleNA
   },
   {
@@ -633,7 +633,7 @@ const roadCuttingCharges = {
             labelKey: "WS_ADDN_DETAIL_ROAD_TYPE"
           },
           {
-            jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
+            jsonPath: "applyScreen.roadTypeWS",
             callBack: handleRoadType
           }
         ),
@@ -643,7 +643,7 @@ const roadCuttingCharges = {
             labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
           },
           {
-            jsonPath: "applyScreen.roadCuttingInfo[0].roadCuttingArea",
+            jsonPath: "applyScreen.roadCuttingAreaWS",
             callBack: handleNA
           }
         ),
