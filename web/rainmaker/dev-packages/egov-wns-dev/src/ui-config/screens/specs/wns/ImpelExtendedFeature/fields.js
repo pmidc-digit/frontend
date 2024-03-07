@@ -1,6 +1,3 @@
-
-
-
 import { getTextField,getPattern,getSelectField } from "egov-ui-framework/ui-config/screens/specs/utils";
 import get from 'lodash/get';
 import {
@@ -14,7 +11,6 @@ export const WSledgerId = {
         label: { labelKey: "WS_SERV_DETAIL_LEDGER_ID" },
         placeholder: { labelKey: "WS_SERV_DETAIL_LEDGER_ID_PLACEHOLDER" },
         gridDefination: { xs: 12, sm: 6 },
-        required: true,
         jsonPath: "applyScreen.additionalDetails.ledgerId",
         // pattern: /^[0-9]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
@@ -28,7 +24,6 @@ export const WSBillingAmount = {
         gridDefination: { xs: 12, sm: 6 },
         jsonPath: "applyScreen.additionalDetails.billingAmount",
         pattern: /^[0-9]*$/i,
-        required: true,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
   }),
 };
@@ -53,7 +48,7 @@ export const WSbillingType = {
     ...getSelectField({
       label: { labelKey: "WS_SERV_DETAIL_BILLING_TYPE" },
       placeholder: { labelKey: "WS_SERV_DETAIL_BILING_TYPE_PLACEHOLDER" },
-      required: true,
+      required: false,
       sourceJsonPath: "applyScreenMdmsData.ws-services-masters.billingType",
       gridDefination: { xs: 12, sm: 6 },
       errorMessage: "ERR_INVALID_BILLING_PERIOD",
@@ -105,7 +100,6 @@ export const WSsubUsageType = {
         jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
         props: {
           disabled: false
-          
         }
       }),
     }
@@ -138,7 +132,7 @@ userCharges: getTextField({
     xs: 12,
     sm: 6
   },
-  required: true,
+  required: false,
   pattern: getPattern("Amount"),
   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
   jsonPath: "applyScreen.additionalDetails.userCharges"
