@@ -239,6 +239,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
       let multipleRoadTypeCardPath = "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewTen.props.items";
       let mutipleRoadTypeValues = get(state.screenConfiguration.preparedFinalObject, "applyScreen.roadCuttingInfo", []);
      if (mutipleRoadTypeValues && mutipleRoadTypeValues.length > 0) {
+      debugger;
        for (var a = 0; a < mutipleRoadTypeValues.length; a++) {
          if (mutipleRoadTypeValues[a].emptyObj) {
            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.props.visible`, false);
@@ -255,6 +256,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
      }
 
     }
+    debugger;
     let subUsageType = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.waterSubUsageType");
     let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
     if(subUsageType) {
@@ -831,6 +833,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.visible", false);
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", true);
     if (payload !== undefined && payload !== null) {
+      debugger;
       let roadCuttingInfos = payload.WaterConnection[0].roadCuttingInfo;
       if(payload.WaterConnection[0] && Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.length > 0) {
         payload.WaterConnection[0].roadCuttingInfo = Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.filter(info => info.status == "ACTIVE");

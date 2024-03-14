@@ -34,7 +34,8 @@ const connectionChargeDetailsHeader = getHeader({
 });
 
 const roadCuttingChargesHeader = getHeader({
-  labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
+  labelKey: "Water Road Cutting Charges"
+ // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
 });
 
 const activationDetailsHeader = getHeader({
@@ -165,14 +166,14 @@ export const reviewCompositionFee = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
   },
   {
-    jsonPath: "applyScreen.additionalDetails.compositionFeews",
+    jsonPath: "applyScreen.additionalDetails.compositionFee",
     callBack: handleNA
   },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
   {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.compositionFeews",
+    jsonPath: "WaterConnectionOld[0].additionalDetails.compositionFee",
     callBack: handleNA
   }
 );
@@ -182,14 +183,14 @@ export const reviewUserCharges = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_USER_CHARGES_LABEL"
   },
   {
-    jsonPath: "applyScreen.additionalDetails.userChargesws",
+    jsonPath: "applyScreen.additionalDetails.userCharges",
     callBack: handleNA
   },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
   {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.userChargesws",
+    jsonPath: "WaterConnectionOld[0].additionalDetails.userCharges",
     callBack: handleNA
   }
 );
@@ -199,14 +200,14 @@ export const reviewOthersFee = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_OTHER_FEE_LABEL"
   },
   {
-    jsonPath: "applyScreen.additionalDetails.othersFeews",
+    jsonPath: "applyScreen.additionalDetails.othersFee",
     callBack: handleNA
   },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
   {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.othersFeews",
+    jsonPath: "WaterConnectionOld[0].additionalDetails.othersFee",
     callBack: handleNA
   }
 );

@@ -31,6 +31,7 @@ const isModeAction = isModifyModeAction();
 const setReviewPageRoute = (state, dispatch) => {
   let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
   if(roadCuttingInfo && roadCuttingInfo.length > 0) {
+    debugger;
     let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.isEmpty !== true);
     dispatch(prepareFinalObject( "applyScreen.roadCuttingInfo", formatedRoadCuttingInfo));
   }
@@ -693,7 +694,7 @@ const callBackForNext = async (state, dispatch) => {
       }
     } else {
       let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
-      let roadCuttingInfos = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfos", []);
+      let roadCuttingInfosw = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
 
       let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
       if(applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
@@ -751,10 +752,10 @@ const callBackForNext = async (state, dispatch) => {
           return
         }
       }
-      if(roadCuttingInfos && roadCuttingInfos.length > 0) {
+      if(roadCuttingInfosw && roadCuttingInfosw.length > 0) {
         for(let b =0; b < roadCuttingInfo.length ; b++) {
-          if(get(roadCuttingInfos[b], "status") == "INACTIVE") {
-            roadCuttingInfo.push(roadCuttingInfos[b]);
+          if(get(roadCuttingInfosw[b], "status") == "INACTIVE") {
+            roadCuttingInfo.push(roadCuttingInfosw[b]);
           }
         }
       }
@@ -771,7 +772,7 @@ const callBackForNext = async (state, dispatch) => {
             info.status = "INACTIVE"
           }
         });
-        dispatch(prepareFinalObject( "applyScreen.roadCuttingInfos", roadCuttingInfo));
+        dispatch(prepareFinalObject( "applyScreen.roadCuttingInfosw", roadCuttingInfosw));
         for(let j = 0; j < roadCuttingInfo.length; j ++) {
           if(roadCuttingInfo[j].isDeleted !=false) {
             filteredInfo.push(roadCuttingInfo[j]);
