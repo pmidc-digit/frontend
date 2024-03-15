@@ -52,6 +52,15 @@ const getPlumberRadioButton = {
   type: "array"
 };
 export const triggerUpdateByKey = (state, keyIndex, value, dispatch) => {
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.regularizationFee",
+      "visible",
+      false
+    )
+  );
+  
   if(dispatch == "set"){
     set(state, `screenConfiguration.preparedFinalObject.DynamicMdms.ws-services-masters.waterSource.selectedValues[${keyIndex}]`, value);
   } else {
@@ -269,8 +278,9 @@ export const additionDetails = getCommonCard({
       //   pattern: /^[0-9]*$/i,
       //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       // }),
-      connectionCategory: getSelectField({
+      connectionCategory:{ ...getSelectField({
         label: { labelKey: "WS_SERV_CONNECTION_CATEGORY" },
+        required: true,
         placeholder: { labelKey: "WS_SERV_CONNECTION_CATEGORY_PLACEHOLDER" },
         gridDefination: { xs: 12, sm: 6 },
         sourceJsonPath: "applyScreenMdmsData.ws-services-masters.connectionCategory",
@@ -278,6 +288,68 @@ export const additionDetails = getCommonCard({
         // pattern: /^[0-9]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG"
       }),
+      afterFieldChange: async (action, state, dispatch) => {
+        let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.connectionCategory");
+        let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
+        
+       if (ConectionCategory == "REGULARIZED") {        
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.compositionFee",
+              "visible",
+              false
+            )
+          );
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.userCharges",
+              "visible",
+              false
+            )
+          );
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer",
+              "visible",
+              false
+            )
+          );
+          
+        }
+        else {
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.compositionFee",
+              "visible",
+              true
+            )
+          );
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.userCharges",
+              "visible",
+              true
+            )
+          );
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer",
+              "visible",
+              true
+            )
+          );
+                    
+        }
+  
+      }
+    
+    },
       ...WSledgerId,
       // ledgerId: getTextField({
       //   label: { labelKey: "WS_SERV_DETAIL_LEDGER_ID" },
@@ -442,6 +514,7 @@ export const additionDetails = getCommonCard({
       }),
     })
   }),
+ 
   roadCuttingChargeContainer: getCommonGrayCard({
              
     header: getCommonSubHeader(
@@ -487,45 +560,61 @@ export const additionDetails = getCommonCard({
       },
     }),
     roadDetails: getCommonContainer({
-      ...WScompositionFee,
-      // compositionFee: getTextField({
+      //...WScompositionFee,
+      compositionFee: getTextField({
+        label: {
+          labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_DETAILS_COMPOSITION_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.compositionFee"
+      }),
+      userCharges: getTextField({
+        label: {
+          labelKey: "WS_ADDN_USER_CHARGES_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_USER_CHARGES_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.userCharges"
+      }),
+      othersFee : getTextField({
+        label: {
+          labelKey: "WS_ADDN_OTHER_FEE_LABEL"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_OTHER_FEE_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        pattern: getPattern("Amount"),
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.additionalDetails.othersFee"
+      }),
+      // regularizationFee : getTextField({
       //   label: {
-      //     labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
+      //     labelKey: "Regularization Fee"
       //   },
       //   placeholder: {
-      //     labelKey: "WS_ADDN_DETAILS_COMPOSITION_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: getPattern("Amount"),
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.compositionFee"
-      // }),
-      // userCharges: getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_USER_CHARGES_LABEL"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_USER_CHARGES_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: getPattern("Amount"),
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.userCharges"
-      // }),
-      // othersFee : getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_OTHER_FEE_LABEL"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_OTHER_FEE_PLACEHOLDER"
+      //     labelKey: "Regularization Fee"
       //   },
       //   gridDefination: {
       //     xs: 12,
@@ -539,6 +628,7 @@ export const additionDetails = getCommonCard({
     }),
     
   }),
+
   activationDetailsContainer: getCommonGrayCard({
     subHeader: getCommonTitle({
       labelKey: "WS_ACTIVATION_DETAILS"
