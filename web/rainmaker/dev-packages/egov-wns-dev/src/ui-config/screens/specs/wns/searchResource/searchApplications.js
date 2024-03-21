@@ -22,7 +22,7 @@ export const searchApplications = getCommonCard({
     labelKey: "WS_SEARCH_APPLICATION_SUB_HEADER"
   }),
   subParagraph: getCommonParagraph({
-    labelKey: "WS_HOME_SEARCH_RESULTS_DESCfffff"
+    labelKey: "WS_HOME_SEARCH_RESULTS_DESC"
   }),
   wnsApplicationSearch: getCommonContainer({
     consumerNo: getTextField({
@@ -228,27 +228,8 @@ export const searchApplications = getCommonCard({
           action: "condition",
           callBack: searchApiCall
         }
-      },
-     excelButton: {
-        componentPath: "Button",
-        gridDefination: { xs: 12, sm: 6 },
-        props: {
-          variant: "contained",
-          style: {
-            color: "white",
-            margin: "8px",
-            backgroundColor: "rgba(0, 0, 0, 0.6000000238418579)",
-            borderRadius: "2px",
-            width: "220px",
-            height: "48px"
-          }
-        },
-        children: { buttonLabel: getLabel({ labelKey: "Excel Download" }) },
-        onClickDefination: {
-          action: "condition",
-          callBack: exceldatadownload
-        }
-      },
+      }
+    
     })
   })
 });
