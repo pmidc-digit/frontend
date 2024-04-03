@@ -423,20 +423,19 @@ const setSearchResponse = async (
     )
     debugger;
     let diffDays ;
-    const getdate=get(response, "FireNOCs[0].fireNOCDetails.applicationNumber");
-    // if(getdate){
-    // const cd= getdate.split("PB-FN-");
-	  // const currentDate = new Date();
-    // const appActualDate=cd[1].slice(0,10);
-    // let datef=(appActualDate.split("-"));
-    // var applicationdate = new Date(parseInt(datef[0]),parseInt(datef[1])-1, datef[2]);
-	  // const diffTime = Math.abs(currentDate - applicationdate);
-	  // diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    // let nintydayscondition = parseInt(diffDays)+90;
-    // console.log(diffTime + " milliseconds");
-    // console.log(nintydayscondition + " days");
-    // }
-      	  
+    const getdate=get(response, "FireNOCs[0].fireNOCDetails.auditDetails.lastModifiedTime");
+    
+  let firenoclength = response.FireNOCs.length - 1;
+  let fireDate = response.FireNOCs[firenoclength].fireNOCDetails.issuedDate;
+  let currentDate = new Date();
+  let appDate = new Date(getdate);
+  //const appDate = convertDateToEpoch(fireDate);
+
+  let diffTime = Math.abs(appDate - currentDate);
+  diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  console.log(diffTime + " milliseconds");
+  console.log(diffDays + " days");
+          	  
     if(NOCTypeDta === "RENEWAL"){
      // if (diffDays <= 455){
       dispatch(
