@@ -755,8 +755,7 @@ export const downloadReceiptpt = (receiptQueryString) => {
         payloadReceiptDetails.Payments[0].paymentDetails[0].bill.additionalDetails=reasonss; 
           let arrearRow={};  let arrearArray=[];
           let taxRow={};  let taxArray=[];
-         
-
+          
           let roundoff=0,tax=0,firecess=0,cancercess=0,penalty=0,rebate=0,interest=0,usage_exemption=0,special_category_exemption=0,adhoc_penalty=0,adhoc_rebate=0,total=0;
           let roundoffT=0,taxT=0,firecessT=0,cancercessT=0,penaltyT=0,rebateT=0,interestT=0,usage_exemptionT=0,special_category_exemptionT=0,adhoc_penaltyT=0,adhoc_rebateT=0,totalT=0;
 
@@ -771,8 +770,10 @@ export const downloadReceiptpt = (receiptQueryString) => {
          assessmentYearForReceipt=fromDate+"-"+toDate;
          rebate=0;
          rebateT=0;
-         interest=0
+         interest=0;
          interestT=0;
+         penalty=0;
+         penaltyT=0;
     element.billAccountDetails.map(ele => {
     if(ele.taxHeadCode == "PT_TAX")
     {tax=ele.adjustedAmount;
@@ -840,8 +841,10 @@ export const downloadReceiptpt = (receiptQueryString) => {
     "roundoff":roundoffT,
     "total":element.amount
     };
+    debugger;
   arrearArray.push(arrearRow);
   taxArray.push(taxRow);
+  
             } 
           });
   
