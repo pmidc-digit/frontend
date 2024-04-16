@@ -198,10 +198,10 @@ debugger;
   diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
   console.log(diffTime + " milliseconds");
   console.log(diffDays + " days");
-   if (diffDays>=820){
-    alert("Renewal after 90 days from expiry date of FireNOC is not allowed!!");
-    }
-  else{
+  //  if (diffDays>=820){
+  //   alert("Renewal after 90 days from expiry date of FireNOC is not allowed!!");
+  //   }
+  // else{
   let oldnocNumber = get(
     state.screenConfiguration.preparedFinalObject,
     "FireNOCs[0].oldFireNOCNumber",
@@ -250,7 +250,7 @@ debugger;
 if (getQueryArg(window.location.href, "action") != "edit") {
   dispatch(prepareFinalObject("FireNOCs[0].id", undefined));
 }
-}
+//}
 };
 export const nocDetails = getCommonCard({
   header: getCommonTitle(

@@ -81,6 +81,10 @@ class Footer extends React.Component {
       state,
       "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicationNumber"
     );
+    const applicationstatus = get(
+      state,
+      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicationStatus"
+    );
     const firenocstatus = get(
       state,
       "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.status"
@@ -98,12 +102,12 @@ class Footer extends React.Component {
     }
     //if(firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED-DV" || firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED"){
     if(true){
-    if (diffDays>=90){
-      alert("You are not eligible for Re-Submit ");
-      }
+    // if (diffDays>=90){
+    //   alert("You are not eligible for Re-Submit ");
+    //   }
     // console.log(data, "test1");
     // alert("Test Re-Submit");
-    else{
+   // else{
     const { handleFieldChange, setRoute, dataPath,onDialogButtonClick  } = this.props;
     let employeeList = [],empList=[]; 
     if (item.buttonLabel === "ACTIVATE_CONNECTION") {
@@ -208,7 +212,7 @@ class Footer extends React.Component {
 
     }
     // this.setState({ open: true, data: item, employeeList });
-  }
+//  }
 }
 else{
   const { handleFieldChange, setRoute, dataPath,onDialogButtonClick  } = this.props;
