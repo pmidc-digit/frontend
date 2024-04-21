@@ -161,15 +161,7 @@ export const searchPropertyDetails = getCommonCard({
     
   }
   ),
-  subParagraphaa: getCommonParagraph({
-    labelName:"One Time settlement for Property Tax has been implemented in mSeva. You requested check and Re-Assess your property before paying tax .",
-    labelKey:"One Time settlement for Property Tax has been implemented in mSeva. You requested check and Re-Assess your property before paying tax.",
-    style: {
-      color: "red",
-      fontweight: "bold"
-     
-    }
-  }),
+
   ulbCityContainer: getCommonContainer({
     ulbCity: {
       ...getSelectField({
