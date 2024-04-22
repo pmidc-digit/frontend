@@ -916,7 +916,13 @@ payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails=taxheads;
         {
         code="User Charges";         amount=dd.adjustedAmount;
 
-        }else if(dd.taxHeadCode == "WS_CONNECTION_FEE" || dd.taxHeadCode == "SW_CONNECTION_FEE")
+        }
+		else if(dd.taxHeadCode == "WS_DISCHARGE_CHARGES" || dd.taxHeadCode == "SW_DISCHARGE_CHARGES")
+      {
+      code="DISCHARGE CHARGES";         amount=dd.adjustedAmount;
+
+      }
+		else if(dd.taxHeadCode == "WS_CONNECTION_FEE" || dd.taxHeadCode == "SW_CONNECTION_FEE")
         {
         code="Connection Fee";         amount=dd.adjustedAmount;
 

@@ -179,11 +179,13 @@ if(payloadReceiptDetails.Payments[0].payerName!=null){
       {
       code="Other Fee";         amount=dd.adjustedAmount;
 
-      }else if(dd.taxHeadCode == "WS_USER_CHARGE" || dd.taxHeadCode == "SW_USER_CHARGE")
+      }
+      else if(dd.taxHeadCode == "WS_DISCHARGE_CHARGES" || dd.taxHeadCode == "SW_DISCHARGE_CHARGES")
       {
-      code="User Charges";         amount=dd.adjustedAmount;
+      code="DISCHARGE CHARGES";         amount=dd.adjustedAmount;
 
-      }else if(dd.taxHeadCode == "WS_CONNECTION_FEE" || dd.taxHeadCode == "SW_CONNECTION_FEE")
+      }
+      else if(dd.taxHeadCode == "WS_CONNECTION_FEE" || dd.taxHeadCode == "SW_CONNECTION_FEE")
       {
       code="Connection Fee";         amount=dd.adjustedAmount;
 
