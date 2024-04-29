@@ -15,9 +15,10 @@ import {
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, unMountScreen } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getQueryArg, setBusinessServiceDataToLocalStorage, setDocuments } from "egov-ui-framework/ui-utils/commons";
-import { loadUlbLogo } from "egov-ui-kit/utils/pdfUtils/generatePDF";
+import { loadUlbLogo, SearchulbGrade } from "egov-ui-kit/utils/pdfUtils/generatePDF";
 import get from "lodash/get";
 import set from "lodash/set";
+
 import { findAndReplace, getDescriptionFromMDMS, getSearchResults, getSearchResultsForSewerage, getWaterSource, getWorkFlowData, isModifyMode, serviceConst, swEstimateCalculation, waterEstimateCalculation } from "../../../../ui-utils/commons";
 import {
   convertDateToEpoch, createEstimateData,
@@ -681,7 +682,9 @@ const screenConfig = {
     }
 
     set(action, "screenConfig.components.adhocDialog.children.popup", adhocPopup);
+    debugger;
     loadUlbLogo(tenantId);
+    SearchulbGrade(state, dispatch, tenantId);
     beforeInitFn(action, state, dispatch, applicationNumber);
     set(
       action,

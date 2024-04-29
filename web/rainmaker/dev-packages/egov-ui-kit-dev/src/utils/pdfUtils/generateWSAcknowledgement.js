@@ -1,12 +1,33 @@
 import { propertyDetails, locationDetails, propertyOwnerDetail, connectionHolderDetails, connectionHolderSameAsOwnerDetails } from "egov-wns/ui-config/screens/specs/wns/applyResource/review-trade";
 import { connDetailsWater, connDetailsSewerage } from "egov-wns/ui-config/screens/specs/wns/applyResource/task-connectiondetails";
+import store from "egov-ui-framework/ui-redux/store";
 import { plumberDetails, roadDetails, additionDetailsWater, additionDetailsSewerage, activateDetailsMeter, activateDetailsNonMeter } from "egov-wns/ui-config/screens/specs/wns/applyResource/review-owner";
 import { getFromObject } from "../PTCommon/FormWizardUtils/formUtils";
 import { reviewModificationsEffectiveDate } from "egov-wns/ui-config/screens/specs/wns/applyResource/reviewModificationsEffective";
 import { generateKeyValue, generatePDF, getDocumentsCard, getMultiItems, getMultipleItemCard, generateKeyValueForModify } from "./generatePDF";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
-
+import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+let ulbGreadr;
+export const SrchUlbGrade = (state) => {
+  
+   debugger;
+    let { stateInfoById } = state.common || [];
+    let hasLocalisation = false;
+    let defaultUrl = process.env.REACT_APP_NAME === "Citizen" ? "/user/register" : "/user/login";
+    let isOpenLink = window.location.pathname.includes("openlink") || window.location.pathname.includes("withoutAuth");
+    const cities = state.common.cities || [];
+    const tenantId =  getTenantId() || process.env.REACT_APP_DEFAULT_TENANT_ID;
+    const userTenant = cities && cities.filter((item) => item.code === tenantId);
+    // const ulbGrade = userTenant && get(userTenant[0], "city.ulbGrade");
+   // const ulbGrade = userTenant[0].city.pwssbGrade;
+    ulbGreadr= userTenant[0].city.pwssbGrade;
+    const ulbName = userTenant[0].city.name ;
+      
+  };
+ 
 export const generateWSAcknowledgement = (preparedFinalObject, fileName = "print", service, connType) => {
+    debugger;
+
     propertyDetails.reviewPropertyType.localiseValue = true;
     propertyDetails.reviewPropertyType.localiseValue = true;
     propertyDetails.reviewPropertyUsageType.localiseValue = true;
@@ -86,7 +107,9 @@ export const generateWSAcknowledgement = (preparedFinalObject, fileName = "print
     }
     const documentsUploadRedux = getFromObject(preparedFinalObject, 'DocumentsData', []);
     const documentCard = getDocumentsCard(documentsUploadRedux);
-    const tenantId = getQueryArg(window.location.href, "tenantId");
+    //const tenantId = getQueryArg(window.location.href, "tenantId");
+    const tenantId = getTenantId();
+    const ulbGrade= getQueryArg(window.location.href, "tenantId")
 
 
     let pdfData = {
