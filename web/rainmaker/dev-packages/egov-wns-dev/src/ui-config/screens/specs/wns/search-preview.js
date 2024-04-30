@@ -684,7 +684,7 @@ const screenConfig = {
     set(action, "screenConfig.components.adhocDialog.children.popup", adhocPopup);
     debugger;
     loadUlbLogo(tenantId);
-    SearchulbGrade(state, dispatch, tenantId);
+    // SearchulbGrade(state, dispatch, tenantId);
     beforeInitFn(action, state, dispatch, applicationNumber);
     set(
       action,
