@@ -7,7 +7,7 @@ import { reviewModificationsEffectiveDate } from "egov-wns/ui-config/screens/spe
 import { generateKeyValue, generatePDF, getDocumentsCard, getMultiItems, getMultipleItemCard, generateKeyValueForModify } from "./generatePDF";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
-let ulbGreadr;
+let ulbGrade;
 export const SrchUlbGrade = (state) => {
   
    debugger;
@@ -20,7 +20,7 @@ export const SrchUlbGrade = (state) => {
     const userTenant = cities && cities.filter((item) => item.code === tenantId);
     // const ulbGrade = userTenant && get(userTenant[0], "city.ulbGrade");
    // const ulbGrade = userTenant[0].city.pwssbGrade;
-    ulbGreadr= userTenant[0].city.pwssbGrade;
+    ulbGrade= userTenant[0].city.pwssbGrade;
     const ulbName = userTenant[0].city.name ;
       
   };
@@ -67,12 +67,12 @@ export const generateWSAcknowledgement = (preparedFinalObject, fileName = "print
 
     let UlbLogoForPdf = getFromObject(preparedFinalObject, 'UlbLogoForPdf', '');
     let WaterConnection = getFromObject(preparedFinalObject, 'WaterConnection[0]', {});
-    let isMode = (WaterConnection.applicationType !== null) ? WaterConnection.applicationType.split("_")[0] : "";
+    let isMode = (WaterConnection.applicationType !== null) ? WaterConnection.applicationType.split("_") : "";
     let reviewModificationsEffective = [];
     let plumberDetail = [];
     let roadDetail = [];
     let roadDetailInfo = [];
-    if (isMode === "MODIFY") {
+    if (isMode[0] === "MODIFY") {
         reviewModificationsEffective = generateKeyValueForModify(preparedFinalObject, reviewModificationsEffectiveDate);
     } else {
         plumberDetail = generateKeyValue(preparedFinalObject, plumberDetails);
@@ -109,7 +109,7 @@ export const generateWSAcknowledgement = (preparedFinalObject, fileName = "print
     const documentCard = getDocumentsCard(documentsUploadRedux);
     //const tenantId = getQueryArg(window.location.href, "tenantId");
     const tenantId = getTenantId();
-    const ulbGrade= getQueryArg(window.location.href, "tenantId")
+    
 
 
     let pdfData = {

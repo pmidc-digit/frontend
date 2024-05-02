@@ -5,14 +5,15 @@ import { appendModulePrefix } from "egov-ui-framework/ui-utils/commons";
 import { downloadPdfFile } from "../api";
 import { getLocaleLabels } from "egov-ui-framework/ui-utils/commons.js";
 import { set } from "lodash";
+import { httpRequest } from "egov-ui-kit/utils/api";
 import get from "lodash/get";
 import { getTenantId } from "../localStorageUtils";
 import { getFromObject } from "../PTCommon/FormWizardUtils/formUtils";
 import pdfMake from "pdfmake/build/pdfmake";
 import logoNotFound from'./logoNotFound.png';
 import pdfFonts from "./vfs_fonts";
-//import SrchUlbGrade from "./generateWSAcknowledgement"
-let ulbGreadr;
+
+
 const vfs = { ...pdfFonts.vfs }
 const font = {
     Camby: {
@@ -352,26 +353,23 @@ if(firstRowEnable){
     return estimateCard;
 }
 
-
-// export const SearchulbGrade = (state, dispatch, tcity) => {
-//     debugger;
-//    // SrchUlbGrade(state);
-//     let { stateInfoById } = state.common || [];
-//     let hasLocalisation = false;
-//     let defaultUrl = process.env.REACT_APP_NAME === "Citizen" ? "/user/register" : "/user/login";
-//     let isOpenLink = window.location.pathname.includes("openlink") || window.location.pathname.includes("withoutAuth");
-//     const cities = state.common.cities || [];
-//     const tenantId = tcity || process.env.REACT_APP_DEFAULT_TENANT_ID;
-//     const userTenant = cities && cities.filter((item) => item.code === tenantId);
-//     // const ulbGrade = userTenant && get(userTenant[0], "city.ulbGrade");
-//    // const ulbGrade = userTenant[0].city.pwssbGrade;
-//     ulbGreadr= userTenant[0].city.pwssbGrade;
-//     const ulbName = userTenant[0].city.name ;
+var payload;
+export const businessServiceInfo = async () => {
+      let requestObject = {
+        MdmsCriteria: {
+          tenantId: "pb",
+         moduleDetails: [{
+            moduleName: "tenant",
+            masterDetails: [{ name: "tenants" }]
+          }]
+        },
+      };
+      payload = await httpRequest("/egov-mdms-service/v1/_search", "_search", [], requestObject);
    
-   
+  }
 
-//     // return { authenticated, hasLocalisation, defaultUrl, isOpenLink, ulbLogo, ulbName, defaultTitle, languages };
-//   };
+
+businessServiceInfo();
 export const loadUlbLogo = tenantid => {
   
     var img = new Image();
@@ -394,11 +392,12 @@ export const loadUlbLogo = tenantid => {
 const getHeaderCard = (applicationData, logo) => {
    
     debugger;
-    const state=store.getState()||{};
-    const cities = state.screenConfiguration.preparedFinalObject.applyScreenMdmsData.tenant.tenants || [];
-    const tenantId = applicationData.tenantId;
+    const cities = payload.MdmsRes.tenant.tenants;
+    const tenantId= applicationData.tenantId;
     const userTenant = cities && cities.filter((item) => item.code === tenantId);
-    const ulbGrade = userTenant && get(userTenant[0], "city.pwssbGrade");
+    const ulbGrade= userTenant[0].city.pwssbGrade;
+    
+    
     let applicationHeader = {
         style: applicationData.qrcode ? "pdf-head-qr-code" : "pdf-header",
         table: {
@@ -418,7 +417,7 @@ const getHeaderCard = (applicationData, logo) => {
     body.push({
         stack: [
             {
-                text: getLocaleLabels(("TENANT_TENANTS_" + applicationData.tenantId.replace('.', '_')).toUpperCase(), ("TENANT_TENANTS_" + applicationData.tenantId.replace('.', '_')).toUpperCase()) + " " + ulbGrade,
+                text: getLocaleLabels(("TENANT_TENANTS_" + applicationData.tenantId.replace('.', '_')).toUpperCase(), ("TENANT_TENANTS_" + applicationData.tenantId.replace('.', '_')).toUpperCase()) +" "+ ulbGrade ,
                 style: "pdf-header-text"
             },
             {
@@ -473,7 +472,7 @@ export const generatePDF = (logo, applicationData = {}, fileName, isCustomforBil
         },
         content: [
 
-            { ...getHeaderCard(applicationData, logo) }
+            { ...getHeaderCard( applicationData, logo) }
             ,
             {
                 "style": "pdf-application-no",
