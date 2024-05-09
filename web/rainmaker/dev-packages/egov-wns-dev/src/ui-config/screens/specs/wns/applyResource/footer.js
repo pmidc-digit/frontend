@@ -883,6 +883,81 @@ const callBackForNext = async (state, dispatch) => {
       dispatch(toggleSnackbar(true, errorMessage, "warning"));
     }
   }
+
+
+
+
+
+
+
+
+
+  // alert("start");
+      debugger;
+      let applyFor = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
+      if(applyFor.water == true){
+        if(applyFor.sewerage == true){
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+              "visible",
+              true
+            )
+          );
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+              "visible",
+              true
+            )
+          );
+        }else{
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+              "visible",
+              true
+            )
+          );
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+              "visible",
+              false
+            )
+          );
+
+        }
+      }else{
+        dispatch(
+          handleField(
+            "apply",
+            "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+            "visible",
+            true
+          )
+        );
+        dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+                "visible",
+                false
+              )
+            );
+      }
+
+
+
+
+
+
+      
+
 };
 
 const moveToSuccess = (combinedArray, dispatch) => {
