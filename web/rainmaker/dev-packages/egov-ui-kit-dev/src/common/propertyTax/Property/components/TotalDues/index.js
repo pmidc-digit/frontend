@@ -41,7 +41,7 @@ debugger;
 const getUserDataFromUuid = async (state, dispatch) => {
   
   debugger;
- if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+ if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" || tenantIdcode == "pb.amritsar"){
   let request = { searchCriteria: { tenantId: tenantIdcode} };
   try {
     const response = await httpRequest(
@@ -62,7 +62,7 @@ const getUserDataFromUuid = async (state, dispatch) => {
 }
 };
 
-if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" || tenantIdcode == "pb.amritsar"){
   getUserDataFromUuid();
 }
 const labelStyle = {
@@ -187,7 +187,7 @@ class TotalDues extends React.Component {
                 
                 labelText="PT_TOTALDUES_PAY"
                 onClickAction={() => {
-                  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+                  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" || tenantIdcode == "pb.amritsar"){
                     if(isLocMatch){
                       if(surveyIdcode != 'null'){
                         payAction(consumerCode, tenantId);
