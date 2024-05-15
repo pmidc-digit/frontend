@@ -427,37 +427,24 @@ export const additionDetails = getCommonCard({
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG"
       }),
       ...WSsubUsageType,
-      // subUsageType: {
-      //   ...getSelectField({
-      //     label: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE" },
-      //     placeholder: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE_PLACEHOLDER" },
-      //     required: true,
-      //     sourceJsonPath: "applyScreenMdmsData.ws-services-masters.subUsageType",
-      //     gridDefination: { xs: 12, sm: 6 },
-      //     errorMessage: "ERR_INVALID_BILLING_PERIOD",
-      //     jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
-      //     props: {
-      //       disabled: false
-      //     }
-      //   }),
-       
-      // },
+      
       ...WSunitUsageType,
-      // unitUsageType: {
-      //   ...getSelectField({
-      //     label: { labelKey: "WS_SERV_DETAIL_UNIT_USAGE_TYPE" },
-      //     placeholder: { labelKey: "WS_SERV_DETAIL_UNIT_USAGE_TYPE_PLACEHOLDER" },
-      //     required: true,
-      //     sourceJsonPath: "unitUsageTypeMdmsData.ws-services-masters.unitUsageType",
-      //     gridDefination: { xs: 12, sm: 6 },
-      //     errorMessage: "ERR_INVALID_BILLING_PERIOD",
-      //     jsonPath: "applyScreen.additionalDetails.unitUsageType",
-      //     props: {
-      //       disabled: false
-      //     }
-      //   }),
-
-      // }
+      fieldArea: getTextField({
+        label: { labelKey: "Field Area" },
+        placeholder: { labelKey: "Field Area" },
+        gridDefination: { xs: 12, sm: 6 },
+        jsonPath: "applyScreen.additionalDetails.fieldarea",
+        pattern: /^[0-9]*$/i,
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      }),
+      groupName: getTextField({
+        label: { labelKey: "Group Name" },
+        placeholder: { labelKey: "Group Name" },
+        gridDefination: { xs: 12, sm: 6 },
+        jsonPath: "applyScreen.additionalDetails.groupname",
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      }),
+      
     }),
   }),
   plumberDetailsContainer: getCommonGrayCard({
@@ -609,22 +596,7 @@ export const additionDetails = getCommonCard({
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "applyScreen.additionalDetails.othersFee"
       }),
-      // regularizationFee : getTextField({
-      //   label: {
-      //     labelKey: "Regularization Fee"
-      //   },
-      //   placeholder: {
-      //     labelKey: "Regularization Fee"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: getPattern("Amount"),
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.othersFee"
-      // })
+      
     }),
     
   }),
@@ -667,10 +639,7 @@ export const additionDetails = getCommonCard({
       }),
       meterInstallationDate: getDateField({
         label: { labelName: "meterInstallationDate", labelKey: "WS_ADDN_DETAIL_METER_INSTALL_DATE" },
-        // placeholder: {
-        //   labelName: "Select From Date",
-        //   labelKey: "WS_FROM_DATE_PLACEHOLDER"
-        // },
+        
         gridDefination: {
           xs: 12,
           sm: 6
@@ -697,38 +666,7 @@ export const additionDetails = getCommonCard({
         jsonPath: "applyScreen.additionalDetails.initialMeterReading"
       }),
       ...WSMeterMakes,
-      // meterMake: getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.meterMake"
-      // }),
-      // averageMake: getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.avarageMeterReading"
-      // })
+      
     })
   }),
   modificationsEffectiveFrom : getCommonGrayCard({
