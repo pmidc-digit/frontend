@@ -230,9 +230,15 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
           //   else{
           //   window.location = redirectionUrl;
           //   }
-    
-             if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar")         {
-             window.location = redirectionUrl;  
+          if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" && businessService.toUpperCase()=="WS"||businessService.toUpperCase()=="SW" ){
+
+            window.location = redirectionUrl;  
+          }else{
+            displayRazorpay(goToPaymentGateway);
+          }
+         
+             if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" )         {
+              window.location = redirectionUrl;
              }
              else{
              
@@ -321,6 +327,8 @@ export const download = async (receiptQueryString, mode = "download" ,configKey=
   let bodyObject = {
     uuid: [uuid]
   };
+  
+  debugger;
   let responseForUser = await getUserDataFromUuid(bodyObject);
   let lastmodifier=responseForUser && responseForUser.user[0]?responseForUser.user[0].name:null;
   let businessService = '';
