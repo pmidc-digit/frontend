@@ -233,11 +233,9 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
           if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" && businessService.toUpperCase()=="WS"||businessService.toUpperCase()=="SW" ){
 
             window.location = redirectionUrl;  
-          }else{
-            displayRazorpay(goToPaymentGateway);
           }
          
-             if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" )         {
+           else if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" )         {
               window.location = redirectionUrl;
              }
              else{
