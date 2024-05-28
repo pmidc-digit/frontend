@@ -171,7 +171,20 @@ export const plumberDetails={
 
 }
 const connectionChargeDetails = getCommonContainer(plumberDetails);
-export const roadDetails={
+
+
+
+
+
+
+
+
+
+//differentiated data for sewerage and water connection deoending on the application open: by asdeepsingh777
+
+
+let wsORsw = getQueryArg(window.location.href, "service");
+export const roadDetails= (wsORsw === serviceConst.WATER)? ({
   reviewRoadType : getLabelWithValue(
     {
       labelName: "Road Type",
@@ -192,7 +205,38 @@ export const roadDetails={
       callBack: handleNA
     }
   ),
-}
+}) : ({
+    reviewRoadType : getLabelWithValue(
+      {
+        labelName: "Road Type",
+        labelKey: "WS_ADDN_DETAIL_ROAD_TYPE"
+      },
+      {
+        jsonPath: "SewerageConnection[0].roadCuttingInfo[0].roadType",
+        callBack: handleRoadType
+      }
+    ),
+    reviewArea : getLabelWithValue(
+      {
+        labelName: "Area (in sq ft)",
+        labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
+      },
+      {
+        jsonPath: "SewerageConnection[0].roadCuttingInfo[0].roadCuttingArea",
+        callBack: handleNA
+      }
+    ),
+  }
+);
+
+
+
+
+
+
+
+
+
 
 export const roadCuttingDetails = {
   reviewCompositionFee : getLabelWithValueForModifiedLabel(

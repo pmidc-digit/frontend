@@ -8,11 +8,11 @@ import {
 //import { getTenantId } from "../../utils/localStorageUtils";
 export const WSledgerId = {
     ledgerId: getTextField({
-        label: { labelKey: "WS_SERV_DETAIL_LEDGER_ID" },
+        label: { labelKey: "LedgerId / Area" },
         placeholder: { labelKey: "WS_SERV_DETAIL_LEDGER_ID_PLACEHOLDER" },
         gridDefination: { xs: 12, sm: 6 },
         jsonPath: "applyScreen.additionalDetails.ledgerId",
-        // pattern: /^[0-9]*$/i,
+        pattern: /^[A-z0-9À-ž\s]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
   }),
 };
@@ -99,7 +99,7 @@ export const WSsubUsageType = {
         errorMessage: "ERR_INVALID_BILLING_PERIOD",
         jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
         props: {
-          disabled: false
+         // disabled: false
         }
       }),
     }

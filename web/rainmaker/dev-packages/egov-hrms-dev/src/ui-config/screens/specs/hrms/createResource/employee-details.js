@@ -67,8 +67,8 @@ export const employeeDetails = getCommonCard({
           labelName: "Enter Guardian's Name",
           labelKey: "HR_GUARDIAN_NAME_PLACEHOLDER"
         },
-        required: true,
-        pattern: getPattern("Name") || null,
+        //required: true,
+       // pattern: getPattern("Name") || null,
         jsonPath: "Employee[0].user.fatherOrHusbandName"
       })
     },
@@ -96,12 +96,12 @@ export const employeeDetails = getCommonCard({
           labelName: "Select Relationship",
           labelKey: "HR_RELATIONSHIP_PLACEHOLDER"
         },
-        required: true,
-        isClearable: true,
+       // required: true,
+       // isClearable: true,
         labelsFromLocalisation: true,
         jsonPath: "Employee[0].user.guardianRelation"
       },
-      required: true,
+    // required: true,
       gridDefination: {
         xs: 12,
         sm: 12,
