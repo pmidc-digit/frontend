@@ -7,9 +7,9 @@ import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import filter from "lodash/filter";
 import get from "lodash/get";
 import sortBy from "lodash/sortBy";
-let FData = [];
+let floorDropDownData = [];
 
-FData.push({ label:"2013-14", value: "2013-14" },{ label:"2014-15", value: "2014-15" },{ label:"2015-16", value: "2015-16" },{ label:"2016-17", value: "2016-17" },{ label:"2017-18", value: "2017-18" },{ label:"2018-19", value: "2018-19" },
+  floorDropDownData.push({ label:"2013-14", value: "2013-14" },{ label:"2014-15", value: "2014-15" },{ label:"2015-16", value: "2015-16" },{ label:"2016-17", value: "2016-17" },{ label:"2017-18", value: "2017-18" },{ label:"2018-19", value: "2018-19" },
   { label:"2019-20", value: "2019-20" },{ label:"2020-21", value: "2020-21" },
   { label:"2021-22", value: "2021-22" },{ label:"2022-23", value: "2022-23" },{ label:"2023-24", value: "2023-24" },{ label:"2024-25", value: "2024-25" });
 const formConfig = {
@@ -146,6 +146,7 @@ const formConfig = {
       id: "YearcreationProperty",
       type: "AutocompleteDropdown",
       className: "pt-old-pid-text-field",
+      // iconRedirectionURL: getTenantId()=='pb.amritsar'? "https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=8b678d4d5020448499054bf346843ea9": getTenantId()=='pb.hoshiarpur'?"https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=9bc1b255320a49c590dd17d4d258e054": "https://gis.punjab.gov.in",
       jsonPath: "Properties[0].additionalDetails.yearConstruction",
       floatingLabelText: "Year of creation of Property",
       hintText: "Select",
@@ -158,15 +159,18 @@ const formConfig = {
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
      
       formName: "propertyAddress",
-      dRopDownData: FData,
+      dropDownData: floorDropDownData,
       updateDependentFields: ({ formKey, field, dispatch }) => {
         if (field.value && field.value.length > 0) {
-          const mohalla = field.dRopDownData.find((option) => {
+          const mohalla = field.dropDownData.find((option) => {
             return option.value === field.value;
           });
           dispatch(prepareFormData("Properties[0].additionalDetails.yearConstruction", mohalla.code));
         }
       },
+      // toolTip: true,
+      //pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
+      // toolTipMessage: "PT_OLDPID_TOOLTIP_MESSAGE",
       maxLength: 64,
     },
   },
@@ -186,10 +190,10 @@ const formConfig = {
           dd.push({ label: getTranslatedLabel(label, localizationLabels), value: selected.code });
           return dd;
         }, []);
-        dispatch(setFieldProperty("propertyAddress", "city", "dRopDownData", sortBy(dd, ["label"])));
+        dispatch(setFieldProperty("propertyAddress", "city", "dropDownData", sortBy(dd, ["label"])));
       }
       const tenant = get(state, 'form.propertyAddress.fields.city.value', null);
-      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dRopDownData', []);
+      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);
 
       if (process.env.REACT_APP_NAME === "Citizen" && tenant && mohallaDropDownData.length == 0) {
         const dataFetchConfig = {
