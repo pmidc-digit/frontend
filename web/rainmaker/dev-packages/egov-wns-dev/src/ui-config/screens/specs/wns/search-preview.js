@@ -18,6 +18,7 @@ import { getQueryArg, setBusinessServiceDataToLocalStorage, setDocuments } from 
 import { loadUlbLogo } from "egov-ui-kit/utils/pdfUtils/generatePDF";
 import get from "lodash/get";
 import set from "lodash/set";
+
 import { findAndReplace, getDescriptionFromMDMS, getSearchResults, getSearchResultsForSewerage, getWaterSource, getWorkFlowData, isModifyMode, serviceConst, swEstimateCalculation, waterEstimateCalculation } from "../../../../ui-utils/commons";
 import {
   convertDateToEpoch, createEstimateData,
@@ -157,24 +158,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
       }
       let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
       applyScreenObject.applicationNo.includes("WS") ? applyScreenObject.service = serviceConst.WATER : applyScreenObject.service = serviceConst.SEWERAGE;
-      
-
-
-
-
-
-
-
-//different functions call for sewerage and water connection deoending on the application: by asdeepsingh777
-      let parsedObject = (applyScreenObject.service === "WATER") ? parserFunction(findAndReplace(applyScreenObject, "NA", null)): parserFunctionsw(findAndReplace(applyScreenObject, "NA", null)) ;
-     
-     
-     
-
-
-
-     
-     
+      let parsedObject = parserFunction(findAndReplace(applyScreenObject, "NA", null));
       const equals = (a, b) =>
       Object.keys(a).length === Object.keys(b).length 
         && Object.keys(a).every(p => a[p] === b[p]);
@@ -256,7 +240,6 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
       let multipleRoadTypeCardPath = "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewTen.props.items";
       let mutipleRoadTypeValues = get(state.screenConfiguration.preparedFinalObject, "applyScreen.roadCuttingInfo", []);
      if (mutipleRoadTypeValues && mutipleRoadTypeValues.length > 0) {
-      debugger;
        for (var a = 0; a < mutipleRoadTypeValues.length; a++) {
          if (mutipleRoadTypeValues[a].emptyObj) {
            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.props.visible`, false);
@@ -273,7 +256,6 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
      }
 
     }
-    debugger;
     let subUsageType = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.waterSubUsageType");
     let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
     if(subUsageType) {
@@ -700,6 +682,7 @@ const screenConfig = {
     }
 
     set(action, "screenConfig.components.adhocDialog.children.popup", adhocPopup);
+    debugger;
     loadUlbLogo(tenantId);
     beforeInitFn(action, state, dispatch, applicationNumber);
     set(
@@ -833,7 +816,6 @@ const screenConfig = {
 
 //----------------- search code (feb17)---------------------- //
 const searchResults = async (action, state, dispatch, applicationNumber, processInstanceAppStatus) => {
-  
   let queryObjForSearch = [{ key: "tenantId", value: tenantId }, { key: "applicationNumber", value: applicationNumber }]
   let viewBillTooltip = [], estimate, payload = [];
   if (service === serviceConst.WATER) {
@@ -851,7 +833,6 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.visible", false);
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", true);
     if (payload !== undefined && payload !== null) {
-      debugger;
       let roadCuttingInfos = payload.WaterConnection[0].roadCuttingInfo;
       if(payload.WaterConnection[0] && Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.length > 0) {
         payload.WaterConnection[0].roadCuttingInfo = Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.filter(info => info.status == "ACTIVE");
@@ -1007,7 +988,6 @@ const parserFunction = (obj) => {
     proposedWaterClosets: parseInt(obj.proposedWaterClosets),
     proposedToilets: parseInt(obj.proposedToilets),
     roadCuttingArea: parseInt(obj.roadCuttingArea),
-    
     additionalDetails: {
       initialMeterReading: (
         obj.additionalDetails !== undefined &&
@@ -1048,75 +1028,6 @@ const parserFunction = (obj) => {
   obj = { ...obj, ...parsedObject }
   return obj;
 }
-
-
-
-
-
-
-
-
-//different parser function for setting sewerage data : by asdeepsingh777
-const parserFunctionsw = (obj) => {
-  let waterDetails = get(obj, "additionalDetails", {});
-let parsedObject = {
-  roadCuttingInfo: obj.roadCuttingInfosw,
-  roadCuttingArea: parseInt(obj.roadCuttingInfosw[0].roadCuttingArea),
-  meterInstallationDate: convertDateToEpoch(obj.meterInstallationDate),
-  connectionExecutionDate: convertDateToEpoch(obj.connectionExecutionDate),
-  proposedWaterClosets: parseInt(obj.proposedWaterClosets),
-  proposedToilets: parseInt(obj.proposedToilets),
-  roadCuttingArea: parseInt(obj.roadCuttingInfosw[0].roadCuttingArea),
-  additionalDetails: {
-    initialMeterReading: (
-      obj.additionalDetails !== undefined &&
-      obj.additionalDetails.initialMeterReading !== undefined
-    ) ? parseFloat(obj.additionalDetails.initialMeterReading) : null,
-    detailsProvidedBy: (
-      obj.additionalDetails !== undefined &&
-      obj.additionalDetails.detailsProvidedBy !== undefined &&
-      obj.additionalDetails.detailsProvidedBy !== null
-    ) ? obj.additionalDetails.detailsProvidedBy : "",
-    billingType: waterDetails && waterDetails ? waterDetails.billingType : null,
-    billingAmount: waterDetails && waterDetails ? parseFloat(waterDetails.billingAmount) : null,
-    connectionCategory: waterDetails && waterDetails ? waterDetails.connectionCategory : null,
-    ledgerId: waterDetails && waterDetails ? parseFloat(waterDetails.ledgerId) : null,
-    avarageMeterReading: waterDetails && waterDetails ? parseFloat(waterDetails.avarageMeterReading) : null,
-    meterMake: waterDetails && waterDetails ? parseFloat(waterDetails.meterMake) : null,
-    compositionFee: waterDetails && waterDetails ? parseFloat(waterDetails.compositionFeesw) : null,
-    userCharges: waterDetails && waterDetails ? parseFloat(waterDetails.userChargessw) : null,
-    othersFee: waterDetails && waterDetails ? parseFloat(waterDetails.othersFeesw) : null,
-    unitUsageType: waterDetails && waterDetails ? waterDetails.unitUsageType : null,
-    //meterStatus: waterDetails && waterDetails ? waterDetails.meterStatus : null,
-    // detailsProvidedBy : null,
-    adhocPenalty: null,
-    adhocPenaltyComment: null,
-    adhocPenaltyReason: null,
-    adhocRebate: null,
-    adhocRebateComment: null,
-    adhocRebateReason: null,
-    estimationFileStoreId: null,
-    sanctionFileStoreId: null,
-    estimationLetterDate: null,
-  },
-  dateEffectiveFrom: convertDateToEpoch(obj.dateEffectiveFrom),
-  noOfTaps: parseInt(obj.noOfTaps),
-  proposedTaps: parseInt(obj.proposedTaps),
-  plumberInfo: (obj.plumberInfo === null || obj.plumberInfo === "NA") ? [] : obj.plumberInfo
-}
-obj = { ...obj, ...parsedObject }
-return obj;
-}
-
-
-
-
-
-
-
-
-
-
 
 const processBills = async (data, viewBillTooltip, dispatch) => {
   let des, obj, groupBillDetails = [];

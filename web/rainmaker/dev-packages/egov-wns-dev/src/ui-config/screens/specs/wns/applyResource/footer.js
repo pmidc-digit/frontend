@@ -31,7 +31,6 @@ const isModeAction = isModifyModeAction();
 const setReviewPageRoute = (state, dispatch) => {
   let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
   if(roadCuttingInfo && roadCuttingInfo.length > 0) {
-    debugger;
     let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.isEmpty !== true);
     dispatch(prepareFinalObject( "applyScreen.roadCuttingInfo", formatedRoadCuttingInfo));
   }
@@ -694,7 +693,7 @@ const callBackForNext = async (state, dispatch) => {
       }
     } else {
       let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
-      let roadCuttingInfosw = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
+      let roadCuttingInfos = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfos", []);
 
       let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
       if(applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
@@ -752,10 +751,10 @@ const callBackForNext = async (state, dispatch) => {
           return
         }
       }
-      if(roadCuttingInfosw && roadCuttingInfosw.length > 0) {
+      if(roadCuttingInfos && roadCuttingInfos.length > 0) {
         for(let b =0; b < roadCuttingInfo.length ; b++) {
-          if(get(roadCuttingInfosw[b], "status") == "INACTIVE") {
-            roadCuttingInfo.push(roadCuttingInfosw[b]);
+          if(get(roadCuttingInfos[b], "status") == "INACTIVE") {
+            roadCuttingInfo.push(roadCuttingInfos[b]);
           }
         }
       }
@@ -772,7 +771,7 @@ const callBackForNext = async (state, dispatch) => {
             info.status = "INACTIVE"
           }
         });
-        dispatch(prepareFinalObject( "applyScreen.roadCuttingInfosw", roadCuttingInfosw));
+        dispatch(prepareFinalObject( "applyScreen.roadCuttingInfos", roadCuttingInfo));
         for(let j = 0; j < roadCuttingInfo.length; j ++) {
           if(roadCuttingInfo[j].isDeleted !=false) {
             filteredInfo.push(roadCuttingInfo[j]);
@@ -883,82 +882,6 @@ const callBackForNext = async (state, dispatch) => {
       dispatch(toggleSnackbar(true, errorMessage, "warning"));
     }
   }
-
-
-
-
-
-
-
-
-//Different card for water and sewerage connection details will show/hide according to the field selected : by asdeepsingh777
-  
-
-      debugger;
-      let applyFor = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
-      if(applyFor.water == true){
-        if(applyFor.sewerage == true){
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-              "visible",
-              true
-            )
-          );
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-              "visible",
-              true
-            )
-          );
-        }else{
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-              "visible",
-              true
-            )
-          );
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-              "visible",
-              false
-            )
-          );
-
-        }
-      }else{
-        dispatch(
-          handleField(
-            "apply",
-            "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-            "visible",
-            true
-          )
-        );
-        dispatch(
-              handleField(
-                "apply",
-                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-                "visible",
-                false
-              )
-            );
-      }
-
-
-
-
-
-
-      
-
 };
 
 const moveToSuccess = (combinedArray, dispatch) => {

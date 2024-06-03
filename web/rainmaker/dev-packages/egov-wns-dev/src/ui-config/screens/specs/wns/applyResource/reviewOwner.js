@@ -10,7 +10,6 @@ import {
 import { convertEpochToDateAndHandleNA, handleNA, handleRoadType } from '../../utils';
 import { changeStep } from "./footer";
 
-
 const getHeader = label => {
   return {
     uiFramework: "custom-molecules-local",
@@ -27,32 +26,16 @@ const getHeader = label => {
 };
 
 const connectionDetailsHeader = getHeader({
-  
   labelKey: "WS_COMMON_CONNECTION_DETAILS"
 });
-
 
 const connectionChargeDetailsHeader = getHeader({
   labelKey: "WS_COMMON_PLUMBER_DETAILS"
 });
 
 const roadCuttingChargesHeader = getHeader({
-  labelKey: "Water Road Cutting Charges"
- // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
+  labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILS"
 });
-
-
-
-
-//New Card for sewerage connection charges at reviewscreen and fixed different values for water and sewerage card by asdeepsingh777
-const roadCuttingChargesHeadersw = getHeader({
-  labelKey: "Sewerage Road Cutting Charges"
- // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
-});
-
-
-
-
 
 const activationDetailsHeader = getHeader({
   labelKey: "WS_ACTIVATION_DETAILS"
@@ -463,38 +446,6 @@ export const reviewRoadType = getLabelWithValueForModifiedLabel(
   }
 );
 
-
-
-
-//New Card for sewerage connection charges at reviewscreen and fixed different values for water and sewerage card by asdeepsingh777
-export const reviewRoadTypesw = getLabelWithValueForModifiedLabel(
-  {
-    labelName: "Road Type",
-    labelKey: "SW_ADDN_DETAIL_ROAD_TYPE"
-  },
-  {
-    jsonPath: "applyScreen.roadCuttingInfosw[0].roadType",
-    // localePrefix: {
-    //   moduleName: "WS",
-    //   masterName: "ROADTYPE"
-    // },
-    callBack: handleNA
-  },
-  {
-    labelKey: "SW_OLD_LABEL_NAME"
-  },
-  {
-    jsonPath: "applyScreenOld.roadType",
-    callBack: handleNA
-  }
-);
-
-
-
-
-
-
-
 export const reviewArea = getLabelWithValueForModifiedLabel(
   {
     labelName: "Area (in sq ft)",
@@ -641,18 +592,9 @@ export const reviewOwner = (isEditable = true) => {
     viewTen: roadCuttingCharges,
     viewEleven: roadCuttingExtraCharges,
     viewTwelve: activationDetailsHeader,
-    viewThirteen: activationDetails,
-
-
-
-
-
-    viewFourteen: roadCuttingChargesHeadersw,
-    viewFifteen: roadCuttingChargessw,
-    viewSixteen: roadCuttingExtraChargessw,
+    viewThirteen: activationDetails
   })
 };
-
 
 const connectionDetails = getCommonContainer({
   reviewOldConsumerNo,
@@ -722,115 +664,6 @@ const roadCuttingExtraCharges = getCommonContainer({
   reviewOthersFee
 });
 
-
-
-
-
-
-
-//New Card for sewerage connection charges at reviewscreen and fixed different values for water and sewerage card by asdeepsingh777
-const roadCuttingChargessw = {
-  uiFramework: "custom-containers",
-  componentPath: "MultiItem",
-  props: {
-    className: "applicant-summary",
-    scheama: getCommonContainer({
-        reviewRoadTypesw : getLabelWithValue(
-          {
-            labelName: "Road Type",
-            labelKey: "SW_ADDN_DETAIL_ROAD_TYPE"
-          },
-          {     
-            jsonPath: "applyScreen.roadCuttingInfosw[0].roadType",
-            callBack: handleRoadType
-          }
-        ),
-        reviewArea : getLabelWithValue(
-          {
-            labelName: "Area (in sq ft)",
-            labelKey: "SW_ADDN_DETAILS_AREA_LABEL"
-          },
-          {
-            jsonPath: "applyScreen.roadCuttingInfosw[0].roadCuttingArea",
-            callBack: handleNA
-          }
-        ),
-    }),
-    items: [],
-    hasAddItem: false,
-    isReviewPage: true,
-    sourceJsonPath: "applyScreen.roadCuttingInfosw",
-    prefixSourceJsonPath: "children",
-    afterPrefixJsonPath: "children.value.children.key"
-  },
-  type: "array"
-}
-
-export const reviewCompositionFeesw = getLabelWithValueForModifiedLabel(
-  
-  {
-    labelName: "Area (in sq ft)",
-    labelKey: "SW_ADDN_DETAILS_COMPOSITION_LABEL"
-  },
-  {
-    jsonPath: "applyScreen.additionalDetails.compositionFeesw",
-    callBack: handleNA
-  },
-  {
-    labelKey: "SW_OLD_LABEL_NAME"
-  },
-  {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.compositionFeesw",
-    callBack: handleNA
-  }
-);
-export const reviewUserChargessw = getLabelWithValueForModifiedLabel(
-  {
-    labelName: "Area (in sq ft)",
-    labelKey: "SW_ADDN_USER_CHARGES_LABEL"
-  },
-  {
-    jsonPath: "applyScreen.additionalDetails.userChargessw",
-    callBack: handleNA
-  },
-  {
-    labelKey: "SW_OLD_LABEL_NAME"
-  },
-  {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.userChargessw",
-    callBack: handleNA
-  }
-);
-export const reviewOthersFeesw = getLabelWithValueForModifiedLabel(
-  {
-    labelName: "Area (in sq ft)",
-    labelKey: "SW_ADDN_OTHER_FEE_LABEL"
-  },
-  {
-    jsonPath: "applyScreen.additionalDetails.othersFeesw",
-    callBack: handleNA
-  },
-  {
-    labelKey: "SW_OLD_LABEL_NAME"
-  },
-  {
-    jsonPath: "WaterConnectionOld[0].additionalDetails.othersFeesw",
-    callBack: handleNA
-  }
-);
-
-const roadCuttingExtraChargessw = getCommonContainer({
-  reviewCompositionFeesw,
-  reviewUserChargessw,
-  reviewOthersFeesw
-});
-
-
-
-
-
-
-
 const activationDetails = getCommonContainer({
   reviewConnectionExecutionDate,
   reviewMeterId,
@@ -839,4 +672,3 @@ const activationDetails = getCommonContainer({
   reviewMeterMakeReading,
   reviewAverageMakeReading,
 });
-

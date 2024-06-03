@@ -651,7 +651,11 @@ payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails=taxheads;
         {
         code="Advance";         amount=-dd.amount;
 
-        }
+        }else if(dd.taxHeadCode == "WS_DISCHARGE_CHARGES" || dd.taxHeadCode == "SW_DISCHARGE_CHARGES")
+          {
+          code="DISCHARGE CHARGES";         amount=dd.adjustedAmount;
+    
+          }
         if(payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="SW.ONE_TIME_FEE")
         {
           dcbRow={
