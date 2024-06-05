@@ -99,6 +99,7 @@ export const sortpayloadDataObj = (connectionObj) => {
 };
 
 const getActiveConnectionObj = (connectionsObj) => {
+  debugger;
   let getActiveConnectionObj = "";
   for (var i = 0; i < connectionsObj.length; i++) {
     if (
@@ -114,6 +115,8 @@ const getActiveConnectionObj = (connectionsObj) => {
 };
 
 const searchResults = async (action, state, dispatch, connectionNumber) => {
+
+ 
   /**
    * This methods holds the api calls and the responses of fetch bill and search connection for both water and sewerage service
    */
@@ -123,7 +126,15 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
   ];
   let serviceUrl = getQueryArg(window.location.href, "service");
   if (serviceUrl === serviceConst.SEWERAGE) {
-    let payloadData = await getSearchResultsForSewerage(
+
+    let payloadData = await httpRequest(
+      "post",
+      "/sw-services/swc/_search",
+      "_search",
+      queryObject
+  );
+
+    payloadData = await getSearchResultsForSewerage(
       queryObject,
       dispatch,
       true
@@ -136,11 +147,12 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       payloadData.SewerageConnections = sortpayloadDataObj(
         payloadData.SewerageConnections
       );
-
+      payloadData.SewerageConnections = payloadData.SewerageConnections.filter((element) => element.status == "Active");
       let sewerageConnection = getActiveConnectionObj(
         payloadData.SewerageConnections
       );
-      let propTenantId = sewerageConnection.property.tenantId.split(".")[0];
+     let propTenantId = sewerageConnection.property.tenantId.split(".")[0];
+     
       sewerageConnection.service = serviceUrl;
 
       if (sewerageConnection.property.propertyType !== undefined) {
@@ -229,6 +241,7 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       amendments=amendments&&Array.isArray(amendments)&&amendments.filter(amendment=>amendment.status==='INWORKFLOW');
       dispatch(prepareFinalObject("BILL_FOR_WNS", bill));
       dispatch(prepareFinalObject("isAmendmentInWorkflow", amendments&&Array.isArray(amendments)&&amendments.length==0?true:false));
+      //dispatch(prepareFinalObject("WaterConnection[0]", sewerageConnection));
       dispatch(prepareFinalObject("WaterConnection[0]", sewerageConnection));
       getApplicationNumber(dispatch, payloadData.SewerageConnections);
       dispatch(
@@ -520,7 +533,7 @@ export const getDCBDetail = async (queryObject , dispatch) => {
     response.Demands.map((element,index) => {
       taxAmount=0;taxCollected=0;taxBalance=0;interestAmount=0;
       interestCollected=0;interestBalance=0;penaltyBalance=0;penaltyCollected=0;penaltyAmount=0;
-advance=0;
+     advance=0;
   if(element.status == "ACTIVE")
   {
   installment=convertEpochToDate(element.taxPeriodFrom) +"-"+convertEpochToDate(element.taxPeriodTo);
@@ -709,7 +722,7 @@ const getMDMSData = async (action, state, dispatch) => {
     payload.MdmsRes.BillingService.BusinessService = payload.MdmsRes.BillingService.BusinessService.filter(
       (service) => service.billGineiURL
     );
-    // console.log(payload.MdmsRes,"nishant")
+    
     dispatch(prepareFinalObject("connectDetailsData", payload.MdmsRes));
   } catch (e) {
     console.log(e);
