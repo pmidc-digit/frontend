@@ -591,7 +591,7 @@ setBusinessServiceDataToLocalStorage = async (
 
 
 prepareWorkflowContract = (data, moduleName) => {
-  const {
+   const {
     getRedirectUrl,
     getHeaderName,
     checkIfTerminatedState,
@@ -599,10 +599,11 @@ prepareWorkflowContract = (data, moduleName) => {
     checkIfDocumentRequired,
     getEmployeeRoles
   } = this;
+ 
   const businessServiceData = JSON.parse(
     localStorageGet("businessServiceData")
   );
-  if ( businessServiceData && businessServiceData[0].businessService != data[0].businessService ) {
+  if ( businessServiceData || businessServiceData[0].businessService != data[0].businessService ) {
     const tenantId = getQueryArg(window.location.href, "tenantId");
     const queryObject = [
       { key: "tenantId", value: tenantId },
