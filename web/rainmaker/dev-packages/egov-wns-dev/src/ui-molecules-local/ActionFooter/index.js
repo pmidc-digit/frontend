@@ -1,5 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Button } from "components";
+import Label from "egov-ui-kit/utils/translationNode";
+import {
+  getTextField,
+  getSelectField,
+  getCommonContainer,
+  getPattern,
+  getCommonCard,
+  getCommonTitle,
+  getCommonParagraph,
+  getLabel
+} from "egov-ui-framework/ui-config/screens/specs/utils";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
 import { Container, Item } from "egov-ui-framework/ui-atoms";
 import MenuButton from "egov-ui-framework/ui-molecules/MenuButton";
@@ -7,14 +19,11 @@ import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/
 import get from "lodash/get";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 import {
-  getWorkFlowData,
-  getDomainLink,
   isWorkflowExists,
 } from "../../ui-utils/commons";
 import { httpRequest } from "../../ui-utils/api";
 import store from "ui-redux/store";
 import { showHideAdhocPopup } from "../../ui-config/screens/specs/utils";
-// import { getRequiredDocData, showHideAdhocPopup } from "egov-billamend/ui-config/screens/specs/utils"
 class Footer extends React.Component {
   state = {
     open: false,
@@ -90,41 +99,14 @@ class Footer extends React.Component {
           store.dispatch,
           "connection-details"
         );
-        // let due = getQueryArg(window.location.href, "due");
-        // let errLabel = (applicationNo && applicationNo.includes("WS"))?"WS_DUE_AMOUNT_SHOULD_BE_ZERO":"SW_DUE_AMOUNT_SHOULD_BE_ZERO";
-        // if(due && (parseInt(due) > 0)){
-        //   toggleSnackbar(
-        //     true,
-        //     {
-        //       labelName: "Due Amount should be zero!",
-        //       labelKey: errLabel
-        //     },
-        //     "error"
-        //   );
-
-        //   return false;
-        // }
-
+        
         // check for the WF Exists
         const queryObj = [
           { key: "businessIds", value: applicationNos },
           { key: "tenantId", value: tenantId },
         ];
 
-        // let isApplicationApproved = await isWorkflowExists(queryObj);
-        // if(!isApplicationApproved){
-        //   toggleSnackbar(
-        //     true,
-        //     {
-        //       labelName: "WorkFlow already Initiated",
-        //       labelKey: "WS_WORKFLOW_ALREADY_INITIATED"
-        //     },
-        //     "error"
-        //   );
-        //   return false;
-        // }
-        // store.dispatch(setRoute(`/wns/apply?applicationNumber=${applicationNo}&connectionNumber=${connectionNumber}&tenantId=${tenantId}&action=edit&mode=MODIFY`));
-      },
+       },
     };
     //if(applicationType === "MODIFY"){
     downloadMenu && downloadMenu.push(editButton);
@@ -136,8 +118,7 @@ class Footer extends React.Component {
         downloadMenu && downloadMenu.push(BillAmendment);
       }
     }
-
-    //}
+    
     const buttonItems = {
       label: { labelName: "Take Action", labelKey: "WF_TAKE_ACTION" },
       rightIcon: "arrow_drop_down",
@@ -157,11 +138,68 @@ class Footer extends React.Component {
 
     return (
       <div className="wf-wizard-footer" id="custom-atoms-footer">
+        
         <Container>
+       
           <Item xs={12} sm={12} className="wf-footer-container">
+          <Button 
+          className="demandbtn"
+               label={
+                 <Label buttonLabel={true}
+                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
+                  label={'Sewerage Demand'} fontSize="11px"
+                   color="#fe7a51" />
+               }
+            
+                onClick={ async() => 
+                 { 
+                 payload = await httpRequest(
+                    "post",
+                    "/sw-calculator/sewerageCalculator/_singledemand",
+                    "_update",
+                    [],
+                    {"tenantId":tenantId,
+                      "consumercode":connectionNumber
+                    }
+                   
+                  );
+              
+                }}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
+              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%", position: "relative",top: "50px",right: "220px"}}
+            />
+          <Button 
+          className="demandbtn"
+               label={
+                 <Label buttonLabel={true}
+                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
+                  label={'Water Demand'} fontSize="11px"
+                   color="#fe7a51" />
+               }
+            
+                onClick={ async() => 
+                 { 
+                 payload = await httpRequest(
+                    "post",
+                    "/ws-calculator/waterCalculator/_singledemand",
+                    "_update",
+                    [],
+                    {"tenantId":tenantId,
+                      "consumercode":connectionNumber
+                    }
+                   
+                  );
+              
+                }}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
+              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%", position: "relative",top: "50px",right: "220px"}}
+            />
             <MenuButton data={buttonItems} />
           </Item>
         </Container>
+        
       </div>
     );
   }
