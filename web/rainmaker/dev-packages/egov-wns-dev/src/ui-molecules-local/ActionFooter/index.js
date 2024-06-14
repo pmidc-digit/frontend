@@ -108,7 +108,44 @@ class Footer extends React.Component {
 
        },
     };
+    const SWdemand = {
+  
+      label: "Single Demand",
+      labelKey: "Single Demand",
+      link: async () => {
+       if(this.props.bill.Demands[0].businessService == "SW"){
+       
+        payload = await httpRequest(
+          "post",
+          "/sw-calculator/sewerageCalculator/_singledemand",
+          "_update",
+          [],
+          {"tenantId":tenantId,
+            "consumercode":connectionNumber
+          }
+         
+        );
+      }
+      else if(this.props.bill.Demands[0].businessService == "WS"){
+        payload = await httpRequest(
+          "post",
+          "/ws-calculator/waterCalculator/_singledemand",
+          "_update",
+          [],
+          {"tenantId":tenantId,
+            "consumercode":connectionNumber
+          }
+         
+        );
+      }
+    }
+  
+  
+  };
+    
     //if(applicationType === "MODIFY"){
+      downloadMenu && downloadMenu.push(SWdemand);
+      //downloadMenu && downloadMenu.push(WSdemand);
     downloadMenu && downloadMenu.push(editButton);
     if (
       businessService.includes("ws-services-calculation") ||
@@ -131,6 +168,7 @@ class Footer extends React.Component {
           border: "none",
           height: "60px",
           width: "200px",
+          
         },
       },
       menu: downloadMenu,
@@ -138,65 +176,11 @@ class Footer extends React.Component {
 
     return (
       <div className="wf-wizard-footer" id="custom-atoms-footer">
-        
+       
         <Container>
        
           <Item xs={12} sm={12} className="wf-footer-container">
-          <Button 
-          className="demandbtn"
-               label={
-                 <Label buttonLabel={true}
-                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
-                  label={'Sewerage Demand'} fontSize="11px"
-                   color="#fe7a51" />
-               }
-            
-                onClick={ async() => 
-                 { 
-                 payload = await httpRequest(
-                    "post",
-                    "/sw-calculator/sewerageCalculator/_singledemand",
-                    "_update",
-                    [],
-                    {"tenantId":tenantId,
-                      "consumercode":connectionNumber
-                    }
-                   
-                  );
-              
-                }}
-              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
-              buttonStyle={{ border: "0.5px solid #fe7a51" }}
-              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%", position: "relative",top: "50px",right: "220px"}}
-            />
-          <Button 
-          className="demandbtn"
-               label={
-                 <Label buttonLabel={true}
-                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
-                  label={'Water Demand'} fontSize="11px"
-                   color="#fe7a51" />
-               }
-            
-                onClick={ async() => 
-                 { 
-                 payload = await httpRequest(
-                    "post",
-                    "/ws-calculator/waterCalculator/_singledemand",
-                    "_update",
-                    [],
-                    {"tenantId":tenantId,
-                      "consumercode":connectionNumber
-                    }
-                   
-                  );
-              
-                }}
-              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
-              buttonStyle={{ border: "0.5px solid #fe7a51" }}
-              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%", position: "relative",top: "50px",right: "220px"}}
-            />
-            <MenuButton data={buttonItems} />
+            <MenuButton data={buttonItems} className="mnubtn"/>
           </Item>
         </Container>
         
