@@ -110,7 +110,7 @@ const saveData = async (state, dispatch) => {
     } else {
         data.lastReadingDate = new Date().setMonth(new Date().getMonth() - 1);
     }
-    if (data.meterStatus === 'Working') {
+    if (data.meterStatus == 'Working') {
         const isCurrentMeterValid = validateFields(
             "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fourthContainer.children",
             state,
@@ -139,7 +139,39 @@ const saveData = async (state, dispatch) => {
             );
             return;
         }
-    } else {
+    } 
+    else if (data.meterStatus == 'Locked' || data.meterStatus == 'Breakdown') {
+        const isCurrentMeterValid = validateFields(
+            "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fourthContainer.children",
+            state,
+            dispatch,
+            "meter-reading"
+        );
+        const isDateValid = validateFields(
+            "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fifthContainer.children",
+            state,
+            dispatch,
+            "meter-reading"
+        );
+        data.currentReading = data.lastReading;
+        if (data.currentReading === undefined || data.currentReading === null || data.currentReading === '') {
+            return;
+        }
+        if (!data.currentReading) {
+            dispatch(
+                toggleSnackbar(
+                    true,
+                    {
+                        labelName: "",
+                        labelKey: "WS_CONSUMPTION_DETAILS_ERRO_MSG"
+                    },
+                    "warning"
+                )
+            );
+            return;
+        }
+    } 
+    else {
         const consumption = validateFields(
             "components.div.children.meterReadingEditable.children.card.children.cardContent.children.sixthContainer.children",
             state,
@@ -350,7 +382,7 @@ export const meterReadingEditable =
                             );
                         }
 
-                        else if (status == 'Locked') {
+                        else if (status == 'Locked' || status == 'Breakdown') {
                             dispatch(
                                 handleField(
                                     "meter-reading",
@@ -440,7 +472,7 @@ export const meterReadingEditable =
                                 )
                             );
                         } 
-                        else if (status == 'Reset'  || status == 'Replacement' || status == 'No-meter' || status == 'Breakdown') {
+                        else if (status == 'Reset'  || status == 'Replacement' || status == 'No-meter' ) {
                             dispatch(
                                 handleField(
                                     "meter-reading",
