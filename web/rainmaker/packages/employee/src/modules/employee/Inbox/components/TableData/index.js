@@ -569,11 +569,15 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
       const requestBody1 = [{ key: "tenantId", value: tenantId }];
       let maxCount = await httpRequest("egov-workflow-v2/egov-wf/process/_count", "_search", requestBody1);
       maxCount = maxCount ;
-      const requestBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: 0 }, { key: "limit", value: maxCount > 500 ? Math.round(maxCount / 3) : maxCount }];
+      let limit =100;
+      let offset =0;
+      const requestBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: 0 }, { key: "limit", value: maxCount > 100 ? limit: maxCount }];
       const responseData = await httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", requestBody);
       const allData = orderBy(get(responseData, "ProcessInstances", []), ["businesssServiceSla"]);
-      if (maxCount > 500) {
-        this.loadRemainingData([{ key: "tenantId", value: tenantId }, { key: "offset", value: Math.round(maxCount / 3) }, { key: "limit", value: Math.round(maxCount / 3) * 2 + 2 }], responseData)
+      if (maxCount > 100) {
+        offset = limit+1;
+        limit=limit+100
+        this.loadRemainingData([{ key: "tenantId", value: tenantId }, { key: "offset", value: offset }, { key: "limit", value: limit }], responseData)
       } else {
         this.loadLocalityForAllData(allData);
       }
