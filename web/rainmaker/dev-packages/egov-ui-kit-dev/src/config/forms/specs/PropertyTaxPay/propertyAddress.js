@@ -125,6 +125,7 @@ const formConfig = {
       id: "UID",
       type: "textfield",
       className: "pt-old-pid-text-field",
+      required: true, 
       // text: "PT_SEARCH_BUTTON",
       // iconRedirectionURL: "https://pmidc.punjab.gov.in/propertymis/search.php",
       jsonPath: "Properties[0].surveyId",
