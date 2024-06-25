@@ -102,7 +102,7 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
                 let queryObject1 = [];
                 uuids = uuids.substring(0, uuids.length - 1);
                 if (process.env.REACT_APP_NAME === "Citizen") {
-                    queryObject1 = [{ key: "propertyIds", value: uuids }];
+                    queryObject1 = [{ key: "propertyIds", value: uuids },{key: "tenantId", value: tenantId}];
                 } else {
                     queryObject1 = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "propertyIds", value: uuids }];
                 }
