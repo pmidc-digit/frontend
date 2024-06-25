@@ -568,7 +568,7 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
       this.showLoading();
       const requestBody1 = [{ key: "tenantId", value: tenantId }];
       //let maxCount = await httpRequest("egov-workflow-v2/egov-wf/process/_count", "_search", requestBody1);
-      maxCount = 5000 ;
+      let maxCount = 5000 ;
       let limit =100;
       let offset =0;
       const requestBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: 0 }, { key: "limit", value: maxCount > 100 ? limit: maxCount }];
