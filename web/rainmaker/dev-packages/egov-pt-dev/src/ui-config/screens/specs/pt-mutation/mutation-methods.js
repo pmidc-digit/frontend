@@ -141,13 +141,6 @@ export const resetFields = (state, dispatch) => {
 
 };
 
-export const test =()=>{
-  return(
-    <h1>Hello test</h1>
-    
-  )
-  
-}
 export const searchPropertyDetails = getCommonCard({
   subHeader: getCommonTitle({
     labelName: "Search Property",
