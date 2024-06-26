@@ -518,7 +518,7 @@ export const handleMandatoryFeildsOfProperty = (applyScreenObject) => {
 }
 
 const handleAddressObjectInProperty = (address) => {
-    if (address !== undefined && address !== null && address !== {}) {
+    if (address !== undefined && address !== null ) {
         if (
             address.hasOwnProperty("city") && address['city'] !== undefined && address["city"] !== "" && address["city"] !== null &&
             address.hasOwnProperty("doorNo") && address["doorNo"] !== undefined && address["doorNo"] !== "" && address["doorNo"] !== null &&
