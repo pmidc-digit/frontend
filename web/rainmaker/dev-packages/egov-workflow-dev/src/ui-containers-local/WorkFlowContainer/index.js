@@ -599,11 +599,10 @@ prepareWorkflowContract = (data, moduleName) => {
     checkIfDocumentRequired,
     getEmployeeRoles
   } = this;
- 
   const businessServiceData = JSON.parse(
     localStorageGet("businessServiceData")
   );
-  if ( businessServiceData || businessServiceData[0].businessService != data[0].businessService ) {
+ // if ( businessServiceData || businessServiceData[0].businessService != data[0].businessService ) {
     const tenantId = getQueryArg(window.location.href, "tenantId");
     const queryObject = [
       { key: "tenantId", value: tenantId },
@@ -614,7 +613,7 @@ prepareWorkflowContract = (data, moduleName) => {
     ];
 
     this.setBusinessServiceDataToLocalStorage(queryObject);
-  }
+ // }
   
   let businessService = moduleName === data[0].businessService ? moduleName : data[0].businessService;
   let businessId = get(data[data.length - 1], "businessId");
