@@ -369,8 +369,8 @@ export const additionDetails = getCommonCard({
               // fieldType : "autosuggest",
               // className:"applicant-details-error autocomplete-dropdown",
               callBack: waterSourceTypeChange,
-              // isRequired: false,
-              // requiredValue: false
+              isRequired: true
+              //requiredValue: false
             },
             // {
             //   key : 'waterSubSource',

@@ -48,7 +48,7 @@ export const WSbillingType = {
     ...getSelectField({
       label: { labelKey: "WS_SERV_DETAIL_BILLING_TYPE" },
       placeholder: { labelKey: "WS_SERV_DETAIL_BILING_TYPE_PLACEHOLDER" },
-      required: false,
+      required: true,
       sourceJsonPath: "applyScreenMdmsData.ws-services-masters.billingType",
       gridDefination: { xs: 12, sm: 6 },
       errorMessage: "ERR_INVALID_BILLING_PERIOD",
