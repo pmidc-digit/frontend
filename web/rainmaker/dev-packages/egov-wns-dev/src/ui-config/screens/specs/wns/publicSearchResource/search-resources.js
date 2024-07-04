@@ -112,7 +112,7 @@ export const searchApplications = {
 					sourceJsonPath: "applyScreenMdmsData.tenant.localities",
 					className: "locality-dropdown autocomplete-dropdown pds-search"
 				},
-				required: true,
+				required: false,
 				jsonPath: "searchScreen.locality.code",
 				gridDefination: {
 					xs: 12,
