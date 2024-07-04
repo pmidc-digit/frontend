@@ -105,7 +105,7 @@ export const searchApplications = {
 						moduleName: "TENANT",
 						masterName: "TENANTS"
 					},
-					required: true,
+					required: false,
 					isClearable: true,
 					labelsFromLocalisation: true,
 					jsonPath: "searchScreen.locality.code",
