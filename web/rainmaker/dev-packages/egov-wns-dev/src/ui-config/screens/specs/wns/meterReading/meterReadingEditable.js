@@ -123,22 +123,22 @@ const saveData = async (state, dispatch) => {
             dispatch,
             "meter-reading"
         );
-        if (data.currentReading === undefined || data.currentReading === null || data.currentReading === '') {
-            return;
-        }
-        if (data.currentReading < data.lastReading) {
-            dispatch(
-                toggleSnackbar(
-                    true,
-                    {
-                        labelName: "",
-                        labelKey: "WS_CONSUMPTION_DETAILS_ERRO_MSG"
-                    },
-                    "warning"
-                )
-            );
-            return;
-        }
+        // if (data.currentReading === undefined || data.currentReading === null || data.currentReading === '') {
+        //     return;
+        // }
+        // if (data.currentReading < data.lastReading) {
+        //     dispatch(
+        //         toggleSnackbar(
+        //             true,
+        //             {
+        //                 labelName: "",
+        //                 labelKey: "WS_CONSUMPTION_DETAILS_ERRO_MSG"
+        //             },
+        //             "warning"
+        //         )
+        //     );
+        //     return;
+        // }
     } 
     else if (data.meterStatus == 'Locked' || data.meterStatus == 'Breakdown') {
         const isCurrentMeterValid = validateFields(
@@ -157,19 +157,19 @@ const saveData = async (state, dispatch) => {
         if (data.currentReading === undefined || data.currentReading === null || data.currentReading === '') {
             return;
         }
-        if (!data.currentReading) {
-            dispatch(
-                toggleSnackbar(
-                    true,
-                    {
-                        labelName: "",
-                        labelKey: "WS_CONSUMPTION_DETAILS_ERRO_MSG"
-                    },
-                    "warning"
-                )
-            );
-            return;
-        }
+        // if (!data.currentReading) {
+        //     dispatch(
+        //         toggleSnackbar(
+        //             true,
+        //             {
+        //                 labelName: "",
+        //                 labelKey: "WS_CONSUMPTION_DETAILS_ERRO_MSG"
+        //             },
+        //             "warning"
+        //         )
+        //     );
+        //     return;
+        // }
     } 
     else {
         const consumption = validateFields(
