@@ -43,15 +43,9 @@ else if(generateBillScreenObject["transactionType"]=="Water")
   transactionType = "WS";
 }
 let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
-alert(batchtypechk);
-let billSchedulerObject = {
-  "transactionType": transactionType,
-  "status":"INITIATED",
-  "locality":mohallaDataCode,
-  "billingcycleStartdate": 0,
-  "billingcycleEnddate":0,
-  "tenantId":getTenantIdCommon(),
- }
+
+let billSchedulerObject;
+
 if(batchtypechk=="Batch")
   {
     billSchedulerObject = {
