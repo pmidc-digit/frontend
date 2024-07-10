@@ -5,9 +5,11 @@ import {
   getCommonContainer,
   getLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
+import { getUserInfo, getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
+import { handleScreenConfigurationFieldChange as handleField, toggleSnackbar ,prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import {generateBillApiCall ,searchBillApiCall} from "../generateBillResource/functions"
 import "./index.css";
-
+import { httpRequest } from "../../../../../ui-utils";
 export const createBill = getCommonCard({
 
 subHeader: getCommonTitle({
@@ -62,14 +64,97 @@ props: {
   jsonPath: "generateBillScreen.transactionType",
  
 },
+required: true,
+
+gridDefination: {
+  xs: 12,
+  sm: 3
+}
+},
+batchtype: {
+uiFramework: "custom-containers-local",
+moduleName: "egov-wns",
+componentPath: "AutosuggestContainer",
+jsonPath: "generateBillScreen.batchtype",
+props: {
+  label: {
+    labelName: "select Batch or Locality",
+    labelKey: "select Batch or Locality"
+  },
+  labelPrefix: {
+    moduleName: "TENANT",
+    masterName: "TENANTS"
+  },
+  optionLabel: "name",
+  placeholder: {
+    labelName: "Select Batch or Locality",
+    labelKey: "Select Batch or Locality"
+  },
+  required: true,
+  labelsFromLocalisation: true,
+  data: [
+    {
+      code: "Batch",
+      value:"Batch",
+    },
+    {
+      code: "Locality",
+      value:"Locality",
+    }
+   
+  ],
+ 
+  className: "autocomplete-dropdown",
+  jsonPath: "generateBillScreen.batchtype",
+ 
+},
+beforeFieldChange: async (action, state, dispatch) => {
+  
+debugger;
+  console.log(getTenantIdCommon());
+  try {
+    let payload = await httpRequest(
+      "post",
+      "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Block",
+      "_search",
+      [{ key: "tenantId", value: getTenantIdCommon() }],
+      {}
+    );
+    let batchar=[];
+    const batches =
+      payload &&
+      payload.TenantBoundary[0] &&
+      payload.TenantBoundary[0].boundary &&
+      payload.TenantBoundary[0].boundary.filter((item) => {
+         batchar.push({item});
+        return batchar;
+      }, []);
+      dispatch(
+        prepareFinalObject(
+          "applyScreenMdmsData.tenant.batchs",
+          batches
+        )
+      );
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children.propertybatches",
+          "props.suggestions",
+          batches
+        )
+      );
+    
+  } catch (e) {
+    console.log(e);
+  }
+},
 required: false,
 
 gridDefination: {
   xs: 12,
-  sm: 4
+  sm: 3
 }
 },
-
 //---------------------------------------------------------------------------------------
 //             locality drop down
 //-----------------------------------------------------------------------------------------
@@ -92,7 +177,30 @@ props: {
  required: false,
  gridDefination: {
   xs: 12,
-  sm: 4
+  sm: 3
+}
+},
+batch: {
+uiFramework: "custom-containers-local",
+moduleName: "egov-wns",
+componentPath: "AutosuggestContainer",
+sourceJsonPath: "applyScreenMdmsData.tenant.batchs",
+jsonPath: "generateBillScreen.mohallaData",
+props: {
+  label: { labelName: "Batch", labelKey:"Batch"},
+  placeholder: { labelName: "Select Batch", labelKey: "Select Batch" },
+  optionLabel: "name",
+  required: false,
+  labelsFromLocalisation: true,
+   className: "autocomplete-dropdown",
+  sourceJsonPath: "applyScreenMdmsData.tenant.batchs",
+  jsonPath: "generateBillScreen.mohallaData",
+
+},
+ required: false,
+ gridDefination: {
+  xs: 12,
+  sm: 3
 }
 },
 
@@ -104,7 +212,7 @@ props: {
     buttonContainer: getCommonContainer({
       resetButton: {
         componentPath: "Button",
-        gridDefination: { xs: 12, sm: 4 },
+        gridDefination: { xs: 12, sm: 3 },
         props: {
           variant: "outlined",
           style: {
