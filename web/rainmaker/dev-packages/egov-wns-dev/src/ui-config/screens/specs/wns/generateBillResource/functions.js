@@ -42,6 +42,8 @@ else if(generateBillScreenObject["transactionType"]=="Water")
 {
   transactionType = "WS";
 }
+let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
+alert(batchtypechk);
 let billSchedulerObject = {
   "transactionType": transactionType,
   "status":"INITIATED",
@@ -50,6 +52,30 @@ let billSchedulerObject = {
   "billingcycleEnddate":0,
   "tenantId":getTenantIdCommon(),
  }
+if(batchtypechk=="Batch")
+  {
+    billSchedulerObject = {
+      "transactionType": transactionType,
+      "status":"INITIATED",
+      "locality":mohallaDataCode,
+      "billingcycleStartdate": 0,
+      "billingcycleEnddate":0,
+      "isBatch":true,
+      "tenantId":getTenantIdCommon(),
+     }
+  }
+else{
+  billSchedulerObject = {
+    "transactionType": transactionType,
+    "status":"INITIATED",
+    "locality":mohallaDataCode,
+    "billingcycleStartdate": 0,
+    "billingcycleEnddate":0,
+    "isBatch":false,
+    "tenantId":getTenantIdCommon(),
+   }
+}
+
  let response=null;
   
 if(transactionType=="WS")
