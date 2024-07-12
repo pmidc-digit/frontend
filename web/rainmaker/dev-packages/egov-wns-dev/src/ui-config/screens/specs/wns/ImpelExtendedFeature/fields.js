@@ -12,7 +12,7 @@ export const WSledgerId = {
         placeholder: { labelKey: "WS_SERV_DETAIL_LEDGER_ID_PLACEHOLDER" },
         gridDefination: { xs: 12, sm: 6 },
         jsonPath: "applyScreen.additionalDetails.ledgerId",
-        pattern: /^[A-z0-9À-ž\s]*$/i,
+        //pattern: /^[A-z0-9À-ž\s]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
   }),
 };
