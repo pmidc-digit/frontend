@@ -175,7 +175,6 @@ export const createBill = getCommonCard({
         jsonPath: "generateBillScreen.mohallaData",
 
       },
-      //visible: true,
       required: false,
       gridDefination: {
         xs: 12,
@@ -199,7 +198,6 @@ export const createBill = getCommonCard({
         jsonPath: "generateBillScreen.batch",
 
       },
-      //visible: false,
       required: false,
       gridDefination: {
         xs: 12,
