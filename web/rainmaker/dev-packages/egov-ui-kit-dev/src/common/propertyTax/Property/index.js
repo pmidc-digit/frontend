@@ -340,14 +340,15 @@ alert("This operation is not allowed as Property is not already active.");
 
 
     const propertyId = decodeURIComponent(this.props.match.params.propertyId);
+    //console.log("sdhsjdbsjd usgs dsuds "+JSON.stringify(this.props))
     const { totalBillAmountDue, Assessments } = this.props;
     if (Assessments && Assessments.length > 0 && Assessments[0].propertyId == propertyId && !this.state.billFetched) {
-      this.setState({ billFetched: true })
-      this.props.fetchTotalBillAmount([
-        { key: "consumerCode", value: propertyId },
-        { key: "tenantId", value: this.props.match.params.tenantId },
-        { key: "businessService", value: 'PT' }
-      ]);
+     this.setState({ billFetched: true })
+     // this.props.fetchTotalBillAmount([
+     //   { key: "consumerCode", value: propertyId },
+     //  { key: "tenantId", value: this.props.match.params.tenantId },
+     //   { key: "businessService", value: 'PT' }
+     // ]);
     }
   }
 
@@ -379,7 +380,7 @@ alert("This operation is not allowed as Property is not already active.");
       propertyId,
       selPropertyDetails,
       receiptsByYr,
-      totalBillAmountDue,
+     // totalBillAmountDue,
       documentsUploaded,
       loading
     } = this.props;
@@ -408,7 +409,7 @@ alert("This operation is not allowed as Property is not already active.");
             hoverColor="#fff"
             properties={selPropertyDetails}
             generalMDMSDataById={generalMDMSDataById && generalMDMSDataById}
-            totalBillAmountDue={totalBillAmountDue}
+            //totalBillAmountDue={totalBillAmountDue}
             documentsUploaded={documentsUploaded}
             toggleSnackbarAndSetText={this.props.toggleSnackbarAndSetText}
           />
@@ -847,7 +848,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchGeneralMDMSData: (requestBody, moduleName, masterName) => dispatch(fetchGeneralMDMSData(requestBody, moduleName, masterName)),
     fetchProperties: (queryObjectProperty) => dispatch(fetchProperties(queryObjectProperty)),
     getSingleAssesmentandStatus: (queryObj) => dispatch(getSingleAssesmentandStatus(queryObj)),
-    fetchTotalBillAmount: (fetchBillQueryObject) => dispatch(fetchTotalBillAmount(fetchBillQueryObject)),
+    //fetchTotalBillAmount: (fetchBillQueryObject) => dispatch(fetchTotalBillAmount(fetchBillQueryObject)),
     fetchReceipt: (fetchReceiptQueryObject) => dispatch(fetchReceipt(fetchReceiptQueryObject)),
     toggleSnackbarAndSetText: (open, message, error) => dispatch(toggleSnackbarAndSetText(open, message, error)),
     fetchAssessments: (fetchAssessmentsQueryObject) => dispatch(fetchAssessments(fetchAssessmentsQueryObject)),
