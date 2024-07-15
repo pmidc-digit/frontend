@@ -1,4 +1,4 @@
-import { handleScreenConfigurationFieldChange as handleField, toggleSnackbar ,prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { handleScreenConfigurationFieldChange as handleField, toggleSnackbar, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getUserInfo, getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
 
 import get from "lodash/get";
@@ -8,114 +8,144 @@ import { convertDateToEpoch, convertEpochToDate, resetFieldsForGenerateBills, re
 import { httpRequest } from "../../../../../ui-utils";
 
 export const generateBillApiCall = async (state, dispatch) => {
- // showHideApplicationTable(false, dispatch);
- // showHideConnectionTable(false, dispatch);
+  // showHideApplicationTable(false, dispatch);
+  // showHideConnectionTable(false, dispatch);
   let getCurrentTab = get(state.screenConfiguration.preparedFinalObject, "currentTab");
- // let currentSearchTab = getCurrentTab === undefined ? "CREATE_BILL" : getCurrentTab;
- let currentSearchTab =  "CREATE_BILL";
- if (currentSearchTab === "CREATE_BILL") {
-  //  resetFieldsForGenerateBills(state, dispatch);
-  //  await renderGenerateBillTable(state, dispatch);
-  
-  let generateBillScreenObject = get(state.screenConfiguration.preparedFinalObject, "generateBillScreen", {});
+  // let currentSearchTab = getCurrentTab === undefined ? "CREATE_BILL" : getCurrentTab;
+  let currentSearchTab = "CREATE_BILL";
+  if (currentSearchTab === "CREATE_BILL") {
+    //  resetFieldsForGenerateBills(state, dispatch);
+    //  await renderGenerateBillTable(state, dispatch);
+
+    let generateBillScreenObject = get(state.screenConfiguration.preparedFinalObject, "generateBillScreen", {});
     Object.keys(generateBillScreenObject).forEach((key) => (generateBillScreenObject[key] == "") && delete generateBillScreenObject[key]);
     if (Object.values(generateBillScreenObject).length <= 1) {
-      dispatch(toggleSnackbar(true, {labelName:"Please provide the connection type and mohalla code for generate bill", label: "Please provide the connection type and mohalla code for generate bill" }, "warning"));
+      dispatch(toggleSnackbar(true, { labelName: "Please provide the connection type and mohalla code for generate bill", label: "Please provide the connection type and mohalla code for generate bill" }, "warning"));
     }
-    else if ((generateBillScreenObject["mohallaData"] === undefined || generateBillScreenObject["mohallaData"].length === 0) &&
-    generateBillScreenObject["transactionType"] !== undefined && generateBillScreenObject["transactionType"].length !== 0) 
-    {
-      dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
+    // else if ((generateBillScreenObject["mohallaData"] === undefined || generateBillScreenObject["mohallaData"].length === 0 || generateBillScreenObject["batch"] === undefined || generateBillScreenObject["batch"].length === 0) &&
+    //   generateBillScreenObject["transactionType"] !== undefined && generateBillScreenObject["transactionType"].length !== 0) {
+    //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
+    // }
+    else {
+      let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
+      if (batchtypechk == "Locality") {
+        var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
+          generateBillScreenObject["mohallaData"].lastIndexOf("(") + 1,
+          generateBillScreenObject["mohallaData"].lastIndexOf(")")).trim();
+      }
+      try {
+        let transactionType = null;
+        if (generateBillScreenObject["transactionType"] == "Sewerage") {
+          transactionType = "SW";
+        }
+        else if (generateBillScreenObject["transactionType"] == "Water") {
+          transactionType = "WS";
+        }
+
+        let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
+        let billSchedulerObject;
+
+        if (batchtypechk == "Batch") {
+          billSchedulerObject = {
+            "transactionType": transactionType,
+            "status": "INITIATED",
+            "locality": batchdata,
+            "billingcycleStartdate": 0,
+            "billingcycleEnddate": 0,
+            "isBatch": true,
+            "tenantId": getTenantIdCommon(),
+          }
+        }
+        else {
+          billSchedulerObject = {
+            "transactionType": transactionType,
+            "status": "INITIATED",
+            "locality": mohallaDataCode,
+            "billingcycleStartdate": 0,
+            "billingcycleEnddate": 0,
+            "isBatch": false,
+            "tenantId": getTenantIdCommon(),
+          }
+        }
+        let response = null;
+
+        if (transactionType == "WS") {
+          response = await httpRequest(
+            "post",
+            "/ws-calculator/watercharges/scheduler/_create",
+            "_create",
+            [],
+            { BillScheduler: billSchedulerObject }
+          );
+
+          if (response.billScheduler.length > 0) {
+            alert("Water Bill Generated ");
+          }
+          else {
+            alert("Water Bill Not Generated ");
+          }
+
+        }
+        else {
+          response = await httpRequest(
+            "post",
+            "/sw-calculator/seweragecharges/scheduler/_create",
+            "_create",
+            [],
+            { BillScheduler: billSchedulerObject }
+          );
+          if (response.billScheduler.length > 0) {
+            alert("Sewerage Bill Generated ");
+          }
+          else {
+            alert("Sewerage Bill Not Generated ");
+          }
+        }
+
+        let createBillArray = [];
+        let billRow = null;
+        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId;
+
+        response.billScheduler.map((element, index) => {
+          transactionType = element.transactionType;
+          locality = element.locality;
+          billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
+          billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
+          status = element.status;
+          tenantId = element.tenantId;
+
+          billRow = {
+            "transactionType": transactionType,
+            "locality": locality,
+            "billingcycleStartdate": billingcycleStartdate,
+            "billingcycleEnddate": billingcycleEnddate,
+            "status": status,
+            "tenantId": tenantId,
+          };
+          createBillArray.push(billRow);
+        });
+
+        dispatch(prepareFinalObject("createBillResponse", createBillArray));
+
+      }
+      catch (err) {
+        dispatch(toggleSnackbar(true, { labelName: "" + err, label: "Please provide the connection type and mohalla code for generate bill" }, "warning"));
+        console.log(err)
+      }
+
+
+
+
+
     }
-  else{
-    var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
-      generateBillScreenObject["mohallaData"].lastIndexOf("(") + 1, 
-      generateBillScreenObject["mohallaData"].lastIndexOf(")")).trim();
-
-try {
-  let transactionType=null;  
-if(generateBillScreenObject["transactionType"]=="Sewerage")
-{
-  transactionType = "SW";
-}
-else if(generateBillScreenObject["transactionType"]=="Water")
-{
-  transactionType = "WS";
-}
-let billSchedulerObject = {
-  "transactionType": transactionType,
-  "status":"INITIATED",
-  "locality":mohallaDataCode,
-  "billingcycleStartdate": 0,
-  "billingcycleEnddate":0,
-  "tenantId":getTenantIdCommon(),
- }
- let response=null;
-  
-if(transactionType=="WS")
-{
- response = await httpRequest(
-  "post",
-  "/ws-calculator/watercharges/scheduler/_create",
-  "_create",
-  [],
-  {BillScheduler:billSchedulerObject}
-  );
- }
- else{
-  response = await httpRequest(
-    "post",
-    "/sw-calculator/seweragecharges/scheduler/_create",
-    "_create",
-    [],
-    {BillScheduler:billSchedulerObject}
-    );
- }
-
-let createBillArray = [];
-    let billRow=null;
-    let locality,billingcycleStartdate,billingcycleEnddate,status ,tenantId;
-
-response.billScheduler.map((element,index) => {
-  transactionType = element.transactionType;
-  locality = element.locality;
-  billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
-  billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
-  status = element.status;
-  tenantId = element.tenantId;
-
-  billRow={
-    "transactionType":transactionType,
-    "locality":locality,
-    "billingcycleStartdate":billingcycleStartdate,
-    "billingcycleEnddate":billingcycleEnddate,
-    "status":status,
-    "tenantId":tenantId,
-  };
-  createBillArray.push(billRow);
-});
-
-dispatch(prepareFinalObject("createBillResponse", createBillArray));
-
-}
-catch (err) {
-  dispatch(toggleSnackbar(true, {labelName:""+err, label: "Please provide the connection type and mohalla code for generate bill" }, "warning"));
-  console.log(err) 
-  }
-
-
-
 
 
   }
-  
-  
-  } 
   else {
     resetFieldsForSearchBills(state, dispatch);
     await renderSearchApplicationTable(state, dispatch);
   }
-  
+
 }
 
 
@@ -123,118 +153,114 @@ catch (err) {
 export const searchBillApiCall = async (state, dispatch) => {
   // showHideApplicationTable(false, dispatch);
   // showHideConnectionTable(false, dispatch);
-   let getCurrentTab = get(state.screenConfiguration.preparedFinalObject, "currentTab");
-   let currentSearchTab =  "SEARCH_BILL";
-   if (currentSearchTab === "SEARCH_BILL") {
-   //  resetFieldsForGenerateBills(state, dispatch);
-   //  await renderGenerateBillTable(state, dispatch);
-   
-   let searchBillScreenObject = get(state.screenConfiguration.preparedFinalObject, "generateBillScreen", {});
-     Object.keys(searchBillScreenObject).forEach((key) => (searchBillScreenObject[key] == "") && delete searchBillScreenObject[key]);
-     if (Object.values(searchBillScreenObject).length <= 1) {
-     
-       dispatch(toggleSnackbar(true, {labelName:"Please provide the connection type and mohalla code for search bill", label: "Please provide the connection type and mohalla code for search bill" }, "warning"));
-     }
-     else if ((searchBillScreenObject["mohallaData"] === undefined || searchBillScreenObject["mohallaData"].length === 0) &&
-     searchBillScreenObject["transactionType"] !== undefined && searchBillScreenObject["transactionType"].length !== 0) 
-     {
-     
-       dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
-     }
-   else{
-       var mohallaDataCode = searchBillScreenObject["mohallaData"].substring(
-        searchBillScreenObject["mohallaData"].lastIndexOf("(") + 1, 
+  let getCurrentTab = get(state.screenConfiguration.preparedFinalObject, "currentTab");
+  let currentSearchTab = "SEARCH_BILL";
+  if (currentSearchTab === "SEARCH_BILL") {
+    //  resetFieldsForGenerateBills(state, dispatch);
+    //  await renderGenerateBillTable(state, dispatch);
+
+    let searchBillScreenObject = get(state.screenConfiguration.preparedFinalObject, "generateBillScreen", {});
+    Object.keys(searchBillScreenObject).forEach((key) => (searchBillScreenObject[key] == "") && delete searchBillScreenObject[key]);
+    if (Object.values(searchBillScreenObject).length <= 1) {
+
+      dispatch(toggleSnackbar(true, { labelName: "Please provide the connection type and mohalla code for search bill", label: "Please provide the connection type and mohalla code for search bill" }, "warning"));
+    }
+    // else if ((searchBillScreenObject["mohallaData"] === undefined || searchBillScreenObject["mohallaData"].length === 0) &&
+    //   searchBillScreenObject["transactionType"] !== undefined && searchBillScreenObject["transactionType"].length !== 0) {
+
+    //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
+    // }
+    else {
+      var mohallaDataCode = searchBillScreenObject["mohallaData"].substring(
+        searchBillScreenObject["mohallaData"].lastIndexOf("(") + 1,
         searchBillScreenObject["mohallaData"].lastIndexOf(")")).trim();
- var transactionType;  
- if(searchBillScreenObject["transactionType"]=="Sewerage")
- {
-   transactionType = "SW";
- }
- else if(searchBillScreenObject["transactionType"]=="Water")
- {
-   transactionType = "WS";
- }
- 
- 
- 
- try {
-  let tenant_Id = getTenantIdCommon();
-  let  response=null;
-  
-  if(transactionType=="WS")
-  {response= await httpRequest(
-   "post",
-   `ws-calculator/watercharges/scheduler/_search?tenantId=${tenant_Id}&locality=${mohallaDataCode}`,
-   "_search",
-   [],
-   {}
-   );
+      var transactionType;
+      if (searchBillScreenObject["transactionType"] == "Sewerage") {
+        transactionType = "SW";
+      }
+      else if (searchBillScreenObject["transactionType"] == "Water") {
+        transactionType = "WS";
+      }
+
+
+
+      try {
+        let tenant_Id = getTenantIdCommon();
+        let response = null;
+
+        if (transactionType == "WS") {
+          response = await httpRequest(
+            "post",
+            `ws-calculator/watercharges/scheduler/_search?tenantId=${tenant_Id}&locality=${mohallaDataCode}`,
+            "_search",
+            [],
+            {}
+          );
+        }
+        else {
+          response = await httpRequest(
+            "post",
+            `sw-calculator/seweragecharges/scheduler/_search?tenantId=${tenant_Id}&locality=${mohallaDataCode}`,
+            "_search",
+            [],
+            {}
+          );
+        }
+
+
+        let searchBillArray = [];
+        let billRow = null;
+        let transactionType, locality, billingcycleStartdate, billingcycleEnddate, status, tenantId;
+
+        response.billScheduler.map((element, index) => {
+          transactionType = element.transactionType;
+          locality = element.locality;
+          billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
+          billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
+          status = element.status;
+          tenantId = element.tenantId;
+          billRow = {
+            "transactionType": transactionType,
+            "locality": locality,
+            "billingcycleStartdate": billingcycleStartdate,
+            "billingcycleEnddate": billingcycleEnddate,
+            "status": status,
+            "tenantId": tenantId,
+          };
+          searchBillArray.push(billRow);
+        });
+        //dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
+        dispatch(prepareFinalObject("createBillResponse", searchBillArray));
+        if (searchBillArray.length == 0) {
+
+          dispatch(toggleSnackbar(true, { labelName: "No Data Found", label: "" }, "warning"));
+
+        }
+      }
+
+
+
+
+      catch (err) {
+        dispatch(toggleSnackbar(true, { labelName: "" + err, label: "Please" }, "warning"));
+        console.log(err)
+      }
+
+
+
+
+
+    }
+
+
   }
-  else{
-    response= await httpRequest(
-      "post",
-      `sw-calculator/seweragecharges/scheduler/_search?tenantId=${tenant_Id}&locality=${mohallaDataCode}`,
-      "_search",
-      [],
-      {}
-      ); 
+  else {
+    resetFieldsForSearchBills(state, dispatch);
+    await renderSearchApplicationTable(state, dispatch);
   }
- 
 
- let searchBillArray = [];
- let billRow=null;
- let transactionType,locality,billingcycleStartdate,billingcycleEnddate,status ,tenantId;
-
-response.billScheduler.map((element,index) => {
-transactionType = element.transactionType;
-locality = element.locality;
-billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
-billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
-status = element.status;
-tenantId = element.tenantId;
-billRow={
- "transactionType":transactionType,
- "locality":locality,
- "billingcycleStartdate":billingcycleStartdate,
- "billingcycleEnddate":billingcycleEnddate,
- "status":status,
- "tenantId":tenantId,
-};
-searchBillArray.push(billRow);
-});
-//dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
-dispatch(prepareFinalObject("createBillResponse", searchBillArray));
-if(searchBillArray.length==0)
-{
-  
-  dispatch(toggleSnackbar(true, {labelName:"No Data Found", label: "" }, "warning"));
- 
-}
 }
 
-
-
-
- catch (err) {
-   dispatch(toggleSnackbar(true, {labelName:""+err, label: "Please" }, "warning"));
-   console.log(err) 
-   }
- 
- 
- 
- 
- 
-   }
-   
-   
-   } 
-   else {
-     resetFieldsForSearchBills(state, dispatch);
-     await renderSearchApplicationTable(state, dispatch);
-   }
-   
- }
- 
 
 
 
@@ -254,14 +280,15 @@ const renderGenerateBillTable = async (state, dispatch) => {
   let searchScreenObject = get(state.screenConfiguration.preparedFinalObject, "generateBillScreen", {});
   Object.keys(searchScreenObject).forEach((key) => (searchScreenObject[key] == "") && delete searchScreenObject[key]);
   if (Object.values(searchScreenObject).length <= 1) {
-    dispatch(toggleSnackbar(true, {labelName:"Please provide the connection type and mohalla code for generate bill", labelKey: "ERR_PT_COMMON_FILL_MANDATORY_FIELDS" }, "warning"));
-  } else if (
-   
-    (searchScreenObject["mohallaData"] === undefined || searchScreenObject["mohallaData"].length === 0) &&
-    searchScreenObject["transactionType"] !== undefined && searchScreenObject["transactionType"].length !== 0) {
-    dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
-  } 
-  
+    dispatch(toggleSnackbar(true, { labelName: "Please provide the connection type and mohalla code for generate bill", labelKey: "ERR_PT_COMMON_FILL_MANDATORY_FIELDS" }, "warning"));
+  }
+  // else if (
+
+  //   (searchScreenObject["mohallaData"] === undefined || searchScreenObject["mohallaData"].length === 0) &&
+  //   searchScreenObject["transactionType"] !== undefined && searchScreenObject["transactionType"].length !== 0) {
+  //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
+  // }
+
   else {
     for (var key in searchScreenObject) {
       if (searchScreenObject.hasOwnProperty(key) && searchScreenObject[key].trim() !== "") {
@@ -278,20 +305,20 @@ const renderGenerateBillTable = async (state, dispatch) => {
       let waterMeteredDemandExipryDate = 0;
       let waterNonMeteredDemandExipryDate = 0;
       let sewerageNonMeteredDemandExpiryDate = 0;
-      let payloadbillingPeriod="";
+      let payloadbillingPeriod = "";
       try {
         // Get the MDMS data for billingPeriod
         let mdmsBody = {
           MdmsCriteria: {
             tenantId: getTenantIdCommon(),
             moduleDetails: [
-              { moduleName: "ws-services-masters", masterDetails: [{ name: "billingPeriod" }]},
-              { moduleName: "sw-services-calculation", masterDetails: [{ name: "billingPeriod" }]}
+              { moduleName: "ws-services-masters", masterDetails: [{ name: "billingPeriod" }] },
+              { moduleName: "sw-services-calculation", masterDetails: [{ name: "billingPeriod" }] }
             ]
           }
         }
         //Read metered & non-metered demand expiry date and assign value.
-        payloadbillingPeriod = await httpRequest("post", "/egov-mdms-service/v1/_search", "_search", [], mdmsBody);        
+        payloadbillingPeriod = await httpRequest("post", "/egov-mdms-service/v1/_search", "_search", [], mdmsBody);
         console.log(payloadbillingPeriod);
       } catch (err) { console.log(err) }
       let getSearchResult = getSearchResults(queryObject)
@@ -313,62 +340,62 @@ const renderGenerateBillTable = async (state, dispatch) => {
             queryObjectForWaterFetchBill = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "consumerCode", value: element.connectionNo }, { key: "businessService", value: "SW" }];
           }
 
-          if (element.service === serviceConst.WATER && 
-              payloadbillingPeriod && 
-              payloadbillingPeriod.MdmsRes['ws-services-masters'] && 
-              payloadbillingPeriod.MdmsRes['ws-services-masters'].billingPeriod !== undefined && 
-              payloadbillingPeriod.MdmsRes['ws-services-masters'].billingPeriod  !== null) {
-              payloadbillingPeriod.MdmsRes['ws-services-masters'].billingPeriod.forEach(obj => {
-                if(obj.connectionType === 'Metered') {
-                  waterMeteredDemandExipryDate = obj.demandExpiryDate;
-                } else if (obj.connectionType === 'Non Metered') {
-                  waterNonMeteredDemandExipryDate = obj.demandExpiryDate;
-                }
-              }); 
+          if (element.service === serviceConst.WATER &&
+            payloadbillingPeriod &&
+            payloadbillingPeriod.MdmsRes['ws-services-masters'] &&
+            payloadbillingPeriod.MdmsRes['ws-services-masters'].billingPeriod !== undefined &&
+            payloadbillingPeriod.MdmsRes['ws-services-masters'].billingPeriod !== null) {
+            payloadbillingPeriod.MdmsRes['ws-services-masters'].billingPeriod.forEach(obj => {
+              if (obj.connectionType === 'Metered') {
+                waterMeteredDemandExipryDate = obj.demandExpiryDate;
+              } else if (obj.connectionType === 'Non Metered') {
+                waterNonMeteredDemandExipryDate = obj.demandExpiryDate;
+              }
+            });
           }
-          if (element.service === serviceConst.SEWERAGE && 
-              payloadbillingPeriod && 
-              payloadbillingPeriod.MdmsRes['sw-services-calculation'] && 
-              payloadbillingPeriod.MdmsRes['sw-services-calculation'].billingPeriod !== undefined && 
-              payloadbillingPeriod.MdmsRes['sw-services-calculation'].billingPeriod  !== null) {
-              payloadbillingPeriod.MdmsRes['sw-services-calculation'].billingPeriod.forEach(obj => {
+          if (element.service === serviceConst.SEWERAGE &&
+            payloadbillingPeriod &&
+            payloadbillingPeriod.MdmsRes['sw-services-calculation'] &&
+            payloadbillingPeriod.MdmsRes['sw-services-calculation'].billingPeriod !== undefined &&
+            payloadbillingPeriod.MdmsRes['sw-services-calculation'].billingPeriod !== null) {
+            payloadbillingPeriod.MdmsRes['sw-services-calculation'].billingPeriod.forEach(obj => {
               if (obj.connectionType === 'Non Metered') {
                 sewerageNonMeteredDemandExpiryDate = obj.demandExpiryDate;
               }
-            }); 
+            });
           }
 
           let billResults = await fetchBill(queryObjectForWaterFetchBill, dispatch)
           let updatedDueDate = 0;
           billResults && billResults.Bill.length > 0 && billResults.Bill[0].billDetails.map(bill => {
-            if(element.service === serviceConst.WATER) {
+            if (element.service === serviceConst.WATER) {
               updatedDueDate = bill.expiryDate;
             } else if (element.service === serviceConst.SEWERAGE) {
               updatedDueDate = bill.expiryDate;
             }
           });
-            billResults && billResults.Bill.length > 0 ? finalArray.push({
-              due: billResults.Bill[0].totalAmount,
-              dueDate: updatedDueDate,
-              service: element.service,
-              connectionNo: element.connectionNo,
-              name: (element.property)?element.property.owners[0].name:'',
-              status: element.status,
-              address: handleAddress(element),
-              connectionType: element.connectionType,
-              tenantId:element.tenantId
-            })
-           : finalArray.push({
-            due: billResults && billResults.Bill.length > 0 ? billResults.Bill[0].totalAmount : '0',
-            dueDate: 'NA',
+          billResults && billResults.Bill.length > 0 ? finalArray.push({
+            due: billResults.Bill[0].totalAmount,
+            dueDate: updatedDueDate,
             service: element.service,
             connectionNo: element.connectionNo,
-            name: (element.property)?element.property.owners[0].name:'',
+            name: (element.property) ? element.property.owners[0].name : '',
             status: element.status,
             address: handleAddress(element),
             connectionType: element.connectionType,
-            tenantId:element.tenantId
+            tenantId: element.tenantId
           })
+            : finalArray.push({
+              due: billResults && billResults.Bill.length > 0 ? billResults.Bill[0].totalAmount : '0',
+              dueDate: 'NA',
+              service: element.service,
+              connectionNo: element.connectionNo,
+              name: (element.property) ? element.property.owners[0].name : '',
+              status: element.status,
+              address: handleAddress(element),
+              connectionType: element.connectionType,
+              tenantId: element.tenantId
+            })
         }
 
       }
@@ -413,13 +440,13 @@ const renderSearchApplicationTable = async (state, dispatch) => {
         } else if (key === "toDate") {
           queryObject.push({ key: key, value: convertDateToEpoch(searchScreenObject[key], "dayend") });
         } else if (key === "applicationType") {
-          queryObject.push({ key: key, value: searchScreenObject[key].replace(/ /g,'_')});
+          queryObject.push({ key: key, value: searchScreenObject[key].replace(/ /g, '_') });
         } else {
           queryObject.push({ key: key, value: searchScreenObject[key].trim() });
         }
       }
     }
-    try { 
+    try {
       let getSearchResult, getSearchResultForSewerage;
       if (searchScreenObject.applicationType && searchScreenObject.applicationType.toLowerCase().includes('water')) {
         getSearchResult = getSearchResults(queryObject)
@@ -427,7 +454,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
         getSearchResultForSewerage = getSearchResultsForSewerage(queryObject, dispatch)
       } else {
         getSearchResult = getSearchResults(queryObject),
-        getSearchResultForSewerage = getSearchResultsForSewerage(queryObject, dispatch)
+          getSearchResultForSewerage = getSearchResultsForSewerage(queryObject, dispatch)
       }
       let finalArray = [];
       let searchWaterConnectionResults, searcSewerageConnectionResults;
@@ -444,16 +471,16 @@ const renderSearchApplicationTable = async (state, dispatch) => {
         if (element.applicationNo !== "NA" && element.applicationNo !== undefined) {
           appNo = appNo + element.applicationNo + ",";
         }
-        if(i % 50 === 0 || i === (combinedSearchResults.length-1)) {
+        if (i % 50 === 0 || i === (combinedSearchResults.length - 1)) {
           //We are trying to fetch 50 WF objects at a time
-          appNo = appNo.substring(0, appNo.length-1);
+          appNo = appNo.substring(0, appNo.length - 1);
           const queryObj = [
             { key: "businessIds", value: appNo },
             { key: "history", value: true },
             { key: "tenantId", value: getTenantIdCommon() }
           ];
           let wfResponse = await getWorkFlowData(queryObj);
-          if(wfResponse !== null && wfResponse.ProcessInstances !== null) {
+          if (wfResponse !== null && wfResponse.ProcessInstances !== null) {
             combinedWFSearchResults = combinedWFSearchResults.concat(wfResponse.ProcessInstances);
           }
           appNo = "";
@@ -471,8 +498,8 @@ const renderSearchApplicationTable = async (state, dispatch) => {
         if (element.applicationNo !== "NA" && element.applicationNo !== undefined) {
           appStatus = combinedWFSearchResults.filter(item => item.businessId.includes(element.applicationNo))[0]
           if (appStatus !== undefined && appStatus.state !== undefined) {
-            appStatus = appStatus.state.applicationStatus;            
-          }else{
+            appStatus = appStatus.state.applicationStatus;
+          } else {
             appStatus = "NA";
           }
           if (element.property && element.property.owners &&
@@ -498,7 +525,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               connectionNo: element.connectionNo,
               applicationNo: element.applicationNo,
               applicationType: element.applicationType,
-              name: (element.property && element.property !== "NA" && element.property.owners)?element.property.owners[0].name:"",
+              name: (element.property && element.property !== "NA" && element.property.owners) ? element.property.owners[0].name : "",
               applicationStatus: appStatus,
               address: handleAddress(element),
               service: element.service,
@@ -560,7 +587,7 @@ const showConnectionResults = (connections, dispatch) => {
 }
 
 const getApplicationType = (applicationType) => {
-  return (applicationType)?applicationType.split("_").join(" "):applicationType;
+  return (applicationType) ? applicationType.split("_").join(" ") : applicationType;
 }
 const showApplicationResults = (connections, dispatch) => {
   let data = connections.map(item => ({

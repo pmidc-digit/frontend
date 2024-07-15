@@ -139,27 +139,29 @@ class Footer extends React.Component {
           )
         }else{
           console.log("error");
-          dispatch(
-            toggleSnackbar(
-              true, {
-              labelKey: "Unable to Generate Demand for this Connection",
-              labelName: "Unable to Generate Demand for this Connection"
-            },
-              "warning"
-            )
-          )
+          alert("Unable to Generate Demand for this Connection");
+          // dispatch(
+          //   toggleSnackbar(
+          //     true, {
+          //     labelKey: "Unable to Generate Demand for this Connection",
+          //     labelName: "Unable to Generate Demand for this Connection"
+          //   },
+          //     "warning"
+          //   )
+          // )
         }
       }
       catch(e){
-        dispatch(
-          toggleSnackbar(
-            true, {
-            labelKey: "Unable to Generate Demand for this Sewerage Connection",
-            labelName: "Unable to Generate Demand for this Sewerage Connection"
-          },
-            "warning"
-          )
-        ) 
+        alert("Unable to Generate Demand for this Sewerage Connection");
+        // dispatch(
+        //   toggleSnackbar(
+        //     true, {
+        //     labelKey: "Unable to Generate Demand for this Sewerage Connection",
+        //     labelName: "Unable to Generate Demand for this Sewerage Connection"
+        //   },
+        //     "warning"
+        //   )
+        // ) 
       }
 
       }
@@ -177,39 +179,42 @@ class Footer extends React.Component {
         );
         if(payload){
           alert(payload.message +"   "+payload.status);
-          dispatch(
-            toggleSnackbar(
-              true, {
-              labelKey: "Generate Demand for this Water Connection",
-              labelName: "Generate Demand for this Water Connection"
-            },
-              "success"
-            )
-          )
+
+          // dispatch(
+          //   toggleSnackbar(
+          //     true, {
+          //     labelKey: "Generate Demand for this Water Connection",
+          //     labelName: "Generate Demand for this Water Connection"
+          //   },
+          //     "success"
+          //   )
+          // )
         }
         else{
+          alert("Unable to Generate Demand for this Water Connection");
           console.log("error");
-          dispatch(
-            toggleSnackbar(
-              true, {
-              labelKey: "Unable to Generate Demand for this Water Connection",
-              labelName: "Unable to Generate Demand for this Water Connection"
-            },
-              "warning"
-            )
-          )
+          // dispatch(
+          //   toggleSnackbar(
+          //     true, {
+          //     labelKey: "Unable to Generate Demand for this Water Connection",
+          //     labelName: "Unable to Generate Demand for this Water Connection"
+          //   },
+          //     "warning"
+          //   )
+          // )
         }
       }
       catch(e){
-        dispatch(
-          toggleSnackbar(
-            true, {
-            labelKey: "Unable to Generate Demand for this Connection",
-            labelName: "Unable to Generate Demand for this Connection"
-          },
-            "warning"
-          )
-        ) 
+        alert("Unable to Generate Demand for this Connection");
+        // dispatch(
+        //   toggleSnackbar(
+        //     true, {
+        //     labelKey: "Unable to Generate Demand for this Connection",
+        //     labelName: "Unable to Generate Demand for this Connection"
+        //   },
+        //     "warning"
+        //   )
+        // ) 
       }
 
       }
