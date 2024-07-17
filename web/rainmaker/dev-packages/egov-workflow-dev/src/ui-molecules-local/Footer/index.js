@@ -518,9 +518,10 @@ employeeList.push(i);
       },
       menu: downloadMenu
     };
+    console.log("download Menu : "+JSON.stringify(downloadMenu))
     return (
       <div className="wf-wizard-footer" id="custom-atoms-footer">
-        {!isEmpty(downloadMenu) && (
+        { process.env.REACT_APP_NAME != "Citizen" && !isEmpty(downloadMenu) && (
           <Container>
             <Item xs={12} sm={12} className="wf-footer-container">
               <MenuButton data={buttonItems} />
