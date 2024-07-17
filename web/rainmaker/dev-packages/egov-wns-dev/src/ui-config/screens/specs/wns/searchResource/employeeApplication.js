@@ -14,46 +14,7 @@ import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configurat
 import { httpRequest } from "../../../../../ui-utils/api";
 import store from "../../../../../ui-redux/store";
 import { getTenantId,getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
-let datalocality ; 
-async function dummy(action, state, dispatch) {
-  const tenantId =getTenantId();
-  debugger;
-  dispatch=store.dispatch;
-    try {
-      let payload = await httpRequest(
-        "post",
-        "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
-        "_search",
-        [{ key: "tenantId", value: tenantId }],
-        {}
-      );
-      console.log("payload", payload)
-      var dtlocality = payload &&
-      payload.TenantBoundary[0] &&
-      payload.TenantBoundary[0].boundary &&
-      payload.TenantBoundary[0].boundary.reduce((result, item) => {
-        result.push({ ...item });
-        return result;
-      }, []);
-      // datalocality.push(payload.TenantBoundary[0].boundary);
-      datalocality = dtlocality;
-      
-      dispatch(
-        prepareFinalObject(
-          "localities", datalocality
-        )
-      );
-      // dispatch(
-      //   fetchLocalizationLabel(getLocale(), action.value, action.value)
-      // );
 
-    } catch (e) {
-      console.log(e);
-    }
-    
-}
-dummy();
-console.log("cc",datalocality);
 export const wnsApplication = getCommonCard({
   subHeader: getCommonTitle({
     labelKey: "WS_SEARCH_CONNECTION_SUB_HEADER"
@@ -64,7 +25,7 @@ export const wnsApplication = getCommonCard({
   wnsApplicationContainer: getCommonContainer({
     city: {
       uiFramework: "custom-containers-local",
-      moduleName: "egov-hrms",
+      moduleName: "egov-wns",
       componentPath: "AutosuggestContainer",
       jsonPath: "searchConnection.tenantId",
       gridDefination: {
@@ -91,13 +52,9 @@ export const wnsApplication = getCommonCard({
         jsonPath: "searchConnection.tenantId",
         labelsFromLocalisation: true,
         required: true,
-        disabled: true,
-        isDisabled:true,
-      },
+       },
       required: true,
-      disabled: true,
-      isDisabled:true,
-    },
+      },
     propertyid: getTextField({
         label: {
             labelKey: "WS_PROPERTY_ID_LABEL"
@@ -162,7 +119,6 @@ export const wnsApplication = getCommonCard({
             sm: 4
         },
         required: false,
-        // pattern: /^[a-zA-Z0-9-]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "searchConnection.oldConnectionNumber"
     }),
@@ -173,32 +129,24 @@ export const wnsApplication = getCommonCard({
   jsonPath:"searchConnection.locality",
   required: true,
   props: {
-    // style: {
-    //   // width: "100%",
-    //   cursor: "pointer"
-    // },
     label: {
       labelName: "Locality/Mohalla",
-     // labelKey: "NOC_PROPERTY_DETAILS_MOHALLA_LABEL"
-    },
+      },
     placeholder: {
       labelName: "Select Locality/Mohalla",
-      //labelKey: "NOC_PROPERTY_DETAILS_MOHALLA_PLACEHOLDER"
-    },
-    //jsonPath:"searchConnection.locality",
+      },
+    
     sourceJsonPath: "localities",
-    //data: datalocality,
     labelsFromLocalisation: true,
     errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
     suggestions: [],
     fullwidth: true,
     required: false,
     disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
-   // type:hidden,
     inputLabelProps: {
       shrink: true
     }
-    // className: "tradelicense-mohalla-apply"
+    
   },
   
   gridDefination: {
