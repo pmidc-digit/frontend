@@ -6,7 +6,7 @@
 /*.css
 # ignoring css files as we used scss
 src//*.css
-
+index.css*
 
 # testing
 /coverage
