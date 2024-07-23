@@ -119,7 +119,7 @@ if(payloadReceiptDetails.Payments[0].payerName!=null){
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element,index) => {
     if(element.amountPaid >0 || element.amountPaid < 0)
     {
-    installment=convertEpochToDate(element.fromPeriod) +"-"+convertEpochToDate(element.toPeriod);
+   // installment=convertEpochToDate(element.fromPeriod) +"-"+convertEpochToDate(element.toPeriod);
     element.billAccountDetails.map((dd)=>{
     // if((dd.adjustedAmount > 0 || dd.adjustedAmount < 0) || (dd.amount < 0))
     // {
@@ -207,7 +207,7 @@ if(payloadReceiptDetails.Payments[0].payerName!=null){
       }
       else{
       dcbRow={
-        "taxhead":code + "("+installment+")",
+        "taxhead":code ,
         "amount":amount
       };}
       totalamount=totalamount+amount;
