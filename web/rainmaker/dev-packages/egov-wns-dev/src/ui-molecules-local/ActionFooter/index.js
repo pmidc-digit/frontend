@@ -50,7 +50,9 @@ class Footer extends React.Component {
           applicationNo && applicationNo.includes("WS")
             ? "WS_DUE_AMOUNT_SHOULD_BE_ZERO"
             : "SW_DUE_AMOUNT_SHOULD_BE_ZERO";
-        if (due && parseInt(due) > 0) {
+
+        //Remove condition while amount is greater than 0 also able to modify connection
+       /* if (due && parseInt(due) > 0) {
           toggleSnackbar(
             true,
             {
@@ -61,7 +63,7 @@ class Footer extends React.Component {
           );
 
           return false;
-        }
+        } */
 
         // check for the WF Exists
         const queryObj = [
