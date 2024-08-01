@@ -120,7 +120,7 @@ class YearDialog extends Component {
             <div className="dialogue-question">
               <Label label="PT_FINANCIAL_YEAR_PLACEHOLDER" fontSize="20px" color="black" />
             </div>
-            <div className="year-range-botton-cont">
+            <div className="year-range-botton-cont" style={{overflowY:"scroll",maxHeight:"300px"}}>
               {getYearList &&
                 Object.values(getYearList).map((item, index) => (
                   <YearDialogueHOC
