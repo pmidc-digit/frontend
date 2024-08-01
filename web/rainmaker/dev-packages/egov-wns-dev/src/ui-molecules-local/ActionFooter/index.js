@@ -46,13 +46,14 @@ class Footer extends React.Component {
       link: async () => {
         // checking for the due amount
         let due = getQueryArg(window.location.href, "due");
+        let legacy = getQueryArg(window.location.href, "legacy");
         let errLabel =
           applicationNo && applicationNo.includes("WS")
             ? "WS_DUE_AMOUNT_SHOULD_BE_ZERO"
             : "SW_DUE_AMOUNT_SHOULD_BE_ZERO";
-
+          //debugger
         //Remove condition while amount is greater than 0 also able to modify connection
-       /* if (due && parseInt(due) > 0) {
+        if (due && parseInt(due) > 0 &&  legacy ==='false')   {
           toggleSnackbar(
             true,
             {
@@ -63,14 +64,14 @@ class Footer extends React.Component {
           );
 
           return false;
-        } */
+        } 
 
         // check for the WF Exists
         const queryObj = [
           { key: "businessIds", value: applicationNos },
           { key: "tenantId", value: tenantId },
         ];
-        debugger;
+       // debugger;
         let isApplicationApproved = await isWorkflowExists(queryObj);
         if (!isApplicationApproved) {
           toggleSnackbar(
@@ -115,7 +116,7 @@ class Footer extends React.Component {
       label: "Single Demand",
       labelKey: "Single Demand",
       link: async (state, dispatch) => {
-        debugger;
+       // debugger;
        if(this.props.bill.Demands[0].businessService == "SW"){
        try{
         payload = await httpRequest(
