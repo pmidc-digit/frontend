@@ -119,8 +119,14 @@ export const searchResults = {
 };
 
 const getConnectionDetails = data => {
+  let legacy
+  if(data.rowData[10]=== true){
+      legacy = true
+  }else{
+    legacy =false
+  }
   store.dispatch(
-    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}`)
+    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}&legacy=${legacy}`)
   )
 }
 
