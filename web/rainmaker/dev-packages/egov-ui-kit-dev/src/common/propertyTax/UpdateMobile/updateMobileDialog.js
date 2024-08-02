@@ -146,7 +146,7 @@ export default class UpdateMobileDialog extends React.Component {
       property.owners.map(owner => {
         if (owner.uuid == propertyNumbers.uuid) {
           owner.mobileNumber = mobileNumber.value;
-          property.creationReason = "UPDATE";
+         // property.creationReason = "UPDATE";
           let documents = this.state.documents.filter(document => document.uploaded) || [];
           if (property.documents) {
             let docuNames = documents.map(doc => doc.code);
@@ -271,7 +271,7 @@ export default class UpdateMobileDialog extends React.Component {
 
   validateAndSendOtp = async () => {
     try {
-        debugger;
+        
       const newItem = { mobileNumber: this.state.fields.mobileNumber };
       if (Object.values(newItem).some((item) => item.value == "")) {
         this.setMessage("PT_SEC_ENTER_NAME_NUMBER", "ERROR");
