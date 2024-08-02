@@ -71,7 +71,7 @@ export default class UpdateMobile extends React.Component {
         if (this.props.type == "WARNING" && this.props.showWarning == true && prevProps.showWarning == false) {
             let { owners = [] } = this.state.property;
             let propertyNumbers = {};
-            owners = owners && owners.filter(owner => owner.status == "ACTIVE");
+            owners = owners && owners.filter(owner => owner.status == "ACTIVE" || owner.status == "PENDINGWS");
             owners && owners.map(owner => {
                 if (owner.mobileNumber == this.props.number) {
                     propertyNumbers = {
@@ -119,7 +119,7 @@ export default class UpdateMobile extends React.Component {
             this.setState({ property: propertyResponse.Properties[0] });
             let { owners = [] } = propertyResponse.Properties[0];
             let propertyNumbers = {};
-            owners = owners && owners.filter(owner => owner.status == "ACTIVE");
+            owners = owners && owners.filter(owner => owner.status == "ACTIVE" || owner.status == "PENDINGWS");
             owners && owners.map(owner => {
                 if (process.env.REACT_APP_NAME !== "Citizen") {
                     if ((number == updateNumberConfig.invalidNumber) || !number.match(updateNumberConfig['invalidPattern'])) {
@@ -168,7 +168,8 @@ export default class UpdateMobile extends React.Component {
     render() {
         const { propertyId = "", tenantId = "", closeDue } = this.props;
         const { property = {}, propertyNumbers = {} } = this.state;
-        return property && property.status == "ACTIVE" && <div>
+        debugger;
+        return property && (property.status == "ACTIVE" || property.status == "PENDINGWS") && <div>
             {this.canShowEditOption() && VerifyButton(this.props.type, this.toggleDialog)}
             {this.state.open && <UpdateMobileDialog
                 open={this.state.open}
