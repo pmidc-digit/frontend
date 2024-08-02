@@ -1,16 +1,7 @@
 import {
   getCommonCard,
-
-
   getCommonContainer, getCommonGrayCard, getCommonHeader,
-
-
-
-
   getCommonSubHeader, getCommonTitle,
-
-
-
   getLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, unMountScreen } from "egov-ui-framework/ui-redux/screen-configuration/actions";
@@ -682,7 +673,6 @@ const screenConfig = {
     }
 
     set(action, "screenConfig.components.adhocDialog.children.popup", adhocPopup);
-    debugger;
     loadUlbLogo(tenantId);
     beforeInitFn(action, state, dispatch, applicationNumber);
     set(

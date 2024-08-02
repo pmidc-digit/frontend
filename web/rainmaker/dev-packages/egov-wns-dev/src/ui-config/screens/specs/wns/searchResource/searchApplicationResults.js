@@ -86,6 +86,13 @@ export const searchApplicationResults = {
         options: {
           display: false
         }
+      },
+      {
+        name: "applicationStatusdata",
+        labelKey: "WS_COMMON_TABLE_COL_APPLICATION_STATUS_TEST",
+        options: {
+          display: false
+        }
       }
     ],
     title: {labelKey:"WS_HOME_SEARCH_APPLICATION_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Application"},
@@ -119,16 +126,17 @@ const getApplicationDetails = data => {
   let connectionNo = `${data.rowData[0]}`;
   if(connectionNo && connectionNo !== 'NA' && data.rowData[2].includes('MODIFY')) {
     store.dispatch(
-      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}&mode=MODIFY`)
+      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}&mode=MODIFY&applicationStatus=${data.rowData[9]}&connectionType=${data.rowData[8]}`)
     )
   } else {
     store.dispatch(
-      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}`)
+      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}&applicationStatus=${data.rowData[9]}&connectionType=${data.rowData[8]}`)
     )
   }
 }
 
 const getConnectionDetails = data => {
+  
   store.dispatch(
     setRoute(`connection-details?connectionNumber=${data.rowData[0]}&tenantId=${data.rowData[6]}&service=${data.rowData[7]}&connectionType=${data.rowData[8]}`)
   )

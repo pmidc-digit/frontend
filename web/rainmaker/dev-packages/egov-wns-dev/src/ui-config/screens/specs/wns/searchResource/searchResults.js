@@ -82,6 +82,7 @@ export const searchResults = {
           display: false
         }
       }
+      
     ],
     title: {labelKey:"WS_HOME_SEARCH_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Connections"},
     options: {
@@ -111,8 +112,9 @@ export const searchResults = {
 };
 
 const getConnectionDetails = data => {
+ 
   store.dispatch(
-    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}`)
+    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}&applicationStatus=${data.rowData[10]}`)
   )
 }
 

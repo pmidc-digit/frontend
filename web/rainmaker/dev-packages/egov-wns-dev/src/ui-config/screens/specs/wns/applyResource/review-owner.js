@@ -1,14 +1,29 @@
 import {
+  getCommonTitle,
+  getTextField,
+  getCommonContainer,
+  getPattern,
+  getDateField,
+  getLabel,
   getCommonGrayCard,
   getCommonSubHeader,
-  getCommonContainer,
   getLabelWithValue,
   getLabelWithValueForModifiedLabel,
-  getLabel,
+
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
-import { convertEpochToDateAndHandleNA, handleNA,handleRoadType } from "../../utils";
+import updatedActivationDetails from "./functions";
+import { httpRequest } from '../../../../../ui-utils/index';
+import {
+  handleScreenConfigurationFieldChange as handleField,
+  prepareFinalObject
+} from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { convertEpochToDateAndHandleNA, handleNA, handleRoadType } from "../../utils";
 import { serviceConst } from "../../../../../ui-utils/commons";
+
+let applicationStatusss = getQueryArg(window.location.href, "applicationStatus");
+let connectionTypeee = getQueryArg(window.location.href, "connectionType");
+
 const getHeader = label => {
   return {
     uiFramework: "custom-molecules-local",
@@ -41,6 +56,7 @@ const activationDetailsHeader = getHeader({
 });
 
 export const getReviewOwner = (isEditable = true) => {
+
   return getCommonGrayCard({
     headerDiv: {
       uiFramework: "custom-atoms",
@@ -104,14 +120,13 @@ export const getReviewOwner = (isEditable = true) => {
     viewTen: roadCuttingCharges,
     viewEleven: roadCuttingExtraCharges,
     viewTwelve: activationDetailsHeader,
-    viewThirteen: activationDetails
+    //viewThirteen: activationDetails
+    viewThirteen: (applicationStatusss == "PENDING_FOR_PAYMENT" && connectionTypeee == "Metered") ? getCommonContainer(activationDetailsContainer) : getCommonContainer(activateDetailsMeter),
   })
 };
 
-
-
-export const plumberDetails={
-  reviewPlumberProvidedBy : getLabelWithValueForModifiedLabel(
+export const plumberDetails = {
+  reviewPlumberProvidedBy: getLabelWithValueForModifiedLabel(
     {
       labelName: "Plumber provided by",
       labelKey: "WS_ADDN_DETAILS_PLUMBER_PROVIDED_BY"
@@ -120,14 +135,14 @@ export const plumberDetails={
       jsonPath: "WaterConnection[0].additionalDetails.detailsProvidedBy",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.detailsProvidedBy",
       callBack: handleNA
     }
   ),
-  reviewPlumberLicenseNo : getLabelWithValueForModifiedLabel(
+  reviewPlumberLicenseNo: getLabelWithValueForModifiedLabel(
     {
       labelName: "Plumber licence No",
       labelKey: "WS_ADDN_DETAILS_PLUMBER_LICENCE_NO_LABEL"
@@ -136,43 +151,51 @@ export const plumberDetails={
       jsonPath: "WaterConnection[0].plumberInfo[0].licenseNo",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].plumberInfo[0].licenseNo",
       callBack: handleNA
     }
   ),
-  reviewPlumberName : getLabelWithValueForModifiedLabel(
+  reviewPlumberName: getLabelWithValueForModifiedLabel(
     {
       labelName: "Plumber Name",
       labelKey: "WS_ADDN_DETAILS_PLUMBER_NAME_LABEL"
     },
-    { jsonPath: "WaterConnection[0].plumberInfo[0].name",
-      callBack: handleNA }, {
-        labelKey: "WS_OLD_LABEL_NAME"
-      },
-      { jsonPath: "WaterConnectionOld[0].plumberInfo[0].name",
-      callBack: handleNA }
+    {
+      jsonPath: "WaterConnection[0].plumberInfo[0].name",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].plumberInfo[0].name",
+      callBack: handleNA
+    }
   ),
-  reviewPlumberMobileNo : getLabelWithValueForModifiedLabel(
+  reviewPlumberMobileNo: getLabelWithValueForModifiedLabel(
     {
       labelName: "Plumber mobile No.",
       labelKey: "WS_ADDN_DETAILS_PLUMBER_MOB_NO_LABEL"
     },
-    { jsonPath: "WaterConnection[0].plumberInfo[0].mobileNumber",
-      callBack: handleNA }, {
-        labelKey: "WS_OLD_LABEL_NAME"
-      },
-      { jsonPath: "WaterConnectionOld[0].plumberInfo[0].mobileNumber",
-      callBack: handleNA }
+    {
+      jsonPath: "WaterConnection[0].plumberInfo[0].mobileNumber",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].plumberInfo[0].mobileNumber",
+      callBack: handleNA
+    }
   )
 
 
 }
 const connectionChargeDetails = getCommonContainer(plumberDetails);
-export const roadDetails={
-  reviewRoadType : getLabelWithValue(
+export const roadDetails = {
+  reviewRoadType: getLabelWithValue(
     {
       labelName: "Road Type",
       labelKey: "WS_ADDN_DETAIL_ROAD_TYPE"
@@ -182,7 +205,7 @@ export const roadDetails={
       callBack: handleRoadType
     }
   ),
-  reviewArea : getLabelWithValue(
+  reviewArea: getLabelWithValue(
     {
       labelName: "Area (in sq ft)",
       labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
@@ -195,7 +218,7 @@ export const roadDetails={
 }
 
 export const roadCuttingDetails = {
-  reviewCompositionFee : getLabelWithValueForModifiedLabel(
+  reviewCompositionFee: getLabelWithValueForModifiedLabel(
     {
       labelName: "Area (in sq ft)",
       labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
@@ -204,14 +227,14 @@ export const roadCuttingDetails = {
       jsonPath: "WaterConnection[0].additionalDetails.compositionFee",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.compositionFee",
       callBack: handleNA
     }
   ),
-  reviewUserCharges : getLabelWithValueForModifiedLabel(
+  reviewUserCharges: getLabelWithValueForModifiedLabel(
     {
       labelName: "Area (in sq ft)",
       labelKey: "WS_ADDN_USER_CHARGES_LABEL"
@@ -220,14 +243,14 @@ export const roadCuttingDetails = {
       jsonPath: "WaterConnection[0].additionalDetails.userCharges",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.userCharges",
       callBack: handleNA
     }
   ),
-  reviewOthersFee : getLabelWithValueForModifiedLabel(
+  reviewOthersFee: getLabelWithValueForModifiedLabel(
     {
       labelName: "Area (in sq ft)",
       labelKey: "WS_ADDN_OTHER_FEE_LABEL"
@@ -236,8 +259,8 @@ export const roadCuttingDetails = {
       jsonPath: "WaterConnection[0].additionalDetails.othersFee",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.othersFee",
       callBack: handleNA
@@ -262,8 +285,8 @@ export const roadCuttingCharges = {
   type: "array"
 };
 
-export const activateDetailsMeter={
-  reviewConnectionExecutionDate : getLabelWithValueForModifiedLabel(
+export const activateDetailsMeter = {
+  reviewConnectionExecutionDate: getLabelWithValueForModifiedLabel(
     {
       labelName: "Connection Execution Date",
       labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"
@@ -272,26 +295,30 @@ export const activateDetailsMeter={
       jsonPath: "WaterConnection[0].connectionExecutionDate",
       callBack: convertEpochToDateAndHandleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].connectionExecutionDate",
       callBack: convertEpochToDateAndHandleNA
     }
   ),
-  reviewMeterId : getLabelWithValueForModifiedLabel(
+  reviewMeterId: getLabelWithValueForModifiedLabel(
     {
       labelName: "Meter ID",
       labelKey: "WS_SERV_DETAIL_METER_ID"
     },
-    { jsonPath: "WaterConnection[0].meterId",
-      callBack: handleNA }, {
-        labelKey: "WS_OLD_LABEL_NAME"
-      },
-      { jsonPath: "WaterConnectionOld[0].meterId",
-      callBack: handleNA }
+    {
+      jsonPath: "WaterConnection[0].meterId",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].meterId",
+      callBack: handleNA
+    }
   ),
-  reviewMeterInstallationDate : getLabelWithValueForModifiedLabel(
+  reviewMeterInstallationDate: getLabelWithValueForModifiedLabel(
     {
       labelName: "Meter Installation Date",
       labelKey: "WS_ADDN_DETAIL_METER_INSTALL_DATE"
@@ -300,53 +327,231 @@ export const activateDetailsMeter={
       jsonPath: "WaterConnection[0].meterInstallationDate",
       callBack: convertEpochToDateAndHandleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].meterInstallationDate",
       callBack: convertEpochToDateAndHandleNA
     }
   ),
-  reviewInitialMeterReading : getLabelWithValueForModifiedLabel(
+  reviewInitialMeterReading: getLabelWithValueForModifiedLabel(
     {
       labelName: "Initial Meter Reading",
       labelKey: "WS_ADDN_DETAILS_INITIAL_METER_READING"
     },
-    { jsonPath: "WaterConnection[0].additionalDetails.initialMeterReading",
-      callBack: handleNA }, {
-        labelKey: "WS_OLD_LABEL_NAME"
-      },
-      { jsonPath: "WaterConnectionOld[0].additionalDetails.initialMeterReading",
-      callBack: handleNA }
+    {
+      jsonPath: "WaterConnection[0].additionalDetails.initialMeterReading",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].additionalDetails.initialMeterReading",
+      callBack: handleNA
+    }
   ),
-  reviewMeterMakeReading : getLabelWithValueForModifiedLabel(
+  reviewMeterMakeReading: getLabelWithValueForModifiedLabel(
     {
       labelName: " Meter Make Reading",
       labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE"
     },
-    { jsonPath: "WaterConnection[0].additionalDetails.meterMake",
-      callBack: handleNA }, {
-        labelKey: "WS_OLD_LABEL_NAME"
-      },
-      { jsonPath: "WaterConnectionOld[0].additionalDetails.meterMake",
-      callBack: handleNA }
+    {
+      jsonPath: "WaterConnection[0].additionalDetails.meterMake",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].additionalDetails.meterMake",
+      callBack: handleNA
+    }
   ),
-  reviewAverageMakeReading : getLabelWithValueForModifiedLabel(
+  reviewAverageMakeReading: getLabelWithValueForModifiedLabel(
     {
       labelName: "Average Meter Reading",
       labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE"
     },
-    { jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading",
-      callBack: handleNA }, {
-        labelKey: "WS_OLD_LABEL_NAME"
-      },
-      { jsonPath: "WaterConnectionOld[0].additionalDetails.avarageMeterReading",
-      callBack: handleNA }
+    {
+      jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].additionalDetails.avarageMeterReading",
+      callBack: handleNA
+    }
   )
 
 }
-export const activateDetailsNonMeter={
-  reviewConnectionExecutionDate : getLabelWithValueForModifiedLabel(
+export const activationDetailsContainer = {
+
+  activeDetails: getCommonContainer({
+
+    reviewConnectionExecutionDate: getLabelWithValueForModifiedLabel(
+      {
+        labelName: "Connection Execution Date",
+        labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"
+      },
+      {
+        jsonPath: "WaterConnection[0].connectionExecutionDate",
+        callBack: convertEpochToDateAndHandleNA
+      }, {
+      labelKey: "WS_OLD_LABEL_NAME"
+    },
+
+      {
+        jsonPath: "WaterConnectionOld[0].connectionExecutionDate",
+        callBack: convertEpochToDateAndHandleNA
+      }
+    ),
+    meterID: getTextField({
+      label: {
+        labelKey: "WS_SERV_DETAIL_METER_ID"
+      },
+      placeholder: {
+        labelKey: "WS_ADDN_DETAILS_METER_ID_PLACEHOLDER"
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 4
+      },
+      sourceJsonPath: "WaterConnection[0].meterId",
+      required: true,
+      pattern: /^[a-z0-9]+$/i,
+      errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      jsonPath: "WaterConnection[0].meterId"
+    }),
+    meterInstallationDate: getDateField({
+      label: { labelName: "meterInstallationDate", labelKey: "WS_ADDN_DETAIL_METER_INSTALL_DATE" },
+
+      gridDefination: {
+        xs: 12,
+        sm: 4
+      },
+      required: false,
+      pattern: getPattern("Date"),
+      errorMessage: "ERR_INVALID_DATE",
+      jsonPath: "WaterConnection[0].meterInstallationDate"
+    }),
+    initialMeterReading: getTextField({
+      label: {
+        labelKey: "WS_ADDN_DETAILS_INITIAL_METER_READING"
+      },
+      placeholder: {
+        labelKey: "WS_ADDN_DETAILS_INITIAL_METER_READING_PLACEHOLDER"
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 4
+      },
+      required: false,
+      pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
+      errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      jsonPath: "WaterConnection[0].additionalDetails.initialMeterReading"
+    }),
+    // ...WSMeterMakes,
+    meterMake: getTextField({
+      label: {
+        labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE"
+      },
+      placeholder: {
+        labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE_PLACEHOLDER"
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 4
+      },
+      required: false,
+      pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
+      errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      jsonPath: "WaterConnection[0].additionalDetails.meterMake"
+    }),
+    averageMake: getTextField({
+      label: {
+        labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE"
+      },
+      placeholder: {
+        labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE_PLACEHOLDER"
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 4
+      },
+      required: false,
+      pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
+      errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading"
+    }),
+    button: getCommonContainer({
+			buttonContainer: getCommonContainer({
+					searchButton: {
+					uiFramework: "custom-atoms-local",
+					moduleName: "egov-pt",
+					componentPath: "Button",
+					gridDefination: {
+						xs: 12,
+						sm: 6
+					},
+					props: {
+						variant: "contained",
+						className: "public-domain-search-buttons",
+						style: {
+							color: "white",
+							margin: "8px",
+							backgroundColor: "rgb(254, 122, 81)",
+							borderRadius: "2px",
+							width: "220px",
+							height: "48px"
+						}
+					},
+					children: {
+						buttonLabel: getLabel({
+							labelName: "Update",
+							labelKey: "Update"
+						})
+					},
+					onClickDefination: {
+						action: "condition",
+						callBack:  async(state, dispatch) => {
+              let tenantid = getQueryArg(window.location.href, "tenantId");
+                let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
+                let serviceType = getQueryArg(window.location.href, "service");
+                
+               // console.log(state.screenConfiguration.preparedFinalObject.WaterConnection,"ddd");
+                let WaterConnection =[];
+                WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
+                let mydatadum = [
+                  { key: "tenantId", value: tenantid },
+                  { key: "applicationNumber", value: applicationNumber }
+                ];
+              
+                const responseWater = await httpRequest(
+                  "post",
+                  "/ws-services/wc/_search",
+                  "_search",
+                  mydatadum
+                );
+                
+                if (responseWater.WaterConnection && responseWater.WaterConnection.length > 0) {
+                //  WaterConnection.push(responseWater.WaterConnection[0]);"isworkflowdisabled":true,
+
+                }
+                dispatch(prepareFinalObject("WaterConnection[0].isworkflowdisabled", true));
+                WaterConnection
+                console.log("mm " +WaterConnection);
+                if(serviceType == "WATER"){
+                await httpRequest("post","/ws-services/wc/_update","_update", [], { WaterConnection: WaterConnection });
+                }
+            }
+					}
+				}
+			})
+		}),
+  })
+};
+export const activateDetailsNonMeter = {
+  reviewConnectionExecutionDate: getLabelWithValueForModifiedLabel(
     {
       labelName: "Connection Execution Date",
       labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"
@@ -355,20 +560,17 @@ export const activateDetailsNonMeter={
       jsonPath: "WaterConnection[0].connectionExecutionDate",
       callBack: convertEpochToDateAndHandleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].connectionExecutionDate",
       callBack: convertEpochToDateAndHandleNA
     }
-  ) 
+  )
 }
-const activationDetails = getCommonContainer(activateDetailsMeter);
 
-
-
-export const connectionWater={
-  reviewOldConsumerNo : getLabelWithValueForModifiedLabel(
+export const connectionWater = {
+  reviewOldConsumerNo: getLabelWithValueForModifiedLabel(
     {
       labelName: "old Consumer No",
       labelKey: "WS_OLD_CONSUMER_NO"
@@ -377,14 +579,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].oldConnectionNo",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].oldConnectionNo",
       callBack: handleNA
     }
   ),
-  reviewConnectionType : getLabelWithValueForModifiedLabel(
+  reviewConnectionType: getLabelWithValueForModifiedLabel(
     {
       labelName: "Connection Type",
       labelKey: "WS_SERV_DETAIL_CONN_TYPE"
@@ -393,14 +595,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].connectionType",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].connectionType",
       callBack: handleNA
     }
   ),
-  reviewNumberOfTaps : getLabelWithValueForModifiedLabel(
+  reviewNumberOfTaps: getLabelWithValueForModifiedLabel(
     {
       labelName: "No. of Taps",
       labelKey: "WS_SERV_DETAIL_NO_OF_TAPS"
@@ -409,14 +611,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].noOfTaps",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].noOfTaps",
       callBack: handleNA
     }
   ),
-  reviewBillingType : getLabelWithValueForModifiedLabel(
+  reviewBillingType: getLabelWithValueForModifiedLabel(
     {
       labelName: "Billing Type",
       labelKey: "WS_SERV_DETAIL_BILLING_TYPE"
@@ -425,14 +627,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].additionalDetails.billingType",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.billingType",
       callBack: handleNA
     }
   ),
-  reviewBillingAmount : getLabelWithValueForModifiedLabel(
+  reviewBillingAmount: getLabelWithValueForModifiedLabel(
     {
       labelName: "No. of Taps",
       labelKey: "WS_SERV_DETAIL_BILLING_AMOUNT"
@@ -441,14 +643,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].additionalDetails.billingAmount",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.billingAmount",
       callBack: handleNA
     }
   ),
-  reviewConnectionCategory : getLabelWithValueForModifiedLabel(
+  reviewConnectionCategory: getLabelWithValueForModifiedLabel(
     {
       labelName: "No. of Taps",
       labelKey: "WS_SERV_CONNECTION_CATEGORY"
@@ -457,14 +659,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].additionalDetails.connectionCategory",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.connectionCategory",
       callBack: handleNA
     }
   ),
-  reviewLedgerId : getLabelWithValueForModifiedLabel(
+  reviewLedgerId: getLabelWithValueForModifiedLabel(
     {
       labelName: "No. of Taps",
       labelKey: "WS_SERV_DETAIL_LEDGER_ID"
@@ -473,14 +675,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].additionalDetails.ledgerId",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.ledgerId",
       callBack: handleNA
     }
   ),
-  reviewWaterSource : getLabelWithValueForModifiedLabel(
+  reviewWaterSource: getLabelWithValueForModifiedLabel(
     {
       labelName: "Water Source",
       labelKey: "WS_SERV_DETAIL_WATER_SOURCE"
@@ -489,8 +691,8 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].waterSource",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].waterSource",
       callBack: handleNA
@@ -512,7 +714,7 @@ export const connectionWater={
   //     callBack: handleNA
   //   }
   // ),
-   reviewPipeSize : getLabelWithValueForModifiedLabel(
+  reviewPipeSize: getLabelWithValueForModifiedLabel(
     {
       labelName: "Pipe Size (in inches)",
       labelKey: "WS_SERV_DETAIL_PIPE_SIZE"
@@ -521,14 +723,14 @@ export const connectionWater={
       jsonPath: "WaterConnection[0].pipeSize",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].pipeSize",
       callBack: handleNA
     }
   ),
-  reviewSubUsageType : getLabelWithValueForModifiedLabel(
+  reviewSubUsageType: getLabelWithValueForModifiedLabel(
     {
       labelName: "Sub Usage Type",
       labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE"
@@ -545,7 +747,7 @@ export const connectionWater={
       callBack: handleNA
     }
   ),
-  reviewUnitUsageType : getLabelWithValueForModifiedLabel(
+  reviewUnitUsageType: getLabelWithValueForModifiedLabel(
     {
       labelName: "Unit Usage Type",
       labelKey: "WS_SERV_DETAIL_UNIT_USAGE_TYPE"
@@ -566,8 +768,8 @@ export const connectionWater={
 
 }
 
-export const connectionSewerage={
-  reviewOldConsumerNo : getLabelWithValueForModifiedLabel(
+export const connectionSewerage = {
+  reviewOldConsumerNo: getLabelWithValueForModifiedLabel(
     {
       labelName: "Old Consumer No",
       labelKey: "WS_OLD_CONSUMER_NO"
@@ -576,14 +778,14 @@ export const connectionSewerage={
       jsonPath: "WaterConnection[0].oldConnectionNo",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].oldConnectionNo",
       callBack: handleNA
     }
   ),
-  reviewConnectionType : getLabelWithValueForModifiedLabel(
+  reviewConnectionType: getLabelWithValueForModifiedLabel(
     {
       labelName: "Connection Type",
       labelKey: "WS_SERV_DETAIL_CONN_TYPE"
@@ -592,13 +794,13 @@ export const connectionSewerage={
       jsonPath: "WaterConnection[0].connectionType",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    }, {
-      jsonPath: "WaterConnectionOld[0].connectionType",
-      callBack: handleNA
-    }
+    labelKey: "WS_OLD_LABEL_NAME"
+  }, {
+    jsonPath: "WaterConnectionOld[0].connectionType",
+    callBack: handleNA
+  }
   ),
-  reviewBillingAmount : getLabelWithValueForModifiedLabel(
+  reviewBillingAmount: getLabelWithValueForModifiedLabel(
     {
       labelName: "Billing Amount",
       labelKey: "WS_SERV_DETAIL_BILLING_AMOUNT"
@@ -607,14 +809,14 @@ export const connectionSewerage={
       jsonPath: "WaterConnection[0].additionalDetails.billingAmount",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.billingAmount",
       callBack: handleNA
     }
   ),
-  reviewConnectionCategory : getLabelWithValueForModifiedLabel(
+  reviewConnectionCategory: getLabelWithValueForModifiedLabel(
     {
       labelName: "Connection Category",
       labelKey: "WS_SERV_CONNECTION_CATEGORY"
@@ -623,14 +825,14 @@ export const connectionSewerage={
       jsonPath: "WaterConnection[0].additionalDetails.connectionCategory",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.connectionCategory",
       callBack: handleNA
     }
   ),
-  reviewLedgerId : getLabelWithValueForModifiedLabel(
+  reviewLedgerId: getLabelWithValueForModifiedLabel(
     {
       labelName: "Ledger Id",
       labelKey: "WS_SERV_DETAIL_LEDGER_ID"
@@ -639,14 +841,14 @@ export const connectionSewerage={
       jsonPath: "WaterConnection[0].additionalDetails.ledgerId",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.ledgerId",
       callBack: handleNA
     }
   ),
-   reviewWaterClosets : getLabelWithValueForModifiedLabel(
+  reviewWaterClosets: getLabelWithValueForModifiedLabel(
     {
       labelName: "No. of Water Closets",
       labelKey: "WS_ADDN_DETAILS_NO_OF_WATER_CLOSETS"
@@ -655,13 +857,13 @@ export const connectionSewerage={
       jsonPath: "WaterConnection[0].noOfWaterClosets",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    }, {
-      jsonPath: "WaterConnectionOld[0].noOfWaterClosets",
-      callBack: handleNA
-    }
+    labelKey: "WS_OLD_LABEL_NAME"
+  }, {
+    jsonPath: "WaterConnectionOld[0].noOfWaterClosets",
+    callBack: handleNA
+  }
   ),
-   reviewNoOfToilets : getLabelWithValueForModifiedLabel(
+  reviewNoOfToilets: getLabelWithValueForModifiedLabel(
     {
       labelName: "No. of Toilets",
       labelKey: "WS_ADDN_DETAILS_NO_OF_TOILETS"
@@ -670,13 +872,13 @@ export const connectionSewerage={
       jsonPath: "WaterConnection[0].noOfToilets",
       callBack: handleNA
     }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    }, {
-      jsonPath: "WaterConnectionOld[0].noOfToilets",
-      callBack: handleNA
-    }
+    labelKey: "WS_OLD_LABEL_NAME"
+  }, {
+    jsonPath: "WaterConnectionOld[0].noOfToilets",
+    callBack: handleNA
+  }
   ),
-  reviewSubUsageType : getLabelWithValueForModifiedLabel(
+  reviewSubUsageType: getLabelWithValueForModifiedLabel(
     {
       labelName: "Sub Usage Type",
       labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE"
@@ -693,7 +895,7 @@ export const connectionSewerage={
       callBack: handleNA
     }
   ),
-  reviewUnitUsageType : getLabelWithValueForModifiedLabel(
+  reviewUnitUsageType: getLabelWithValueForModifiedLabel(
     {
       labelName: "Unit Usage Type",
       labelKey: "WS_SERV_DETAIL_UNIT_USAGE_TYPE"
@@ -714,22 +916,23 @@ export const connectionSewerage={
 
 export const reviewModificationsEffectiveDate = {
   reviewModification: getLabelWithValueForModifiedLabel(
-  {
-    labelName: "Modifications Effective Date",
-    labelKey: "WS_MODIFICATIONS_EFFECTIVE_DATE"
-  },
-  {
-    jsonPath: "WaterConnection[0].dateEffectiveFrom",
-    callBack: convertEpochToDateAndHandleNA
-  },
-  {
-    labelKey: "WS_OLD_LABEL_NAME"
-  },
-  {
-    jsonPath: "WaterConnectionOld[0].dateEffectiveFrom",
-    callBack: convertEpochToDateAndHandleNA
-  }
-)};
+    {
+      labelName: "Modifications Effective Date",
+      labelKey: "WS_MODIFICATIONS_EFFECTIVE_DATE"
+    },
+    {
+      jsonPath: "WaterConnection[0].dateEffectiveFrom",
+      callBack: convertEpochToDateAndHandleNA
+    },
+    {
+      labelKey: "WS_OLD_LABEL_NAME"
+    },
+    {
+      jsonPath: "WaterConnectionOld[0].dateEffectiveFrom",
+      callBack: convertEpochToDateAndHandleNA
+    }
+  )
+};
 
 export const reviewModificationsEffective = () => {
   return getCommonGrayCard({
@@ -758,9 +961,9 @@ export const reviewModificationsEffective = () => {
 const modificationsEffectiveDateDetails = getCommonContainer(
   reviewModificationsEffectiveDate
 );
-export const additionDetailsWater=connectionWater;
+export const additionDetailsWater = connectionWater;
 
-export const additionDetailsSewerage=connectionSewerage;
+export const additionDetailsSewerage = connectionSewerage;
 
 export const renderService = () => {
   let isService = getQueryArg(window.location.href, "service");

@@ -174,6 +174,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
 }
 
 const renderSearchApplicationTable = async (state, dispatch) => {
+  debugger
   let queryObject = [{ key: "tenantId", value: getTenantIdCommon() }];
   queryObject.push({ key: "isConnectionSearch", value: true });
   let searchScreenObject = get(state.screenConfiguration.preparedFinalObject, "searchScreen", {});
@@ -288,6 +289,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               address: handleAddress(element),
               service: element.service,
               connectionType: element.connectionType,
+              applicationStatusdata:appStatus,
               tenantId: element.tenantId
             })
           } else {
@@ -300,11 +302,13 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               address: handleAddress(element),
               service: element.service,
               connectionType: element.connectionType,
+              applicationStatusdata:appStatus,
               tenantId: element.tenantId
             })
           }
         }
       }
+      
       showApplicationResults(finalArray, dispatch)
     } catch (err) { console.log(err) }
   }
@@ -373,6 +377,7 @@ const showApplicationResults = (connections, dispatch) => {
     ["WS_COMMON_TABLE_COL_TENANTID_LABEL"]: item.tenantId,
     ["WS_COMMON_TABLE_COL_SERVICE_LABEL"]: item.service,
     ["WS_COMMON_TABLE_COL_CONNECTIONTYPE_LABEL"]: item.connectionType,
+    ["WS_COMMON_TABLE_COL_APPLICATION_STATUS_TEST"]: item.applicationStatusdata,
   }));
   exceldata = data;
   
