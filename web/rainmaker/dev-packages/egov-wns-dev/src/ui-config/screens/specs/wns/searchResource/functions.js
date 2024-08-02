@@ -35,6 +35,8 @@ export const searchApiCall = async (state, dispatch) => {
 }
 
 const renderSearchConnectionTable = async (state, dispatch) => {
+ // debugger;
+ // console.log("hsgshdsh")
   let queryObject = [];
   queryObject.push({ key: "searchType", value: "CONNECTION" });
   let searchScreenObject = get(state.screenConfiguration.preparedFinalObject, "searchConnection", {});
@@ -88,7 +90,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
         }
         //Read metered & non-metered demand expiry date and assign value.
         payloadbillingPeriod = await httpRequest("post", "/egov-mdms-service/v1/_search", "_search", [], mdmsBody);        
-        console.log(payloadbillingPeriod);
+      //  console.log(payloadbillingPeriod);
       } catch (err) { console.log(err) }
       let getSearchResult = getSearchResults(queryObject)
       let getSearchResultForSewerage = getSearchResultsForSewerage(queryObject, dispatch)
@@ -98,6 +100,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
       try { searcSewerageConnectionResults = await getSearchResultForSewerage } catch (error) { finalArray = []; console.log(error) }
       const waterConnections = searchWaterConnectionResults ? searchWaterConnectionResults.WaterConnection.map(e => { e.service = serviceConst.WATER; return e }) : []
       const sewerageConnections = searcSewerageConnectionResults ? searcSewerageConnectionResults.SewerageConnections.map(e => { e.service = serviceConst.SEWERAGE; return e }) : [];
+      //console.log("waterConnections"+JSON.stringify(waterConnections))
       let combinedSearchResults = searchWaterConnectionResults || searcSewerageConnectionResults ? sewerageConnections.concat(waterConnections) : []
       for (let i = 0; i < combinedSearchResults.length; i++) {
         let element = combinedSearchResults[i];
@@ -136,6 +139,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
 
           let billResults = await fetchBill(queryObjectForWaterFetchBill, dispatch)
           let updatedDueDate = 0;
+         // debugger
           billResults && billResults.Bill.length > 0 && billResults.Bill[0].billDetails.map(bill => {
             if(element.service === serviceConst.WATER) {
               updatedDueDate = bill.expiryDate;
@@ -144,6 +148,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
             }
           });
             billResults && billResults.Bill.length > 0 ? finalArray.push({
+              isLeagcy:element.additionalDetails.islegacy,
               due: billResults.Bill[0].totalAmount,
               dueDate: updatedDueDate,
               service: element.service,
@@ -153,8 +158,10 @@ const renderSearchConnectionTable = async (state, dispatch) => {
               address: handleAddress(element),
               connectionType: element.connectionType,
               tenantId:element.tenantId
+              
             })
            : finalArray.push({
+            isLeagcy:element.additionalDetails.islegacy,
             due: billResults && billResults.Bill.length > 0 ? billResults.Bill[0].totalAmount : '0',
             dueDate: 'NA',
             service: element.service,
@@ -163,11 +170,13 @@ const renderSearchConnectionTable = async (state, dispatch) => {
             status: element.status,
             address: handleAddress(element),
             connectionType: element.connectionType,
-            tenantId:element.tenantId
+            tenantId:element.tenantId,
+            
           })
         }
 
       }
+      //console.log("finalArray"+JSON.stringify(finalArray))
       showConnectionResults(finalArray, dispatch)
     } catch (err) { console.log(err) }
   }
@@ -281,6 +290,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
             element.property.owners.forEach(ele => { ownerName = ownerName + ", " + ele.name })
 
             finalArray.push({
+              isLeagcy:element.additionalDetails.islegacy,
               connectionNo: element.connectionNo,
               applicationNo: element.applicationNo,
               applicationType: element.applicationType,
@@ -291,9 +301,12 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               connectionType: element.connectionType,
               applicationStatusdata:appStatus,
               tenantId: element.tenantId
+             
+              
             })
           } else {
             finalArray.push({
+              isLeagcy:element.additionalDetails.islegacy,
               connectionNo: element.connectionNo,
               applicationNo: element.applicationNo,
               applicationType: element.applicationType,
@@ -309,6 +322,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
         }
       }
       
+    //  console.log("showApplicationResults"+JSON.stringify(finalArray))
       showApplicationResults(finalArray, dispatch)
     } catch (err) { console.log(err) }
   }
@@ -342,16 +356,19 @@ const showHideApplicationTable = (booleanHideOrShow, dispatch) => {
 };
 
 const showConnectionResults = (connections, dispatch) => {
+  console.log("sdshfgdhfv"+JSON.stringify(connections))
   let data = connections.map(item => ({
     ["WS_COMMON_TABLE_COL_SERVICE_LABEL"]: item.service,
     ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.connectionNo,
+   // ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.isLeagcy,
     ["WS_COMMON_TABLE_COL_OWN_NAME_LABEL"]: item.name,
     ["WS_COMMON_TABLE_COL_STATUS_LABEL"]: item.status,
     ["WS_COMMON_TABLE_COL_DUE_LABEL"]: item.due,
     ["WS_COMMON_TABLE_COL_ADDRESS"]: item.address,
     ["WS_COMMON_TABLE_COL_DUE_DATE_LABEL"]: (item.dueDate !== undefined && item.dueDate !== "NA") ? convertEpochToDate(item.dueDate) : item.dueDate,
     ["WS_COMMON_TABLE_COL_TENANTID_LABEL"]: item.tenantId,
-    ["WS_COMMON_TABLE_COL_CONNECTIONTYPE_LABEL"]: item.connectionType
+    ["WS_COMMON_TABLE_COL_CONNECTIONTYPE_LABEL"]: item.connectionType,
+    ["WS_COMMON_TABLE_COL_IS_LEGACY"]:item.isLeagcy
   }));
   dispatch(handleField("search", "components.div.children.searchResults", "props.data", data));
   dispatch(handleField("search", "components.div.children.searchResults", "props.rows",

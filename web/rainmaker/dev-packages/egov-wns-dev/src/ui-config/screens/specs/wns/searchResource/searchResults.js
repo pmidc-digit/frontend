@@ -48,7 +48,7 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, data) => {
-            debugger;
+            //debugger;
             if (data.rowData[4] !== undefined && typeof data.rowData[4] === 'number' && data.rowData[4] >= 0) {
               return (
                 <div className="linkStyle" onClick={() => getViewBillDetails(data)} style={{ color: '#fe7a51', textTransform: 'uppercase' }}>
@@ -81,10 +81,17 @@ export const searchResults = {
         options: {
           display: false
         }
+      },
+      {
+        name: "isLeagcy",
+        labelKey: "WS_COMMON_TABLE_COL_IS_LEGACY",
+        options: {
+          display: false
+        }
       }
       
     ],
-    title: {labelKey:"WS_HOME_SEARCH_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Connections"},
+    title: {labelKey:"WS_HOME_SEARCH_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Connectionsdfhdg"},
     options: {
       filter: false,
       download: false,
@@ -112,9 +119,8 @@ export const searchResults = {
 };
 
 const getConnectionDetails = data => {
- 
   store.dispatch(
-    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}&applicationStatus=${data.rowData[10]}`)
+    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}`)
   )
 }
 
