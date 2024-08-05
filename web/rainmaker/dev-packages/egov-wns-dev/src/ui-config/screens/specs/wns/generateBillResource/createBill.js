@@ -10,6 +10,7 @@ import { handleScreenConfigurationFieldChange as handleField, toggleSnackbar, pr
 import { generateBillApiCall, searchBillApiCall } from "../generateBillResource/functions"
 import "./index.css";
 import { httpRequest } from "../../../../../ui-utils";
+import get from 'lodash/get';
 let localityhide = false;
 let batchhide = false;
 export const createBill = getCommonCard({
@@ -110,9 +111,10 @@ export const createBill = getCommonCard({
         jsonPath: "generateBillScreen.batchtype",
 
       },
-      beforeFieldChange: async (action, state, dispatch) => {
-
-
+      afterFieldChange: async (action, state, dispatch) => {
+       
+        let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.generateBillScreen.batchtype");
+        if(ConectionCategory=="Batch"){
         try {
           let payload = await httpRequest(
             "post",
@@ -136,18 +138,40 @@ export const createBill = getCommonCard({
               batches
             )
           );
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children.propertybatches",
-              "props.suggestions",
-              batches
-            )
-          );
+          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
 
         } catch (e) {
           console.log(e);
         }
+      }
+      else{
+//locality
+let response = await httpRequest(
+  "post",
+  "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+  "_search",
+  [{ key: "tenantId", value: getTenantIdCommon() }],
+  {}
+);
+let mohallaDataArray = [];
+let mohallaDataRow=null;
+let name,code;
+response.TenantBoundary[0].boundary.map((element,index) => {
+  name = element.name + "( "+element.code+" )";
+ // code=element.code;
+  mohallaDataRow={"code":name};
+ mohallaDataArray.push(mohallaDataRow);
+
+});
+
+dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", mohallaDataArray));
+dispatch(
+  prepareFinalObject(
+    "applyScreenMdmsData.tenant.batchs",
+    ""
+  )
+);
+      }
       },
       required: false,
 
@@ -171,7 +195,7 @@ export const createBill = getCommonCard({
         required: false,
         labelsFromLocalisation: true,
         className: "autocomplete-dropdown",
-        sourceJsonPath: "mohallaData",
+        sourceJsonPath: "applyScreenMdmsData.tenant.mohaladata",
         jsonPath: "generateBillScreen.mohallaData",
 
       },
