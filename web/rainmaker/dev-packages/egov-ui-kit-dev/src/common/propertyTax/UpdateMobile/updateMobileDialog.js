@@ -145,7 +145,7 @@ export default class UpdateMobileDialog extends React.Component {
       property.owners.map(owner => {
         if (owner.uuid == propertyNumbers.uuid) {
           owner.mobileNumber = mobileNumber.value;
-          //property.creationReason = "UPDATE";
+          property.creationReason = "UPDATE";
           let documents = this.state.documents.filter(document => document.uploaded) || [];
           if (property.documents) {
             let docuNames = documents.map(doc => doc.code);
