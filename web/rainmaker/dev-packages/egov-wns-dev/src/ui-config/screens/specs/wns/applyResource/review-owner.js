@@ -521,6 +521,9 @@ export const activationDetailsContainer = {
                // console.log(state.screenConfiguration.preparedFinalObject.WaterConnection,"ddd");
                 let WaterConnection =[];
                 WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
+                
                 let mydatadum = [
                   { key: "tenantId", value: tenantid },
                   { key: "applicationNumber", value: applicationNumber }
