@@ -523,6 +523,8 @@ export const activationDetailsContainer = {
                 WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
                 state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
                 state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate).getTime();
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading);
                 
                 let mydatadum = [
                   { key: "tenantId", value: tenantid },
