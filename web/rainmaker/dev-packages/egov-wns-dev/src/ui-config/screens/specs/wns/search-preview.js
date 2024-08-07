@@ -107,6 +107,7 @@ export const getMdmsData = async dispatch => {
   } catch (e) { console.log(e); }
 }
 const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
+  //debugger
   // dispatch(handleField("apply",
   // "components",
   // "div", {}));
@@ -148,20 +149,26 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
         (await searchResults(action, state, dispatch, applicationNumber, processInstanceAppStatus));
       }
       let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
+     // console.log("applyScreen"+JSON.stringify(applyScreenObject))
       applyScreenObject.applicationNo.includes("WS") ? applyScreenObject.service = serviceConst.WATER : applyScreenObject.service = serviceConst.SEWERAGE;
       let parsedObject = parserFunction(findAndReplace(applyScreenObject, "NA", null));
+     // console.log("parsedObject"+JSON.stringify(parsedObject))
+     // debugger
       const equals = (a, b) =>
       Object.keys(a).length === Object.keys(b).length 
         && Object.keys(a).every(p => a[p] === b[p]);
       let waterDetails = get(state.screenConfiguration.preparedFinalObject, "WaterConnection", []);
+      let wtsubUssageType = applyScreenObject.additionalDetails.waterSubUsageType;
       let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
-      if(waterDetails[0].additionalDetails.waterSubUsageType) {
+    // console.log("subUsageTypes"+JSON.stringify(state.screenConfiguration.preparedFinalObject))
+     if(waterDetails[0].additionalDetails.waterSubUsageType) {
+        //debugger
         subUsageTypes.forEach(items => {
-          if(items.code === waterDetails[0].additionalDetails.waterSubUsageType) {
+          if(items.name === wtsubUssageType || items.name === waterDetails[0].additionalDetails.waterSubUsageType) {
             waterDetails[0].additionalDetails.waterSubUsageType = items.name;
         }
         });
-      }
+      }  
       if(parsedObject && !(equals(parsedObject, waterDetails[0]))) {
         parsedObject.additionalDetails.waterSubUsageType = waterDetails[0].additionalDetails.waterSubUsageType;
         dispatch(prepareFinalObject("WaterConnection[0]", parsedObject, {}));
@@ -169,6 +176,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
       else {
         dispatch(prepareFinalObject("WaterConnection[0]", waterDetails[0]));
       }
+      
       if (applyScreenObject.service = serviceConst.SEWERAGE)
         dispatch(prepareFinalObject("SewerageConnection[0]", parsedObject));
       let estimate;
@@ -806,6 +814,7 @@ const screenConfig = {
 
 //----------------- search code (feb17)---------------------- //
 const searchResults = async (action, state, dispatch, applicationNumber, processInstanceAppStatus) => {
+  debugger
   let queryObjForSearch = [{ key: "tenantId", value: tenantId }, { key: "applicationNumber", value: applicationNumber }]
   let viewBillTooltip = [], estimate, payload = [];
   if (service === serviceConst.WATER) {
@@ -822,14 +831,16 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.items[0].item0.children.cardContent.children.serviceCardContainerForWater.visible", true);
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.visible", false);
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", true);
+    //console.log("screenConfig"+JSON.stringify(action.screenConfig))
     if (payload !== undefined && payload !== null) {
       let roadCuttingInfos = payload.WaterConnection[0].roadCuttingInfo;
       if(payload.WaterConnection[0] && Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.length > 0) {
         payload.WaterConnection[0].roadCuttingInfo = Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.filter(info => info.status == "ACTIVE");
       }
 
-      payload.WaterConnection[0].additionalDetails.waterSubUsageType = payload.WaterConnection[0].additionalDetails.waterSubUsageType ? payload.WaterConnection[0].additionalDetails.waterSubUsageType : "NA";
-      dispatch(prepareFinalObject("WaterConnection[0]", payload.WaterConnection[0]));
+     payload.WaterConnection[0].additionalDetails.waterSubUsageType = payload.WaterConnection[0].additionalDetails.waterSubUsageType ? payload.WaterConnection[0].additionalDetails.waterSubUsageType : "NA";
+     // payload.WaterConnection[0].additionalDetails.waterSubUsageType="dsbdds";
+     dispatch(prepareFinalObject("WaterConnection[0]", payload.WaterConnection[0]));
       dispatch(prepareFinalObject("WaterConnection[0].roadCuttingInfos", roadCuttingInfos));
       if (get(payload, "WaterConnection[0].property.status", "") !== "ACTIVE") {
         set(action.screenConfig, "components.div.children.snackbarWarningMessage.children.clickHereLink.props.propertyId", get(payload, "WaterConnection[0].property.propertyId", ""));
@@ -970,7 +981,10 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
 };
 
 const parserFunction = (obj) => {
+  //debugger
+  //console.log("Hello OBJ"+JSON.stringify(obj))
   let waterDetails = get(obj, "additionalDetails", {});
+ //console.log("Hello OBJ"+waterDetails.waterSubUsageType)
   let parsedObject = {
     roadCuttingArea: parseInt(obj.roadCuttingArea),
     meterInstallationDate: convertDateToEpoch(obj.meterInstallationDate),
@@ -998,6 +1012,7 @@ const parserFunction = (obj) => {
       userCharges: waterDetails && waterDetails ? parseFloat(waterDetails.userCharges) : null,
       othersFee: waterDetails && waterDetails ? parseFloat(waterDetails.othersFee) : null,
       unitUsageType: waterDetails && waterDetails ? waterDetails.unitUsageType : null,
+      waterSubUsageType : waterDetails && waterDetails ? waterDetails.waterSubUsageType : "null",
       //meterStatus: waterDetails && waterDetails ? waterDetails.meterStatus : null,
       // detailsProvidedBy : null,
       adhocPenalty: null,

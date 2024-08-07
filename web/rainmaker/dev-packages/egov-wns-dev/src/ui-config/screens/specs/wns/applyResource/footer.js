@@ -29,6 +29,9 @@ import commonConfig from "config/common.js";
 const isMode = isModifyMode();
 const isModeAction = isModifyModeAction();
 const setReviewPageRoute = (state, dispatch) => {
+  //debugger
+  //console.log("smdbs"+JSON.stringify(state))
+  dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.waterSubUsageType",get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.waterSubUsageType")));
   let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
   if(roadCuttingInfo && roadCuttingInfo.length > 0) {
     let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.isEmpty !== true);
@@ -200,6 +203,8 @@ const getMdmsData = async (state, dispatch) => {
 };
 
 const callBackForNext = async (state, dispatch) => {
+  //debugger;
+  //console.log("tdstdvst"+state)
   window.scrollTo(0, 0);
   let activeStep = get(state.screenConfiguration.screenConfig["apply"], "components.div.children.stepper.props.activeStep", 0);
   let isFormValid = true;
@@ -227,6 +232,7 @@ const callBackForNext = async (state, dispatch) => {
         };
       });
       dispatch(prepareFinalObject("applyScreen.reviewDocData", reviewDocData));
+    //  console.log("applyScreenObj.additionalDetails.waterSubUsageType "+JSON.stringify(reviewDocData));
       let applyScreenObject = findAndReplace(get(state.screenConfiguration.preparedFinalObject, "applyScreen", {}), "NA", null);
       let applyScreenObj = findAndReplace(applyScreenObject, 0, null);
       applyScreenObj.additionalDetails.waterSubUsageType = applyScreenObj.additionalDetails.waterSubUsageType ? applyScreenObj.additionalDetails.waterSubUsageType : "NA";
@@ -464,9 +470,13 @@ const callBackForNext = async (state, dispatch) => {
     }
     prepareDocumentsUploadData(state, dispatch);
     if (isModifyMode()) {
+      //console.log("skdhsjdgsj"+JSON.stringify(state))
+      //debugger
       let propertyUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreen.property.usageCategory", "");
       let subUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreenMdmsData.ws-services-masters.subUsageType", []);
       let waterSubUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreen.additionalDetails.waterSubUsageType", "");
+      //console.log("waterSubUsageType"+waterSubUsageType)
+
       let usageTypes = [];
       if(propertyUsageType) {
         subUsageType && subUsageType.map(items => {
@@ -518,6 +528,10 @@ const callBackForNext = async (state, dispatch) => {
             dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", true ) );
             // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSourceType", "required", true ) ); 
             // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSourceType", "props.required", true ) );
+
+            //dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSubUsageType", "required", true ) ); 
+            //dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSubUsageType", "props.required", true ) );
+            
             // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[0]", "isRequired", false) ); 
             // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[0]", "requiredValue", true ) ); 
             // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[1]", "isRequired", false ) ); 
@@ -654,6 +668,8 @@ const callBackForNext = async (state, dispatch) => {
         let waterSubUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreen.additionalDetails.waterSubUsageType", "");
         let usageTypes = [];
         if(propertyUsageType) {
+          //debugger;
+          //console.log("propertyUsageType"+propertyUsageType)
           subUsageType && subUsageType.map(items => {
             if(items["parentUsageType"] === (propertyUsageType.split(".")[1]) || items["parentUsageType"] === propertyUsageType) {
               let obj = {};
@@ -669,6 +685,7 @@ const callBackForNext = async (state, dispatch) => {
           })
         }
         dispatch(prepareFinalObject("applyScreenMdmsData.ws-services-masters.subUsageType", usageTypes));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.waterSubUsageType", waterSubUsageType));
       }
       else {
         isFormValid = false;
