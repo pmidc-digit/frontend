@@ -450,10 +450,10 @@ const beforeInitFn = async (action, state, dispatch, connectionNumber) => {
       key: "businessService",
       value:serviceCode,
     },
-    // {
-    //   key: "consumerCode",
-    //   value:connectionNumber,
-    // },
+    {
+      key: "consumerCode",
+      value:connectionNumber,
+    },
     
   ];
   getPaymentHistory(queryObjForPayment, dispatch , serviceCode);
@@ -529,6 +529,7 @@ export const getDCBDetail = async (queryObject , dispatch) => {
     let dcbtotalArray = [];
     let dcbRow=null;
     let dcbtotalRow=null;
+    debugger;
     let installment,advance,taxAmount,taxCollected,taxBalance,interestAmount,interestCollected,interestBalance,penaltyBalance,penaltyCollected,penaltyAmount;
     response.Demands.map((element,index) => {
       taxAmount=0;taxCollected=0;taxBalance=0;interestAmount=0;
