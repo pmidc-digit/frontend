@@ -450,10 +450,10 @@ const beforeInitFn = async (action, state, dispatch, connectionNumber) => {
       key: "businessService",
       value:serviceCode,
     },
-    // {
-    //   key: "consumerCode",
-    //   value:connectionNumber,
-    // },
+     {
+       key: "consumerCode",
+       value:connectionNumber,
+     },
     
   ];
   getPaymentHistory(queryObjForPayment, dispatch , serviceCode);
