@@ -511,7 +511,7 @@ export const activationDetailsContainer = {
 							labelKey: "Update"
 						})
 					},
-					onClickDefination: {
+          onClickDefination: {
 						action: "condition",
 						callBack:  async(state, dispatch) => {
               let tenantid = getQueryArg(window.location.href, "tenantId");
@@ -521,6 +521,9 @@ export const activationDetailsContainer = {
                // console.log(state.screenConfiguration.preparedFinalObject.WaterConnection,"ddd");
                 let WaterConnection =[];
                 WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
+                
                 let mydatadum = [
                   { key: "tenantId", value: tenantid },
                   { key: "applicationNumber", value: applicationNumber }
@@ -541,7 +544,12 @@ export const activationDetailsContainer = {
                 WaterConnection
                 console.log("mm " +WaterConnection);
                 if(serviceType == "WATER"){
-                await httpRequest("post","/ws-services/wc/_update","_update", [], { WaterConnection: WaterConnection });
+                 let responce = await httpRequest("post","/ws-services/wc/_update","_update", [], { WaterConnection: WaterConnection });
+                 if(responce.WaterConnection.length > 0 ){
+                  alert("Updated Meter Details");
+                 }else{
+                  alert("No Updated Meter Details");
+                 }
                 }
             }
 					}
