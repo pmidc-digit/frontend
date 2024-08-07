@@ -149,10 +149,10 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
         (await searchResults(action, state, dispatch, applicationNumber, processInstanceAppStatus));
       }
       let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
-     // console.log("applyScreen"+JSON.stringify(applyScreenObject))
+//      console.log("applyScreen"+JSON.stringify(applyScreenObject))
       applyScreenObject.applicationNo.includes("WS") ? applyScreenObject.service = serviceConst.WATER : applyScreenObject.service = serviceConst.SEWERAGE;
       let parsedObject = parserFunction(findAndReplace(applyScreenObject, "NA", null));
-     // console.log("parsedObject"+JSON.stringify(parsedObject))
+       // console.log("parsedObject"+JSON.stringify(parsedObject))
      // debugger
       const equals = (a, b) =>
       Object.keys(a).length === Object.keys(b).length 
@@ -160,17 +160,19 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
       let waterDetails = get(state.screenConfiguration.preparedFinalObject, "WaterConnection", []);
       let wtsubUssageType = applyScreenObject.additionalDetails.waterSubUsageType;
       let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
-    // console.log("subUsageTypes"+JSON.stringify(state.screenConfiguration.preparedFinalObject))
+      //debugger
+     //  console.log("subUsageTypes"+JSON.stringify(state.screenConfiguration.preparedFinalObject))
      if(waterDetails[0].additionalDetails.waterSubUsageType) {
         //debugger
         subUsageTypes.forEach(items => {
+         //   console.log("Item Name "+items.name)
           if(items.name === wtsubUssageType || items.name === waterDetails[0].additionalDetails.waterSubUsageType) {
             waterDetails[0].additionalDetails.waterSubUsageType = items.name;
         }
         });
       }  
       if(parsedObject && !(equals(parsedObject, waterDetails[0]))) {
-        parsedObject.additionalDetails.waterSubUsageType = waterDetails[0].additionalDetails.waterSubUsageType;
+        parsedObject.additionalDetails.waterSubUsageType = wtsubUssageType;
         dispatch(prepareFinalObject("WaterConnection[0]", parsedObject, {}));
       }
       else {
@@ -257,6 +259,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
     }
     let subUsageType = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.waterSubUsageType");
     let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
+    //debugger
     if(subUsageType) {
       subUsageTypes.forEach(items => {
         if(items.code === subUsageType) {
@@ -814,7 +817,7 @@ const screenConfig = {
 
 //----------------- search code (feb17)---------------------- //
 const searchResults = async (action, state, dispatch, applicationNumber, processInstanceAppStatus) => {
-  debugger
+  //debugger
   let queryObjForSearch = [{ key: "tenantId", value: tenantId }, { key: "applicationNumber", value: applicationNumber }]
   let viewBillTooltip = [], estimate, payload = [];
   if (service === serviceConst.WATER) {
