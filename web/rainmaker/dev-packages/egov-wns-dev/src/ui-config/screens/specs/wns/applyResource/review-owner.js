@@ -544,7 +544,10 @@ export const activationDetailsContainer = {
                 WaterConnection
                 console.log("mm " +WaterConnection);
                 if(serviceType == "WATER"){
-                await httpRequest("post","/ws-services/wc/_update","_update", [], { WaterConnection: WaterConnection });
+                 let responce = await httpRequest("post","/ws-services/wc/_update","_update", [], { WaterConnection: WaterConnection });
+                 if(responce.WaterConnection.length > 0 ){
+                  alert("Updated Meter Details");
+                 }
                 }
             }
 					}
