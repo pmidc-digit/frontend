@@ -511,7 +511,7 @@ export const activationDetailsContainer = {
 							labelKey: "Update"
 						})
 					},
-          onClickDefination: {
+					onClickDefination: {
 						action: "condition",
 						callBack:  async(state, dispatch) => {
               let tenantid = getQueryArg(window.location.href, "tenantId");
@@ -520,11 +520,13 @@ export const activationDetailsContainer = {
                 
                // console.log(state.screenConfiguration.preparedFinalObject.WaterConnection,"ddd");
                 let WaterConnection =[];
+               
                 WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
-                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
-                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
-                
-                let mydatadum = [
+               state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
+               state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate).getTime();
+                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading);
+               let mydatadum = [
                   { key: "tenantId", value: tenantid },
                   { key: "applicationNumber", value: applicationNumber }
                 ];
@@ -542,13 +544,10 @@ export const activationDetailsContainer = {
                 }
                 dispatch(prepareFinalObject("WaterConnection[0].isworkflowdisabled", true));
                 WaterConnection
-                console.log("mm " +WaterConnection);
-                if(serviceType == "WATER"){
+               if(serviceType == "WATER"){
                  let responce = await httpRequest("post","/ws-services/wc/_update","_update", [], { WaterConnection: WaterConnection });
                  if(responce.WaterConnection.length > 0 ){
                   alert("Updated Meter Details");
-                 }else{
-                  alert("No Updated Meter Details");
                  }
                 }
             }
