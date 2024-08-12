@@ -247,10 +247,19 @@ downloadReceiptpt = async(receiptQueryString) => {
                 };
               }
               else{
+                if(dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD" ){
+                  dcbRow={
+                    "taxhead":code,
+                    "amount":amount
+                  };
+                }
+                else{
               dcbRow={
                 "taxhead":code + "("+installment+")",
                 "amount":amount
-              };}
+              };
+                }
+            }
               totalamount=totalamount+amount;
               dcbArray.push(dcbRow);
                     }
