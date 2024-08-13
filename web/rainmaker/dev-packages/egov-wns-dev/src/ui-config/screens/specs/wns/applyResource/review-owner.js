@@ -388,23 +388,36 @@ export const activationDetailsContainer = {
 
   activeDetails: getCommonContainer({
 
-    reviewConnectionExecutionDate: getLabelWithValueForModifiedLabel(
-      {
-        labelName: "Connection Execution Date",
-        labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"
-      },
-      {
-        jsonPath: "WaterConnection[0].connectionExecutionDate",
-        callBack: convertEpochToDateAndHandleNA
-      }, {
-      labelKey: "WS_OLD_LABEL_NAME"
-    },
+    // reviewConnectionExecutionDate: getLabelWithValueForModifiedLabel(
+    //   {
+    //     labelName: "Connection Execution Date",
+    //     labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"
+    //   },
+    //   {
+    //     jsonPath: "WaterConnection[0].connectionExecutionDate",
+    //     callBack: convertEpochToDateAndHandleNA
+    //   }, {
+    //   labelKey: "WS_OLD_LABEL_NAME"
+    // },
 
-      {
-        jsonPath: "WaterConnectionOld[0].connectionExecutionDate",
-        callBack: convertEpochToDateAndHandleNA
-      }
-    ),
+    //   {
+    //     jsonPath: "WaterConnectionOld[0].connectionExecutionDate",
+    //     callBack: convertEpochToDateAndHandleNA
+    //   }
+    // ),
+    reviewConnectionExecutionDate: getDateField({
+      label: { labelName: "Connection Execution Date",
+            labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"},
+
+      gridDefination: {
+        xs: 12,
+        sm: 4
+      },
+      required: true,
+      pattern: getPattern("Date"),
+      errorMessage: "ERR_INVALID_DATE",
+      jsonPath: "WaterConnection[0].connectionExecutionDate",
+    }),
     meterID: getTextField({
       label: {
         labelKey: "WS_SERV_DETAIL_METER_ID"
@@ -418,7 +431,7 @@ export const activationDetailsContainer = {
       },
       sourceJsonPath: "WaterConnection[0].meterId",
       required: true,
-      pattern: /^[a-z0-9]+$/i,
+   //   pattern: /^[a-z0-9]+$/i,
       errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       jsonPath: "WaterConnection[0].meterId"
     }),
@@ -429,7 +442,7 @@ export const activationDetailsContainer = {
         xs: 12,
         sm: 4
       },
-      required: false,
+      required: true,
       pattern: getPattern("Date"),
       errorMessage: "ERR_INVALID_DATE",
       jsonPath: "WaterConnection[0].meterInstallationDate"
@@ -445,7 +458,7 @@ export const activationDetailsContainer = {
         xs: 12,
         sm: 4
       },
-      required: false,
+      required: true,
       pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
       errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       jsonPath: "WaterConnection[0].additionalDetails.initialMeterReading"
@@ -462,8 +475,8 @@ export const activationDetailsContainer = {
         xs: 12,
         sm: 4
       },
-      required: false,
-      pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
+      required: true,
+      //pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
       errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       jsonPath: "WaterConnection[0].additionalDetails.meterMake"
     }),
@@ -478,7 +491,7 @@ export const activationDetailsContainer = {
         xs: 12,
         sm: 4
       },
-      required: false,
+      required: true,
       pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
       errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading"
@@ -522,8 +535,9 @@ export const activationDetailsContainer = {
                 let WaterConnection =[];
                
                 WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
-               state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
+              //  state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
+               state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate).getTime();
                 state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate).getTime();
                 state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading);
                let mydatadum = [
