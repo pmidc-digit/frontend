@@ -155,7 +155,7 @@ class Property extends Component {
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
     if (selPropertyDetails.status == "ACTIVE") {
       selPropertyDetails.status="INACTIVE";
-      //selPropertyDetails.additionalDetails.propertytobestatus="INACTIVE"
+      selPropertyDetails.additionalDetails.propertytobestatus="INACTIVE"
       selPropertyDetails.isactive= false;
       selPropertyDetails.isinactive= true;
         let payload = null;
@@ -200,7 +200,7 @@ onStatusChangePropertyClickToActive = async() => {
   const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
   if (selPropertyDetails.status == "INACTIVE") {
     selPropertyDetails.status="ACTIVE";
-   // selPropertyDetails.additionalDetails.propertytobestatus="ACTIVE";
+    selPropertyDetails.additionalDetails.propertytobestatus="ACTIVE";
     selPropertyDetails.isactive= true;
     selPropertyDetails.isinactive= false;
       let payload = null;
