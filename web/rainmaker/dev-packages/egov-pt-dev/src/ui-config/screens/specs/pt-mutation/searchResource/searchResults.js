@@ -311,8 +311,9 @@ const applicationNumberClick = async (item) => {
 }
 let newtenantId ;
 const propertyIdClick = (item) => {
-  item.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
-  newtenantId = item.address.tenantId;
+  //item.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+  item.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : item.address.tenantId;
+ // newtenantId = item.address.tenantId;
   navigate(propertyInformationScreenLink(item.propertyId,item.tenantId));
 }
 
@@ -322,9 +323,9 @@ const navigate=(url)=>{
 }
 
 const propertyInformationScreenLink=(propertyId,tenantId)=>{
-  
+  debugger
   if(process.env.REACT_APP_NAME == "Citizen"){
-    return `/property-tax/my-properties/property/${propertyId}/${newtenantId}`;
+    return `/property-tax/my-properties/property/${propertyId}/${tenantId}`;
   }else{
     return `/property-tax/property/${propertyId}/${tenantId}`;
   }
