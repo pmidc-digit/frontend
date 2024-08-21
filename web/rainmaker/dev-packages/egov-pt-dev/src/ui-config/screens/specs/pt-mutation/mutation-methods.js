@@ -516,7 +516,7 @@ export const searchApplicationDetails = getCommonCard({
         position: "start"
       },
       required: false,
-      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+    //  disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       pattern: getPattern("MobileNo"),
       jsonPath: "ptSearchScreen.mobileNumber",
       errorMessage: "ERR_INVALID_MOBILE_NUMBER"
@@ -536,7 +536,7 @@ export const searchApplicationDetails = getCommonCard({
 
       },
       required: false,
-      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+     // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       pattern: /^[a-zA-Z0-9-]*$/i,
       errorMessage: "ERR_INVALID_PROPERTY_ID",
       jsonPath: "ptSearchScreen.ids"
