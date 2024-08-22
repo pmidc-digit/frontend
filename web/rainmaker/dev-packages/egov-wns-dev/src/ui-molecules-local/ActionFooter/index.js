@@ -116,9 +116,9 @@ class Footer extends React.Component {
       label: "Single Demand",
       labelKey: "Single Demand",
       link: async (state, dispatch) => {
-       // debugger;
+        //debugger;
        if(this.props.bill.Demands[0].businessService == "SW"){
-       try{
+     //  try{
         payload = await httpRequest(
           "post",
           "/sw-calculator/sewerageCalculator/_singledemand",
@@ -153,9 +153,9 @@ class Footer extends React.Component {
           //   )
           // )
         }
-      }
-      catch(e){
-        alert("Unable to Generate Demand for this Sewerage Connection");
+     // }
+    //  catch(e){
+       // alert("Unable to Generate Demand for this Sewerage Connection");
         // dispatch(
         //   toggleSnackbar(
         //     true, {
@@ -165,11 +165,11 @@ class Footer extends React.Component {
         //     "warning"
         //   )
         // ) 
-      }
+    //  }
 
       }
       else if(this.props.bill.Demands[0].businessService == "WS"){
-        try{
+       // try{
         payload = await httpRequest(
           "post",
           "/ws-calculator/waterCalculator/_singledemand",
@@ -206,9 +206,9 @@ class Footer extends React.Component {
           //   )
           // )
         }
-      }
-      catch(e){
-        alert("Unable to Generate Demand for this Connection");
+    //  }
+    //  catch(e){
+       // alert("Unable to Generate Demand for this Connection");
         // dispatch(
         //   toggleSnackbar(
         //     true, {
@@ -218,18 +218,31 @@ class Footer extends React.Component {
         //     "warning"
         //   )
         // ) 
-      }
+    //  }
 
       }
     }
   
   
   };
-    
+  const collectbutton ={
+    label: "Collect",
+      labelKey: "Collect",
+      link: state => {
+        let connectionNumber = getQueryArg(window.location.href, "connectionNumber");
+        let tenantId = getQueryArg(window.location.href, "tenantId");
+        let service = getQueryArg(window.location.href, "service");
+        let connectionType = getQueryArg(window.location.href, "connectionType");
+        store.dispatch(
+          setRoute( `viewBill?connectionNumber=${connectionNumber}&tenantId=${tenantId}&service=${service}&connectionType=${connectionType}`)
+        )
+      }
+  }
+  
     //if(applicationType === "MODIFY"){
+      downloadMenu && downloadMenu.push(collectbutton);
       downloadMenu && downloadMenu.push(SWdemand);
-      //downloadMenu && downloadMenu.push(WSdemand);
-    downloadMenu && downloadMenu.push(editButton);
+      downloadMenu && downloadMenu.push(editButton);
     if (
       businessService.includes("ws-services-calculation") ||
       businessService.includes("sw-services-calculation")
