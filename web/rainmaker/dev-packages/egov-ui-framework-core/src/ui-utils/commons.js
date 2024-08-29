@@ -695,10 +695,10 @@ export const getStatusKey = (status) => {
 
 export const getRequiredDocData = async (action, dispatch, moduleDetails, closePopUp) => {
   let tenantId =
-    process.env.REACT_APP_NAME === "Citizen" ? JSON.parse(getUserInfo()).permanentCity|| commonConfig.tenantId : getTenantId();
+    process.env.REACT_APP_NAME === "Citizen" ? JSON.parse(getUserInfo()).permanentCity || commonConfig.tenantId : getTenantId();
   let mdmsBody = {
     MdmsCriteria: {
-      tenantId: moduleDetails[0].moduleName === "ws-services-masters" || moduleDetails[0].moduleName === "PropertyTax" || moduleDetails[0].moduleName === "FireNoc"|| moduleDetails[0].moduleName === "TradeLicense"  ? commonConfig.tenantId : tenantId,
+      tenantId: moduleDetails[0].moduleName === "ws-services-masters" || moduleDetails[0].moduleName === "PropertyTax" || moduleDetails[0].moduleName === "FireNoc" || moduleDetails[0].moduleName === "TradeLicense" ? commonConfig.tenantId : tenantId,
       moduleDetails: moduleDetails
     }
   };
@@ -712,11 +712,11 @@ export const getRequiredDocData = async (action, dispatch, moduleDetails, closeP
       mdmsBody
     );
     const moduleName = moduleDetails[0].moduleName;
-    let documents = moduleName==="FireNoc" ? get(
+    let documents = moduleName === "FireNoc" ? get(
       payload.MdmsRes,
       `${moduleName}.Documents[0].allowedDocs`,
       []
-    ):  get(
+    ) : get(
       payload.MdmsRes,
       `${moduleName}.Documents`,
       []
@@ -901,3 +901,41 @@ export const sortDropdownLabels = (e1, e2) => {
     return 1;
   }
 }
+
+export const validateFieldsNew = (
+  objectJsonPath,
+  state,
+  dispatch,
+  screen = "apply"
+) => {
+  const fields = get(
+    state.screenConfiguration.screenConfig[screen],
+    objectJsonPath,
+    {}
+  );
+  let isFormValid = true;
+  for (var variable in fields) {
+    if (variable && fields[variable].required) {
+      let value = get(
+        state.screenConfiguration.preparedFinalObject,
+        fields[variable].jsonPath
+      )
+      if (!value || value == "NA") {
+        !validate(
+          screen,
+          {
+            ...fields[variable],
+            value: get(
+              state.screenConfiguration.preparedFinalObject,
+              fields[variable].jsonPath
+            )
+          },
+          dispatch,
+          true
+        )
+        isFormValid = false;
+      }
+    }
+  }
+  return isFormValid;
+};
