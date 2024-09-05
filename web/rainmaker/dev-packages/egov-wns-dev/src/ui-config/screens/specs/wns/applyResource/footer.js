@@ -311,7 +311,7 @@ const callBackForNext = async (state, dispatch) => {
         if (validateConnHolderDetails(applyScreenObject)) {
           isFormValid = true;
           hasFieldToaster = false;
-          if (applyScreenObject.water || applyScreenObject.sewerage) {
+          if (applyScreenObject.water || applyScreenObject.sewerage || applyScreenObject.discharge) {
             if (
               applyScreenObject.hasOwnProperty("property") &&
               !_.isUndefined(applyScreenObject["property"]) &&

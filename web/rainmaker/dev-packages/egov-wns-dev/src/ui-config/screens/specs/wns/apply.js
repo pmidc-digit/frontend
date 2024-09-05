@@ -306,6 +306,7 @@ export const getData = async (action, state, dispatch) => {
       let payloadWater, payloadSewerage;
       if (applicationNo.includes("SW")) {
         try { payloadSewerage = await getSearchResultsForSewerage(queryObject, dispatch) } catch (error) { console.error(error); }
+        //console.log("payloadSewerage"+JSON.stringify(payloadSewerage));
         payloadSewerage.SewerageConnections[0].water = false;
         payloadSewerage.SewerageConnections[0].sewerage = true;
         payloadSewerage.SewerageConnections[0].service = "Sewerage";
@@ -337,7 +338,7 @@ export const getData = async (action, state, dispatch) => {
         sewerageConnections[0].additionalDetails.locality = get(sewerageConnections[0], "property.address.locality.code");
       }
       let combinedArray = waterConnections.concat(sewerageConnections);
-
+      //console.log("dshfds"+JSON.stringify(combinedArray))
       if (!window.location.href.includes("propertyId")) {
         if (!isActiveProperty(combinedArray[0].property)) {
           dispatch(toggleSnackbar(true, { labelKey: `ERR_WS_PROP_STATUS_${combinedArray[0].property.status}`, labelName: `Property Status is ${combinedArray[0].property.status}` }, "warning"));
@@ -353,7 +354,7 @@ export const getData = async (action, state, dispatch) => {
         // ModifyEdit should not call create.
         dispatch(prepareFinalObject("modifyAppCreated", true));
       }
-
+     
       dispatch(prepareFinalObject("applyScreen", findAndReplace(combinedArray[0], "null", "NA")));
       // For oldvalue display
       let oldcombinedArray = cloneDeep(combinedArray[0]);
@@ -658,14 +659,19 @@ const screenConfig = {
   uiFramework: "material-ui",
   name: "apply",
   // hasBeforeInitAsync:true,
-  beforeInitScreen: (action, state, dispatch) => {
-    
+  beforeInitScreen:  (action, state, dispatch) => {
     // dispatch(prepareFinalObject("applyScreen.water", true));
     // dispatch(prepareFinalObject("applyScreen.sewerage", false));
     const propertyId = getQueryArg(window.location.href, "propertyId");
-
+    
+    //let discharge = wsDischarge.split("-");
+    
+   // let dischargeFee = '12';
+   // let tenantId = getQueryArg(window.location.href, "tenantId");
     const applicationNumber = getQueryArg(window.location.href, "applicationNumber");
-
+    const dischargeConnection = getQueryArg(window.location.href, "dischargeConnection");
+    const dischargeFee = getQueryArg(window.location.href, "dischargeFee");
+    
     if (getQueryArg(window.location.href, "edited") != "true") {
     pageReset(dispatch);
     getData(action, state, dispatch).then(() => {
@@ -681,8 +687,13 @@ const screenConfig = {
         )
       );
     });
-    dispatch(prepareFinalObject("applyScreen.water", true));
-    dispatch(prepareFinalObject("applyScreen.sewerage", false));
+    
+      dispatch(prepareFinalObject("applyScreen.water", true));
+      dispatch(prepareFinalObject("applyScreen.sewerage", false));
+      dispatch(prepareFinalObject("applyScreen.discharge", false));
+      dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",false));
+      dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",0));
+        
     if (propertyId) {
       togglePropertyFeilds(action, true);
       if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.water") && get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
@@ -696,15 +707,65 @@ const screenConfig = {
         toggleSewerageFeilds(action, false);
       }
     } else if (applicationNumber && getQueryArg(window.location.href, "action") === "edit") {
+        
       togglePropertyFeilds(action, true);
+
       if (applicationNumber.includes("SW")) {
-        dispatch(prepareFinalObject("applyScreen.water", false));
-        dispatch(prepareFinalObject("applyScreen.sewerage", true));
+        if(dischargeConnection === 'true'){
+          dispatch(prepareFinalObject("applyScreen.water", false));
+          dispatch(prepareFinalObject("applyScreen.sewerage", true));
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'true'));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        } else if(dischargeConnection === 'OnlyMotor'){
+          dispatch(prepareFinalObject("applyScreen.water", false));
+          dispatch(prepareFinalObject("applyScreen.sewerage", false));
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'OnlyMotor'));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        }else if(dischargeConnection === 'both'){
+          dispatch(prepareFinalObject("applyScreen.water", false));
+          dispatch(prepareFinalObject("applyScreen.sewerage", true));
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'both'));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        }else{
+          dispatch(prepareFinalObject("applyScreen.water", false));
+          dispatch(prepareFinalObject("applyScreen.sewerage", true));
+          dispatch(prepareFinalObject("applyScreen.discharge", false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",''));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",'0'));
+        }
+        
         toggleWaterFeilds(action, false);
         toggleSewerageFeilds(action, true);
       } else {
-        dispatch(prepareFinalObject("applyScreen.water", true));
-        dispatch(prepareFinalObject("applyScreen.sewerage", false));
+        
+        if(dischargeConnection === 'true'){
+          dispatch(prepareFinalObject("applyScreen.water", true));
+          dispatch(prepareFinalObject("applyScreen.sewerage", false));
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'true'));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        } else if(dischargeConnection === 'OnlyMotor'){
+          dispatch(prepareFinalObject("applyScreen.water", false));
+          dispatch(prepareFinalObject("applyScreen.sewerage", false));
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'OnlyMotor'));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        }else if(dischargeConnection === 'both'){
+          dispatch(prepareFinalObject("applyScreen.water", true));
+          dispatch(prepareFinalObject("applyScreen.sewerage", false));
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'both'));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        }else{
+          dispatch(prepareFinalObject("applyScreen.water", true));
+          dispatch(prepareFinalObject("applyScreen.sewerage", false));
+          dispatch(prepareFinalObject("applyScreen.discharge", false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",''));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",'0'));
+        }
         toggleWaterFeilds(action, true);
         toggleSewerageFeilds(action, false);
       }
@@ -722,15 +783,36 @@ const screenConfig = {
       }
     }
   } else {
-    togglePropertyFeilds(action, true);
+    togglePropertyFeilds(action, true);applicationNumber
+    let searchQueryObject =[{ key: "tenantId", value: tenantId },{ key: "applicationNumber", value: applicationNumber}]
       if (applicationNumber.includes("SW")) {
+       
         dispatch(prepareFinalObject("applyScreen.water", false));
         dispatch(prepareFinalObject("applyScreen.sewerage", true));
+        if(dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor'){
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",dischargeConnection));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        }else{
+          dispatch(prepareFinalObject("applyScreen.discharge", false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",0));
+        }
         toggleWaterFeilds(action, false);
         toggleSewerageFeilds(action, true);
       } else {
+        
         dispatch(prepareFinalObject("applyScreen.water", true));
         dispatch(prepareFinalObject("applyScreen.sewerage", false));
+        if(dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor'){
+          dispatch(prepareFinalObject("applyScreen.discharge", true));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",dischargeConnection));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
+        }else{
+          dispatch(prepareFinalObject("applyScreen.discharge", false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",0));
+        }
         toggleWaterFeilds(action, true);
         toggleSewerageFeilds(action, false);
       }

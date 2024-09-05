@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import TextField from "@material-ui/core/TextField";
 import FormGroup from '@material-ui/core/FormGroup';
 import LabelContainer from "egov-ui-framework/ui-containers/LabelContainer";
 import FormControl from "@material-ui/core/FormControl";
@@ -12,6 +13,8 @@ import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configurat
 import "./index.css";
 import { toggleWater, toggleSewerage } from './toggleFeilds';
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
+import { name } from "../../ui-config/screens/specs/wns/applyResource/reviewConnectionDetails";
+import { TextFields } from "@material-ui/icons";
 
 const styles = {
   root: {
@@ -40,13 +43,17 @@ const styles = {
 };
 
 class CheckboxLabels extends React.Component {
-  state = { checkedSewerage: false, checkedWater: false, interChange: false }
-
+  state = { checkedSewerage: false, checkedWater: false, interChange: false, checkedDischarge: false, dischargeFee : 0, dischargeConnection : ''}
+  
   componentWillMount() {
     const { preparedFinalObject } = this.props;
+    console.log("preparedFinalObject"+JSON.stringify(preparedFinalObject));
     let checkedWater = (preparedFinalObject && preparedFinalObject.applyScreen.water) ? preparedFinalObject.applyScreen.water : false;
     let checkedSewerage = (preparedFinalObject && preparedFinalObject.applyScreen.sewerage) ? preparedFinalObject.applyScreen.sewerage : false;
-    this.setState({ checkedSewerage: checkedSewerage, checkedWater: checkedWater })
+    let checkedDischarge = (preparedFinalObject && preparedFinalObject.applyScreen.discharge) ? preparedFinalObject.applyScreen.discharge : false;
+    let dischargeFee =(preparedFinalObject && preparedFinalObject.applyScreen.additionalDetails.dischargeFee) ?  preparedFinalObject.applyScreen.additionalDetails.dischargeFee : 0;
+    let dischargeConnection =(preparedFinalObject && preparedFinalObject.applyScreen.additionalDetails.dischargeConnection) ? preparedFinalObject.applyScreen.additionalDetails.dischargeConnection : false;
+    this.setState({ checkedSewerage: checkedSewerage, checkedWater: checkedWater, checkedDischarge : checkedDischarge, dischargeConnection : dischargeConnection, dischargeFee :dischargeFee });
   }
 
   handleWater = name => event => {
@@ -54,9 +61,10 @@ class CheckboxLabels extends React.Component {
     this.setState({ [name]: event.target.checked, interChange: true }, () => {
       if (this.state.checkedWater) {
         toggleWater(onFieldChange, true);
-        if (this.state.checkedSewerage) { toggleSewerage(onFieldChange, true); }
+        if (this.state.checkedSewerage) 
+          { toggleSewerage(onFieldChange, true); }
         else { toggleSewerage(onFieldChange, false); }
-      } else { toggleWater(onFieldChange, false); }
+      } else { toggleWater(onFieldChange, false); } 
       approveCheck(jsonPathWater, this.state.checkedWater);
     });
   };
@@ -72,18 +80,55 @@ class CheckboxLabels extends React.Component {
       approveCheck(jsonPathSewerage, this.state.checkedSewerage);
     });
   }
-
+  handleDischarge = (name, dispatch) => event=>{
+    debugger;
+    const { jsonPathDischarge, approveCheck, onFieldChange } = this.props;
+    //console.log("jsonPathDischarge"+jsonPathDischargeConnection);
+    this.setState({ [name]: event.target.checked, interChange: true }, () => {
+      if (this.state.checkedSewerage) {
+        toggleSewerage(onFieldChange, true);
+        if (this.state.checkedWater) { toggleWater(onFieldChange, true); }
+        else { toggleWater(onFieldChange, false); }
+      } else { toggleSewerage(onFieldChange, false); }
+        approveCheck(jsonPathDischarge, this.state.checkedDischarge);
+        if(this.state.checkedDischarge === true){
+            if(this.state.checkedWater !== true && this.state.checkedSewerage !== true){
+              approveCheck('applyScreen.additionalDetails.dischargeConnection', 'OnlyMotor');
+            }else if(this.state.checkedWater === true && this.state.checkedSewerage === true){
+                approveCheck('applyScreen.additionalDetails.dischargeConnection','both');
+            }
+            else{
+              approveCheck('applyScreen.additionalDetails.dischargeConnection', 'true');
+            }
+        }
+    });
+  }
+  handleDischargeAmount = (name, dispatch)=> event=>{
+    const {approveCheck, onFieldChange } = this.props;
+    //console.log("jsonPathDischargeAmount"+jsonPathDischargeFee);
+    this.setState({ [name]: event.target.value, interChange: true }, () => {
+       approveCheck('applyScreen.additionalDetails.dischargeFee', this.state.dischargeAmount);
+    });
+    //console.log("dischargeAmount"+this.state.dischargeAmount)
+  }
   render() {
     const { classes, required, preparedFinalObject, disabled = false} = this.props;
-    let checkedWater, checkedSewerage;
+   
+    let checkedWater, checkedSewerage, checkedDischarge, dischargeAmount;
     if (this.state.interChange) {
       checkedWater = this.state.checkedWater;
       checkedSewerage = this.state.checkedSewerage;
+      checkedDischarge = this.state.checkedDischarge;
+      dischargeAmount = this.state.dischargeAmount;
+
     } else {
+      
       checkedWater = (preparedFinalObject && preparedFinalObject.applyScreen.water) ? preparedFinalObject.applyScreen.water : false;
       checkedSewerage = (preparedFinalObject && preparedFinalObject.applyScreen.sewerage) ? preparedFinalObject.applyScreen.sewerage : false;
+      checkedDischarge = (preparedFinalObject && preparedFinalObject.applyScreen.discharge) ? preparedFinalObject.applyScreen.discharge : false;
+      dischargeAmount = (preparedFinalObject && preparedFinalObject.applyScreen.additionalDetails.dischargeFee) ? preparedFinalObject.applyScreen.additionalDetails.dischargeFee : 0;
     }
-
+    //console.log("preparedFinalObjectAfter"+JSON.stringify(preparedFinalObject));
     return (
       <div className={classes.root}>
         <FormControl component="fieldset" className={classes.formControl} required={required}>
@@ -115,6 +160,46 @@ class CheckboxLabels extends React.Component {
                 />}
               label={<LabelContainer labelKey="WS_APPLY_SEWERAGE" />}
             />
+            {
+              (process.env.REACT_APP_NAME !== "Citizen" &&
+                <FormControlLabel
+                    classes={{ label: "checkbox-button-label" }}
+                    control={
+                      <Checkbox
+                        checked={checkedDischarge}
+                        onChange={this.handleDischarge("checkedDischarge")}
+                        classes={{ root: classes.radioRoot, checked: classes.checked }}
+                        color="primary"
+                        disabled={disabled}
+                      />}
+                    label={<LabelContainer labelKey="Discharge" />}
+                  />
+              )
+            }
+             
+         
+          {checkedDischarge && 
+              
+                        <TextField
+                            fullWidth
+                            type="number"
+                            variant="outlined"
+                            name=""
+                            label="Discharge Amount"
+                            value={dischargeAmount}
+                            className={classes.textField}
+                            required={checkedDischarge}
+                            onChange={this.handleDischargeAmount("dischargeAmount")}
+                            InputProps={{
+                              className: classes.input,
+                            }}
+                            inputProps={{
+                              style: { textAlign: "left", padding: "0.5rem" },
+                            }}
+                          />
+                         
+                      }                
+              
           </FormGroup>
         </FormControl>
       </div>
@@ -124,9 +209,9 @@ class CheckboxLabels extends React.Component {
 
 const mapStateToProps = (state, ownprops) => {
   const { screenConfiguration } = state;
-  const { jsonPathWater, jsonPathSewerage } = ownprops;
+  const { jsonPathWater, jsonPathSewerage, jsonPathDischarge } = ownprops;
   const { preparedFinalObject } = screenConfiguration;
-  return { preparedFinalObject, jsonPathWater, jsonPathSewerage };
+  return { preparedFinalObject, jsonPathWater, jsonPathSewerage, jsonPathDischarge};
 };
 
 const mapDispatchToProps = dispatch => {

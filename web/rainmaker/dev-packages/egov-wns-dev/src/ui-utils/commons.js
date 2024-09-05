@@ -593,7 +593,26 @@ export const prepareDocumentsUploadData = (state, dispatch) => {
 
 const parserFunction = (state) => {
     let queryObject = JSON.parse(JSON.stringify(get(state.screenConfiguration.preparedFinalObject, "applyScreen", {})));
+    console.log("Hello Test"+JSON.stringify(queryObject))
+    let ckConnTypeWater= queryObject.water;
+    let ckConnTypeSwerage = queryObject.sewerage;
+    let ckDischarge = queryObject.discharge;
     let waterDetails =get(state.screenConfiguration.preparedFinalObject, "WaterConnection[0]", {});
+    let sewerageDetails = get(state.screenConfiguration.preparedFinalObject, "SewerageConnection[0]",{});
+    let dischargeConnection;
+    let dischargeFee; 
+    if(ckDischarge === true){
+           if(ckConnTypeWater === true && ckConnTypeSwerage === true){
+            dischargeConnection =queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : waterDetails.additionalDetails.dischargeConnection;
+            dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : waterDetails.additionalDetails.dischargeFee;
+           } else if(ckConnTypeSwerage === true){
+             dischargeConnection =queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : sewerageDetails.additionalDetails.dischargeConnection;
+             dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : sewerageDetails.additionalDetails.dischargeFee;
+           }else{
+             dischargeConnection =queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : waterDetails.additionalDetails.dischargeConnection;
+             dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : waterDetails.additionalDetails.dischargeFee;
+           }
+    }
     let parsedObject = {
         roadCuttingArea: parseInt(queryObject.roadCuttingArea),
         meterInstallationDate: convertDateToEpoch(queryObject.meterInstallationDate),
@@ -617,6 +636,8 @@ const parserFunction = (state) => {
                 queryObject.additionalDetails.detailsProvidedBy !== null
             ) ? queryObject.additionalDetails.detailsProvidedBy : "",
             isexempted : false,
+            dischargeConnection :dischargeConnection ? dischargeConnection : null,
+            dischargeFee : dischargeFee ? dischargeFee : null,
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
       billingAmount: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.billingAmount) : null,
       connectionCategory: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.connectionCategory : null,
@@ -919,6 +940,7 @@ export const getDisplayDocFormat = (dataList) => {
     return tempDoc;
 }
 export const applyForWaterOrSewerage = async (state, dispatch) => {
+    debugger;
     if (get(state, "screenConfiguration.preparedFinalObject.applyScreen.water") && get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage")) {
         let response = await applyForBothWaterAndSewerage(state, dispatch);
         return response;
@@ -932,7 +954,9 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 }
 
 export const applyForWater = async (state, dispatch) => {
+    debugger;
     let queryObject = parserFunction(state);
+    console.log("Water Object"+ JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let method = waterId ? "UPDATE" : "CREATE";
     try {
@@ -945,12 +969,14 @@ export const applyForWater = async (state, dispatch) => {
                 "WaterConnection[0].additionalDetails.appCreatedDate"
             )
             let queryObjectForUpdate = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0]");
+           // let dischargeFee = queryObjectForUpdate.additionalDetails.dischargeFee ? queryObjectForUpdate.additionalDetails.dischargeFee : queryObject.
             let waterSource = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSourceType", null);
             let waterSubSource = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSubSource", null);
             queryObjectForUpdate.waterSource = queryObjectForUpdate.waterSource ? queryObjectForUpdate.waterSource : waterSource;
             queryObjectForUpdate.waterSubSource = queryObjectForUpdate.waterSubSource ? queryObjectForUpdate.waterSubSource : waterSubSource;
             set(queryObjectForUpdate, "tenantId", tenantId);
             queryObjectForUpdate = { ...queryObjectForUpdate, ...queryObject }
+
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "waterSource", getWaterSource(queryObjectForUpdate.waterSource, queryObjectForUpdate.waterSubSource));
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
@@ -961,6 +987,7 @@ export const applyForWater = async (state, dispatch) => {
             queryObjectForUpdate.additionalDetails.locality = queryObjectForUpdate.property.address.locality.code;
             queryObjectForUpdate = findAndReplace(queryObjectForUpdate, "NA", null);
             queryObjectForUpdate.additionalDetails.waterSubUsageType = queryObjectForUpdate.additionalDetails.waterSubUsageType ? queryObjectForUpdate.additionalDetails.waterSubUsageType : "NA";
+            console.log("queryObjectForUpdate"+JSON.stringify(queryObjectForUpdate));
             await httpRequest("post", "/ws-services/wc/_update", "", [], { WaterConnection: queryObjectForUpdate });
             let searchQueryObject = [{ key: "tenantId", value: queryObjectForUpdate.tenantId }, { key: "applicationNumber", value: queryObjectForUpdate.applicationNo }];
             let searchResponse = await getSearchResults(searchQueryObject);
@@ -1022,6 +1049,7 @@ export const applyForSewerage = async (state, dispatch) => {
                 "SewerageConnection[0].additionalDetails.appCreatedDate"
             )
             let queryObjectForUpdate = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0]");
+            
             queryObjectForUpdate = { ...queryObjectForUpdate, ...queryObject }
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "connectionType", "Non Metered");

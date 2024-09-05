@@ -183,7 +183,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
 }
 
 const renderSearchApplicationTable = async (state, dispatch) => {
-  debugger
+  //debugger
   let queryObject = [{ key: "tenantId", value: getTenantIdCommon() }];
   queryObject.push({ key: "isConnectionSearch", value: true });
   let searchScreenObject = get(state.screenConfiguration.preparedFinalObject, "searchScreen", {});
@@ -271,6 +271,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
         { key: "tenantId", value: getTenantIdCommon() }
       ];
       let Response = await getWorkFlowData(queryObj);*/
+      //console.log("combinedSearchResults"+JSON.stringify(combinedSearchResults));
       for (let i = 0; i < combinedSearchResults.length; i++) {
 
         let element = findAndReplace(combinedSearchResults[i], null, "NA");
@@ -302,8 +303,9 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               connectionType: element.connectionType,
               // applicationStatusdata: appStatus,
               applicationStatusdata: element.applicationStatus,
-              tenantId: element.tenantId
-
+              tenantId: element.tenantId,
+              dischargeFee : element.additionalDetails.dischargeFee,
+              dischargeConnection: element.additionalDetails.dischargeConnection
 
             })
           } else {
@@ -319,7 +321,9 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               connectionType: element.connectionType,
               //applicationStatusdata: appStatus,
               applicationStatusdata: element.applicationStatus,
-              tenantId: element.tenantId
+              tenantId: element.tenantId,
+              dischargeFee : element.additionalDetails.dischargeFee,
+              dischargeConnection: element.additionalDetails.dischargeConnection
             })
           }
         }
@@ -360,7 +364,7 @@ const showHideApplicationTable = (booleanHideOrShow, dispatch) => {
 };
 
 const showConnectionResults = (connections, dispatch) => {
-  console.log("sdshfgdhfv" + JSON.stringify(connections))
+  //console.log("sdshfgdhfv" + JSON.stringify(connections))
   let data = connections.map(item => ({
     ["WS_COMMON_TABLE_COL_SERVICE_LABEL"]: item.service,
     ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.connectionNo,
@@ -399,6 +403,8 @@ const showApplicationResults = (connections, dispatch) => {
     ["WS_COMMON_TABLE_COL_SERVICE_LABEL"]: item.service,
     ["WS_COMMON_TABLE_COL_CONNECTIONTYPE_LABEL"]: item.connectionType,
     ["WS_COMMON_TABLE_COL_APPLICATION_STATUS_TEST"]: item.applicationStatusdata,
+    ["WS_COMMON_TABLE_COL_APPLICATION_DISCHARGE_FEE"]:item.dischargeFee,
+    ["WS_COMMON_TABLE_COL_APPLICATION_DISCHARGE_CONNECTION"]:item.dischargeConnection,
   }));
   exceldata = data;
 
