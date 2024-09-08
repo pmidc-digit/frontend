@@ -920,7 +920,8 @@ export const validateFieldsNew = (
         state.screenConfiguration.preparedFinalObject,
         fields[variable].jsonPath
       )
-      if (!value || value == "NA") {
+      console.log("value variable", value, variable);
+      if (!value || value == null) {
         !validate(
           screen,
           {
