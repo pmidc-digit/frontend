@@ -641,7 +641,7 @@ const parserFunction = (state) => {
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
             billingAmount: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.billingAmount) : null,
             connectionCategory: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.connectionCategory : null,
-            ledgerId: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.ledgerId) : null,
+            ledgerId: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.ledgerId : null,
             avarageMeterReading: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.avarageMeterReading) : null,
             meterMake: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.meterMake) : null,
             compositionFee: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.compositionFee) : null,
