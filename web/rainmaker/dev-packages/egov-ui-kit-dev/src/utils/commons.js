@@ -54,7 +54,29 @@ export const transformById = (payload, id) => {
           ...item,
         };
       }
+      
+      return result;
+    }, {})
+  );
+};
 
+export const transformByIdnew = (payload, id) => {
+  
+  let xValues = payload.map(function(o) { return o.auditDetails.lastModifiedTime; });
+  let xMax = Math.max(...xValues);
+  console.log(xMax);
+  return (
+
+   payload &&
+    payload.reduce((result, item) => {
+      if(xMax == item.auditDetails.lastModifiedTime){
+    if (!item.hasOwnProperty("active") || (item.hasOwnProperty("active") && item.active)) {
+        result[item[id]] = {
+          ...item,
+        };
+      }
+    }
+    
       return result;
     }, {})
   );

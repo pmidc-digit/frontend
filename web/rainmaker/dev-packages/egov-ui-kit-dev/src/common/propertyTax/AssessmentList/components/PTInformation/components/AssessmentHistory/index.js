@@ -154,8 +154,22 @@ class AssessmentHistory extends Component {
 }
 
 
+// const mapStateToProps = (state, ownProps) => {
+//     debugger;
+//     const { propertiesByIdnew, Assessments = [] } = state.properties || {};
+//     const propertyId = decodeURIComponent(ownProps.match.params.propertyId);
+//     const selPropertyDetails = propertiesByIdnew[propertyId] || {};
+//     const propertyDetails = selPropertyDetails.propertyDetails || [];
+//     return {
+//         selPropertyDetails,
+//         propertyDetails,
+//         propertyId,
+//         Assessments
+//     };
+// };
 
 const mapStateToProps = (state, ownProps) => {
+    debugger;
     const { propertiesById, Assessments = [] } = state.properties || {};
     const propertyId = decodeURIComponent(ownProps.match.params.propertyId);
     const selPropertyDetails = propertiesById[propertyId] || {};
