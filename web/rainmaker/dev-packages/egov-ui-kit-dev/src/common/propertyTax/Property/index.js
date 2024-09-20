@@ -789,10 +789,11 @@ const mapStateToProps = (state, ownProps) => {
   const { urls, localizationLabels } = app;
   const { cities } = common;
   const { generalMDMSDataById } = state.common || {};
-  let { propertiesById, singleAssessmentByStatus = [], loading, receiptsByYr, totalBillAmountDue = 0, Assessments = [] } = state.properties || {};
+  let { propertiesById, propertiesByIdnew ,singleAssessmentByStatus = [], loading, receiptsByYr, totalBillAmountDue = 0, Assessments = [] } = state.properties || {};
   const tenantId = ownProps.match.params.tenantId;
   const propertyId = decodeURIComponent(ownProps.match.params.propertyId);
-  const selPropertyDetails = propertiesById[propertyId] || {};
+  // const selPropertyDetails = propertiesById[propertyId] || {};
+  const selPropertyDetails = propertiesByIdnew[propertyId] || {};
   loading = loading == false && Object.keys(selPropertyDetails).length > 0 ? false : true;
   const { documentsUploaded } = selPropertyDetails || [];
   const latestPropertyDetails = getLatestPropertyDetails(selPropertyDetails.propertyDetails);

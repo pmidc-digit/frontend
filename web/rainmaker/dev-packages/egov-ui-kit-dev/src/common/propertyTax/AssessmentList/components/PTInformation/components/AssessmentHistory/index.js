@@ -169,10 +169,9 @@ class AssessmentHistory extends Component {
 // };
 
 const mapStateToProps = (state, ownProps) => {
-    debugger;
-    const { propertiesById, Assessments = [] } = state.properties || {};
+    const { propertiesById,propertiesByIdnew, Assessments = [] } = state.properties || {};
     const propertyId = decodeURIComponent(ownProps.match.params.propertyId);
-    const selPropertyDetails = propertiesById[propertyId] || {};
+    const selPropertyDetails = propertiesByIdnew[propertyId] || {};
     const propertyDetails = selPropertyDetails.propertyDetails || [];
     return {
         selPropertyDetails,
@@ -195,7 +194,7 @@ const mapDispatchToProps = (dispatch) => {
 export default compose(
     withRouter,
     connect(
-        mapStateToProps,
+        mapStateToProps,  
         mapDispatchToProps
-    )
+     )
 )(AssessmentHistory);

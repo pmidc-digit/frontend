@@ -40,12 +40,10 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
 
 
   export const callPGService = async (state, dispatch) => {
-   const BusinessService=get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
+    const BusinessService=get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
     var diffDays;
     if(BusinessService.toUpperCase() =="FIRENOC"){
     var getdate=get(state, "screenConfiguration.preparedFinalObject.FireNOCs[0].auditDetails.createdTime");
-    debugger;
-    
 
     const currentDate = new Date();
     const appDate = new Date(getdate);
@@ -230,7 +228,7 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
           //   else{
           //   window.location = redirectionUrl;
           //   }
-          if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" && businessService.toUpperCase()=="WS"||businessService.toUpperCase()=="SW" ){
+          if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" && businessService.toUpperCase()=="WS"|| businessService.toUpperCase()=="SW" ){
 
             window.location = redirectionUrl;  
           }
@@ -325,8 +323,7 @@ export const download = async (receiptQueryString, mode = "download" ,configKey=
   let bodyObject = {
     uuid: [uuid]
   };
-  
-  debugger;
+ 
   let responseForUser = await getUserDataFromUuid(bodyObject);
   let lastmodifier=responseForUser && responseForUser.user[0]?responseForUser.user[0].name:null;
   let businessService = '';
@@ -786,8 +783,9 @@ building = building + "," + item.name;
         downloadReceiptFromFilestoreID(oldFileStoreId, mode)
       }
       else {
-        const propertiesById = get(state.properties , "propertiesById");
-        const propertiesFound = propertiesById ? Object.values(propertiesById) : null;
+        // const propertiesById = get(state.properties , "propertiesById");
+        const propertiesByIdnew = get(state.properties , "propertiesByIdnew");
+        const propertiesFound = propertiesByIdnew ? Object.values(propertiesByIdnew) : null;
         let queryData = { Payments: payloadReceiptDetails.Payments };
         if(propertiesFound) {
           queryData.properties = propertiesFound;
