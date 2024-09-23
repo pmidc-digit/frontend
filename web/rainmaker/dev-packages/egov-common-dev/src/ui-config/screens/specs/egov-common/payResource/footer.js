@@ -40,6 +40,7 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
 
 
   export const callPGService = async (state, dispatch) => {
+    debugger;
     const BusinessService=get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
     var diffDays;
     if(BusinessService.toUpperCase() =="FIRENOC"){
@@ -228,12 +229,11 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
           //   else{
           //   window.location = redirectionUrl;
           //   }
-          if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" && businessService.toUpperCase()=="WS"|| businessService.toUpperCase()=="SW" ){
+          if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" && (businessService.toUpperCase()=="WS"|| businessService.toUpperCase()=="SW" )){
 
             window.location = redirectionUrl;  
           }
-         
-           else if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" )         {
+          else if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" )         {
               window.location = redirectionUrl;
              }
              else{
@@ -1321,7 +1321,7 @@ export const footer = getCommonApplyFooter({
     children: {
       submitButtonLabel: getLabel({
         labelName: "MAKE PAYMENT",
-        labelKey: "COMMON_MAKE_PAYMENT"
+        labelKey: "COMMON_MAKE_PAYMENTdddd"
       }),
       submitButtonIcon: {
         uiFramework: "custom-atoms",
