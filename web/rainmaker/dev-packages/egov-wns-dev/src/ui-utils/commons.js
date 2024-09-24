@@ -940,7 +940,6 @@ export const getDisplayDocFormat = (dataList) => {
     return tempDoc;
 }
 export const applyForWaterOrSewerage = async (state, dispatch) => {
-    debugger;
     if (get(state, "screenConfiguration.preparedFinalObject.applyScreen.water") && get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage")) {
         let response = await applyForBothWaterAndSewerage(state, dispatch);
         return response;
@@ -954,7 +953,6 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 }
 
 export const applyForWater = async (state, dispatch) => {
-    debugger;
     let queryObject = parserFunction(state);
     console.log("Water Object" + JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
@@ -1006,6 +1004,15 @@ export const applyForWater = async (state, dispatch) => {
             if (isModifyMode()) {
                 set(queryObject, "waterSource", getWaterSource(queryObject.waterSource, queryObject.waterSubSource));
             }
+            debugger;
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();            
+
+            today = yyyy + '-' + mm + '-' + dd;
+            today = convertDateToEpoch(today);
+            queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ?  today : queryObject.dateEffectiveFrom
             response = await httpRequest("post", "/ws-services/wc/_create", "", [], { WaterConnection: queryObject });
             dispatch(prepareFinalObject("WaterConnection", response.WaterConnection));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);
@@ -1174,6 +1181,7 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             if (typeof queryObject.additionalDetails !== 'object') {
                 queryObject.additionalDetails = {};
             }
+            debugger;
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
             set(queryObject, "processInstance.action", "INITIATE");
             queryObject = findAndReplace(queryObject, "NA", null);
