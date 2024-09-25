@@ -1004,15 +1004,14 @@ export const applyForWater = async (state, dispatch) => {
             if (isModifyMode()) {
                 set(queryObject, "waterSource", getWaterSource(queryObject.waterSource, queryObject.waterSubSource));
             }
-            debugger;
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();            
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = today.getFullYear();            
 
             today = yyyy + '-' + mm + '-' + dd;
             today = convertDateToEpoch(today);
-            queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ?  today : queryObject.dateEffectiveFrom
+            queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ?  today : queryObject.dateEffectiveFrom;
             response = await httpRequest("post", "/ws-services/wc/_create", "", [], { WaterConnection: queryObject });
             dispatch(prepareFinalObject("WaterConnection", response.WaterConnection));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);

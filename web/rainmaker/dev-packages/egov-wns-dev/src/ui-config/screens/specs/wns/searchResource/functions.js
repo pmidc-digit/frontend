@@ -35,8 +35,7 @@ export const searchApiCall = async (state, dispatch) => {
 }
 
 const renderSearchConnectionTable = async (state, dispatch) => {
-  // debugger;
-  // console.log("hsgshdsh")
+ 
   let queryObject = [];
   queryObject.push({ key: "searchType", value: "CONNECTION" });
   let searchScreenObject = get(state.screenConfiguration.preparedFinalObject, "searchConnection", {});
@@ -139,21 +138,24 @@ const renderSearchConnectionTable = async (state, dispatch) => {
 
           let billResults = await fetchBill(queryObjectForWaterFetchBill, dispatch)
           let updatedDueDate = 0;
-          // debugger
+         
           billResults && billResults.Bill.length > 0 && billResults.Bill[0].billDetails.map(bill => {
+            
             if (element.service === serviceConst.WATER) {
               updatedDueDate = bill.expiryDate;
             } else if (element.service === serviceConst.SEWERAGE) {
               updatedDueDate = bill.expiryDate;
             }
           });
+          
           billResults && billResults.Bill.length > 0 ? finalArray.push({
             isLeagcy: element.additionalDetails.islegacy,
             due: billResults.Bill[0].totalAmount,
             dueDate: updatedDueDate,
             service: element.service,
             connectionNo: element.connectionNo,
-            name: (element.property) ? element.property.owners[0].name : '',
+            // name: (element.property) ? element.property.owners[0].name : '',
+            name: (element.connectionHolders[0].name)? element.connectionHolders[0].name: element.property.owners[0].name,
             status: element.status,
             address: handleAddress(element),
             connectionType: element.connectionType,
@@ -176,14 +178,14 @@ const renderSearchConnectionTable = async (state, dispatch) => {
         }
 
       }
-      //console.log("finalArray"+JSON.stringify(finalArray))
+   
       showConnectionResults(finalArray, dispatch)
     } catch (err) { console.log(err) }
   }
 }
 
 const renderSearchApplicationTable = async (state, dispatch) => {
-  //debugger
+ 
   let queryObject = [{ key: "tenantId", value: getTenantIdCommon() }];
   queryObject.push({ key: "isConnectionSearch", value: true });
   let searchScreenObject = get(state.screenConfiguration.preparedFinalObject, "searchScreen", {});
@@ -226,8 +228,10 @@ const renderSearchApplicationTable = async (state, dispatch) => {
       }
     }
     try {
+      
       let getSearchResult, getSearchResultForSewerage;
       if (searchScreenObject.applicationType && searchScreenObject.applicationType.toLowerCase().includes('water')) {
+        
         getSearchResult = getSearchResults(queryObject)
       } else if (searchScreenObject.applicationType && searchScreenObject.applicationType.toLowerCase().includes('sewerage')) {
         getSearchResultForSewerage = getSearchResultsForSewerage(queryObject, dispatch)
@@ -290,7 +294,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
             element.property.owners.length > 1) {
             let ownerName = "";
             element.property.owners.forEach(ele => { ownerName = ownerName + ", " + ele.name })
-
+            
             finalArray.push({
               isLeagcy: element.additionalDetails.islegacy,
               connectionNo: element.connectionNo,
@@ -364,7 +368,7 @@ const showHideApplicationTable = (booleanHideOrShow, dispatch) => {
 };
 
 const showConnectionResults = (connections, dispatch) => {
-  //console.log("sdshfgdhfv" + JSON.stringify(connections))
+ 
   let data = connections.map(item => ({
     ["WS_COMMON_TABLE_COL_SERVICE_LABEL"]: item.service,
     ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.connectionNo,

@@ -343,30 +343,30 @@ export const setBusinessServiceDataToLocalStorage = async (
         JSON.stringify(get(payload, "BusinessServices"))
       );
     } else {
-      dispatch(
-        toggleSnackbar(
-          true,
-          {
-            labelName: "Business Service returned empty object",
-            labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
-          },
-          "error"
-        )
-      );
+      // dispatch(
+      //   toggleSnackbar(
+      //     true,
+      //     {
+      //       labelName: "Business Service returned empty object",
+      //       labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
+      //     },
+      //     "error"
+      //   )
+      // );
     }
     dispatch(toggleSpinner());
   } catch (e) {
     dispatch(toggleSpinner());
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Not authorized to access Business Service!",
-          labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
-        },
-        "error"
-      )
-    );
+    // dispatch(
+    //   toggleSnackbar(
+    //     true,
+    //     {
+    //       labelName: "Not authorized to access Business Service!",
+    //       labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
+    //     },
+    //     "error"
+    //   )
+    // );
   }
 };
 

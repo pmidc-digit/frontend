@@ -56,14 +56,14 @@ const getPlumberRadioButton = {
   type: "array"
 };
 export const triggerUpdateByKey = (state, keyIndex, value, dispatch) => {
-  dispatch(
-    handleField(
-      "apply",
-      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.regularizationFee",
-      "visible",
-      false
-    )
-  );
+  // dispatch(
+  //   handleField(
+  //     "apply",
+  //     "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.regularizationFee",
+  //     "visible",
+  //     false
+  //   )
+  // );
 
   if (dispatch == "set") {
     set(state, `screenConfiguration.preparedFinalObject.DynamicMdms.ws-services-masters.waterSource.selectedValues[${keyIndex}]`, value);
