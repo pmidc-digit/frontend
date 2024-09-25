@@ -13,6 +13,12 @@ export const serviceConst = {
     "WATER": "WATER",
     "SEWERAGE": "SEWERAGE"
 }
+let today = new Date();
+let dd = String(today.getDate()).padStart(2, '0');
+let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+let yyyy = today.getFullYear();            
+
+today = yyyy + '-' + mm + '-' + dd;
 
 export const pushTheDocsUploadedToRedux = async (state, dispatch) => {
     let reduxDocuments = get(state.screenConfiguration.preparedFinalObject, "documentsUploadRedux", {});
@@ -156,6 +162,7 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
 
 
 export const getSearchResults = async (queryObject, filter = false) => {
+    debugger;
     try {
         const response = await httpRequest(
             "post",
@@ -166,10 +173,12 @@ export const getSearchResults = async (queryObject, filter = false) => {
         if (response.WaterConnection && response.WaterConnection.length == 0) {
             return response;
         }
-        let currentTime = new Date().getTime();
+       
+        let currentTime = convertDateToEpoch(today);
         if (filter) {
 
-            response.WaterConnection = response.WaterConnection.filter(app => currentTime > app.dateEffectiveFrom && (app.applicationStatus == 'APPROVED' || app.applicationStatus == 'CONNECTION_ACTIVATED'));
+             response.WaterConnection = response.WaterConnection.filter(app => currentTime >= app.dateEffectiveFrom && (app.applicationStatus == 'APPROVED' || app.applicationStatus == 'CONNECTION_ACTIVATED'));
+            //response.WaterConnection = response.WaterConnection[0];
             response.WaterConnection = response.WaterConnection.sort((row1, row2) => row2.auditDetails.createdTime - row1.auditDetails.createdTime);
         }
 
@@ -197,9 +206,9 @@ export const getSearchResultsForSewerage = async (queryObject, dispatch, filter 
             dispatch(toggleSpinner());
             return response;
         }
-        let currentTime = new Date().getTime();
+        let currentTime = convertDateToEpoch(today);
         if (filter) {
-            response.SewerageConnections = response.SewerageConnections.filter(app => currentTime > app.dateEffectiveFrom && (app.applicationStatus == 'APPROVED' || app.applicationStatus == 'CONNECTION_ACTIVATED'));
+            response.SewerageConnections = response.SewerageConnections.filter(app => currentTime >= app.dateEffectiveFrom && (app.applicationStatus == 'APPROVED' || app.applicationStatus == 'CONNECTION_ACTIVATED'));
             response.SewerageConnections = response.SewerageConnections.sort((row1, row2) => row2.auditDetails.createdTime - row1.auditDetails.createdTime);
         }
         let result = findAndReplace(response, null, "NA");
@@ -955,6 +964,7 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 export const applyForWater = async (state, dispatch) => {
     let queryObject = parserFunction(state);
     console.log("Water Object" + JSON.stringify(queryObject))
+    debugger;
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let method = waterId ? "UPDATE" : "CREATE";
     try {
