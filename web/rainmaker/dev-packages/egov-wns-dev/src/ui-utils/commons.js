@@ -170,7 +170,7 @@ export const getSearchResults = async (queryObject, filter = false) => {
             "_search",
             queryObject
         );
-        if (response.WaterConnection && response.WaterConnection.length >= 0) {
+        if (response.WaterConnection && response.WaterConnection.length == 0) {
             return response;
         }
 
@@ -202,7 +202,7 @@ export const getSearchResultsForSewerage = async (queryObject, dispatch, filter 
             "_search",
             queryObject
         );
-        if (response.SewerageConnections && response.SewerageConnections.length >= 0) {
+        if (response.SewerageConnections && response.SewerageConnections.lengt == 0) {
             dispatch(toggleSpinner());
             return response;
         }
