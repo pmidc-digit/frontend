@@ -16,7 +16,7 @@ export const serviceConst = {
 let today = new Date();
 let dd = String(today.getDate()).padStart(2, '0');
 let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-let yyyy = today.getFullYear();            
+let yyyy = today.getFullYear();
 
 today = yyyy + '-' + mm + '-' + dd;
 
@@ -80,7 +80,7 @@ export const updateTradeDetails = async requestBody => {
 };
 
 export const getLocaleLabelsforTL = (label, labelKey, localizationLabels) => {
-    alert(1);
+
     console.log(label, labelKey)
     if (labelKey) {
         let translatedLabel = getTranslatedLabel(labelKey, localizationLabels);
@@ -170,14 +170,14 @@ export const getSearchResults = async (queryObject, filter = false) => {
             "_search",
             queryObject
         );
-        if (response.WaterConnection && response.WaterConnection.length == 0) {
+        if (response.WaterConnection && response.WaterConnection.length >= 0) {
             return response;
         }
-       
+
         let currentTime = convertDateToEpoch(today);
         if (filter) {
 
-             response.WaterConnection = response.WaterConnection.filter(app => currentTime >= app.dateEffectiveFrom && (app.applicationStatus == 'APPROVED' || app.applicationStatus == 'CONNECTION_ACTIVATED'));
+            response.WaterConnection = response.WaterConnection.filter(app => currentTime >= app.dateEffectiveFrom && (app.applicationStatus == 'APPROVED' || app.applicationStatus == 'CONNECTION_ACTIVATED'));
             //response.WaterConnection = response.WaterConnection[0];
             response.WaterConnection = response.WaterConnection.sort((row1, row2) => row2.auditDetails.createdTime - row1.auditDetails.createdTime);
         }
@@ -193,7 +193,7 @@ export const getSearchResults = async (queryObject, filter = false) => {
     } catch (error) { console.log(error) }
 };
 
-export const getSearchResultsForSewerage = async (queryObject, dispatch, filter = false) => {
+export const getSearchResultsForSewerage = async (queryObject, dispatch, filter = false, isSeverageNew = false) => {
     dispatch(toggleSpinner());
     try {
         const response = await httpRequest(
@@ -202,7 +202,7 @@ export const getSearchResultsForSewerage = async (queryObject, dispatch, filter 
             "_search",
             queryObject
         );
-        if (response.SewerageConnections && response.SewerageConnections.length == 0) {
+        if (response.SewerageConnections && response.SewerageConnections.length >= 0) {
             dispatch(toggleSpinner());
             return response;
         }
@@ -210,10 +210,12 @@ export const getSearchResultsForSewerage = async (queryObject, dispatch, filter 
         if (filter) {
             response.SewerageConnections = response.SewerageConnections.filter(app => currentTime >= app.dateEffectiveFrom && (app.applicationStatus == 'APPROVED' || app.applicationStatus == 'CONNECTION_ACTIVATED'));
             response.SewerageConnections = response.SewerageConnections.sort((row1, row2) => row2.auditDetails.createdTime - row1.auditDetails.createdTime);
+
         }
         let result = findAndReplace(response, null, "NA");
         result.SewerageConnections = await getPropertyObj(result.SewerageConnections);
         dispatch(toggleSpinner());
+
         return result;
     } catch (error) {
         dispatch(toggleSpinner());
@@ -602,7 +604,7 @@ export const prepareDocumentsUploadData = (state, dispatch) => {
 
 const parserFunction = (state) => {
     let queryObject = JSON.parse(JSON.stringify(get(state.screenConfiguration.preparedFinalObject, "applyScreen", {})));
-    console.log("Hello Test" + JSON.stringify(queryObject))
+
     let ckConnTypeWater = queryObject.water;
     let ckConnTypeSwerage = queryObject.sewerage;
     let ckDischarge = queryObject.discharge;
@@ -963,8 +965,6 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 
 export const applyForWater = async (state, dispatch) => {
     let queryObject = parserFunction(state);
-    console.log("Water Object" + JSON.stringify(queryObject))
-    debugger;
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let method = waterId ? "UPDATE" : "CREATE";
     try {
@@ -1017,11 +1017,11 @@ export const applyForWater = async (state, dispatch) => {
             let today = new Date();
             let dd = String(today.getDate()).padStart(2, '0');
             let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            let yyyy = today.getFullYear();            
+            let yyyy = today.getFullYear();
 
             today = yyyy + '-' + mm + '-' + dd;
             today = convertDateToEpoch(today);
-            queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ?  today : queryObject.dateEffectiveFrom;
+            queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ? today : queryObject.dateEffectiveFrom;
             response = await httpRequest("post", "/ws-services/wc/_create", "", [], { WaterConnection: queryObject });
             dispatch(prepareFinalObject("WaterConnection", response.WaterConnection));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);
@@ -1090,6 +1090,9 @@ export const applyForSewerage = async (state, dispatch) => {
                 response.SewerageConnection[0].additionalDetails = {};
             }
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
+            today = convertDateToEpoch(today);
+            debugger
+            queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ? today : queryObject.dateEffectiveFrom;
             set(queryObject, "processInstance.action", "INITIATE");
             queryObject = findAndReplace(queryObject, "NA", null);
             response = await httpRequest("post", "/sw-services/swc/_create", "", [], { SewerageConnection: queryObject });
@@ -1179,7 +1182,7 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
                 { key: "applicationNumber", value: queryObjectForUpdateSewerage.applicationNo }
             ];
             let searchResponse = await getSearchResults(searchQueryObjectWater);
-            let sewerageResponse = await getSearchResultsForSewerage(searchQueryObjectSewerage, dispatch);
+            let sewerageResponse = await getSearchResultsForSewerage(searchQueryObjectSewerage, dispatch, true, true);
             dispatch(prepareFinalObject("WaterConnection", searchResponse.WaterConnection));
             dispatch(prepareFinalObject("SewerageConnection", sewerageResponse.SewerageConnections));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);
@@ -1329,7 +1332,6 @@ export const getMdmsDataForMeterStatus = async (dispatch) => {
             [],
             mdmsBody
         );
-        // console.log(payload.MdmsRes)
         let data = payload.MdmsRes['ws-services-calculation'].MeterStatus.map(ele => {
             return { code: ele }
         })
@@ -2086,7 +2088,6 @@ export const downloadApp = async (wnsConnection, type, mode, dispatch) => {
                 if (states.length > 0) {
                     for (var j = 0; j < states.length; j++) {
                         if (states[j]['state'] && states[j]['state'] !== undefined && states[j]['state'] !== null && states[j]['state'] !== "" && states[j]['state'] === 'PENDING_FOR_CONNECTION_ACTIVATION') {
-                            //console.log(states[j]['sla']);
                             wnsConnection[0].sla = states[j]['sla'] / 86400000;
                             findSLA = true;
                             break;
