@@ -193,7 +193,7 @@ export const getSearchResults = async (queryObject, filter = false) => {
     } catch (error) { console.log(error) }
 };
 
-export const getSearchResultsForSewerage = async (queryObject, dispatch, filter = false, isSeverageNew = false) => {
+export const getSearchResultsForSewerage = async (queryObject, dispatch, filter = false) => {
     dispatch(toggleSpinner());
     try {
         const response = await httpRequest(
@@ -1182,7 +1182,7 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
                 { key: "applicationNumber", value: queryObjectForUpdateSewerage.applicationNo }
             ];
             let searchResponse = await getSearchResults(searchQueryObjectWater);
-            let sewerageResponse = await getSearchResultsForSewerage(searchQueryObjectSewerage, dispatch, true, true);
+            let sewerageResponse = await getSearchResultsForSewerage(searchQueryObjectSewerage, dispatch);
             dispatch(prepareFinalObject("WaterConnection", searchResponse.WaterConnection));
             dispatch(prepareFinalObject("SewerageConnection", sewerageResponse.SewerageConnections));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);
