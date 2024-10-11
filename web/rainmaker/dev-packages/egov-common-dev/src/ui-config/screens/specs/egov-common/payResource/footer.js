@@ -13,6 +13,7 @@ import { convertEpochToDate, getTranslatedLabel } from "../../utils";
 import {downloadReceiptFromFilestoreID} from "../../../../../ui-utils/commons";
 import "./index.css";
 import { toggleSpinner } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+
 const PAYMENTSEARCH = {
   GET: {
     URL: "/collection-services/payments/",
@@ -80,10 +81,8 @@ export const callPGService = async (state, dispatch) => {
   
       else{
         if(BusinessService.toUpperCase() =="FIRENOC" && (fireNocConsumerNumber === '' || fireNocConsumerNumber === null || fireNocConsumerNumber === undefined ||  fireNOCDetailslength === 0)){
-           const applConfirStatus = confirm("There is an Error while Creating an application please click Ok to Re-Create Your Application");
-           if(applConfirStatus){
-            window.location.href = "/fire-noc/apply";
-           }
+          alert("There is an Error while Creating an application please click Ok to Re-Create Your Application"); 
+          window.location.href = "/fire-noc/apply";
         }else{
            const isAdvancePaymentAllowed = get(state, "screenConfiguration.preparedFinalObject.businessServiceInfo.isAdvanceAllowed");
            const tenantId = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].tenantId");
