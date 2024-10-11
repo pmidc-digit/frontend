@@ -391,11 +391,12 @@ export const loadUlbLogo = tenantid => {
 
 const getHeaderCard = (applicationData, logo) => {
    
-    debugger;
+    let servicemod = applicationData.additionalHeader.split('_');
+    let servicePT = servicemod[0];
     const cities = payload.MdmsRes.tenant.tenants;
     const tenantId= applicationData.tenantId;
     const userTenant = cities && cities.filter((item) => item.code === tenantId);
-    const ulbGrade= userTenant[0].city.pwssbGrade;
+    const ulbGrade = servicePT == "PT" ? userTenant[0].city.ulbType :userTenant[0].city.pwssbGrade;
     
     
     let applicationHeader = {
