@@ -60,8 +60,11 @@ export const callPGService = async (state, dispatch) => {
      },
    };
    const fireNOCSearchResponse = await httpRequest("post", FETCHFIREDETAILS.GET.URL, FETCHFIREDETAILS.GET.ACTION,queryObject);
+   if(fireNOCSearchResponse.FireNOCs.length > 0){
     fireNocConsumerNumber = fireNOCSearchResponse.FireNOCs[0].fireNOCDetails.applicationNumber;
     fireNOCDetailslength = Object.keys(fireNOCSearchResponse.FireNOCs[0].fireNOCDetails).length;
+   }
+    
    console.log("testFire" + fireNocConsumerNumber +"--"+fireNOCDetailslength);
    
    const currentDate = new Date();
@@ -77,7 +80,10 @@ export const callPGService = async (state, dispatch) => {
   
       else{
         if(BusinessService.toUpperCase() =="FIRENOC" && (fireNocConsumerNumber === '' || fireNocConsumerNumber === null || fireNocConsumerNumber === undefined ||  fireNOCDetailslength === 0)){
-           alert("Re-submit application can be applied within 5 days of date of application.");
+           const applConfirStatus = confirm("There is an Error while Creating an application please click Ok to Re-Create Your Application");
+           if(applConfirStatus){
+            window.location.href = "/fire-noc/apply";
+           }
         }else{
            const isAdvancePaymentAllowed = get(state, "screenConfiguration.preparedFinalObject.businessServiceInfo.isAdvanceAllowed");
            const tenantId = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].tenantId");
@@ -1342,7 +1348,7 @@ export const footer = getCommonApplyFooter({
     children: {
       submitButtonLabel: getLabel({
         labelName: "MAKE PAYMENT",
-        labelKey: "COMMON_MAKE_PAYMENTdddd"
+        labelKey: "COMMON_MAKE_PAYMENT"
       }),
       submitButtonIcon: {
         uiFramework: "custom-atoms",
