@@ -18,7 +18,6 @@ import estimateDetails from "./payResource/estimate-details";
 import { footer } from "./payResource/footer";
 import g8Details from "./payResource/g8-details";
 import arrearsCard from "./payResource/arrears-details";
-import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 
 export const getHeader = (state) => {
     const uiCommonPayConfig = get(state.screenConfiguration.preparedFinalObject, "commonPayInfo");
@@ -46,13 +45,10 @@ export const getHeader = (state) => {
 
 
 const fetchBill = async (action, state, dispatch, consumerCode, tenantId, billBusinessService) => {
-   
-    debugger;
-    tenantId = getTenantId();
     await getBusinessServiceMdmsData(dispatch, tenantId);
 
     await generateBill(dispatch, consumerCode, tenantId, billBusinessService);
-     debugger;
+
     let payload = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].billDetails[0]");
     let totalAmount = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0]");
 
@@ -136,10 +132,10 @@ const fetchBill = async (action, state, dispatch, consumerCode, tenantId, billBu
     dispatch(prepareFinalObject("ReceiptTemp[0].instrument.instrumentType.name", "Cash"));
 
     //set tenantId
-    dispatch(prepareFinalObject("ReceiptTemp[0].tenantId", getTenantId()));
+    dispatch(prepareFinalObject("ReceiptTemp[0].tenantId", tenantId));
 
     //set tenantId in instrument
-    dispatch(prepareFinalObject("ReceiptTemp[0].instrument.tenantId", getTenantId()));
+    dispatch(prepareFinalObject("ReceiptTemp[0].instrument.tenantId", tenantId));
 
     // Handling Negative amount
     if (get(totalAmount, "totalAmount") != undefined) {
@@ -157,10 +153,9 @@ const screenConfig = {
     uiFramework: "material-ui",
     name: "pay",
     beforeInitScreen: (action, state, dispatch) => {
-        debugger;
         dispatch(unMountScreen("acknowledgement"));
         let consumerCode = getQueryArg(window.location.href, "consumerCode");
-        let tenantId = getTenantId();
+        let tenantId = getQueryArg(window.location.href, "tenantId");
         let businessService = getQueryArg(window.location.href, "businessService");
         fetchBill(action, state, dispatch, consumerCode, tenantId, businessService);
         localStorage.setItem('pay-businessService', businessService);
@@ -180,7 +175,7 @@ const screenConfig = {
         //         set(action, "screenConfig.components.div.children.headerDiv.children.header" ,header) 
         //     }
         // );
-        // const data = state;    
+        // const data = getPaymentCard(state);    
         // set(action, "screenConfig.components.div.children.formwizardFirstStep", data);
         return action;
     },
