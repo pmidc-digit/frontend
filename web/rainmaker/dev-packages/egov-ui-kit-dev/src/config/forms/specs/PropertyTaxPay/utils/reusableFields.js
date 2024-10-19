@@ -678,7 +678,7 @@ export const mohalla = {
               const data = response.data.find(obj => {
                 return obj.locality == localityCode;
               });
-              dispatch(setFieldProperty(formKey, "UID", "required", data ? true : false));
+              // dispatch(setFieldProperty(formKey, "UID", "required", data ? true : false));
             }
           } catch (error) {
             console.log("functions-js getUserDataFromUuid error", error);
