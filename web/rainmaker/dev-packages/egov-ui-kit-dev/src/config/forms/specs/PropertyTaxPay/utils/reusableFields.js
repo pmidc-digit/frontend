@@ -657,6 +657,7 @@ export const mohalla = {
     required: true,
     formName: "propertyAddress",
     updateDependentFields: ({ formKey, field, dispatch, state }) => {
+
       if (field.value && field.value.length > 0) {
         const mohalla = field.dropDownData.find((option) => {
           return option.value === field.value;
@@ -664,6 +665,7 @@ export const mohalla = {
         dispatch(prepareFormData("Properties[0].address.locality.area", mohalla.area));
       }
       setTimeout(async () => {
+
         var tenantIdcode = await state.screenConfiguration.preparedFinalObject.PropertiesTemp[0].address.city;
         let localityCode = await state.screenConfiguration.preparedFinalObject.Properties[0].address.locality.code;
         if (tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing") {
@@ -678,7 +680,9 @@ export const mohalla = {
               const data = response.data.find(obj => {
                 return obj.locality == localityCode;
               });
-              // dispatch(setFieldProperty(formKey, "UID", "required", data ? true : false));
+            
+              dispatch(setFieldProperty(formKey, "UID", "required", (process.env.REACT_APP_NAME == 'Citizen') ? false : true));
+               // required: process.env.REACT_APP_NAME == 'Citizen' ? false : true,
             }
           } catch (error) {
             console.log("functions-js getUserDataFromUuid error", error);
