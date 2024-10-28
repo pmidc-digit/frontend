@@ -153,6 +153,7 @@ class Property extends Component {
   onStatusChangePropertyClick = async() => {
     const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
+    try{
     if (selPropertyDetails.status == "ACTIVE") {
       selPropertyDetails.status="INACTIVE";
       selPropertyDetails.additionalDetails.propertytobestatus="INACTIVE"
@@ -184,15 +185,26 @@ class Property extends Component {
           { Property: selPropertyDetails }
     
         );
-    if(payload.Properties.length >0) 
+    if(payload.Properties.length >0) {
     alert("Property is now in INWORKFLOW state. Please approve it!");
-    else 
+    }
+    else {
     alert("Some error occured!! please try again.")
+    }
   }
 
 else {
   alert("This operation is not allowed as Property is not ACTIVE.");
   }
+}
+catch (e) { console.log(e);
+  this.props.toggleSnackbarAndSetText(
+    true,
+    { labelName: "Clear Pending dues before De-Enumerating the property", labelKey: "Clear Pending dues before De-Enumerating the property" },
+    "error"
+  );
+ 
+}
 };
 
 onStatusChangePropertyClickToActive = async() => {
