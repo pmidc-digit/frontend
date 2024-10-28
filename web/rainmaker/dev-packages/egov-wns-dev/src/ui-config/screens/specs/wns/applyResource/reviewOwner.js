@@ -7,7 +7,7 @@ import {
   getDivider,
   getLabelWithValueForModifiedLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
-import { convertEpochToDateAndHandleNA, handleNA, handleRoadType } from '../../utils';
+import { convertEpochToDateAndHandleNA, handleNA,handleNAnew, handleRoadType } from '../../utils';
 import { changeStep } from "./footer";
 
 const getHeader = label => {
@@ -520,13 +520,14 @@ export const reviewInitialMeterReading = getLabelWithValueForModifiedLabel(
     labelKey: "WS_ADDN_DETAILS_INITIAL_METER_READING"
   },
   { jsonPath: "applyScreen.additionalDetails.initialMeterReading",
-    callBack: handleNA },
+    callBack: handleNAnew 
+  },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
   {
     jsonPath: "applyScreenOld.additionalDetails.initialMeterReading",
-    callBack: handleNA
+    callBack: handleNAnew
   }
 );
 
