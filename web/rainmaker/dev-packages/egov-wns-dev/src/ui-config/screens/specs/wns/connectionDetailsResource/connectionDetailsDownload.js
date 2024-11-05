@@ -48,7 +48,7 @@ const FETCHRECEIPT = {
     ACTION: "_get",
   },
 };
-  const DOWNLOADRECEIPT = {
+  const  DOWNLOADRECEIPT = {
   GET: {
     URL: "/pdf-service/v1/_create",
     ACTION: "_get",
@@ -56,11 +56,11 @@ const FETCHRECEIPT = {
   };
 let consumerCode = getQueryArg(window.location.href, "connectionNumber");
 let tenantId = getQueryArg(window.location.href, "tenantId");
-let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
-let queryObject = [
-  { key: "tenantId", value:tenantId },
-  { key: "applicationNumber", value: consumerCode?consumerCode:applicationNumber}
-];
+//let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
+// let queryObject = [
+//   { key: "tenantId", value:tenantId },
+//   { key: "applicationNumber", value: consumerCode?consumerCode:applicationNumber}
+// ];
 const queryObjectForConn = [
   { key: "connectionNumber", value: consumerCode},
   { key: "tenantId", value: tenantId }
@@ -87,10 +87,15 @@ else {
 businessService= 'SW.ONE_TIME_FEE'; 
 } 
 
+
 const receiptQueryString = [
   {
-    key: "consumerCodes",
+    key: "applicationNo",
     value: service=="WATER"?responseWater.WaterConnection[0].applicationNo:responseSewerage.SewerageConnections[0].applicationNo
+  },
+  {
+    key: "consumerCodes",
+    value: service=="WATER"?responseWater.WaterConnection[0].connectionNo:responseSewerage.SewerageConnections[0].connectionNo
   },
   {
     key: "tenantId",
