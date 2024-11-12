@@ -206,7 +206,7 @@ export const propertyAssemblyDetails = getCommonCard({
                 labelName: "Enter Survey Id/UID",
                 labelKey: "Enter Survey Id/UID"
             },
-            required: false,
+            required: process.env.REACT_APP_NAME === "Citizen" ? false : true,
             pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
             errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
             jsonPath: "Property.surveyId"

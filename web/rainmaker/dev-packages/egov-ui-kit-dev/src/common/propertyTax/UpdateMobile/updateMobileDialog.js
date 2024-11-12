@@ -373,6 +373,7 @@ export default class UpdateMobileDialog extends React.Component {
           backgroundColor: "white"
         }}
       >
+   {Object.keys(propertyNumbers).length != 0 && propertyNumbers.mobileNumber!="" && propertyNumbers.mobileNumber!="" ? 
         <div className="pt-update-popup-holder">
           {loadingStatus == "loading" &&
             <div><LoadingIndicator></LoadingIndicator>
@@ -452,6 +453,8 @@ export default class UpdateMobileDialog extends React.Component {
             <button type="button" disabled={this.state.verifyButton} style={{ width: '100%',marginTop:"10px" }} className={"button-verify-link"} onClick={() => this.validateAndCreate()} ><Label label="PTUPNO_VERUPD_NO"></Label></button>
           </div>}
         </div>
+     :  <div className="error-comp-second-num"><Label label={"Data load failed. Please refresh the page (F5) to retry. If issue persists, contact support."}></Label></div>              
+  }
         {errorMessage && <div className={type == "ERROR" ? "error-comp-second-num" : "success-comp-second-num"}><Label label={errorMessage}></Label></div>}
       </Dialog>
     )

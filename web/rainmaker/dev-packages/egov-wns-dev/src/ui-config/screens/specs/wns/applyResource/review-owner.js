@@ -18,7 +18,7 @@ import {
   handleScreenConfigurationFieldChange as handleField,
   prepareFinalObject
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { convertEpochToDateAndHandleNA, handleNA, handleRoadType } from "../../utils";
+import { convertEpochToDateAndHandleNA, handleNA,handleNAnew, handleRoadType } from "../../utils";
 import { serviceConst } from "../../../../../ui-utils/commons";
 
 let applicationStatusss = getQueryArg(window.location.href, "applicationStatus");
@@ -341,13 +341,13 @@ export const activateDetailsMeter = {
     },
     {
       jsonPath: "WaterConnection[0].additionalDetails.initialMeterReading",
-      callBack: handleNA
+      callBack: handleNAnew
     }, {
     labelKey: "WS_OLD_LABEL_NAME"
   },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.initialMeterReading",
-      callBack: handleNA
+      callBack: handleNAnew
     }
   ),
   reviewMeterMakeReading: getLabelWithValueForModifiedLabel(
@@ -535,9 +535,9 @@ export const activationDetailsContainer = {
                 let WaterConnection =[];
                
                 WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
-              //  state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
+               //  state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
-               state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate).getTime();
+              state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate).getTime();
                 state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate).getTime();
                 state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading);
                let mydatadum = [

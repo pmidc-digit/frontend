@@ -150,6 +150,7 @@ downloadReceiptpt = async(receiptQueryString) => {
             receiptQueryString = receiptQueryString && Array.isArray(receiptQueryString) && receiptQueryString.filter(query => query.key != "businessService")
             try {
               await httpRequest("post",this.getPaymentSearchAPI(businessService), FETCHRECEIPT.GET.ACTION, receiptQueryString).then((payloadReceiptDetails) => {
+             let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid
        if(payloadReceiptDetails.Payments[0].payerName!=null){
             payloadReceiptDetails.Payments[0].payerName=payloadReceiptDetails.Payments[0].payerName.trim();}
             else if(payloadReceiptDetails.Payments[0].payerName == null && payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="FIRENOC" && payloadReceiptDetails.Payments[0].paidBy !=null)
@@ -236,7 +237,7 @@ downloadReceiptpt = async(receiptQueryString) => {
       
               }else if(dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD" )
               {
-              code="Advance";         amount=-dd.amount;
+              code="Advance";         amount=dd.amount;
       
               }
               if(payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="SW.ONE_TIME_FEE")
@@ -270,7 +271,7 @@ downloadReceiptpt = async(receiptQueryString) => {
               });
               dcbRow={
                   "taxhead":"Total Amount Paid",
-                  "amount":totalamount
+                  "amount": toTalAmountPaid
                 };
               dcbArray.push(dcbRow);
               payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails=dcbArray;

@@ -1092,6 +1092,12 @@ export const applyForSewerage = async (state, dispatch) => {
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
             today = convertDateToEpoch(today);
             debugger
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = today.getFullYear();
+            today = yyyy + '-' + mm + '-' + dd;
+            today = convertDateToEpoch(today);
             queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ? today : queryObject.dateEffectiveFrom;
             set(queryObject, "processInstance.action", "INITIATE");
             queryObject = findAndReplace(queryObject, "NA", null);
