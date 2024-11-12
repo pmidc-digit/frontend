@@ -161,7 +161,7 @@ const setSearchResponse = async (
     }
   ]);
   let property = (properties && properties.length > 0 && properties[0]) || {};
-
+  
   if (!property.workflow) {
     let workflow = {
       id: null,
@@ -200,6 +200,7 @@ const setSearchResponse = async (
   property.ownershipCategoryTemp = property.ownershipCategory;
   property.ownershipCategoryInit = 'NA';
   // Set Institution/Applicant info card visibility
+  
   if (
     get(
       response,
@@ -228,7 +229,7 @@ const setSearchResponse = async (
       )
     );
   }
-
+  
 
   let transfereeOwners = get(
     property,
@@ -251,6 +252,7 @@ const setSearchResponse = async (
     }
 
   })
+  
   if (transferorOwnersDid) {
     dispatch(
       handleField(
@@ -289,17 +291,15 @@ const setSearchResponse = async (
     );
 
   }
-
+  
   if (auditResponse && Array.isArray(get(auditResponse, "Properties", [])) && get(auditResponse, "Properties", []).length > 0) {
     const propertiesAudit = get(auditResponse, "Properties", []);
-
+    
     const propertyIndex=property.status ==  'ACTIVE' ? 1:0;
-    const previousActiveProperty = propertiesAudit.filter(property => property.status == 'ACTIVE').sort((x, y) => y.auditDetails.lastModifiedTime - x.auditDetails.lastModifiedTime)[propertyIndex];
-
-
+   // const previousActiveProperty = propertiesAudit.filter(property => property.status == 'ACTIVE').sort((x, y) => y.auditDetails.lastModifiedTime - x.auditDetails.lastModifiedTime)[propertyIndex];
+    const previousActiveProperty = propertiesAudit[0];
     property.ownershipCategoryInit = previousActiveProperty.ownershipCategory;
     property.ownersInit = previousActiveProperty.owners.filter(owner => owner.status == "ACTIVE");
-
     if (property.ownershipCategoryInit.startsWith("INSTITUTION")) {
       property.institutionInit = previousActiveProperty.institution;
 
@@ -324,7 +324,7 @@ const setSearchResponse = async (
     }
   }
 
-
+  
   // auditResponse
   dispatch(prepareFinalObject("Property", property));
   dispatch(prepareFinalObject("documentsUploadRedux", property.documents));
@@ -341,7 +341,7 @@ export const setData = async (state, dispatch, applicationNumber, tenantId) => {
     },
     { key: "acknowledgementIds", value: applicationNumber }
   ]);
-
+  console.log("Hello SearchData"+JSON.stringify(response));
   dispatch(prepareFinalObject("Properties", get(response, "Properties", [])));
   let queryObj = [
     {
@@ -391,9 +391,11 @@ const getPropertyConfigurationMDMSData = async (action, state, dispatch) => {
 };
 
 const screenConfig = {
+ 
   uiFramework: "material-ui",
   name: "search-preview",
   beforeInitScreen: (action, state, dispatch) => {
+   
     // dispatch(unMountScreen("propertySearch"));
     // dispatch(unMountScreen("apply"));
     const applicationNumber = getQueryArg(
@@ -401,8 +403,7 @@ const screenConfig = {
       "applicationNumber"
     );
     const tenantId = getQueryArg(window.location.href, "tenantId");
-
-    setSearchResponse(state, dispatch, applicationNumber, tenantId);
+      setSearchResponse(state, dispatch, applicationNumber, tenantId);
     loadUlbLogo(tenantId);
     const queryObject = [
       { key: "tenantId", value: tenantId },
