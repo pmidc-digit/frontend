@@ -73,6 +73,7 @@ class Footer extends React.Component {
         ];
        // debugger;
         let isApplicationApproved = await isWorkflowExists(queryObj);
+        let connectionNumberFromURL = getQueryArg(window.location.href, "connectionNumber");
         if (!isApplicationApproved) {
           toggleSnackbar(
             true,
@@ -86,7 +87,7 @@ class Footer extends React.Component {
         }
         store.dispatch(
           setRoute(
-            `/wns/apply?applicationNumber=${applicationNo}&connectionNumber=${connectionNumber}&tenantId=${tenantId}&action=edit&mode=MODIFY`
+            `/wns/apply?applicationNumber=${applicationNo}&connectionNumber=${connectionNumberFromURL}&tenantId=${tenantId}&action=edit&mode=MODIFY`
           )
         );
       },
