@@ -15,7 +15,7 @@ export const resData =  () =>  {
   return( 
      getCommonContainer({
        transactionType: getLabelWithValue({ label: "Transaction Type" }, { jsonPath: "createBillResponse[0].transactionType", callBack: ""  })  ,
-       locality: getLabelWithValue({ label: "Locality" }, { jsonPath: "createBillResponse[0].locality", callBack: ""  })  ,
+       locality: getLabelWithValue({ label: "Locality / Group" }, { jsonPath: "createBillResponse[0].locality", callBack: ""  })  ,
        billingcycleStartdate: getLabelWithValue({ label: "Billing Startdate" }, { jsonPath: "createBillResponse[0].billingcycleStartdate", callBack: ""  }),
        billingcycleEnddate: getLabelWithValue({ label: "Billing Enddate" }, { jsonPath: "createBillResponse[0].billingcycleEnddate", callBack: ""  })  ,
        status: getLabelWithValue({ label: "Status" }, { jsonPath: "createBillResponse[0].status", callBack: ""  })  ,
