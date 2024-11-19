@@ -14,6 +14,7 @@ import {
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 // import { roadcuthidevb } from "./functions";
 import commonConfig from "config/common.js";
+import { getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
 import {
   handleScreenConfigurationFieldChange as handleField,
   prepareFinalObject
@@ -55,7 +56,13 @@ const getPlumberRadioButton = {
   },
   type: "array"
 };
+
+export const groupfield =(dispatch) =>{
+ 
+}
+
 export const triggerUpdateByKey = (state, keyIndex, value, dispatch) => {
+  
   // dispatch(
   //   handleField(
   //     "apply",
@@ -181,6 +188,37 @@ export const additionDetails = getCommonCard({
         gridDefination: { xs: 12, sm: 6 },
         afterFieldChange: async (action, state, dispatch) => {
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
+//----group value show---
+debugger
+try {
+  let payload = await httpRequest(
+    "post",
+    "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=groups",
+    "_search",
+    [{ key: "tenantId", value: getTenantIdCommon() }],
+    {}
+  );
+  let groupsar = [];
+  const batches =
+    payload &&
+    payload.TenantBoundary[0] &&
+    payload.TenantBoundary[0].boundary &&
+    payload.TenantBoundary[0].boundary.filter((item) => {
+      groupsar.push({ item });
+      return groupsar;
+    }, []);
+  dispatch(
+    prepareFinalObject(
+      "applyScreenMdmsData.ws-services-calculation.groups",
+      batches
+    )
+  );
+  
+} catch (e) {
+  console.log(e);
+}
+//--- end ------
+
           console.log('connType');
           console.log(connType);
           if (connType === undefined || connType === "Non Metered" || connType === "Bulk-supply" || connType !== "Metered") {
@@ -441,7 +479,28 @@ export const additionDetails = getCommonCard({
           md: 6
         },
       },
-
+      groUp: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-wns",
+        componentPath: "AutosuggestContainer",
+        jsonPath: "applyScreen.additionalDetails.groups",
+        props: {
+          className: "hr-generic-selectfield autocomplete-dropdown",
+          label: { labelKey: "Group" },
+          placeholder: { labelKey: "Select Group" },
+          required: true,
+          isClearable: true,
+          labelsFromLocalisation: true,
+          jsonPath: "applyScreen.additionalDetails.groups",
+          sourceJsonPath: "applyScreenMdmsData.ws-services-calculation.groups",
+        },
+        required: true,
+        gridDefination: {
+          xs: 12,
+          sm: 12,
+          md: 6
+        },
+      },
       noOfWaterClosets: getTextField({
         label: { labelKey: "WS_ADDN_DETAILS_NO_OF_WATER_CLOSETS" },
         placeholder: { labelKey: "WS_ADDN_DETAILS_NO_OF_WATER_CLOSETS_PLACEHOLDER" },
@@ -793,6 +852,10 @@ export const additionDetails = getCommonCard({
 
 const showHideFeilds = (dispatch, value) => {
   let mStep = (isModifyMode()) ? 'formwizardSecondStep' : 'formwizardThirdStep';
+
+  //------------------------------------
+  
+  //----------------------------
   dispatch(
     handleField(
       "apply",

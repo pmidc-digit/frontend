@@ -24,6 +24,12 @@ export const searchApiCall = async (state, dispatch) => {
     "searchCriteria",
     {}
   );
+  let batchtype = get(
+    state.screenConfiguration.preparedFinalObject.generateBillScreen,
+    "batchtype",
+    {}
+  );
+ 
   const isSearchBoxFirstRowValid = validateFields(
     "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children",
     state,
@@ -78,7 +84,17 @@ export const searchApiCall = async (state, dispatch) => {
       "searchScreenMdmsData.BillingService.BusinessService"
     ).filter(item => item.code === searchScreenObject.businesService);
 
-    searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
+    if(batchtype == 'Batch'){
+      searchScreenObject.url = "/egov-searcher/bill-genie/batchbilling/_get";
+    }
+   else if(batchtype == 'Group'){
+      searchScreenObject.url = "/gov-searcher/bill-genie/groupbills/_get";
+    }    
+    else{
+      searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
+    }
+
+   
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ?  getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const responseFromAPI = await getGroupBillSearch(dispatch,searchScreenObject);
     
