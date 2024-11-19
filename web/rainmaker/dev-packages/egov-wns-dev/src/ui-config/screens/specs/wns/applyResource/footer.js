@@ -895,68 +895,43 @@ const callBackForNext = async (state, dispatch) => {
   // alert("start");
       debugger;
       let applyFor = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+          "visible",
+          false
+        )
+      );
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+          "visible",
+          false
+        )
+      );
       if(applyFor.water == true){
-        if(applyFor.sewerage == true){
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-              "visible",
-              true
-            )
-          );
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-              "visible",
-              true
-            )
-          );
-        }else{
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-              "visible",
-              true
-            )
-          );
-          dispatch(
-            handleField(
-              "apply",
-              "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-              "visible",
-              false
-            )
-          );
-
-        }
-      }else{
         dispatch(
-          handleField(
-            "apply",
-            "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-            "visible",
-            true
-          )
-        );
-        dispatch(
-              handleField(
-                "apply",
-                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-                "visible",
-                false
-              )
-            );
-      }
-
-
-
-
-
-
-      
+               handleField(
+                 "apply",
+                 "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+                 "visible",
+                 true
+               )
+             );
+        } 
+      if(applyFor.sewerage == true){
+  
+           dispatch(
+             handleField(
+               "apply",
+               "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+               "visible",
+               true
+             )
+           );
+         } 
 
 };
 

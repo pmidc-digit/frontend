@@ -47,7 +47,7 @@ const roadCuttingChargesHeader = getHeader({
 
 const roadCuttingChargesHeadersw = getHeader({
   labelKey: "Sewerage Road Cutting Charges"
- // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
+ // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILS"
 });
 
 
@@ -178,7 +178,7 @@ export const reviewConnectionCategory = getLabelWithValueForModifiedLabel(
 );
 export const reviewCompositionFee = getLabelWithValueForModifiedLabel(
   {
-    labelName: "Area (in sq ft)",
+    labelName: "Composition Fee",
     labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
   },
   {
@@ -195,7 +195,7 @@ export const reviewCompositionFee = getLabelWithValueForModifiedLabel(
 );
 export const reviewUserCharges = getLabelWithValueForModifiedLabel(
   {
-    labelName: "Area (in sq ft)",
+    labelName: "User Charges",
     labelKey: "WS_ADDN_USER_CHARGES_LABEL"
   },
   {
@@ -212,7 +212,7 @@ export const reviewUserCharges = getLabelWithValueForModifiedLabel(
 );
 export const reviewOthersFee = getLabelWithValueForModifiedLabel(
   {
-    labelName: "Area (in sq ft)",
+    labelName: "Other Fee / Regularization Fee",
     labelKey: "WS_ADDN_OTHER_FEE_LABEL"
   },
   {
@@ -735,10 +735,10 @@ const roadCuttingChargessw = {
   props: {
     className: "applicant-summary",
     scheama: getCommonContainer({
-        reviewRoadTypesw : getLabelWithValue(
+        reviewRoadType : getLabelWithValue(
           {
             labelName: "Road Type",
-            labelKey: "SW_ADDN_DETAIL_ROAD_TYPE"
+            labelKey: "WS_ADDN_DETAIL_ROAD_TYPE"
           },
           {     
             jsonPath: "applyScreen.roadCuttingInfosw[0].roadType",
@@ -748,7 +748,7 @@ const roadCuttingChargessw = {
         reviewArea : getLabelWithValue(
           {
             labelName: "Area (in sq ft)",
-            labelKey: "SW_ADDN_DETAILS_AREA_LABEL"
+            labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
           },
           {
             jsonPath: "applyScreen.roadCuttingInfosw[0].roadCuttingArea",
@@ -769,8 +769,8 @@ const roadCuttingChargessw = {
 export const reviewCompositionFeesw = getLabelWithValueForModifiedLabel(
   
   {
-    labelName: "Area (in sq ft)",
-    labelKey: "SW_ADDN_DETAILS_COMPOSITION_LABEL"
+    labelName: "Composition Fee",
+    labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
   },
   {
     jsonPath: "applyScreen.additionalDetails.compositionFeesw",
@@ -786,8 +786,8 @@ export const reviewCompositionFeesw = getLabelWithValueForModifiedLabel(
 );
 export const reviewUserChargessw = getLabelWithValueForModifiedLabel(
   {
-    labelName: "Area (in sq ft)",
-    labelKey: "SW_ADDN_USER_CHARGES_LABEL"
+    labelName: "User Charges",
+    labelKey: "WS_ADDN_USER_CHARGES_LABEL"
   },
   {
     jsonPath: "applyScreen.additionalDetails.userChargessw",
@@ -803,8 +803,8 @@ export const reviewUserChargessw = getLabelWithValueForModifiedLabel(
 );
 export const reviewOthersFeesw = getLabelWithValueForModifiedLabel(
   {
-    labelName: "Area (in sq ft)",
-    labelKey: "SW_ADDN_OTHER_FEE_LABEL"
+    labelName: "Other Fee / Regularization Fee",
+    labelKey: "WS_ADDN_OTHER_FEE_LABEL"
   },
   {
     jsonPath: "applyScreen.additionalDetails.othersFeesw",
