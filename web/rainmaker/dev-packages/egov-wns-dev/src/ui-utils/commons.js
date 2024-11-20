@@ -983,7 +983,7 @@ export const getDisplayDocFormat = (dataList) => {
     return tempDoc;
 }
 export const applyForWaterOrSewerage = async (state, dispatch) => {
-   // alert("which");
+    //alert("which");
     debugger;
     if (get(state, "screenConfiguration.preparedFinalObject.applyScreen.water") && get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage")) {
         let response = await applyForBothWaterAndSewerage(state, dispatch);
@@ -1019,7 +1019,7 @@ export const applyForWater = async (state, dispatch) => {
             queryObjectForUpdate.waterSubSource = queryObjectForUpdate.waterSubSource ? queryObjectForUpdate.waterSubSource : waterSubSource;
             set(queryObjectForUpdate, "tenantId", tenantId);
             queryObjectForUpdate = { ...queryObjectForUpdate, ...queryObject }
-            delete queryObjectForUpdate.roadCuttingInfosw;
+            //delete queryObjectForUpdate.roadCuttingInfosw;
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "waterSource", getWaterSource(queryObjectForUpdate.waterSource, queryObjectForUpdate.waterSubSource));
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
@@ -1170,8 +1170,11 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             queryObjectForUpdateWater = findAndReplace(queryObjectForUpdateWater, "NA", null);
             queryObjectForUpdateSewerage = { ...queryObjectForUpdateSewerage, ...queryObjectsw }
 
-            delete queryObjectForUpdateWater.roadCuttingInfosw;
-            delete queryObjectForUpdateSewerage.roadCuttingInfo;
+            //delete queryObjectForUpdateWater.roadCuttingInfosw;
+            //delete queryObjectForUpdateSewerage.roadCuttingInfo;
+           
+            set(queryObjectsw, "roadCuttingInfo", queryObjectsw.roadCuttingInfo);
+
             queryObjectForUpdateSewerage = findAndReplace(queryObjectForUpdateSewerage, "NA", null);
             set(queryObjectForUpdateWater, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdateWater, "waterSource", getWaterSource(queryObjectForUpdateWater.waterSource, queryObjectForUpdateWater.waterSubSource));
