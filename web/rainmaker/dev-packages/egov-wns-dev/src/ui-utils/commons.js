@@ -74,7 +74,7 @@ export const updateTradeDetails = async requestBody => {
 };
 
 export const getLocaleLabelsforTL = (label, labelKey, localizationLabels) => {
-    alert(1);
+    //alert(1);
     console.log(label, labelKey)
     if (labelKey) {
         let translatedLabel = getTranslatedLabel(labelKey, localizationLabels);
@@ -983,7 +983,7 @@ export const getDisplayDocFormat = (dataList) => {
     return tempDoc;
 }
 export const applyForWaterOrSewerage = async (state, dispatch) => {
-    alert("which");
+   // alert("which");
     debugger;
     if (get(state, "screenConfiguration.preparedFinalObject.applyScreen.water") && get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage")) {
         let response = await applyForBothWaterAndSewerage(state, dispatch);
@@ -998,7 +998,7 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 }
 
 export const applyForWater = async (state, dispatch) => {
-    alert("water");
+    //alert("water");
     debugger;
     let queryObject = parserFunction(state);
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
@@ -1077,7 +1077,7 @@ export const applyForWater = async (state, dispatch) => {
 }
 
 export const applyForSewerage = async (state, dispatch) => {
-    alert("sewerage");
+    //alert("sewerage");
     debugger;
     let queryObject = parserFunctionsw(state);
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
@@ -1146,7 +1146,7 @@ export const applyForSewerage = async (state, dispatch) => {
 }
 
 export const applyForBothWaterAndSewerage = async (state, dispatch) => {
-    alert("both");
+    //alert("both");
     debugger;
     let method;
     let queryObject = parserFunction(state);

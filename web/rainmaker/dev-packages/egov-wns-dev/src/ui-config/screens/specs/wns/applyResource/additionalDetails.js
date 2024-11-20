@@ -589,8 +589,8 @@ export const additionDetails = getCommonCard({
              
     header: getCommonSubHeader(
       {
-        labelName: "Sewerage Road Cutting Charges 1",
-        labelKey: "Sewerage Road Cutting Charges 2"
+        labelName: "Sewerage Road Cutting Charges",
+        labelKey: "Sewerage Road Cutting Charges"
        // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsw"
       },
       {
