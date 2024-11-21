@@ -189,21 +189,53 @@ export const additionDetails = getCommonCard({
         afterFieldChange: async (action, state, dispatch) => {
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
 //----group value show---
+if(getTenantIdCommon() == "pb.patiala"){
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.groUp",
+      "visible",
+      true
+    )
+  );
+ 
+}
+else{
+    dispatch(
+      handleField(
+        "apply",
+        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.groUp",
+        "visible",
+        false
+      )
+    );
+  }
 debugger
+let mdmsBody = {
+  MdmsCriteria: {
+    tenantId: getTenantIdCommon(),
+    moduleDetails: [
+      {
+        moduleName: "ws-services-masters",
+        masterDetails: [{ name: "groups"}]
+      }
+    ]
+  }
+};
 try {
   let payload = await httpRequest(
     "post",
-    "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=groups",
+    "/egov-mdms-service/v1/_search",
     "_search",
-    [{ key: "tenantId", value: getTenantIdCommon() }],
-    {}
+    [],
+    mdmsBody
+   
   );
+  payload = payload.MdmsRes['ws-services-masters'];
   let groupsar = [];
   const batches =
     payload &&
-    payload.TenantBoundary[0] &&
-    payload.TenantBoundary[0].boundary &&
-    payload.TenantBoundary[0].boundary.filter((item) => {
+    payload.groups.filter((item) => {
       groupsar.push({ item });
       return groupsar;
     }, []);
@@ -213,7 +245,9 @@ try {
       batches
     )
   );
-  
+  dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+  dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs",""));
+
 } catch (e) {
   console.log(e);
 }
@@ -488,13 +522,13 @@ try {
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "Group" },
           placeholder: { labelKey: "Select Group" },
-          required: true,
+          required: (getTenantIdCommon() == "pb.patiala") ? true : false,
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.additionalDetails.groups",
           sourceJsonPath: "applyScreenMdmsData.ws-services-calculation.groups",
         },
-        required: true,
+        required: (getTenantIdCommon() == "pb.patiala") ? true : false,
         gridDefination: {
           xs: 12,
           sm: 12,

@@ -21,6 +21,7 @@ import {
 import { convertEpochToDateAndHandleNA, handleNA,handleNAnew, handleRoadType } from "../../utils";
 import { serviceConst } from "../../../../../ui-utils/commons";
 
+
 let applicationStatusss = getQueryArg(window.location.href, "applicationStatus");
 let connectionTypeee = getQueryArg(window.location.href, "connectionType");
 
@@ -703,6 +704,22 @@ export const connectionWater = {
       callBack: handleNA
     }
   ),
+  reviewGroups: getLabelWithValueForModifiedLabel(
+    {
+      labelName: "Group",
+      labelKey: "Group"
+    },
+    {
+      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
+      callBack: handleNA
+    }
+  ),
   reviewWaterSource: getLabelWithValueForModifiedLabel(
     {
       labelName: "Water Source",
@@ -866,6 +883,22 @@ export const connectionSewerage = {
   },
     {
       jsonPath: "WaterConnectionOld[0].additionalDetails.ledgerId",
+      callBack: handleNA
+    }
+  ),
+  reviewGroups: getLabelWithValueForModifiedLabel(
+    {
+      labelName: "Group",
+      labelKey: "Group"
+    },
+    {
+      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
       callBack: handleNA
     }
   ),

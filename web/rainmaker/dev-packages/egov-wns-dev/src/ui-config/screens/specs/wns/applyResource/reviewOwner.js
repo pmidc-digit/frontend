@@ -142,6 +142,23 @@ export const reviewLedgerId = getLabelWithValueForModifiedLabel(
     callBack: handleNA
   }
 );
+export const reviewGroups = getLabelWithValueForModifiedLabel(
+  {
+    labelName: "Group",
+    labelKey: "Group"
+  },
+  {
+    jsonPath: "applyScreen.additionalDetails.groups",
+    callBack: handleNA
+  },
+  {
+    labelKey: "Group"
+  },
+  {
+    jsonPath: "applyScreenOld.additionalDetails.groups",
+    callBack: handleNA
+  }
+);
 export const reviewConnectionCategory = getLabelWithValueForModifiedLabel(
   {
     labelName: "Connection Category",
@@ -605,10 +622,11 @@ const connectionDetails = getCommonContainer({
   reviewBillingAmount,
   reviewConnectionCategory,
   reviewLedgerId,
+  reviewGroups,
   reviewWaterSource,
   // reviewWaterSubSource,
   reviewPipeSize,
-  // reviewBillingType,
+  
   reviewWaterClosets,
   reviewNumberOfToilets,
   reviewSubUsageType,
@@ -662,7 +680,8 @@ const roadCuttingCharges = {
 const roadCuttingExtraCharges = getCommonContainer({
   reviewCompositionFee,
   reviewUserCharges,
-  reviewOthersFee
+  reviewOthersFee,
+  
 });
 
 const activationDetails = getCommonContainer({
