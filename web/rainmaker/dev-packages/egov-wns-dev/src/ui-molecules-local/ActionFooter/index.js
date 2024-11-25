@@ -117,109 +117,57 @@ class Footer extends React.Component {
       label: "Single Demand",
       labelKey: "Single Demand",
       link: async (state, dispatch) => {
-        //debugger;
-       if(this.props.bill.Demands[0].businessService == "SW"){
-     //  try{
-        payload = await httpRequest(
-          "post",
-          "/sw-calculator/sewerageCalculator/_singledemand",
-          "_update",
-          [],
-          {"tenantId":tenantId,
-            "consumercode":connectionNumber
-          }
-         
-        );
-        if(payload){
-          alert(payload.message +"   "+payload.status);
-          dispatch(
-            toggleSnackbar(
-              true, {
-              labelKey: "Generate Demand for this Sewerage Connection",
-              labelName: "Generate Demand for this Sewerage Connection"
-            },
-              "success"
-            )
-          )
-        }else{
-          console.log("error");
-          alert("Unable to Generate Demand for this Connection");
-          // dispatch(
-          //   toggleSnackbar(
-          //     true, {
-          //     labelKey: "Unable to Generate Demand for this Connection",
-          //     labelName: "Unable to Generate Demand for this Connection"
-          //   },
-          //     "warning"
-          //   )
-          // )
+        let swservice = getQueryArg(window.location.href, "service");
+       if(swservice == "SEWERAGE"){
+      try{
+          let payload = await httpRequest(
+            "post",
+            "/sw-calculator/sewerageCalculator/_singledemand",
+            "_update",
+            [],
+            {"tenantId":tenantId,
+              "consumercode":connectionNumber
+            }
+          
+          );
+          alert("Demand has been Successfully Genrated for this Connection Number : "+connectionNumber +" Please wait 30 Sec for Demand Update");
+           
+            setTimeout(()=>{
+             
+              window.location.reload();
+            },30000)
+        }catch(e){
+          alert("Unable to Generate Demand for this Water Connection Number : "+connectionNumber);
         }
-     // }
-    //  catch(e){
-       // alert("Unable to Generate Demand for this Sewerage Connection");
-        // dispatch(
-        //   toggleSnackbar(
-        //     true, {
-        //     labelKey: "Unable to Generate Demand for this Sewerage Connection",
-        //     labelName: "Unable to Generate Demand for this Sewerage Connection"
-        //   },
-        //     "warning"
-        //   )
-        // ) 
-    //  }
-
+        
       }
-      else if(this.props.bill.Demands[0].businessService == "WS"){
-       // try{
-        payload = await httpRequest(
-          "post",
-          "/ws-calculator/waterCalculator/_singledemand",
-          "_update",
-          [],
-          {"tenantId":tenantId,
-            "consumercode":connectionNumber
+     // else if(this.props.bill.Demands[0].businessService == "WS"){
+      else if(swservice == "WATER"){
+        debugger
+          try{
+            //console.log("shdshfdsh-1")
+            const payload = await httpRequest(
+              "post",
+              "/ws-calculator/waterCalculator/_singledemand",
+              "_update",
+              [],
+              {"tenantId":tenantId,
+                "consumercode":connectionNumber
+              }
+            
+            );
+            //console.log("shdshfdsh-2")
+            alert("Demand has been Successfully Genrated for this Connection Number : "+connectionNumber +" Please wait 30 Sec for Demand Update");
+           
+            setTimeout(()=>{
+             
+              window.location.reload();
+            },30000)
+            
+          }catch(e){
+            alert("Unable to Generate Demand for this Water Connection Number : "+connectionNumber);
+            //console.log("shdshfdsh-3")
           }
-         
-        );
-        if(payload){
-          alert(payload.message +"   "+payload.status);
-
-          // dispatch(
-          //   toggleSnackbar(
-          //     true, {
-          //     labelKey: "Generate Demand for this Water Connection",
-          //     labelName: "Generate Demand for this Water Connection"
-          //   },
-          //     "success"
-          //   )
-          // )
-        }
-        else{
-          alert("Unable to Generate Demand for this Water Connection");
-          console.log("error");
-          // dispatch(
-          //   toggleSnackbar(
-          //     true, {
-          //     labelKey: "Unable to Generate Demand for this Water Connection",
-          //     labelName: "Unable to Generate Demand for this Water Connection"
-          //   },
-          //     "warning"
-          //   )
-          // )
-        }
-    //  }
-    //  catch(e){
-       // alert("Unable to Generate Demand for this Connection");
-        // dispatch(
-        //   toggleSnackbar(
-        //     true, {
-        //     labelKey: "Unable to Generate Demand for this Connection",
-        //     labelName: "Unable to Generate Demand for this Connection"
-        //   },
-        //     "warning"
-        //   )
-        // ) 
-    //  }
 
       }
     }
