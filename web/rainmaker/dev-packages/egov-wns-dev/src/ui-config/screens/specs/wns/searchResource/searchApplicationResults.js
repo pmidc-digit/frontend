@@ -64,6 +64,7 @@ export const searchApplicationResults = {
         }
       },
       {name : "Owner Name",labelKey: "WS_COMMON_TABLE_COL_OWN_NAME_LABEL" },
+      {name : "Mobile Number",labelKey: "WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL" },
       {name : "Application Status",labelKey: "WS_COMMON_TABLE_COL_APPLICATION_STATUS_LABEL" },
       {name : "Address",labelKey: "WS_COMMON_TABLE_COL_ADDRESS" },
       {

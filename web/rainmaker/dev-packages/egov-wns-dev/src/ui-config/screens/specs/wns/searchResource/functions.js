@@ -155,6 +155,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
             service: element.service,
             connectionNo: element.connectionNo,
             name: (element.property) ? element.property.owners[0].name : '',
+            mobile: (element.property) ? element.property.owners[0].mobileNumber : '',
            // name: element.connectionHolders[0].name,
             status: element.status,
             address: handleAddress(element),
@@ -169,6 +170,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
               service: element.service,
               connectionNo: element.connectionNo,
               name: (element.property) ? element.property.owners[0].name : '',
+              mobile: (element.property) ? element.property.owners[0].mobileNumber : '',
               status: element.status,
               address: handleAddress(element),
               connectionType: element.connectionType,
@@ -178,7 +180,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
         }
 
       }
-   
+      console.log("jfdhegfwefbwk"+JSON.stringify(finalArray))
       showConnectionResults(finalArray, dispatch)
     } catch (err) { console.log(err) }
   }
@@ -301,6 +303,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               applicationNo: element.applicationNo,
               applicationType: element.applicationType,
               name: ownerName.slice(2),
+              mobile:element.property.owners[0].mobileNumber,
               applicationStatus: element.applicationStatus,
               address: handleAddress(element),
               service: element.service,
@@ -319,6 +322,7 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               applicationNo: element.applicationNo,
               applicationType: element.applicationType,
               name: (element.property && element.property !== "NA" && element.property.owners) ? element.property.owners[0].name : "",
+              mobile:element.property.owners[0].mobileNumber,
               applicationStatus: element.applicationStatus,
               address: handleAddress(element),
               service: element.service,
@@ -374,6 +378,7 @@ const showConnectionResults = (connections, dispatch) => {
     ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.connectionNo,
     // ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.isLeagcy,
     ["WS_COMMON_TABLE_COL_OWN_NAME_LABEL"]: item.name,
+    ["WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"]: item.mobile,
     ["WS_COMMON_TABLE_COL_STATUS_LABEL"]: item.status,
     ["WS_COMMON_TABLE_COL_DUE_LABEL"]: item.due,
     ["WS_COMMON_TABLE_COL_ADDRESS"]: item.address,
@@ -401,6 +406,7 @@ const showApplicationResults = (connections, dispatch) => {
     ["WS_COMMON_TABLE_COL_APP_NO_LABEL"]: item.applicationNo,
     ["WS_COMMON_TABLE_COL_APP_TYPE_LABEL"]: getApplicationType(item.applicationType),
     ["WS_COMMON_TABLE_COL_OWN_NAME_LABEL"]: item.name,
+    ["WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"]: item.mobile,
     ["WS_COMMON_TABLE_COL_APPLICATION_STATUS_LABEL"]: item.applicationStatus.split("_").join(" "),
     ["WS_COMMON_TABLE_COL_ADDRESS"]: item.address,
     ["WS_COMMON_TABLE_COL_TENANTID_LABEL"]: item.tenantId,

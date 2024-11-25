@@ -38,6 +38,7 @@ export const searchResults = {
         }
       },
       {name : "Owner Name",labelKey: "WS_COMMON_TABLE_COL_OWN_NAME_LABEL" },
+      {name : "Mobile Number",labelKey: "WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL" },
       {name : "Status",labelKey: "WS_COMMON_TABLE_COL_STATUS_LABEL" },
       {name : "Due",labelKey: "WS_COMMON_TABLE_COL_DUE_LABEL" },
       {name : "Address",labelKey: "WS_COMMON_TABLE_COL_ADDRESS" },
@@ -49,6 +50,7 @@ export const searchResults = {
           filter: false,
           customBodyRender: (value, data) => {
             //debugger;
+            
             if (data.rowData[4] !== undefined && typeof data.rowData[4] === 'number' && data.rowData[4] >= 0) {
               return (
                 <div className="linkStyle" onClick={() => getViewBillDetails(data)} style={{ color: '#fe7a51', textTransform: 'uppercase' }}>
@@ -91,7 +93,7 @@ export const searchResults = {
       }
       
     ],
-    title: {labelKey:"WS_HOME_SEARCH_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Connectionsdfhdg"},
+    title: {labelKey:"WS_HOME_SEARCH_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Connections"},
     options: {
       filter: false,
       download: false,
