@@ -37,6 +37,7 @@ export const searchApplicationResults = {
         options: {
           filter: false,
           customBodyRender: (value, data) => {
+            debugger
             if (data.rowData[1] !== "NA" && data.rowData[1] !== null) {
               return (
                 <div className="linkStyle" onClick={() => getApplicationDetails(data)}>
@@ -142,11 +143,11 @@ const getApplicationDetails = data => {
   let connectionNo = `${data.rowData[0]}`;
   if(connectionNo && connectionNo !== 'NA' && data.rowData[2].includes('MODIFY')) {
     store.dispatch(
-      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}&mode=MODIFY&applicationStatus=${data.rowData[9]}&connectionType=${data.rowData[8]}&dischargeConnection=${data.rowData[10]}&dischargeFee=${data.rowData[11]}`)
+      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[7]}&history=true&service=${data.rowData[8]}&mode=MODIFY&applicationStatus=${data.rowData[10]}&connectionType=${data.rowData[9]}&dischargeConnection=${data.rowData[11]}&dischargeFee=${data.rowData[12]}`)
     )
   } else {
     store.dispatch(
-      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}&applicationStatus=${data.rowData[9]}&connectionType=${data.rowData[8]}&dischargeConnection=${data.rowData[10]}&dischargeFee=${data.rowData[11]}`)
+      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[7]}&history=true&service=${data.rowData[8]}&applicationStatus=${data.rowData[10]}&connectionType=${data.rowData[9]}&dischargeConnection=${data.rowData[11]}&dischargeFee=${data.rowData[12]}`)
     )
   }
 }
@@ -154,6 +155,6 @@ const getApplicationDetails = data => {
 const getConnectionDetails = data => {
   
   store.dispatch(
-    setRoute(`connection-details?connectionNumber=${data.rowData[0]}&tenantId=${data.rowData[6]}&service=${data.rowData[7]}&connectionType=${data.rowData[8]}`)
+    setRoute(`connection-details?connectionNumber=${data.rowData[0]}&tenantId=${data.rowData[7]}&service=${data.rowData[8]}&connectionType=${data.rowData[9]}`)
   )
 }

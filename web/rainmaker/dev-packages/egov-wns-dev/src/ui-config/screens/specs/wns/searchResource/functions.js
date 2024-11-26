@@ -376,16 +376,15 @@ const showConnectionResults = (connections, dispatch) => {
   let data = connections.map(item => ({
     ["WS_COMMON_TABLE_COL_SERVICE_LABEL"]: item.service,
     ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.connectionNo,
-    // ["WS_COMMON_TABLE_COL_CONSUMER_NO_LABEL"]: item.isLeagcy,
     ["WS_COMMON_TABLE_COL_OWN_NAME_LABEL"]: item.name,
-    ["WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"]: item.mobile,
     ["WS_COMMON_TABLE_COL_STATUS_LABEL"]: item.status,
     ["WS_COMMON_TABLE_COL_DUE_LABEL"]: item.due,
     ["WS_COMMON_TABLE_COL_ADDRESS"]: item.address,
     ["WS_COMMON_TABLE_COL_DUE_DATE_LABEL"]: (item.dueDate !== undefined && item.dueDate !== "NA") ? convertEpochToDate(item.dueDate) : item.dueDate,
     ["WS_COMMON_TABLE_COL_TENANTID_LABEL"]: item.tenantId,
     ["WS_COMMON_TABLE_COL_CONNECTIONTYPE_LABEL"]: item.connectionType,
-    ["WS_COMMON_TABLE_COL_IS_LEGACY"]: item.isLeagcy
+    ["WS_COMMON_TABLE_COL_IS_LEGACY"]: item.isLeagcy,
+    ["WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"]: item.mobile,
   }));
   dispatch(handleField("search", "components.div.children.searchResults", "props.data", data));
   dispatch(handleField("search", "components.div.children.searchResults", "props.rows",
@@ -406,7 +405,6 @@ const showApplicationResults = (connections, dispatch) => {
     ["WS_COMMON_TABLE_COL_APP_NO_LABEL"]: item.applicationNo,
     ["WS_COMMON_TABLE_COL_APP_TYPE_LABEL"]: getApplicationType(item.applicationType),
     ["WS_COMMON_TABLE_COL_OWN_NAME_LABEL"]: item.name,
-    ["WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"]: item.mobile,
     ["WS_COMMON_TABLE_COL_APPLICATION_STATUS_LABEL"]: item.applicationStatus.split("_").join(" "),
     ["WS_COMMON_TABLE_COL_ADDRESS"]: item.address,
     ["WS_COMMON_TABLE_COL_TENANTID_LABEL"]: item.tenantId,
@@ -415,6 +413,7 @@ const showApplicationResults = (connections, dispatch) => {
     ["WS_COMMON_TABLE_COL_APPLICATION_STATUS_TEST"]: item.applicationStatusdata,
     ["WS_COMMON_TABLE_COL_APPLICATION_DISCHARGE_FEE"]:item.dischargeFee,
     ["WS_COMMON_TABLE_COL_APPLICATION_DISCHARGE_CONNECTION"]:item.dischargeConnection,
+    ["WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"]: item.mobile,
   }));
   exceldata = data;
 

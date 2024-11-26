@@ -49,9 +49,10 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, data) => {
-            //debugger;
+            debugger;
             
             if (data.rowData[4] !== undefined && typeof data.rowData[4] === 'number' && data.rowData[4] >= 0) {
+                
               return (
                 <div className="linkStyle" onClick={() => getViewBillDetails(data)} style={{ color: '#fe7a51', textTransform: 'uppercase' }}>
                   <LabelContainer
@@ -121,19 +122,20 @@ export const searchResults = {
 };
 
 const getConnectionDetails = data => {
+  debugger;
   let legacy
-  if(data.rowData[10]=== true){
+  if(data.rowData[11]=== true){
       legacy = true
   }else{
     legacy =false
   }
   store.dispatch(
-    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}&legacy=${legacy}`)
+    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[9]}&service=${data.rowData[0]}&connectionType=${data.rowData[10]}&due=${data.rowData[5]}&legacy=${legacy}`)
   )
 }
 
 const getViewBillDetails = data => {
   store.dispatch(
-    setRoute( `viewBill?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}`)
+    setRoute( `viewBill?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[9]}&service=${data.rowData[0]}&connectionType=${data.rowData[10]}`)
   )
 }
