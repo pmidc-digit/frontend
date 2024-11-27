@@ -51,7 +51,7 @@ export const searchResults = {
           customBodyRender: (value, data) => {
             debugger;
             
-            if (data.rowData[4] !== undefined && typeof data.rowData[4] === 'number' && data.rowData[4] >= 0) {
+            if (data.rowData[5] !== undefined && typeof data.rowData[5] === 'number' && data.rowData[5] >= 0) {
                 
               return (
                 <div className="linkStyle" onClick={() => getViewBillDetails(data)} style={{ color: '#fe7a51', textTransform: 'uppercase' }}>
