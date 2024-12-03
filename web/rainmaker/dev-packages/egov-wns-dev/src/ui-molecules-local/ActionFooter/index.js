@@ -47,6 +47,7 @@ class Footer extends React.Component {
         // checking for the due amount
         let due = getQueryArg(window.location.href, "due");
         let legacy = getQueryArg(window.location.href, "legacy");
+        let serviceName = getQueryArg(window.location.href, "service");
         let errLabel =
           applicationNo && applicationNo.includes("WS")
             ? "WS_DUE_AMOUNT_SHOULD_BE_ZERO"
@@ -54,16 +55,17 @@ class Footer extends React.Component {
           //debugger
         //Remove condition while amount is greater than 0 also able to modify connection
         if (due && parseInt(due) > 0 &&  legacy ==='false')   {
-          toggleSnackbar(
-            true,
-            {
-              labelName: "Due Amount should be zero!",
-              labelKey: errLabel,
-            },
-            "error"
-          );
-
-          return false;
+          // remove the condition if dues available prevent to modify connection
+            alert("Please Collect Pending " +serviceName+" Service due before proceeding to modify the connection");
+          // toggleSnackbar(
+          //   true,
+          //   {
+          //     labelName: "Due Amount should be zero!",
+          //     labelKey: errLabel,
+          //   },
+          //   "error"
+          // );
+         // return false;
         } 
 
         // check for the WF Exists

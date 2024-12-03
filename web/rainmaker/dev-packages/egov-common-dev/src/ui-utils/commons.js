@@ -930,10 +930,12 @@ payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails=taxheads;
         {
         code="Composition Fee";         amount=dd.adjustedAmount;
 
+        }else if(dd.taxHeadCode == "WS_FORM_FEE" || dd.taxHeadCode == "SW_FORM_FEE"){
+            code="Form Fee";         amount=dd.adjustedAmount;
+    
         }else if(dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD" )
         {
-        code="Advance";         amount=-dd.amount;
-
+        	code="Advance";         amount=-dd.amount;
         }
 		if(payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="SW.ONE_TIME_FEE")
         {
