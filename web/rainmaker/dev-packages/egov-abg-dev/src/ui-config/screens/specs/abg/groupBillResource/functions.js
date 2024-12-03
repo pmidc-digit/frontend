@@ -88,7 +88,7 @@ export const searchApiCall = async (state, dispatch) => {
       searchScreenObject.url = "/egov-searcher/bill-genie/batchbilling/_get";
     }
    else if(batchtype == 'Group'){
-      searchScreenObject.url = "/gov-searcher/bill-genie/groupbills/_get";
+      searchScreenObject.url = "/egov-searcher/bill-genie/groupbills/_get";
     }    
     else{
       searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
