@@ -710,13 +710,13 @@ export const connectionWater = {
       labelKey: "Group"
     },
     {
-      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
+      jsonPath: "WaterConnection[0].additionalDetails.groups",
       callBack: handleNA
     }, {
     labelKey: "WS_OLD_LABEL_NAME"
   },
     {
-      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
+      jsonPath: "WaterConnection[0].additionalDetails.groups",
       callBack: handleNA
     }
   ),
@@ -892,13 +892,13 @@ export const connectionSewerage = {
       labelKey: "Group"
     },
     {
-      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
+      jsonPath: "WaterConnection[0].additionalDetails.groups",
       callBack: handleNA
     }, {
     labelKey: "WS_OLD_LABEL_NAME"
   },
     {
-      jsonPath: "WaterConnectionOld[0].additionalDetails.groups",
+      jsonPath: "WaterConnection[0].additionalDetails.groups",
       callBack: handleNA
     }
   ),

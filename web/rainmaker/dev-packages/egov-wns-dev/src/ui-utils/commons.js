@@ -659,6 +659,7 @@ const parserFunction = (state) => {
             userCharges: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.userCharges) : null,
             othersFee: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.othersFee) : null,
             unitUsageType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.unitUsageType : null,
+            groups: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.groups : null,
             //meterStatus: waterDetails && waterDetails ? waterDetails.meterStatus : null,
             // detailsProvidedBy : null,
             adhocPenalty: null,
