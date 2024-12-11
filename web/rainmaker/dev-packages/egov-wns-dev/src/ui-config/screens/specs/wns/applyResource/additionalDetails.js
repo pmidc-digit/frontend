@@ -522,7 +522,7 @@ try {
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "Group" },
           placeholder: { labelKey: "Select Group" },
-          required: (getTenantIdCommon() == "pb.patiala") ? true : false,
+          required: (getTenantIdCommon() == "pb.patiala") ? false : false,
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.additionalDetails.groups",
