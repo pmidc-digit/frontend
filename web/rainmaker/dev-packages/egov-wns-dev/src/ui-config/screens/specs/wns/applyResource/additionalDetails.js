@@ -210,8 +210,8 @@ else{
       )
     );
   }
-debugger
-let mdmsBody = {
+//debugger
+/*let mdmsBody = {
   MdmsCriteria: {
     tenantId: getTenantIdCommon(),
     moduleDetails: [
@@ -221,8 +221,8 @@ let mdmsBody = {
       }
     ]
   }
-};
-try {
+};*/
+/*try {
   let payload = await httpRequest(
     "post",
     "/egov-mdms-service/v1/_search",
@@ -250,7 +250,7 @@ try {
 
 } catch (e) {
   console.log(e);
-}
+}*/
 //--- end ------
 
           console.log('connType');

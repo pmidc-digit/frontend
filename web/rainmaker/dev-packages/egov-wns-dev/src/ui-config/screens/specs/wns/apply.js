@@ -147,6 +147,7 @@ export const getMdmsData = async dispatch => {
             { name: "billingType" },
             { name: "subUsageType" },
             { name: "unitUsageType" },
+            { name: "groups" },
 
           ]
         },
@@ -205,12 +206,22 @@ export const getMdmsData = async dispatch => {
           filtered.push(item)
         return filtered
       }, [])
+      
+	  let payloadData=payload.MdmsRes['ws-services-masters'];
+              let groupsar = [];
+              const batches =payload &&
+              payloadData.groups.filter((item) => {
+                  groupsar.push({ item });
+                  return groupsar;
+                }, []);
+ 
       payload.MdmsRes['ws-services-masters'].waterSource = filtered;
       payload.MdmsRes['ws-services-masters'].GROUND = GROUND;
       payload.MdmsRes['ws-services-masters'].SURFACE = SURFACE;
       payload.MdmsRes['ws-services-masters'].BULKSUPPLY = BULKSUPPLY;
-    }
+      payload.MdmsRes['ws-services-masters'].groups=batches;
 
+    } 
     //related to ownershipcategory
     let OwnerShipCategory = get(
       payload,
