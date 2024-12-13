@@ -210,48 +210,6 @@ else{
       )
     );
   }
-//debugger
-/*let mdmsBody = {
-  MdmsCriteria: {
-    tenantId: getTenantIdCommon(),
-    moduleDetails: [
-      {
-        moduleName: "ws-services-masters",
-        masterDetails: [{ name: "groups"}]
-      }
-    ]
-  }
-};*/
-/*try {
-  let payload = await httpRequest(
-    "post",
-    "/egov-mdms-service/v1/_search",
-    "_search",
-    [],
-    mdmsBody
-   
-  );
-  payload = payload.MdmsRes['ws-services-masters'];
-  let groupsar = [];
-  const batches =
-    payload &&
-    payload.groups.filter((item) => {
-      groupsar.push({ item });
-      return groupsar;
-    }, []);
-  dispatch(
-    prepareFinalObject(
-      "applyScreenMdmsData.ws-services-calculation.groups",
-      batches
-    )
-  );
-  dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
-  dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs",""));
-
-} catch (e) {
-  console.log(e);
-}*/
-//--- end ------
 
           console.log('connType');
           console.log(connType);
@@ -526,7 +484,7 @@ else{
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.additionalDetails.groups",
-          sourceJsonPath: "applyScreenMdmsData.ws-services-calculation.groups",
+          sourceJsonPath: "applyScreenMdmsData.ws-services-masters.groups",
         },
         //required: (getTenantIdCommon() == "pb.patiala") ? true : false,
         gridDefination: {
