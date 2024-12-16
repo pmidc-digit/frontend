@@ -1009,6 +1009,7 @@ const parserFunction = (obj) => {
       billingAmount: waterDetails && waterDetails ? parseFloat(waterDetails.billingAmount) : null,
       connectionCategory: waterDetails && waterDetails ? waterDetails.connectionCategory : null,
       ledgerId: waterDetails && waterDetails ? waterDetails.ledgerId : null,
+      groups: waterDetails && waterDetails ? waterDetails.groups : null,
       avarageMeterReading: waterDetails && waterDetails ? parseFloat(waterDetails.avarageMeterReading) : null,
       meterMake: waterDetails && waterDetails ? parseFloat(waterDetails.meterMake) : null,
       compositionFee: waterDetails && waterDetails ? parseFloat(waterDetails.compositionFee) : null,
