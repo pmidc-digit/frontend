@@ -8,6 +8,7 @@ ENV NODE_OPTIONS "--max-old-space-size=4000"
 COPY ${WORK_DIR} .
 
 RUN yarn cache clean
+RUN yarn install --update-checksums
 RUN yarn run prod:employee
 
 # Create runtime image
