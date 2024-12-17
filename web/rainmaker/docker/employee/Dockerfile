@@ -7,11 +7,7 @@ ENV NODE_OPTIONS "--max-old-space-size=4000"
 COPY ${WORK_DIR} .
 
 # Clean yarn cache and install dependencies
-RUN yarn config set registry https://registry.npmjs.org/ && \
-    yarn install --frozen-lockfile
-RUN yarn cache clean
-RUN yarn add emojis-list
-RUN yarn install --update-checksums --frozen-lockfile
+
 
 # Build the project
 RUN yarn run prod:employee
