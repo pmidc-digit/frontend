@@ -1,14 +1,16 @@
-
 FROM egovio/alpine-node-builder-10:yarn AS build  
 ARG WORK_DIR
 WORKDIR /app
 ENV NODE_OPTIONS "--max-old-space-size=4000"
 
-# copy the project files
+# Copy the project files
 COPY ${WORK_DIR} .
 
+# Clean yarn cache and install dependencies
 RUN yarn cache clean
-RUN yarn install --update-checksums
+RUN yarn install --update-checksums --frozen-lockfile
+
+# Build the project
 RUN yarn run prod:employee
 
 # Create runtime image
@@ -17,5 +19,6 @@ ENV WEB_DIR=/var/web/employee
 
 RUN mkdir -p ${WEB_DIR}
 
+# Copy build files and nginx configuration
 COPY --from=build /app/packages/employee/build ${WEB_DIR}/
 COPY --from=build /app/docker/employee/nginx.conf /etc/nginx/conf.d/default.conf
