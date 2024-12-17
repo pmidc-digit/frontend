@@ -6,6 +6,8 @@ ENV NODE_OPTIONS "--max-old-space-size=4000"
 
 # copy the project files
 COPY ${WORK_DIR} .
+
+RUN yarn cache clean
 RUN yarn run prod:employee
 
 # Create runtime image
