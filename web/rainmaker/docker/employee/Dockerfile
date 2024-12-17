@@ -5,6 +5,9 @@ ENV NODE_OPTIONS "--max-old-space-size=4000"
 
 # copy the project files
 COPY ${WORK_DIR} .
+RUN rm yarn.lock
+RUN rm -rf node_modules
+RUN yarn install --frozen-lockfile
 RUN yarn run prod:employee
 
 # Create runtime image
