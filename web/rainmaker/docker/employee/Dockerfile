@@ -8,6 +8,7 @@ COPY ${WORK_DIR} .
 
 # Clean yarn cache and install dependencies
 RUN yarn cache clean
+RUN yarn add emojis-list
 RUN yarn install --update-checksums --frozen-lockfile
 
 # Build the project
