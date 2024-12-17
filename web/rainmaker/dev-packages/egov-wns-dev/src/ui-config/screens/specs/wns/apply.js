@@ -208,18 +208,25 @@ export const getMdmsData = async dispatch => {
       }, [])
       
 	  let payloadData=payload.MdmsRes['ws-services-masters'];
-              let groupsar = [];
-              const batches =payload &&
-              payloadData.groups.filter((item) => {
-                  groupsar.push({ item });
-                  return groupsar;
-                }, []);
- 
+         // console.log("Hello PayloadDAta"+tenantId);
+             // debugger;
+      let tenantId = getQueryArg(window.location.href, "tenantId");
+      if(tenantId === "pb.patiala"){
+          let groupsar = [];
+          const batches =payload &&
+          payloadData.groups.filter((item) => {
+              groupsar.push({ item });
+              return groupsar;
+            }, []);
+        payload.MdmsRes['ws-services-masters'].groups=batches;
+      }
+              
+                //console.log("sdjsdsj"+JSON.stringify(groupsar))
       payload.MdmsRes['ws-services-masters'].waterSource = filtered;
       payload.MdmsRes['ws-services-masters'].GROUND = GROUND;
       payload.MdmsRes['ws-services-masters'].SURFACE = SURFACE;
       payload.MdmsRes['ws-services-masters'].BULKSUPPLY = BULKSUPPLY;
-      payload.MdmsRes['ws-services-masters'].groups=batches;
+    //  
 
     } 
     //related to ownershipcategory
@@ -555,6 +562,7 @@ export const getData = async (action, state, dispatch) => {
         showHideFieldModifyConnection(action);
       }
       let docs = get(state, "screenConfiguration.preparedFinalObject");
+      console.log("sdsgd"+JSON.stringify(docs))
       await prefillDocuments(docs, "displayDocs", dispatch);
       showHideFiedsPendingForConnectionActivation(action, state, dispatch);
       let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
