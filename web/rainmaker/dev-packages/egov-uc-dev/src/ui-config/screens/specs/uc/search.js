@@ -27,9 +27,9 @@ const getData = async (action, state, dispatch) => {
 };
 
 const getMDMSData = async (action, state, dispatch) => {
-  var filter_Service="[?(@.type=='Adhoc')]";
-  if(((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER")
-  filter_Service="[?(@.code=='CSS.cow_cess')]";
+  var filter_Service = "[?(@.type=='Adhoc')]";
+  if (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")
+    filter_Service = "[?(@.code=='CSS.cow_cess')]";
 
   let mdmsBody = {
     MdmsCriteria: {

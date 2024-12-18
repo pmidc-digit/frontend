@@ -3,7 +3,7 @@ import { generateReciept } from "../../utils/recieptPdf";
 import { ifUserRoleExists } from "../../utils";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
 //import { prepareFinalObject,toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, toggleSnackbar ,setPaymentDetails} from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, toggleSnackbar, setPaymentDetails } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { getCommonPayUrl } from "egov-ui-framework/ui-utils/commons";
 import get from "lodash/get";
@@ -62,13 +62,13 @@ export const callPGService = async (state, dispatch) => {
       ? state.screenConfiguration.preparedFinalObject.AmountPaid
       : taxAmount;
   amtToPay = amtToPay ? Number(amtToPay) : taxAmount;
-  
+
   if (amtToPay > taxAmount && !isAdvancePaymentAllowed) {
     alert("Advance Payment is not allowed");
     return;
   }
-  if (amtToPay < taxAmount && 
-    ((""+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER") && (businessService == "PT" || businessService == "WS" || businessService == "SW") ) {
+  if (amtToPay < taxAmount &&
+    (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP") && (businessService == "PT" || businessService == "WS" || businessService == "SW")) {
     alert("Partial Payment is not allowed");
     return;
   }
@@ -115,7 +115,7 @@ export const callPGService = async (state, dispatch) => {
     return;
   }
 
-  const payerInfo=get(billPayload, "Bill[0].payer",'').replace("COMMON_",'');
+  const payerInfo = get(billPayload, "Bill[0].payer", '').replace("COMMON_", '');
   const user = {
     name: get(billPayload, "Bill[0].paidBy", get(billPayload, "Bill[0].payerName")),
     mobileNumber: get(billPayload, "Bill[0].payerMobileNumber", get(billPayload, "Bill[0].mobileNumber")),
@@ -123,12 +123,12 @@ export const callPGService = async (state, dispatch) => {
   };
   let taxAndPayments = [];
   taxAndPayments.push({
-    taxAmount:taxAmount,
+    taxAmount: taxAmount,
     businessService: businessService,
     billId: get(billPayload, "Bill[0].id"),
     amountPaid: amtToPay
   });
-  const buttonJsonpath = paybuttonJsonpath + `${((""+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER") ? "makePayment" : "generateReceipt"}`;
+  const buttonJsonpath = paybuttonJsonpath + `${(("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP") ? "makePayment" : "generateReceipt"}`;
   try {
     dispatch(handleField("pay", buttonJsonpath, "props.disabled", true));
 
@@ -146,8 +146,10 @@ export const callPGService = async (state, dispatch) => {
         user,
         callbackUrl,
         businessService: bankBusinessService,
-        additionalDetails: { isWhatsapp: localStorage.getItem('pay-channel') == 'whatsapp' ? true : false,
-        paidBy:payerInfo }
+        additionalDetails: {
+          isWhatsapp: localStorage.getItem('pay-channel') == 'whatsapp' ? true : false,
+          paidBy: payerInfo
+        }
       }
     };
     const goToPaymentGateway = await httpRequest(
@@ -177,7 +179,7 @@ export const callPGService = async (state, dispatch) => {
         "Payments[0].paymentDetails[0].receiptNumber"
       );
 
-      let  paymentDetails= get(
+      let paymentDetails = get(
         searchResponse,
         "Payments[0]",
         null
@@ -201,20 +203,19 @@ export const callPGService = async (state, dispatch) => {
       //   window.location = redirectionUrl;
       //   }
 
-         if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.testing" )  
-              {
-                 
-          window.location = redirectionUrl;  
-         }
-        //  else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
-        // //alert("testing ASR");
-        // window.location = redirectionUrl;  
-        //  }
-         else{
-          
-          displayRazorpay(goToPaymentGateway);
-        
-         }
+      if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
+
+        window.location = redirectionUrl;
+      }
+      //  else if(get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar"){
+      // //alert("testing ASR");
+      // window.location = redirectionUrl;  
+      //  }
+      else {
+
+        displayRazorpay(goToPaymentGateway);
+
+      }
     }
   } catch (e) {
     dispatch(handleField("pay", buttonJsonpath, "props.disabled", false));
@@ -245,7 +246,7 @@ const getCommonApplyFooter = children => {
   };
 };
 export const getRedirectionURL = () => {
-  const redirectionURL = ifUserRoleExists("CITIZEN") ? "/inbox" : "/uc/newCollection" ;
+  const redirectionURL = ifUserRoleExists("CITIZEN") ? "/inbox" : "/uc/newCollection";
 
   return redirectionURL;
 };
@@ -257,7 +258,7 @@ export const acknowledgementSuccesFooter = getCommonApplyFooter({
       // color: "primary",
       variant: "outlined",
       color: "primary",
-      className:"gen-challan-btn"
+      className: "gen-challan-btn"
       // style: {
       //   minWidth: "200px",
       //   height: "48px",
@@ -280,39 +281,39 @@ export const acknowledgementSuccesFooter = getCommonApplyFooter({
   printMiniChallanButton: {
     componentPath: "Button",
     props: {
-        variant: "outlined",
-        color: "primary",
-        // className: "apply-wizard-footer-right-button",
-        className:"gen-challan-btn"
+      variant: "outlined",
+      color: "primary",
+      // className: "apply-wizard-footer-right-button",
+      className: "gen-challan-btn"
 
-        // disabled: true
+      // disabled: true
     },
     children: {
-        printFormButtonLabel: getLabel({
-            labelName: "PRINT MINI CHALLAN",
-            labelKey: "COMMON_PRINT_MINI_CHALLAN"
-        })
+      printFormButtonLabel: getLabel({
+        labelName: "PRINT MINI CHALLAN",
+        labelKey: "COMMON_PRINT_MINI_CHALLAN"
+      })
     },
     onClickDefination: {
-        action: "condition",
-        callBack: (state, dispatch) => {
-          const challanData = generateMiniChallan(state, dispatch);
-          try {
-            console.log("printData",JSON.stringify(challanData));
-            window.Android && window.Android.sendPrintData("printData",JSON.stringify(challanData));
-          } catch (e) {
-            console.log(e);
-          }
+      action: "condition",
+      callBack: (state, dispatch) => {
+        const challanData = generateMiniChallan(state, dispatch);
+        try {
+          console.log("printData", JSON.stringify(challanData));
+          window.Android && window.Android.sendPrintData("printData", JSON.stringify(challanData));
+        } catch (e) {
+          console.log(e);
         }
+      }
     },
-    visible: JSON.parse(window.localStorage.getItem('isPOSmachine')) 
+    visible: JSON.parse(window.localStorage.getItem('isPOSmachine'))
   },
-    payButton: {
+  payButton: {
     componentPath: "Button",
     props: {
       variant: "contained",
       color: "primary",
-      className:"gen-challan-btn"
+      className: "gen-challan-btn"
       // style: {
       //   minWidth: "200px",
       //   height: "48px",
@@ -320,7 +321,7 @@ export const acknowledgementSuccesFooter = getCommonApplyFooter({
       // }
     },
     children: {
-        payButtonLabel: getLabel({
+      payButtonLabel: getLabel({
         labelName: "PROCEED TO PAYMENT",
         labelKey: "UC_BUTTON_PAY"
       })
@@ -328,71 +329,71 @@ export const acknowledgementSuccesFooter = getCommonApplyFooter({
     onClickDefination: {
       action: "condition",
       callBack: (state, dispatch) => {
-    
-    //console.log("role is : "+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code);
-    //console.log("role iss : "+((""+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code) != "UC_COWCESS_USER"));
-    //.getItem("roles")[0].getItem("code")=== "UC_COW_CESS_USER");
 
-    const challanNo = getQueryArg(window.location.href, "challanNumber");
-    const tenantId = getQueryArg(window.location.href, "tenantId");
-    const businessService = getQueryArg(window.location.href,"serviceCategory");
-    console.info("businessService=",businessService,"tenantId=",tenantId,"challanNo=",challanNo);
-      if(businessService !=null && tenantId !=null && challanNo !=null ){
-        getCommonPayUrl(dispatch, challanNo, tenantId, businessService);
-      }    
-      
-      else{
-        
-        dispatch(setRoute(`/uc/newCollection`));
-      }
-      
+        //console.log("role is : "+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code);
+        //console.log("role iss : "+((""+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code) != "UC_COWCESS_USER"));
+        //.getItem("roles")[0].getItem("code")=== "UC_COW_CESS_USER");
+
+        const challanNo = getQueryArg(window.location.href, "challanNumber");
+        const tenantId = getQueryArg(window.location.href, "tenantId");
+        const businessService = getQueryArg(window.location.href, "serviceCategory");
+        console.info("businessService=", businessService, "tenantId=", tenantId, "challanNo=", challanNo);
+        if (businessService != null && tenantId != null && challanNo != null) {
+          getCommonPayUrl(dispatch, challanNo, tenantId, businessService);
+        }
+
+        else {
+
+          dispatch(setRoute(`/uc/newCollection`));
+        }
+
       }
     },
-    visible : ((""+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code) != "UC_COWCESS_USER")
+    visible: (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) != "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")
     //(JSON.parse(localStorage.getItem("user-info"))).roles[0].code
   }
-,
+  ,
 
 
-makePayment: {
-  componentPath: "Button",
-  props: {
-    variant: "contained",
-    color: "primary",
-    className: "make-payment-com",
-    // style: {
-    //   width: "363px",
-    //   height: "48px ",
-    //   right: "19px",
-    //   position: "relative",
-    //   borderRadius: "0px "
-    // }
-  },
-  children: {
-    submitButtonLabel: getLabel({
-      labelName: "MAKE PAYMENT",
-      labelKey: "COMMON_MAKE_PAYMENT"
-    }),
-    submitButtonIcon: {
-      uiFramework: "custom-atoms",
-      componentPath: "Icon",
-      props: {
-        iconName: "keyboard_arrow_right",
-        className: ""
+  makePayment: {
+    componentPath: "Button",
+    props: {
+      variant: "contained",
+      color: "primary",
+      className: "make-payment-com",
+      // style: {
+      //   width: "363px",
+      //   height: "48px ",
+      //   right: "19px",
+      //   position: "relative",
+      //   borderRadius: "0px "
+      // }
+    },
+    children: {
+      submitButtonLabel: getLabel({
+        labelName: "MAKE PAYMENT",
+        labelKey: "COMMON_MAKE_PAYMENT"
+      }),
+      submitButtonIcon: {
+        uiFramework: "custom-atoms",
+        componentPath: "Icon",
+        props: {
+          iconName: "keyboard_arrow_right",
+          className: ""
+        }
       }
-    }
-  },
-  onClickDefination: {
-    action: "condition",
-    callBack: callPGService
-  },
-   roleDefination: {
-     rolePath: "user-info.roles",
-     roles: ["UC_COWCESS_USER"],
-     action: "PAY"
-   },
-  visible: ((""+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER")
-}
+    },
+    onClickDefination: {
+      action: "condition",
+      callBack: callPGService
+    },
+    roleDefination: {
+      rolePath: "user-info.roles",
+      roles: ["UC_COWCESS_USER", "ESEWAEMP"],
+      action: "PAY"
+    },
+    visible: (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")
+  }
 });
 
 
@@ -409,7 +410,7 @@ export const acknowledgementFailureFooter = getCommonApplyFooter({
         height: "48px",
         marginRight: "16px"
       },
-      className:"gen-challan-btn"
+      className: "gen-challan-btn"
     },
     children: {
       goToHomeButtonLabel: getLabel({
@@ -428,44 +429,44 @@ const viewReceipt = (state, dispatch) => {
   generateReciept(state, dispatch);
 };
 
-const goToHome = (state, dispatch) => { 
+const goToHome = (state, dispatch) => {
   dispatch(prepareFinalObject("Challan", []));
   dispatch(setRoute(`${getRedirectionURL()}`));
 };
 
-const generateMiniChallan = (state, dispatch) => { 
+const generateMiniChallan = (state, dispatch) => {
   const ReceiptDataTemp = get(
-    state.screenConfiguration.preparedFinalObject,"Challan"
+    state.screenConfiguration.preparedFinalObject, "Challan"
   );
-  
+
 
   const challanDateFormatted = new Date().toLocaleDateString('en-GB', {
-    day : 'numeric',
-    month : 'short',
-    year : 'numeric'
-  }).split(' ').join('-');           
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).split(' ').join('-');
   const fromPeriod = getDateFromEpoch(ReceiptDataTemp.taxPeriodFrom);
   const toPeriod = getDateFromEpoch(ReceiptDataTemp.taxPeriodTo);
   const consumerName = ReceiptDataTemp.consumerName;
-  let id = getQueryArg(window.location.href, "tenantId"); 
+  let id = getQueryArg(window.location.href, "tenantId");
   let localizedULBName = "";
-  if(id != null){
-   id =  id.split(".")[1];
-   localizedULBName =  id[0].toUpperCase() + id.slice(1);
-    
-  }
-  var collectorName = ""; 
-  
-   var empInfo = JSON.parse(localStorage.getItem("Employee.user-info"));
-   collectorName = empInfo.name;
+  if (id != null) {
+    id = id.split(".")[1];
+    localizedULBName = id[0].toUpperCase() + id.slice(1);
 
-  const businessService = getQueryArg(window.location.href,"serviceCategory");
-  const totalAmt = ReceiptDataTemp.amount.reduce(function(total, arr) { 
+  }
+  var collectorName = "";
+
+  var empInfo = JSON.parse(localStorage.getItem("Employee.user-info"));
+  collectorName = empInfo.name;
+
+  const businessService = getQueryArg(window.location.href, "serviceCategory");
+  const totalAmt = ReceiptDataTemp.amount.reduce(function (total, arr) {
     // return the sum with previous value
     return total + arr.amount;
-  
+
     // set initial value as 0
-  },0);
+  }, 0);
 
   var UCminiChallanData = {
     ulbType: localizedULBName,
@@ -476,83 +477,82 @@ const generateMiniChallan = (state, dispatch) => {
     fromPeriod: fromPeriod,
     toPeriod: toPeriod,
     receiptAmount: totalAmt,
-    receiptDate:challanDateFormatted,
-    collectorName:collectorName,
-    status:"Active"
-  };  
+    receiptDate: challanDateFormatted,
+    collectorName: collectorName,
+    status: "Active"
+  };
 
   return UCminiChallanData;
- // return UCminiChallanBuilder(UCminiChallanData);
+  // return UCminiChallanBuilder(UCminiChallanData);
 };
 
 
 //--------RazorPay checkout function-------------//
 function loadScript(src) {
   return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = () => {
-          resolve(true);
-      };
-      script.onerror = () => {
-          resolve(false);
-      };
-      document.body.appendChild(script);
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
   });
 }
 
 
 async function displayRazorpay(getOrderData) {
   const res = await loadScript(
-      "https://checkout.razorpay.com/v1/checkout.js"
+    "https://checkout.razorpay.com/v1/checkout.js"
   );
-  
+
   if (!res) {
-      alert("Razorpay SDK failed to load. Are you online?");
-      return;
+    alert("Razorpay SDK failed to load. Are you online?");
+    return;
   }
-  
-  function getQueryVariable(variable)
-  {
+
+  function getQueryVariable(variable) {
     const query = get(getOrderData, "Transaction.redirectUrl");
-          var vars = query.split("&");
-          for (var i=0;i<vars.length;i++) {
-                      var pair = vars[i].split("=");
-          if(pair[0] == variable){return pair[1];}
-           }
-           return(false);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == variable) { return pair[1]; }
+    }
+    return (false);
   }
   const options = {
-      key: getQueryVariable('merchant_key'),
-      amount: get(getOrderData, "Transaction.txnAmount")*100,
-      //currency: getQueryVariable('currency'),
-      name: "mSeva | Punjab",
-      description: get(getOrderData, "Transaction.businessService")+" Charge Collection",
-      image: "https://mseva.lgpunjab.gov.in/citizen/browser-icon.png",
-      order_id: getQueryVariable('orderId'),
-      handler: async function (response) {
-          const data = {
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpaySignature: response.razorpay_signature,
-          };
-  
-        window.location = get(getOrderData, "Transaction.callbackUrl")+"&razorpayPaymentId="+data.razorpayPaymentId+"&razorpayOrderId="+data.razorpayOrderId+"&razorpaySignature="+data.razorpaySignature;
-      },
-      prefill: {
-          name: get(getOrderData, "Transaction.user.userName"),
-          email: get(getOrderData, "Transaction.user.emailId"),
-          contact: get(getOrderData, "Transaction.user.mobileNumber"),
-      },
-      theme: {
-          color: "#61dafb",
-      },
+    key: getQueryVariable('merchant_key'),
+    amount: get(getOrderData, "Transaction.txnAmount") * 100,
+    //currency: getQueryVariable('currency'),
+    name: "mSeva | Punjab",
+    description: get(getOrderData, "Transaction.businessService") + " Charge Collection",
+    image: "https://mseva.lgpunjab.gov.in/citizen/browser-icon.png",
+    order_id: getQueryVariable('orderId'),
+    handler: async function (response) {
+      const data = {
+        razorpayPaymentId: response.razorpay_payment_id,
+        razorpayOrderId: response.razorpay_order_id,
+        razorpaySignature: response.razorpay_signature,
+      };
+
+      window.location = get(getOrderData, "Transaction.callbackUrl") + "&razorpayPaymentId=" + data.razorpayPaymentId + "&razorpayOrderId=" + data.razorpayOrderId + "&razorpaySignature=" + data.razorpaySignature;
+    },
+    prefill: {
+      name: get(getOrderData, "Transaction.user.userName"),
+      email: get(getOrderData, "Transaction.user.emailId"),
+      contact: get(getOrderData, "Transaction.user.mobileNumber"),
+    },
+    theme: {
+      color: "#61dafb",
+    },
   };
-  
+
   const paymentObject = new window.Razorpay(options);
   paymentObject.open();
-  }
-  
+}
+
 
 
 
@@ -569,14 +569,14 @@ async function displayRazorpay(getOrderData) {
 
 //   challanString = challanString + " Receipt No    : " + h["receiptNumber"] + NEXTLINE;
 //   challanString = challanString + " Receipt Date  : " + h["challanDate"] + NEXTLINE;
-//   challanString = challanString + " Consumer Name : " + h["consumerName"] + NEXTLINE; 
+//   challanString = challanString + " Consumer Name : " + h["consumerName"] + NEXTLINE;
 
 //   challanString = challanString + " Category      : " + h["businessService"] + NEXTLINE;
 //   challanString = challanString + " From Period   : " + h["fromPeriod"] + NEXTLINE;
 //   challanString = challanString + " To Period     : " + h["toPeriod"] + NEXTLINE;
 //   challanString = challanString + " Paid Amount   : Rs." + h["receiptAmount"] + NEXTLINE;
 //   challanString = challanString + " Created By: " + h["collectorName"] + NEXTLINE;
-//   challanString = challanString + "******************************************" + NEXTLINE; 
+//   challanString = challanString + "******************************************" + NEXTLINE;
 //   //console.log(challanString.replace(/&&/g, "\n"));
 
 //   return "egov://print/" + challanString;

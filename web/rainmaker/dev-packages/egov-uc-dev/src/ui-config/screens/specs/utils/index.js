@@ -69,17 +69,17 @@ export const validateFields = (
   dispatch,
   screen
   //screen = "apply"
- // screen = "newCollection"
+  // screen = "newCollection"
 ) => {
   const fields = get(
     state.screenConfiguration.screenConfig[screen],
     objectJsonPath,
     {}
   );
- console.info("children==",fields);
+  console.info("children==", fields);
   let isFormValid = true;
   for (var variable in fields) {
-    
+
     if (fields.hasOwnProperty(variable)) {
       if (
         fields[variable] &&
@@ -166,7 +166,7 @@ export const ifUserRoleExists = role => {
 };
 
 export const convertEpochToDate = dateEpoch => {
-  if(dateEpoch==null||dateEpoch==''||dateEpoch==undefined){
+  if (dateEpoch == null || dateEpoch == '' || dateEpoch == undefined) {
     return 'NA';
   }
   const dateFromApi = new Date(dateEpoch);
@@ -322,11 +322,11 @@ export const getEmployeeName = async queryObject => {
   }
 };
 
-export const setServiceCategory = (businessServiceData, dispatch,state,setCategory=true) => {
+export const setServiceCategory = (businessServiceData, dispatch, state, setCategory = true) => {
   let nestedServiceData = {};
   businessServiceData.forEach(item => {
-    if((""+(JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" 
-              && item.code != 'CSS.cow_cess')
+    if ((("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")
+      && item.code != 'CSS.cow_cess')
       return;
 
 
@@ -351,7 +351,7 @@ export const setServiceCategory = (businessServiceData, dispatch,state,setCatego
       set(nestedServiceData, `${item.code}`, item);
     }
   });
-  console.log("nestedServiceData",nestedServiceData);
+  console.log("nestedServiceData", nestedServiceData);
   dispatch(
     prepareFinalObject(
       "applyScreenMdmsData.nestedServiceData",
@@ -361,7 +361,7 @@ export const setServiceCategory = (businessServiceData, dispatch,state,setCatego
   let serviceCategories = Object.values(nestedServiceData).filter(
     item => item.code
   );
-  setCategory&&dispatch(
+  setCategory && dispatch(
     prepareFinalObject(
       "applyScreenMdmsData.serviceCategories",
       serviceCategories
@@ -372,7 +372,7 @@ export const setServiceCategory = (businessServiceData, dispatch,state,setCatego
     "preparedFinalObject.Challan[0].id",
     null
   );
-  if(editingMode!=null){
+  if (editingMode != null) {
     dispatch(
       handleField(
         "newCollection",
@@ -401,11 +401,11 @@ export const setServiceCategory = (businessServiceData, dispatch,state,setCatego
 };
 
 
-export const downloadHelpFile = async (state, dispatch) => {  
+export const downloadHelpFile = async (state, dispatch) => {
   const helpurl = get(state.screenConfiguration.preparedFinalObject,
     "helpFileUrl",
     ""
-  );   
+  );
   // window.open(helpurl,"_blank");
 };
 
@@ -465,10 +465,10 @@ export const getTextToLocalMapping = label => {
 };
 
 
-export const downloadEchallan =(queryObj,fileName)=>{
-  searchAndDownloadPdf('/egov-pdf/download/UC/mcollect-challan',queryObj,fileName)
+export const downloadEchallan = (queryObj, fileName) => {
+  searchAndDownloadPdf('/egov-pdf/download/UC/mcollect-challan', queryObj, fileName)
 }
 
-export const printEchallan =(queryObj)=>{
-  searchAndPrintPdf('/egov-pdf/download/UC/mcollect-challan',queryObj)
+export const printEchallan = (queryObj) => {
+  searchAndPrintPdf('/egov-pdf/download/UC/mcollect-challan', queryObj)
 }
