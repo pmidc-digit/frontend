@@ -200,7 +200,7 @@ const getMdmsData = async (state, dispatch) => {
 };
 
 const callBackForNext = async (state, dispatch) => {
-  debugger;
+  //debugger;
   window.scrollTo(0, 0);
   let activeStep = get(state.screenConfiguration.screenConfig["apply"], "components.div.children.stepper.props.activeStep", 0);
   let isFormValid = true;
@@ -756,7 +756,7 @@ else{
     }
     else {
       let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
-      let roadCuttingInfos = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfos", []);
+      let roadCuttingInfosw = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
 
       let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
       if (applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
@@ -814,10 +814,10 @@ else{
           return
         }
       }
-      if (roadCuttingInfos && roadCuttingInfos.length > 0) {
+      if (roadCuttingInfosw && roadCuttingInfosw.length > 0) {
         for (let b = 0; b < roadCuttingInfo.length; b++) {
-          if (get(roadCuttingInfos[b], "status") == "INACTIVE") {
-            roadCuttingInfo.push(roadCuttingInfos[b]);
+          if (get(roadCuttingInfosw[b], "status") == "INACTIVE") {
+            roadCuttingInfo.push(roadCuttingInfosw[b]);
           }
         }
       }
@@ -834,7 +834,7 @@ else{
         //     info.status = "INACTIVE"
         //   }
         // };
-        dispatch(prepareFinalObject("applyScreen.roadCuttingInfos", roadCuttingInfo));
+        dispatch(prepareFinalObject("applyScreen.roadCuttingInfosw", roadCuttingInfosw));
         for (let j = 0; j < roadCuttingInfo.length; j++) {
           if (roadCuttingInfo[j].isDeleted != false) {
             filteredInfo.push(roadCuttingInfo[j]);
@@ -944,6 +944,62 @@ else{
       }
       dispatch(toggleSnackbar(true, errorMessage, "warning"));
     }
+  }
+  let applyFor = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
+  if(applyFor.water == true){
+    if(applyFor.sewerage == true){
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+          "visible",
+          true
+        )
+      );
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+          "visible",
+          true
+        )
+      );
+    }else{
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+          "visible",
+          true
+        )
+      );
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+          "visible",
+          false
+        )
+      );
+
+    }
+  }else{
+    dispatch(
+      handleField(
+        "apply",
+        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+        "visible",
+        true
+      )
+    );
+    dispatch(
+          handleField(
+            "apply",
+            "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+            "visible",
+            false
+          )
+        );
   }
 };
 
