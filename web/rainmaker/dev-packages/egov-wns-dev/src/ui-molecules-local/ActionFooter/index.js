@@ -120,6 +120,7 @@ class Footer extends React.Component {
       labelKey: "Single Demand",
       link: async (state, dispatch) => {
         let swservice = getQueryArg(window.location.href, "service");
+        let connectionNumber = getQueryArg(window.location.href, "connectionNumber");
        if(swservice == "SEWERAGE"){
       try{
           let payload = await httpRequest(

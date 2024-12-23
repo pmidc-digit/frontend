@@ -544,6 +544,11 @@ export const getDCBDetail = async (queryObject , dispatch) => {
       taxCollected=taxCollected+dd.collectionAmount;
       taxBalance=taxAmount-taxCollected;
     }
+    if(dd.taxHeadMasterCode=='WS_DISCHARGE_CHARGES' || dd.taxHeadMasterCode=='SW_DISCHARGE_CHARGES' ){
+      taxAmount=taxAmount+dd.taxAmount;
+      taxCollected=taxCollected+dd.collectionAmount;
+      taxBalance=taxAmount-taxCollected;
+    }
     if(dd.taxHeadMasterCode=='WS_TIME_INTEREST'  || dd.taxHeadMasterCode=='SW_TIME_INTEREST' ){
 
       interestAmount=interestAmount+dd.taxAmount;
