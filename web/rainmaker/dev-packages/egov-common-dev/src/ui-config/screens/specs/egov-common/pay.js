@@ -214,8 +214,8 @@ const screenConfig = {
                                 visible: false
                             },
                             capturePaymentDetails: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? {} : capturePaymentDetails,
-                            capturePayerDetails: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER")) ? capturePayerDetails : {},
-                            g8Details: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER")) ? {} : g8Details
+                            capturePayerDetails: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? capturePayerDetails : {},
+                            g8Details: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? {} : g8Details
                         })
                     }
                 },
