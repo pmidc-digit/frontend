@@ -682,7 +682,7 @@ else{
                 labelKey: "WS_ADD_ROAD_TYPE_LABEL"
               },
               isReviewPage: false,
-              sourceJsonPath: "aapplyScreen.roadCuttingInfo",
+              sourceJsonPath: "applyScreen.roadCuttingInfo",
               prefixSourceJsonPath: "children.cardContent.children.roadDetails.children"
             },
             type: "array"
