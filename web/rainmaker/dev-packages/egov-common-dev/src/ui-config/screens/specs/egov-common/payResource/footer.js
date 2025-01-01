@@ -13,7 +13,9 @@ import { convertEpochToDate, getTranslatedLabel } from "../../utils";
 import { downloadReceiptFromFilestoreID } from "../../../../../ui-utils/commons";
 import "./index.css";
 import { toggleSpinner } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-
+let result = [];
+(JSON.parse(localStorage.getItem("user-info"))).roles.filter((item) => { result.push(item.code); });
+const values = result.includes("ESEWAEMP");
 const PAYMENTSEARCH = {
   GET: {
     URL: "/collection-services/payments/",
@@ -181,7 +183,8 @@ export const callPGService = async (state, dispatch) => {
         billId: get(billPayload, "Bill[0].id"),
         amountPaid: amtToPay
       });
-      const buttonJsonpath = paybuttonJsonpath + `${(process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? "makePayment" : "generateReceipt"}`;
+
+      const buttonJsonpath = paybuttonJsonpath + `${(process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? "makePayment" : "generateReceipt"}`;
       try {
         dispatch(handleField("pay", buttonJsonpath, "props.disabled", true));
         const requestBody = {
@@ -686,7 +689,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
 
               }
               else if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
-                code = "Advance"; amount = -dd.amount;
+                code = "Advance"; amount = dd.amount;
 
               } else if (dd.taxHeadCode == "WS_DISCHARGE_CHARGES" || dd.taxHeadCode == "SW_DISCHARGE_CHARGES") {
                 code = "DISCHARGE CHARGES"; amount = dd.adjustedAmount;
@@ -1219,7 +1222,7 @@ const callBackForPay = async (state, dispatch) => {
 
   //---------------- Create Receipt ------------------//
   if (isFormValid) {
-    const buttonJsonpath = paybuttonJsonpath + `${(process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? "makePayment" : "generateReceipt"}`;
+    const buttonJsonpath = paybuttonJsonpath + `${(process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? "makePayment" : "generateReceipt"}`;
     dispatch(handleField("pay", buttonJsonpath, "props.disabled", true));
     try {
       let response = await httpRequest(
@@ -1347,7 +1350,7 @@ export const footer = getCommonApplyFooter({
     //   roles: ["NOC_CEMP"],
     //   action: "PAY"
     // },
-    visible: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? false : true
+    visible: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? false : true
   },
   makePayment: {
     componentPath: "Button",
@@ -1386,7 +1389,7 @@ export const footer = getCommonApplyFooter({
     //   roles: ["CITIZEN"],
     //   action: "PAY"
     // },
-    visible: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? true : false
+    visible: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? true : false
   }
 });
 

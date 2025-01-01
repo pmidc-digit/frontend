@@ -14,7 +14,9 @@ import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
 import "./index.css";
-
+let result = [];
+(JSON.parse(localStorage.getItem("user-info"))).roles.filter((item) => { result.push(item.code); });
+const values = result.includes("ESEWAEMP");
 const tenantId = getTenantId();
 const header = getCommonHeader({
   labelName: "Challan Search",
@@ -31,7 +33,7 @@ const getData = async (action, state, dispatch) => {
 
 const getMDMSData = async (action, state, dispatch) => {
   var filter_Service = "[?(@.type=='Adhoc')]";
-  if (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")
+  if (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || values == true)
     filter_Service = "[?(@.code=='CSS.cow_cess')]";
 
   let mdmsBody = {

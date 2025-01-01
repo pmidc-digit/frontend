@@ -6,7 +6,9 @@ import { httpRequest } from "../../../../ui-utils";
 import { billSearchCard } from "./billSearchResources/billSearchCard";
 import { searchResults } from "./billSearchResources/searchResults";
 import "./index.css";
-
+let result = [];
+(JSON.parse(localStorage.getItem("user-info"))).roles.filter((item) => { result.push(item.code); });
+const values = result.includes("ESEWAEMP");
 const header = getCommonHeader({
   labelName: "Universal Bill",
   labelKey: "ABG_UNIVERSAL_BILL_COMMON_HEADER"
@@ -15,7 +17,7 @@ const hasButton = getQueryArg(window.location.href, "hasButton");
 let enableButton = true;
 let enableGroupBillButton = true;
 enableButton = hasButton && hasButton === "false" ? false : true;
-enableGroupBillButton = ((((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")) ? false : true;
+enableGroupBillButton = ((((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER") || values == true) ? false : true;
 
 const getMDMSData = async (action, state, dispatch) => {
   const tenantId = getTenantId();
@@ -60,7 +62,7 @@ const getMDMSData = async (action, state, dispatch) => {
     );
 
     payload.MdmsRes.BillingService.BusinessService = payload.MdmsRes.BillingService.BusinessService.filter(service => service.billGineiURL);
-    if (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP"))
+    if (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || values == true)
       payload.MdmsRes.BillingService.BusinessService = payload.MdmsRes.BillingService.BusinessService.filter(service => (service.code == "CSS.cow_cess"));
 
     dispatch(prepareFinalObject("searchScreenMdmsData", payload.MdmsRes));

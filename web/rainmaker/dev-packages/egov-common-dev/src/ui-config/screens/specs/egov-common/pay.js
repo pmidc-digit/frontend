@@ -18,7 +18,9 @@ import estimateDetails from "./payResource/estimate-details";
 import { footer } from "./payResource/footer";
 import g8Details from "./payResource/g8-details";
 import arrearsCard from "./payResource/arrears-details";
-
+let result = [];
+(JSON.parse(localStorage.getItem("user-info"))).roles.filter((item) => { result.push(item.code); });
+const values = result.includes("ESEWAEMP");
 export const getHeader = (state) => {
     const uiCommonPayConfig = get(state.screenConfiguration.preparedFinalObject, "commonPayInfo");
     let consumerCode = getQueryArg(window.location.href, "consumerCode");
@@ -213,9 +215,9 @@ const screenConfig = {
                                 ...AmountToBePaid,
                                 visible: false
                             },
-                            capturePaymentDetails: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? {} : capturePaymentDetails,
-                            capturePayerDetails: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? capturePayerDetails : {},
-                            g8Details: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "ESEWAEMP")) ? {} : g8Details
+                            capturePaymentDetails: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? {} : capturePaymentDetails,
+                            capturePayerDetails: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? capturePayerDetails : {},
+                            g8Details: (process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? {} : g8Details
                         })
                     }
                 },

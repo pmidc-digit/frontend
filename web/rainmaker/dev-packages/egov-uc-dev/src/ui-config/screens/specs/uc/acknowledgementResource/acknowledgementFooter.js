@@ -12,7 +12,9 @@ import { getDateFromEpoch } from "egov-ui-kit/utils/commons";
 import "../../../../../index.css";
 //import { paybuttonJsonpath } from "./constants";
 import { EMPLOYEE } from "egov-ui-kit/utils/endPoints";
-
+let result = [];
+(JSON.parse(localStorage.getItem("user-info"))).roles.filter((item) => { result.push(item.code); });
+const values = result.includes("ESEWAEMP");
 const paybuttonJsonpath = "components.div.children.footer.children.";
 
 const checkAmount = (totalAmount, customAmount, businessService) => {
@@ -68,7 +70,7 @@ export const callPGService = async (state, dispatch) => {
     return;
   }
   if (amtToPay < taxAmount &&
-    (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP") && (businessService == "PT" || businessService == "WS" || businessService == "SW")) {
+    (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + values == true)) && (businessService == "PT" || businessService == "WS" || businessService == "SW")) {
     alert("Partial Payment is not allowed");
     return;
   }
@@ -128,7 +130,7 @@ export const callPGService = async (state, dispatch) => {
     billId: get(billPayload, "Bill[0].id"),
     amountPaid: amtToPay
   });
-  const buttonJsonpath = paybuttonJsonpath + `${(("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP") ? "makePayment" : "generateReceipt"}`;
+  const buttonJsonpath = paybuttonJsonpath + `${(("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + values == true)) ? "makePayment" : "generateReceipt"}`;
   try {
     dispatch(handleField("pay", buttonJsonpath, "props.disabled", true));
 
@@ -349,7 +351,7 @@ export const acknowledgementSuccesFooter = getCommonApplyFooter({
 
       }
     },
-    visible: (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) != "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")
+    visible: (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) != "UC_COWCESS_USER") || ("" + values == true)
     //(JSON.parse(localStorage.getItem("user-info"))).roles[0].code
   }
   ,
@@ -392,7 +394,7 @@ export const acknowledgementSuccesFooter = getCommonApplyFooter({
       roles: ["UC_COWCESS_USER", "ESEWAEMP"],
       action: "PAY"
     },
-    visible: (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "ESEWAEMP")
+    visible: (("" + (JSON.parse(localStorage.getItem("user-info"))).roles[0].code) == "UC_COWCESS_USER" || ("" + values == true))
   }
 });
 
