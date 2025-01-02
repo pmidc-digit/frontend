@@ -21,25 +21,18 @@ import {
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getHeaderSideText } from "../../utils";
 import get from 'lodash/get';
-//import { handleFieldChange, setFieldProperty } from "../../../../../../../../dev-packages/egov-ui-kit-dev/src/redux/form/actions";
-//../../../../../../../egov-ui-kit-dev/src/redux/form/actions
-
-//dev-packages\egov-ui-kit-dev\src\redux\form
 import { httpRequest } from '../../../../../ui-utils/index';
 import set from 'lodash/set';
 import { getTodaysDateInYMD, getQueryArg, getObjectKeys, getObjectValues } from 'egov-ui-framework/ui-utils/commons';
 import { isModifyMode } from "../../../../../ui-utils/commons";
 import {
   WSledgerId, WSBillingAmount, WSbillingType, WScompositionFee, WSMeterMakes,
-  WSunitUsageType, WSsubUsageType 
+  WSunitUsageType, WSsubUsageType
 
 } from "../ImpelExtendedFeature/fields";
-//import { setFieldProperty } from "../../../../../../../../packages/employee/src/redux/store/actions";
-//egov-ui-kit/redux/form/actions
+
 let isMode = isModifyMode();
-//roadcuthidevb();
-//dispatch(setFieldProperty(formKey, "roadCuttingChargeContainer", "required", data ? true : false));
-//dispatch(setFieldProperty(formKey, "multipleApplicantInfo", "disabled", true ));
+
 const getPlumberRadioButton = {
   uiFramework: "custom-containers-local",
   moduleName: "egov-wns",
@@ -57,21 +50,7 @@ const getPlumberRadioButton = {
   type: "array"
 };
 
-export const groupfield =(dispatch) =>{
- 
-}
-
 export const triggerUpdateByKey = (state, keyIndex, value, dispatch) => {
-  
-  // dispatch(
-  //   handleField(
-  //     "apply",
-  //     "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.roadDetails.children.regularizationFee",
-  //     "visible",
-  //     false
-  //   )
-  // );
-
   if (dispatch == "set") {
     set(state, `screenConfiguration.preparedFinalObject.DynamicMdms.ws-services-masters.waterSource.selectedValues[${keyIndex}]`, value);
   } else {
@@ -175,7 +154,7 @@ export const commonRoadCuttingChargeInformationsw = () => {
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.roadCuttingInfosw[0].roadType",
-          sourceJsonPath: "applyScreenMdmsData.sw-services-calculation.RoadType",    
+          sourceJsonPath: "applyScreenMdmsData.sw-services-calculation.RoadType",
         },
         required: false,
         gridDefination: {
@@ -234,28 +213,28 @@ export const additionDetails = getCommonCard({
         gridDefination: { xs: 12, sm: 6 },
         afterFieldChange: async (action, state, dispatch) => {
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
-//----group value show---
-if(getTenantIdCommon() == "pb.patiala"){
-  dispatch(
-    handleField(
-      "apply",
-      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.groUp",
-      "visible",
-      true
-    )
-  );
- 
-}
-else{
-    dispatch(
-      handleField(
-        "apply",
-        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.groUp",
-        "visible",
-        false
-      )
-    );
-  }
+          //----group value show---
+          if (getTenantIdCommon() == "pb.patiala") {
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.groUp",
+                "visible",
+                true
+              )
+            );
+
+          }
+          else {
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.groUp",
+                "visible",
+                false
+              )
+            );
+          }
 
           console.log('connType');
           console.log(connType);
@@ -350,14 +329,6 @@ else{
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       }),
       ...WSBillingAmount,
-      // billingAmount: getTextField({
-      //   label: { labelKey: "WS_SERV_DETAIL_BILLING_AMOUNT" },
-      //   placeholder: { labelKey: "WS_SERV_DETAIL_BILLING_AMOUNT_PLACEHOLDER" },
-      //   gridDefination: { xs: 12, sm: 6 },
-      //   jsonPath: "applyScreen.additionalDetails.billingAmount",
-      //   pattern: /^[0-9]*$/i,
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      // }),
       connectionCategory: {
         ...getSelectField({
           label: { labelKey: "WS_SERV_CONNECTION_CATEGORY" },
@@ -432,17 +403,9 @@ else{
 
       },
       ...WSledgerId,
-      // ledgerId: getTextField({
-      //   label: { labelKey: "WS_SERV_DETAIL_LEDGER_ID" },
-      //   placeholder: { labelKey: "WS_SERV_DETAIL_LEDGER_ID_PLACEHOLDER" },
-      //   gridDefination: { xs: 12, sm: 6 },
-      //   jsonPath: "applyScreen.additionalDetails.ledgerId",
-      //   // pattern: /^[0-9]*$/i,
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      // }),
       dynamicMdmsWaterSource: {
         uiFramework: "custom-containers",
-        
+
         componentPath: "DynamicMdmsContainer",
         props: {
           required: true,
@@ -452,17 +415,9 @@ else{
               // fieldType : "autosuggest",
               // className:"applicant-details-error autocomplete-dropdown",
               callBack: waterSourceTypeChange,
-             // isRequired: true
-              //requiredValue: false
+
             },
-            // {
-            //   key : 'waterSubSource',
-            //   fieldType : "autosuggest",
-            //   className:"applicant-details-error autocomplete-dropdown",
-            //   callBack: waterSubSourceChange,
-            //   isRequired: false,
-            //   requiredValue: false
-            // }
+
           ],
           moduleName: "ws-services-masters",
           masterName: "waterSource",
@@ -482,13 +437,13 @@ else{
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "WS_SERV_DETAIL_PIPE_SIZE", labelName: "Pipe Size" },
           placeholder: { labelKey: "WS_SERV_DETAIL_PIPE_SIZE_PLACEHOLDER", labelName: "Select Pipe Size" },
-         // required: true,
+          // required: true,
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.pipeSize",
           sourceJsonPath: "applyScreenMdmsData.ws-services-calculation.pipeSize",
         },
-       // required: true,
+        // required: true,
         gridDefination: {
           xs: 12,
           sm: 12,
@@ -526,7 +481,7 @@ else{
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "Group" },
           placeholder: { labelKey: "Select Group" },
-         // required: (getTenantIdCommon() == "pb.patiala") ? false : false,
+          // required: (getTenantIdCommon() == "pb.patiala") ? false : false,
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.additionalDetails.groups",
@@ -555,25 +510,7 @@ else{
         pattern: /^[0-9]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG"
       }),
-      //...WSsubUsageType,
-     
-      // subUsageType: {
-      //   ...getSelectField({
-      //     label: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE" },
-      //     placeholder: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE_PLACEHOLDER" },
-      //     required: true,
-      //     sourceJsonPath: "applyScreenMdmsData.ws-services-masters.subUsageType",
-      //     gridDefination: { xs: 12, sm: 6 },
-      //     errorMessage: "ERR_INVALID_BILLING_PERIOD",
-      //     jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
-      //     props: {
-      //       disabled: false,
-      //       required: true
-      //     }
-      //   }),
 
-      //  },
-      //...WSunitUsageType,
       unitUsageType: {
         ...getSelectField({
           label: { labelKey: "WS_SERV_DETAIL_UNIT_USAGE_TYPE" },
@@ -651,7 +588,7 @@ else{
     header: getCommonSubHeader(
       {
         labelName: "Road Cutting Charge",
-        labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILS"
+        labelKey: "Water Road Cutting Charges"
       },
       {
         style: {
@@ -691,7 +628,6 @@ else{
       },
     }),
     roadDetails: getCommonContainer({
-      //...WScompositionFee,
       compositionFee: getTextField({
         label: {
           labelKey: "WS_ADDN_DETAILS_COMPOSITION_LABEL"
@@ -740,33 +676,18 @@ else{
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "applyScreen.additionalDetails.othersFee"
       }),
-      // regularizationFee : getTextField({
-      //   label: {
-      //     labelKey: "Regularization Fee"
-      //   },
-      //   placeholder: {
-      //     labelKey: "Regularization Fee"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: getPattern("Amount"),
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.othersFee"
-      // })
+
     }),
 
   }),
   //water road cutting end
   roadCuttingChargeContainersw: getCommonGrayCard({
-             
+
     header: getCommonSubHeader(
       {
         labelName: "Sewerage Road Cutting Charges 1",
-        labelKey: "Sewerage Road Cutting Charges 2"
-       // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsw"
+        labelKey: "Sewerage Road Cutting Charges"
+        // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsw"
       },
       {
         style: {
@@ -775,7 +696,7 @@ else{
       }
     ),
     applicantTypeContainer: getCommonContainer({
-      roadCuttingChargeInfoCard : {
+      roadCuttingChargeInfoCard: {
         uiFramework: "custom-atoms",
         componentPath: "Div",
         props: {
@@ -783,9 +704,9 @@ else{
             // display: "none"
             // width: 
           },
-          
-          },
-        
+
+        },
+
         children: {
           multipleApplicantInfo: {
             uiFramework: "custom-containers",
@@ -798,7 +719,7 @@ else{
                 labelKey: "WS_ADD_ROAD_TYPE_LABEL"
               },
               isReviewPage: false,
-              
+
               sourceJsonPath: "applyScreen.roadCuttingInfosw",
               prefixSourceJsonPath: "children.cardContent.children.roadDetails.children"
             },
@@ -808,7 +729,7 @@ else{
       },
     }),
     roadDetails: getCommonContainer({
-      
+
       //...WScompositionFee,
       compositionFee: getTextField({
         label: {
@@ -842,7 +763,7 @@ else{
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "applyScreen.additionalDetails.userChargessw"
       }),
-      othersFee : getTextField({
+      othersFee: getTextField({
         label: {
           labelKey: "WS_ADDN_OTHER_FEE_LABEL"
         },
@@ -859,7 +780,7 @@ else{
         jsonPath: "applyScreen.additionalDetails.othersFeesw"
       })
     }),
-    
+
   }),
   //sewarage road cutting
   activationDetailsContainer: getCommonGrayCard({
@@ -900,10 +821,7 @@ else{
       }),
       meterInstallationDate: getDateField({
         label: { labelName: "meterInstallationDate", labelKey: "WS_ADDN_DETAIL_METER_INSTALL_DATE" },
-        // placeholder: {
-        //   labelName: "Select From Date",
-        //   labelKey: "WS_FROM_DATE_PLACEHOLDER"
-        // },
+
         gridDefination: {
           xs: 12,
           sm: 6
@@ -930,38 +848,7 @@ else{
         jsonPath: "applyScreen.additionalDetails.initialMeterReading"
       }),
       ...WSMeterMakes,
-      // meterMake: getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.meterMake"
-      // }),
-      // averageMake: getTextField({
-      //   label: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE"
-      //   },
-      //   placeholder: {
-      //     labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE_PLACEHOLDER"
-      //   },
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 6
-      //   },
-      //   required: false,
-      //   pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
-      //   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      //   jsonPath: "applyScreen.additionalDetails.avarageMeterReading"
-      // })
+
     })
   }),
   modificationsEffectiveFrom: getCommonGrayCard({
@@ -994,7 +881,7 @@ const showHideFeilds = (dispatch, value) => {
   let mStep = (isModifyMode()) ? 'formwizardSecondStep' : 'formwizardThirdStep';
 
   //------------------------------------
-  
+
   //----------------------------
   dispatch(
     handleField(
