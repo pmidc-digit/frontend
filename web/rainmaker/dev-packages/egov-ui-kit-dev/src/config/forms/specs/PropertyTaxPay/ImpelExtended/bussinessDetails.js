@@ -14,13 +14,14 @@ const formConfig = {
       floatingLabelText: "PT_COMMON_VASIKA_NO",
       hintText: "Vasika No",
       fullWidth: true,
+      
     },
     vasikaDate: {
       id: "vasikaDate",
       className:"bussinessDetail2",
       jsonPath: "Properties[0].additionalDetails.vasikaDate",
       type: "date",
-      floatingLabelText: "PT_COMMON_VASIKA_DATE",
+      floatingLabelText: "PT_COMMON_VASIKA_DATEdfdfdfdfdfdfd",
       hintText: "Vasika Date",
       fullWidth: true,
     },
