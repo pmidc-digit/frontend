@@ -617,13 +617,19 @@ else{
         accessories.filter(item => !item.hasOwnProperty("isDeleted"));
       let mergedOwners =
         owners && owners.filter(item => !item.hasOwnProperty("isDeleted"));
+  // Add Validity Year in additionalDetail object for 3 Year Validity
+        let validityYears = {
+          validityYears : parseInt(queryObject[0].tradeLicenseDetail.additionalDetail.validityYears)
+      }
       set(queryObject[0], "tradeLicenseDetail.tradeUnits", mergedTradeUnits);
       set(queryObject[0], "tradeLicenseDetail.accessories", mergedAccessories);
       set(queryObject[0], "tradeLicenseDetail.owners", mergedOwners);
       set(queryObject[0], "action", "INITIATE");
+      set(queryObject[0],"tradeLicenseDetail.additionalDetail", validityYears);
       //Emptying application docs to "INITIATE" form in case of search and fill from old TL Id.
       if (!queryObject[0].applicationNumber)
         set(queryObject[0], "tradeLicenseDetail.applicationDocuments", null);
+      //console.log("queryObject"+JSON.stringify(queryObject))
       const response = await httpRequest(
         "post",
         "/tl-services/v1/_create",

@@ -19,6 +19,10 @@ let arr =[
   {
     code: "Locality",
     value: "Locality",
+  },
+  {
+    code: "Integrated Bill",
+    value: "Integrated Bill",
   }
 
 ];

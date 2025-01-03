@@ -89,7 +89,10 @@ export const searchApiCall = async (state, dispatch) => {
     }
    else if(batchtype == 'Group'){
       searchScreenObject.url = "/egov-searcher/bill-genie/groupbills/_get";
-    }    
+    }  
+    else if(batchtype == 'Integrated Bill') {
+      searchScreenObject.url = "/egov-searcher/bill-genie/integratedbills/_get";  //added Url for integratedbills
+    } 
     else{
       searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
     }
