@@ -47,11 +47,11 @@ class Footer extends React.Component {
     var fiscalYr = "";
     if (curMonth >= 3) {
       var nextYr1 = (today.getFullYear() + 1).toString();
-      var nextYr1format=nextYr1.substring(2,4);
+      var nextYr1format = nextYr1.substring(2, 4);
       fiscalYr = today.getFullYear().toString() + "-" + nextYr1format;
     } else {
       var nextYr2 = today.getFullYear().toString();
-      var nextYr2format=nextYr2.substring(2,4);
+      var nextYr2format = nextYr2.substring(2, 4);
       fiscalYr = (today.getFullYear() - 1).toString() + "-" + nextYr2format;
     }
     return fiscalYr;
@@ -73,7 +73,7 @@ class Footer extends React.Component {
     };
   };
 
-  openActionDialog = async (item,label) => {
+  openActionDialog = async (item, label) => {
     const { dataPath, state } = this.props;
     let diffDays;
     debugger;
@@ -89,237 +89,237 @@ class Footer extends React.Component {
       state,
       "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.status"
     );
-    if(getdate){
-    const cd= getdate.split("PB-FN-");
-    const appActualDate=cd[1].slice(0,10);
-    console.log(appActualDate);
-    const currentDate = new Date();
-    const appDate = new Date(cd[1].slice(0,10));
-    const diffTime = Math.abs(appDate - currentDate);
-    diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-    console.log(diffTime + " milliseconds");
-    console.log(diffDays + " days");
+    if (getdate) {
+      const cd = getdate.split("PB-FN-");
+      const appActualDate = cd[1].slice(0, 10);
+      console.log(appActualDate);
+      const currentDate = new Date();
+      const appDate = new Date(cd[1].slice(0, 10));
+      const diffTime = Math.abs(appDate - currentDate);
+      diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      console.log(diffTime + " milliseconds");
+      console.log(diffDays + " days");
     }
     //if(firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED-DV" || firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED"){
-    if(true){
-    // if (diffDays>=90){
-    //   alert("You are not eligible for Re-Submit ");
-    //   }
-    // console.log(data, "test1");
-    // alert("Test Re-Submit");
-   // else{
-    const { handleFieldChange, setRoute, dataPath,onDialogButtonClick  } = this.props;
-    let employeeList = [],empList=[]; 
-    if (item.buttonLabel === "ACTIVATE_CONNECTION") {
-      if (item.moduleName === "NewWS1" || item.moduleName === "NewSW1") {
-        item.showEmployeeList = false;
+    if (true) {
+      // if (diffDays>=90){
+      //   alert("You are not eligible for Re-Submit ");
+      //   }
+      // console.log(data, "test1");
+      // alert("Test Re-Submit");
+      // else{
+      const { handleFieldChange, setRoute, dataPath, onDialogButtonClick } = this.props;
+      let employeeList = [], empList = [];
+      if (item.buttonLabel === "ACTIVATE_CONNECTION") {
+        if (item.moduleName === "NewWS1" || item.moduleName === "NewSW1") {
+          item.showEmployeeList = false;
+        }
       }
-    }
-    if (dataPath === "BPA") {
-      handleFieldChange(`${dataPath}.comment`, "");
-      handleFieldChange(`${dataPath}.assignees`, "");
-    } else {
-      handleFieldChange(`${dataPath}[0].comment`, "");
-      handleFieldChange(`${dataPath}[0].assignee`, []);
-    }
+      if (dataPath === "BPA") {
+        handleFieldChange(`${dataPath}.comment`, "");
+        handleFieldChange(`${dataPath}.assignees`, "");
+      } else {
+        handleFieldChange(`${dataPath}[0].comment`, "");
+        handleFieldChange(`${dataPath}[0].assignee`, []);
+      }
 
-    if (item.isLast) {
-      let url =
-        process.env.NODE_ENV === "development"
-          ? item.buttonUrl
-          : item.buttonUrl;
+      if (item.isLast) {
+        let url =
+          process.env.NODE_ENV === "development"
+            ? item.buttonUrl
+            : item.buttonUrl;
 
-      /* Quick fix for edit mutation application */
-      if (url.includes('pt-mutation/apply')) {
-        url = url + '&mode=MODIFY';
-        window.location.href = url.replace("/pt-mutation/", '');
+        /* Quick fix for edit mutation application */
+        if (url.includes('pt-mutation/apply')) {
+          url = url + '&mode=MODIFY';
+          window.location.href = url.replace("/pt-mutation/", '');
+          return;
+        }
+
+        setRoute(url);
         return;
       }
+      if (item.showEmployeeList) {
+        const tenantId = getTenantId();
+        const queryObj = [
+          {
+            key: "roles",
+            value: item.roles
+          },
+          {
+            key: "tenantId",
+            value: tenantId
+          }
+        ];
+        //   const payload = await httpRequest(
+        //     "post",
+        //     "/egov-hrms/employees/_search",
+        //     "",
+        //     queryObj
+        //   );
+        //   employeeList =
+        //     payload &&
+        //     payload.Employees.map((item, index) => {
+        //       const name = get(item, "user.name");
+        //       return {
+        //         value: item.uuid,
+        //         label: name
+        //       };
+        //     });
+        // }
 
-      setRoute(url);
-      return;
-    }
-    if (item.showEmployeeList) {
-      const tenantId = getTenantId();
-      const queryObj = [
-        {
-          key: "roles",
-          value: item.roles
-        },
-        {
-          key: "tenantId",
-          value: tenantId
+        const payload = await httpRequest(
+          "post",
+          "/egov-hrms/employees/_search",
+          "",
+          queryObj
+        );
+        empList = payload && payload.Employees.map((item, index) => {
+          // Add only User With Active Status 
+          const active = JSON.stringify(item.user.active);
+          if (active == "true") {
+            const name = get(item, "user.name");
+            return {
+              value: item.uuid,
+              label: name
+            };
+          }
+          else {
+            return {
+              value: item.uuid,
+              label: 'blank'
+            };
+          }
+        });
+        empList.forEach((res, index) => {
+          if (res.label == 'blank') {
+            empList.splice(index, 1) // remove element
+          };
+        })
+        for (var i of empList) {
+          employeeList.push(i);
         }
-      ];
-    //   const payload = await httpRequest(
-    //     "post",
-    //     "/egov-hrms/employees/_search",
-    //     "",
-    //     queryObj
-    //   );
-    //   employeeList =
-    //     payload &&
-    //     payload.Employees.map((item, index) => {
-    //       const name = get(item, "user.name");
-    //       return {
-    //         value: item.uuid,
-    //         label: name
-    //       };
-    //     });
-    // }
-
-    const payload = await httpRequest(
-      "post",
-      "/egov-hrms/employees/_search",
-      "",
-      queryObj
-    );
-    empList =payload && payload.Employees.map((item, index) => {
-    // Add only User With Active Status 
-     const active = JSON.stringify(item.user.active);
-      if(active=="true")
-      {
-        const name = get(item, "user.name");
-        return {
-          value: item.uuid,
-          label: name
-        };
       }
-      else{
-        return { value: item.uuid,
-                 label: 'blank'
-      };
-    }
-    });
-     empList.forEach((res, index) => {
-      if (res.label=='blank') {
-        empList.splice(index, 1) // remove element
-  };
-})
-    for (var i of empList) {
-  employeeList.push(i);
-}  
-}
 
-    if(label === "APPROVE"){
-      this.setState({ data: item, employeeList });
-     
-      onDialogButtonClick(label,false);
+      if (label === "APPROVE") {
+        this.setState({ data: item, employeeList });
 
-    }
-    else{
-      this.setState({ open : true,data: item, employeeList });
+        onDialogButtonClick(label, false);
 
-    }
-    // this.setState({ open: true, data: item, employeeList });
-//  }
-}
-else{
-  const { handleFieldChange, setRoute, dataPath,onDialogButtonClick  } = this.props;
-  let employeeList = [],empList=[]; 
-  if (item.buttonLabel === "ACTIVATE_CONNECTION") {
-    if (item.moduleName === "NewWS1" || item.moduleName === "NewSW1") {
-      item.showEmployeeList = false;
-    }
-  }
-  if (dataPath === "BPA") {
-    handleFieldChange(`${dataPath}.comment`, "");
-    handleFieldChange(`${dataPath}.assignees`, "");
-  } else {
-    handleFieldChange(`${dataPath}[0].comment`, "");
-    handleFieldChange(`${dataPath}[0].assignee`, []);
-  }
-
-  if (item.isLast) {
-    let url =
-      process.env.NODE_ENV === "development"
-        ? item.buttonUrl
-        : item.buttonUrl;
-
-    /* Quick fix for edit mutation application */
-    if (url.includes('pt-mutation/apply')) {
-      url = url + '&mode=MODIFY';
-      window.location.href = url.replace("/pt-mutation/", '');
-      return;
-    }
-
-    setRoute(url);
-    return;
-  }
-  if (item.showEmployeeList) {
-    const tenantId = getTenantId();
-    const queryObj = [
-      {
-        key: "roles",
-        value: item.roles
-      },
-      {
-        key: "tenantId",
-        value: tenantId
       }
-    ];
-  //   const payload = await httpRequest(
-  //     "post",
-  //     "/egov-hrms/employees/_search",
-  //     "",
-  //     queryObj
-  //   );
-  //   employeeList =
-  //     payload &&
-  //     payload.Employees.map((item, index) => {
-  //       const name = get(item, "user.name");
-  //       return {
-  //         value: item.uuid,
-  //         label: name
-  //       };
-  //     });
-  // }
+      else {
+        this.setState({ open: true, data: item, employeeList });
 
-  const payload = await httpRequest(
-    "post",
-    "/egov-hrms/employees/_search",
-    "",
-    queryObj
-  );
-  empList =payload && payload.Employees.map((item, index) => {
-  // Add only User With Active Status 
-   const active = JSON.stringify(item.user.active);
-    if(active=="true")
-    {
-      const name = get(item, "user.name");
-      return {
-        value: item.uuid,
-        label: name
-      };
+      }
+      // this.setState({ open: true, data: item, employeeList });
+      //  }
     }
-    else{
-      return { value: item.uuid,
-               label: 'blank'
-    };
-  }
-  });
-   empList.forEach((res, index) => {
-    if (res.label=='blank') {
-      empList.splice(index, 1) // remove element
-};
-})
-  for (var i of empList) {
-employeeList.push(i);
-}  
-}
+    else {
+      const { handleFieldChange, setRoute, dataPath, onDialogButtonClick } = this.props;
+      let employeeList = [], empList = [];
+      if (item.buttonLabel === "ACTIVATE_CONNECTION") {
+        if (item.moduleName === "NewWS1" || item.moduleName === "NewSW1") {
+          item.showEmployeeList = false;
+        }
+      }
+      if (dataPath === "BPA") {
+        handleFieldChange(`${dataPath}.comment`, "");
+        handleFieldChange(`${dataPath}.assignees`, "");
+      } else {
+        handleFieldChange(`${dataPath}[0].comment`, "");
+        handleFieldChange(`${dataPath}[0].assignee`, []);
+      }
 
-  if(label === "APPROVE"){
-    this.setState({ data: item, employeeList });
-   
-    onDialogButtonClick(label,false);
+      if (item.isLast) {
+        let url =
+          process.env.NODE_ENV === "development"
+            ? item.buttonUrl
+            : item.buttonUrl;
 
-  }
-  else{
-    this.setState({ open : true,data: item, employeeList });
+        /* Quick fix for edit mutation application */
+        if (url.includes('pt-mutation/apply')) {
+          url = url + '&mode=MODIFY';
+          window.location.href = url.replace("/pt-mutation/", '');
+          return;
+        }
 
-  }
-  // this.setState({ open: true, data: item, employeeList });
-}
+        setRoute(url);
+        return;
+      }
+      if (item.showEmployeeList) {
+        const tenantId = getTenantId();
+        const queryObj = [
+          {
+            key: "roles",
+            value: item.roles
+          },
+          {
+            key: "tenantId",
+            value: tenantId
+          }
+        ];
+        //   const payload = await httpRequest(
+        //     "post",
+        //     "/egov-hrms/employees/_search",
+        //     "",
+        //     queryObj
+        //   );
+        //   employeeList =
+        //     payload &&
+        //     payload.Employees.map((item, index) => {
+        //       const name = get(item, "user.name");
+        //       return {
+        //         value: item.uuid,
+        //         label: name
+        //       };
+        //     });
+        // }
+
+        const payload = await httpRequest(
+          "post",
+          "/egov-hrms/employees/_search",
+          "",
+          queryObj
+        );
+        empList = payload && payload.Employees.map((item, index) => {
+          // Add only User With Active Status 
+          const active = JSON.stringify(item.user.active);
+          if (active == "true") {
+            const name = get(item, "user.name");
+            return {
+              value: item.uuid,
+              label: name
+            };
+          }
+          else {
+            return {
+              value: item.uuid,
+              label: 'blank'
+            };
+          }
+        });
+        empList.forEach((res, index) => {
+          if (res.label == 'blank') {
+            empList.splice(index, 1) // remove element
+          };
+        })
+        for (var i of empList) {
+          employeeList.push(i);
+        }
+      }
+
+      if (label === "APPROVE") {
+        this.setState({ data: item, employeeList });
+
+        onDialogButtonClick(label, false);
+
+      }
+      else {
+        this.setState({ open: true, data: item, employeeList });
+
+      }
+      // this.setState({ open: true, data: item, employeeList });
+    }
   };
 
   onClose = () => {
@@ -335,14 +335,14 @@ employeeList.push(i);
       `Licenses`
     );
     this.props.showSpinner();
-   var nextFinancialYear = await getNextFinancialYearForRenewal(
+    var nextFinancialYear = await getNextFinancialYearForRenewal(
       financialYear
     );
-    var currentFinancialYear=this.getCurrentFinancialYear();
+    var currentFinancialYear = this.getCurrentFinancialYear();
 
-    if(licences[0].financialYear=='2019-20' || licences[0].financialYear=='2020-21'){
-      nextFinancialYear=currentFinancialYear;
-    }
+    // if (licences[0].financialYear == '2019-20' || licences[0].financialYear == '2020-21') {
+    nextFinancialYear = currentFinancialYear;
+    // }
 
     const wfCode = "DIRECTRENEWAL";
     set(licences[0], "action", "INITIATE");
@@ -399,13 +399,13 @@ employeeList.push(i);
       contractData &&
       contractData.map(item => {
         const { buttonLabel, moduleName } = item;
-       
+
         return {
           labelName: { buttonLabel },
           labelKey: `WF_${appName.toUpperCase()}_${moduleName.toUpperCase()}_${buttonLabel}`,
           link: () => {
             (moduleName === "NewTL" || moduleName === "EDITRENEWAL") && buttonLabel === "APPLY" ? onDialogButtonClick(buttonLabel, isDocRequired) :
-              this.openActionDialog(item,buttonLabel);
+              this.openActionDialog(item, buttonLabel);
           }
         };
       });
@@ -521,7 +521,7 @@ employeeList.push(i);
     //console.log("download Menu : "+JSON.stringify(downloadMenu))
     return (
       <div className="wf-wizard-footer" id="custom-atoms-footer">
-        { !isEmpty(downloadMenu) && (
+        {!isEmpty(downloadMenu) && (
           <Container>
             <Item xs={12} sm={12} className="wf-footer-container">
               <MenuButton data={buttonItems} />
