@@ -161,7 +161,7 @@ class WorkFlowContainer extends React.Component {
       redirectQueryString,
       beforeSubmitHook
     } = this.props;
-    console.log("=========updateUrl",updateUrl);
+   // console.log("=========updateUrl",updateUrl);
     const tenant = getQueryArg(window.location.href, "tenantId");
     let data = get(preparedFinalObject, dataPath, []);
     if (moduleName === "NewTL") {
@@ -285,14 +285,17 @@ class WorkFlowContainer extends React.Component {
           data[0].fireNOCDetails.status = "CITIZENACTIONREQUIRED";
           data[0].fireNOCDetails.assignee = [get(preparedFinalObject, "FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].uuid", "")];
         }
- 
+        debugger
         if (window.location.href.includes("wns/search-preview")) {
           if(data.roadCuttingInfo && data.roadCuttingInfo.length > 0) {
-            data.roadCuttingInfo = [];
-            data.roadCuttingInfo = data.roadCuttingInfos || [];
-            data.roadCuttingInfos = [];
+            
+           // data.roadCuttingInfo = [];
+            data.roadCuttingInfo = data.roadCuttingInfo || [];
+           // data.roadCuttingInfos = [];
           }
+          
       }     
+     
       let payload = await httpRequest("post", updateUrl, "", [], {
         [dataPath]: data
       });
@@ -444,7 +447,7 @@ getRedirectUrl = (action, businessId, moduleName) => {
   const { PTApplication = {} } = preparedFinalObject;
   const { propertyId } = PTApplication;
   let dischragestr='';
-  console.log("sdgshfdshdghs"+moduleName);
+  //console.log("sdgshfdshdghs"+moduleName);
   if(moduleName=== 'NewSW1' || moduleName === 'NewWS1'){
    
     const dischargeFee = getQueryArg(window.location.href,"dischargeFee");
@@ -453,7 +456,7 @@ getRedirectUrl = (action, businessId, moduleName) => {
         dischragestr = `&dischargeConnection=${dischargeConnection}&dischargeFee=${dischargeFee}`
       }
   } 
-  console.log("wsDischarge"+dischragestr)
+ // console.log("wsDischarge"+dischragestr)
   let applicationStatus;
   if (ProcessInstances && ProcessInstances.length > 0) {
     applicationStatus = get(ProcessInstances[ProcessInstances.length - 1], "state.applicationStatus");

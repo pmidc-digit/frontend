@@ -200,7 +200,7 @@ const getMdmsData = async (state, dispatch) => {
 };
 
 const callBackForNext = async (state, dispatch) => {
-  //debugger;
+
   window.scrollTo(0, 0);
   let activeStep = get(state.screenConfiguration.screenConfig["apply"], "components.div.children.stepper.props.activeStep", 0);
   let isFormValid = true;
@@ -253,6 +253,7 @@ const callBackForNext = async (state, dispatch) => {
         dispatch(prepareFinalObject("applyScreen", applyScreenObj));
         return false;
       }
+      //console.log("shdshdg"+get(state.screenConfiguration.preparedFinalObject, "applyScreen.service"));
       let roadCuttingInfoDetails = get(state.screenConfiguration.preparedFinalObject, "applyScreen.roadCuttingInfo")
       if (roadCuttingInfoDetails === null) {
         dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", []));
@@ -491,6 +492,7 @@ const callBackForNext = async (state, dispatch) => {
 
   /* validations for Additional /Docuemnts details screen */
   if (activeStep === 1) {
+
     if (isModifyMode()) {
       let validate = validateFields("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.modificationsEffectiveFrom.children.cardContent.children.modificationEffectiveDate.children", state, dispatch)
       if (validate) {
@@ -658,12 +660,33 @@ else{
           setReviewPageRoute(state, dispatch);
         }
         let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
-        let raodCuttingInfos = get(state, "screenConfiguration.preparedFinalObject.applyScreen.raodCuttingInfos", []);
+        let swUserCharges = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.userCharges", []);
+        let swOthersFee = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFee", []);
+        let swCompositionFee = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFee", []);
+        //let raodCuttingInfos = get(state, "screenConfiguration.preparedFinalObject.applyScreen.raodCuttingInfos", []);
 
         if (roadCuttingInfo && roadCuttingInfo.length > 0) {
           dispatch(prepareFinalObject("applyScreen.tempRoadCuttingInfo", roadCuttingInfo));
           let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.emptyObj !== true);
-          dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", formatedRoadCuttingInfo));
+          if (applicationNumber.includes("SW")){
+            dispatch(prepareFinalObject("applyScreen.roadCuttingInfosw", formatedRoadCuttingInfo));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.userChargessw", swUserCharges));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFeesw", swOthersFee));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.compositionFeesw", swCompositionFee));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.userCharges", ""));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFee", ""));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.compositionFee", ""));
+            dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", []));
+          }else{
+            dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", formatedRoadCuttingInfo));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.userCharges", swUserCharges));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFee", swOthersFee));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.compositionFee", swCompositionFee));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.userChargessw", ""));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFeesw", ""));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.compositionFeesw", ""));
+            dispatch(prepareFinalObject("applyScreen.roadCuttingInfosw", []));
+          }          
         }
         let UsageType = get(state, "screenConfiguration.preparedFinalObject.applyScreen.property.usageCategory");
         if (UsageType === "MIXED") {
@@ -719,9 +742,7 @@ else{
 
     // 
     let validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch)
-    //debugger;
-   // console.log("Stfygsuasjdsh", JSON.stringify(state));
-   // console.log("connectionType validate", JSON.stringify(validate));
+    
     if (validate) {
       isFormValid = true;
       hasFieldToaster = false;
@@ -755,6 +776,7 @@ else{
       // }
     }
     else {
+     
       let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
       let roadCuttingInfosw = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
 
@@ -901,6 +923,7 @@ else{
 
   }
   if (activeStep === 3) {
+
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
