@@ -21,7 +21,7 @@ const formConfig = {
       className:"bussinessDetail2",
       jsonPath: "Properties[0].additionalDetails.vasikaDate",
       type: "date",
-      floatingLabelText: "PT_COMMON_VASIKA_DATEdfdfdfdfdfdfd",
+      floatingLabelText: "PT_COMMON_VASIKA_DATE",
       hintText: "Vasika Date",
       fullWidth: true,
     },
