@@ -625,7 +625,7 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 	receiptQueryString = receiptQueryString && Array.isArray(receiptQueryString) && receiptQueryString.filter(query => query.key != "businessService")
 	try {
 		await httpRequest("post", getPaymentSearchAPI(businessService), FETCHRECEIPT.GET.ACTION, receiptQueryString).then((payloadReceiptDetails) => {
-			let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
+
 			if (payloadReceiptDetails.Payments[0].payerName != null) {
 				payloadReceiptDetails.Payments[0].payerName = payloadReceiptDetails.Payments[0].payerName.trim();
 			}
@@ -881,6 +881,9 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 			}
 
 			if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
+				debugger
+				let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
+				let toTalDue = payloadReceiptDetails.Payments[0].totalDue
 				configKey = "ws-onetime-receipt";
 				let dcbRow = null, dcbArray = [];
 				let installment, totalamount = 0;
@@ -942,7 +945,7 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 									code = "Form Fee"; amount = dd.adjustedAmount;
 
 								} else if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
-									code = "Advance"; amount = dd.amount;
+									code = "Advance"; amount = -dd.amount;
 								}
 								if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE") {
 									dcbRow = {
@@ -951,10 +954,18 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 									};
 								}
 								else {
-									dcbRow = {
-										"taxhead": code + "(" + installment + ")",
-										"amount": amount
-									};
+									if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
+										dcbRow = {
+											"taxhead": code,
+											"amount": amount
+										};
+									}
+									else {
+										dcbRow = {
+											"taxhead": code + "(" + installment + ")",
+											"amount": amount
+										};
+									}
 								}
 								totalamount = totalamount + amount;
 								dcbArray.push(dcbRow);

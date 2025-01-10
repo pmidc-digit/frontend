@@ -632,9 +632,15 @@ export const download = async (receiptQueryString, mode = "download", configKey 
     }
 
     if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
+      debugger;
+      let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
+
+
       let dcbRow = null, dcbArray = [];
       let installment, totalamount = 0;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element, index) => {
+
+
         if (element.amountPaid > 0 || element.amountPaid < 0) {
           installment = convertEpochToDate(element.fromPeriod) + "-" + convertEpochToDate(element.toPeriod);
           element.billAccountDetails.map((dd) => {
@@ -689,7 +695,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
 
               }
               else if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
-                code = "Advance"; amount = dd.amount;
+                code = "Advance"; amount = -dd.amount;
 
               } else if (dd.taxHeadCode == "WS_DISCHARGE_CHARGES" || dd.taxHeadCode == "SW_DISCHARGE_CHARGES") {
                 code = "DISCHARGE CHARGES"; amount = dd.adjustedAmount;
@@ -702,10 +708,18 @@ export const download = async (receiptQueryString, mode = "download", configKey 
                 };
               }
               else {
-                dcbRow = {
-                  "taxhead": code + "(" + installment + ")",
-                  "amount": amount
-                };
+                if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
+                  dcbRow = {
+                    "taxhead": code,
+                    "amount": amount
+                  };
+                }
+                else {
+                  dcbRow = {
+                    "taxhead": code + "(" + installment + ")",
+                    "amount": amount
+                  };
+                }
               }
               totalamount = totalamount + amount;
               dcbArray.push(dcbRow);
@@ -717,7 +731,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
       });
       dcbRow = {
         "taxhead": "Total Amount Paid",
-        "amount": totalamount
+        "amount": toTalAmountPaid
       };
       dcbArray.push(dcbRow);
       payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails = dcbArray;

@@ -162,6 +162,7 @@ class PaymentHistory extends Component {
         }
 
         if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
+          debugger;
           let dcbRow = null, dcbArray = [];
           let installment, totalamount = 0;
           payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element, index) => {
@@ -224,7 +225,7 @@ class PaymentHistory extends Component {
 
                   }
                   else if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
-                    code = "Advance"; amount = dd.amount;
+                    code = "Advance"; amount = -dd.amount;
 
                   }
                   if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE") {
@@ -241,10 +242,18 @@ class PaymentHistory extends Component {
                       };
                     }
                     else {
-                      dcbRow = {
-                        "taxhead": code + "(" + installment + ")",
-                        "amount": amount
-                      };
+                      if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
+                        dcbRow = {
+                          "taxhead": code,
+                          "amount": amount
+                        };
+                      }
+                      else {
+                        dcbRow = {
+                          "taxhead": code + "(" + installment + ")",
+                          "amount": amount
+                        };
+                      }
                     }
                   }
                   totalamount = totalamount + amount;
