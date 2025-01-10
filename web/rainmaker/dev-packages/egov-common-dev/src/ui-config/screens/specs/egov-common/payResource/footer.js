@@ -695,7 +695,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
 
               }
               else if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
-                code = "Advance"; amount = -dd.amount;
+                code = "Advance"; amount = dd.amount;
 
               } else if (dd.taxHeadCode == "WS_DISCHARGE_CHARGES" || dd.taxHeadCode == "SW_DISCHARGE_CHARGES") {
                 code = "DISCHARGE CHARGES"; amount = dd.adjustedAmount;

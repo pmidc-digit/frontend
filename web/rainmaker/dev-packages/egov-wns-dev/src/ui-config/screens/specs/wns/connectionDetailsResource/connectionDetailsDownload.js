@@ -191,7 +191,7 @@ const download = async (mode = "download", state, showConfirmation = false) => {
 
                 }
                 else if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
-                  code = "Advance"; amount = -dd.amount;
+                  code = "Advance"; amount = dd.amount;
 
                 }
                 if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE") {
