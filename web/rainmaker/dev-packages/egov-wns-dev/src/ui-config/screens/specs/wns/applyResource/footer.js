@@ -29,7 +29,20 @@ import commonConfig from "config/common.js";
 const isMode = isModifyMode();
 const isModeAction = isModifyModeAction();
 const setReviewPageRoute = (state, dispatch) => {
-  let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
+  let serviceType = get (state, "screenConfiguration.preparedFinalObject.applyScreen.service");
+  let roadCuttingInfo ;
+  if(serviceType === "Sewerage"){
+     roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
+     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.userCharges", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.userChargessw")));
+     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.othersFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFeesw")));
+     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.compositionFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFeesw")));
+  }else{
+     roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
+     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.userCharges", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.userCharges")));
+     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.othersFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFee")));
+     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.compositionFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFee")));
+  }
+  
   if (roadCuttingInfo && roadCuttingInfo.length > 0) {
     let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.isEmpty !== true);
     dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", formatedRoadCuttingInfo));
@@ -664,7 +677,6 @@ else{
         let swOthersFee = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFee", []);
         let swCompositionFee = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFee", []);
         //let raodCuttingInfos = get(state, "screenConfiguration.preparedFinalObject.applyScreen.raodCuttingInfos", []);
-
         if (roadCuttingInfo && roadCuttingInfo.length > 0) {
           dispatch(prepareFinalObject("applyScreen.tempRoadCuttingInfo", roadCuttingInfo));
           let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.emptyObj !== true);
@@ -923,7 +935,6 @@ else{
 
   }
   if (activeStep === 3) {
-
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
