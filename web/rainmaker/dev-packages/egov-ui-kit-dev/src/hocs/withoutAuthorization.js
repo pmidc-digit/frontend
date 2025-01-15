@@ -27,7 +27,7 @@ const getUlbGradeLabel = (ulbGrade) => {
 const withoutAuthorization = (redirectionUrl) => (Component) => {
   class Wrapper extends React.Component {
     state = {
-      languageSelected: getLocale(),
+      languageSelected: getLocale()||"en_IN",
     };
     style = {
       baseStyle: {
@@ -77,8 +77,11 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
           this.props.history.push(redirectionUrl);
         }
       }
-      if(isPublicSearch()){
-        this.onLanguageChange(getQueryArg(window.location.href, "locale")||'en_IN');
+      setModule(getModuleName());
+      const locale = getQueryArg(window.location.href, "locale") || "en_IN";
+      if (isPublicSearch() && locale !== "en_IN") {
+        setLocale(locale);
+        this.onLanguageChange(locale);
       }
     }
 

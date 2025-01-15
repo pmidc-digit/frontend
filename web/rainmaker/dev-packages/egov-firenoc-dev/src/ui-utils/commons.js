@@ -605,19 +605,22 @@ export const createUpdateNocApplication = async (state, dispatch, status) => {
         convertDateToEpoch(get(owner, "dob"))
       );
     });
+    debugger;
     payload[0].fireNOCDetails.buildings[0].landArea = parseInt(payload[0].fireNOCDetails.buildings[0].landArea);
     payload[0].fireNOCDetails.buildings[0].parkingArea = parseInt(payload[0].fireNOCDetails.buildings[0].parkingArea);
     payload[0].fireNOCDetails.buildings[0].totalCoveredArea = parseInt(payload[0].fireNOCDetails.buildings[0].totalCoveredArea);
     payload[0].fireNOCDetails.tenantId = get(payload[0], "tenantId", "");
     let response;
+    
     if (method === "CREATE") {
-  
+      let querypayload=[];
+      querypayload.push(payload[0]),
       response = await httpRequest(
         "post",
         "/firenoc-services/v1/_create",
         "",
         [],
-        { FireNOCs: payload }
+        { FireNOCs:querypayload }
       );
       response = furnishNocResponse(response);
       enableField('apply',"components.div.children.footer.children.nextButton",dispatch);

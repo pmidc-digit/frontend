@@ -1,11 +1,14 @@
+//import { convertDateToEpoch } from "egov-ui-framework/ui-config/screens/specs/utils";
 import {
   getBreak,
   getCommonCard,
   getCommonContainer,
   getCommonTitle,
+  getCommonParagraph,
   getTextField,
   getPattern,
-  getSelectField
+  getSelectField,
+  convertDateToEpoch
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import {
   handleScreenConfigurationFieldChange as handleField,
@@ -120,13 +123,33 @@ const loadProvisionalNocData = async (state, dispatch) => {
 };
 
 export const loadProvisionalNocData2 = async (state, dispatch) => {
+  debugger;
+  // let fireDate = get(
+  //   state,
+  //   "screenConfiguration.preparedFinalObject.FireNOCs[0].oldFireNOCNumber",
+  //   ""
+  // );
+  // debugger;
+  // const cd= fireDate.split("PB-FN-");
+  // const appActualDate=cd[1].slice(0,10);
+  // console.log(appActualDate);
+  // const currentDate = new Date();
+  // const appDate = new Date(cd[1].slice(0,10));
+  // const diffTime = Math.abs(appDate - currentDate);
+  // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  // console.log(diffTime + " milliseconds");
+  // console.log(diffDays + " days");
+  // if (diffDays>=455){
+  //   alert("Renewal after 90 days from expiry date of Firenic is not allowed!!");
+  //   }
+  //  else{
   let oldfireNOCNumber = get(
     state,
     "screenConfiguration.preparedFinalObject.FireNOCs[0].oldFireNOCNumber",
     ""
   );
-
-
+ // }
+debugger;
   let response = await getSearchResults([
     { key: "FireNOCNumber", value: oldfireNOCNumber }
   ]);
@@ -146,7 +169,9 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
       );
     }
   }
-  
+  if (response.FireNOCs.length > 0) {
+   alert("Data has been successfully Searched.");
+  }
   let isLegacy = false;
   if (!get(response, "FireNOCs", []).length) {
 
@@ -160,6 +185,23 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
     "FireNOCs[0].fireNOCDetails.fireNOCType",
     []
   );
+  // my date
+  debugger;
+  let diffDays ;
+  let firenoclength = response.FireNOCs.length - 1;
+  let fireDate = response.FireNOCs[firenoclength].fireNOCDetails.issuedDate;
+  let currentDate = new Date();
+  let appDate = new Date(fireDate);
+  //const appDate = convertDateToEpoch(fireDate);
+
+  let diffTime = Math.abs(appDate - currentDate);
+  diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  console.log(diffTime + " milliseconds");
+  console.log(diffDays + " days");
+  //  if (diffDays>=820){
+  //   alert("Renewal after 90 days from expiry date of FireNOC is not allowed!!");
+  //   }
+  // else{
   let oldnocNumber = get(
     state.screenConfiguration.preparedFinalObject,
     "FireNOCs[0].oldFireNOCNumber",
@@ -184,7 +226,7 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
       noOfBuildings
     )
   );
-
+  
   // Set noc type radiobutton to NEW
   // dispatch(
   //   handleField(
@@ -196,6 +238,7 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
   // );
 
   // Set provisional fire noc number
+ 
   dispatch(
     prepareFinalObject(
       "FireNOCs[0].oldFireNOCNumber",
@@ -207,6 +250,7 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
 if (getQueryArg(window.location.href, "action") != "edit") {
   dispatch(prepareFinalObject("FireNOCs[0].id", undefined));
 }
+//}
 };
 export const nocDetails = getCommonCard({
   header: getCommonTitle(
@@ -220,6 +264,11 @@ export const nocDetails = getCommonCard({
       }
     }
   ),
+  subParagraph: getCommonParagraph({
+    labelName: "After filling the old Firenoc number please click search icon that is next to the filled NoC number",
+   //labelKey: "PT_HOME_SEARCH_RESULTS_DESC"
+    labelKey: "After filling the old Firenoc number please click search icon that is next to the filled NoC number"
+  }),
   break: getBreak(),
   nocDetailsContainer: getCommonContainer({
       nocSelect: {
@@ -388,9 +437,11 @@ export const nocDetails = getCommonCard({
           color: "#FE7A51",
           onClickDefination: {
             action: "condition",
+            
             callBack: (state, dispatch, fieldInfo) => {
               loadProvisionalNocData2(state, dispatch);
-            }
+            },
+            
           }
         }
         // title: {
@@ -398,6 +449,8 @@ export const nocDetails = getCommonCard({
         //   key: "TL_MOBILE_NO_TOOLTIP_MESSAGE"
         // },
         // infoIcon: "info_circle"
+        // issues Date
+  
       })
     },
   })

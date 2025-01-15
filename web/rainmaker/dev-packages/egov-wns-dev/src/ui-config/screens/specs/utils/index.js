@@ -314,6 +314,11 @@ export const handleNA = params => {
     return params;
   } else { return "NA"; }
 }
+export const handleNAnew = params => {
+  if (params !== undefined && params !== null && params !== "" && params!==0) {
+    return params;
+  } else { return "0"; }
+}
 
 export const handleAmount = params => {
   if (params !== undefined && params !== null && params !== "" && params!==0) {

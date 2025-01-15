@@ -114,224 +114,447 @@ const getMdmsData = async (state, dispatch) => {
     console.log(e);
   }
 };
-
+let activeStep = 0;
 const callBackForNext = async (state, dispatch) => {
-  let activeStep = get(
-    state.screenConfiguration.screenConfig["apply"],
-    "components.div.children.stepper.props.activeStep",
-    0
-  );
+  debugger;
+
   // console.log(activeStep);
   let isFormValid = true;
   let hasFieldToaster = false;
-  let isMultiownerSelected=false;
-
-  if (activeStep === 1) {
-    let isPropertyLocationCardValid = validateFields(
-      "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children",
-      state,
-      dispatch
-    );
-    let isSinglePropertyCardValid = validateFields(
-      "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.singleBuildingContainer.children.singleBuilding.children.cardContent.children.singleBuildingCard.children",
-      state,
-      dispatch
-    );
-
-    // Multiple buildings cards validations
-    let multiplePropertyCardPath =
-      "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.multipleBuildingContainer.children.multipleBuilding.props.items";
-    let multiplePropertyCardItems = get(
-      state.screenConfiguration.screenConfig.apply,
-      multiplePropertyCardPath,
-      []
-    );
-    let isMultiplePropertyCardValid = true;
-    for (var j = 0; j < multiplePropertyCardItems.length; j++) {
-      if (
-        (multiplePropertyCardItems[j].isDeleted === undefined ||
-          multiplePropertyCardItems[j].isDeleted !== false) &&
-        !validateFields(
-          `${multiplePropertyCardPath}[${j}].item${j}.children.cardContent.children.multipleBuildingCard.children`,
-          state,
-          dispatch,
-          "apply"
-        )
-      )
-        isMultiplePropertyCardValid = false;
-    }
-
-    let noOfBuildings = get(
-      state,
-      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.noOfBuildings"
-    );
-    if (noOfBuildings === "SINGLE") {
-      isMultiplePropertyCardValid = true;
-    } else {
-      isSinglePropertyCardValid = true;
-    }
-
-    if (
-      !isSinglePropertyCardValid ||
-      !isPropertyLocationCardValid ||
-      !isMultiplePropertyCardValid
-    ) {
-      isFormValid = false;
-      hasFieldToaster = true;
-    }
-  }
-
-  if (activeStep === 2) {
-    let isApplicantTypeCardValid = validateFields(
-      "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.applicantTypeSelection.children",
-      state,
-      dispatch
-    );
-    let isSingleApplicantCardValid = validateFields(
-      "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.singleApplicantContainer.children.individualApplicantInfo.children.cardContent.children.applicantCard.children",
-      state,
-      dispatch
-    );
-    let isInstitutionCardValid = validateFields(
-      "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.institutionContainer.children.institutionInfo.children.cardContent.children.applicantCard.children",
-      state,
-      dispatch
-    );
-
-    // Multiple applicants cards validations
-    let multipleApplicantCardPath =
-      "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.multipleApplicantContainer.children.multipleApplicantInfo.props.items";
-    // "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.multipleApplicantContainer.children.multipleApplicantInfo.props.items[0].item0.children.cardContent.children.applicantCard"
-    let multipleApplicantCardItems = get(
-      state.screenConfiguration.screenConfig.apply,
-      multipleApplicantCardPath,
-      []
-    );
-    let isMultipleApplicantCardValid = true;
-    for (var j = 0; j < multipleApplicantCardItems.length; j++) {
-      if (
-        (multipleApplicantCardItems[j].isDeleted === undefined ||
-          multipleApplicantCardItems[j].isDeleted !== false) &&
-        !validateFields(
-          `${multipleApplicantCardPath}[${j}].item${j}.children.cardContent.children.applicantCard.children`,
-          state,
-          dispatch,
-          "apply"
-        )
-      )
-        isMultipleApplicantCardValid = false;
-    }
-
-    let selectedApplicantType = get(
-      state,
-      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicantDetails.ownerShipType",
-      "SINGLE"
-    );
-    if (selectedApplicantType.includes("INSTITUTIONAL")) {
-      isSingleApplicantCardValid = true;
-      isMultipleApplicantCardValid = true;
-    } else if (selectedApplicantType.includes("MULTIPLEOWNERS")) {
-      isSingleApplicantCardValid = true;
-      isInstitutionCardValid = true;
-      let ownersArray = get(
-        state,
-        "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicantDetails.owners",
-        []
-      );
-      let ownersArraylength=ownersArray&&ownersArray.length;
-      if(ownersArraylength<2){
-        isMultiownerSelected=true;
-        isFormValid=false;
-      }
-    } else {
-      isMultipleApplicantCardValid = true;
-      isInstitutionCardValid = true;
-    }
-
-    if (
-      !isApplicantTypeCardValid ||
-      !isSingleApplicantCardValid ||
-      !isInstitutionCardValid ||
-      !isMultipleApplicantCardValid
-    ) {
-      isFormValid = false;
-      hasFieldToaster = true;
-    }
-  }
-
-  if (activeStep === 3) {
-    if (getQueryArg(window.location.href, "action") === "edit") {
-      //EDIT FLOW
-      const businessId = getQueryArg(
-        window.location.href,
-        "applicationNumber"
-      );
-      const tenantId = getQueryArg(window.location.href, "tenantId");
-      dispatch(
-        setRoute(
-          `/fire-noc/search-preview?applicationNumber=${businessId}&tenantId=${tenantId}&edited=true`
-        )
-      );
-      const updateMessage = {
-        labelName: "Rates will be updated on submission",
-        labelKey: "TL_COMMON_EDIT_UPDATE_MESSAGE"
-      };
-      dispatch(toggleSnackbar(true, updateMessage, "info"));
+  let isMultiownerSelected = false;
+  console.log("ttt   ", state.screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCNumber)
+  if (state.screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.fireNOCType == "RENEWAL") {
+    if (!state.screenConfiguration.preparedFinalObject.FireNOCs[0].auditDetails) {
+      alert("NOC number not found or is not eligible for Renewal");
+      // activeStep = get(
+      //   state.screenConfiguration.screenConfig["apply"],
+      //   "components.div.children.stepper.props.activeStep",
+      //   0
+      // );
     }
     else {
-      moveToReview(state, dispatch);
-    }
-  }
-
-  if (activeStep !== 3) {
-    if (isFormValid) {
-      let responseStatus = "success";
       if (activeStep === 1) {
-        prepareDocumentsUploadData(state, dispatch);
+        let isPropertyLocationCardValid = validateFields(
+          "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children",
+          state,
+          dispatch
+        );
+        let isSinglePropertyCardValid = validateFields(
+          "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.singleBuildingContainer.children.singleBuilding.children.cardContent.children.singleBuildingCard.children",
+          state,
+          dispatch
+        );
+
+        // Multiple buildings cards validations
+        let multiplePropertyCardPath =
+          "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.multipleBuildingContainer.children.multipleBuilding.props.items";
+        let multiplePropertyCardItems = get(
+          state.screenConfiguration.screenConfig.apply,
+          multiplePropertyCardPath,
+          []
+        );
+        let isMultiplePropertyCardValid = true;
+        for (var j = 0; j < multiplePropertyCardItems.length; j++) {
+          if (
+            (multiplePropertyCardItems[j].isDeleted === undefined ||
+              multiplePropertyCardItems[j].isDeleted !== false) &&
+            !validateFields(
+              `${multiplePropertyCardPath}[${j}].item${j}.children.cardContent.children.multipleBuildingCard.children`,
+              state,
+              dispatch,
+              "apply"
+            )
+          )
+            isMultiplePropertyCardValid = false;
+        }
+
+        let noOfBuildings = get(
+          state,
+          "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.noOfBuildings"
+        );
+        if (noOfBuildings === "SINGLE") {
+          isMultiplePropertyCardValid = true;
+        } else {
+          isSinglePropertyCardValid = true;
+        }
+
+        if (
+          !isSinglePropertyCardValid ||
+          !isPropertyLocationCardValid ||
+          !isMultiplePropertyCardValid
+        ) {
+          isFormValid = false;
+          hasFieldToaster = true;
+        }
+
+
       }
       if (activeStep === 2) {
-        getMdmsData(state, dispatch);
-        let response = await createUpdateNocApplication(
+        let isApplicantTypeCardValid = validateFields(
+          "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.applicantTypeSelection.children",
           state,
-          dispatch,
-          "INITIATE"
+          dispatch
         );
-        responseStatus = get(response, "status", "");
+        let isSingleApplicantCardValid = validateFields(
+          "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.singleApplicantContainer.children.individualApplicantInfo.children.cardContent.children.applicantCard.children",
+          state,
+          dispatch
+        );
+        let isInstitutionCardValid = validateFields(
+          "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.institutionContainer.children.institutionInfo.children.cardContent.children.applicantCard.children",
+          state,
+          dispatch
+        );
+
+        // Multiple applicants cards validations
+        let multipleApplicantCardPath =
+          "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.multipleApplicantContainer.children.multipleApplicantInfo.props.items";
+        // "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.multipleApplicantContainer.children.multipleApplicantInfo.props.items[0].item0.children.cardContent.children.applicantCard"
+        let multipleApplicantCardItems = get(
+          state.screenConfiguration.screenConfig.apply,
+          multipleApplicantCardPath,
+          []
+        );
+        let isMultipleApplicantCardValid = true;
+        for (var j = 0; j < multipleApplicantCardItems.length; j++) {
+          if (
+            (multipleApplicantCardItems[j].isDeleted === undefined ||
+              multipleApplicantCardItems[j].isDeleted !== false) &&
+            !validateFields(
+              `${multipleApplicantCardPath}[${j}].item${j}.children.cardContent.children.applicantCard.children`,
+              state,
+              dispatch,
+              "apply"
+            )
+          )
+            isMultipleApplicantCardValid = false;
+        }
+
+        let selectedApplicantType = get(
+          state,
+          "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicantDetails.ownerShipType",
+          "SINGLE"
+        );
+        if (selectedApplicantType.includes("INSTITUTIONAL")) {
+          isSingleApplicantCardValid = true;
+          isMultipleApplicantCardValid = true;
+        } else if (selectedApplicantType.includes("MULTIPLEOWNERS")) {
+          isSingleApplicantCardValid = true;
+          isInstitutionCardValid = true;
+          let ownersArray = get(
+            state,
+            "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicantDetails.owners",
+            []
+          );
+          let ownersArraylength = ownersArray && ownersArray.length;
+          if (ownersArraylength < 2) {
+            isMultiownerSelected = true;
+            isFormValid = false;
+          }
+        } else {
+          isMultipleApplicantCardValid = true;
+          isInstitutionCardValid = true;
+        }
+
+        if (
+          !isApplicantTypeCardValid ||
+          !isSingleApplicantCardValid ||
+          !isInstitutionCardValid ||
+          !isMultipleApplicantCardValid
+        ) {
+          isFormValid = false;
+          hasFieldToaster = true;
+        }
       }
-      responseStatus === "success" && changeStep(state, dispatch);
+
+      if (activeStep === 3) {
+        if (getQueryArg(window.location.href, "action") === "edit") {
+          //EDIT FLOW
+          const businessId = getQueryArg(
+            window.location.href,
+            "applicationNumber"
+          );
+          const tenantId = getQueryArg(window.location.href, "tenantId");
+          dispatch(
+            setRoute(
+              `/fire-noc/search-preview?applicationNumber=${businessId}&tenantId=${tenantId}&edited=true`
+            )
+          );
+          const updateMessage = {
+            labelName: "Rates will be updated on submission",
+            labelKey: "TL_COMMON_EDIT_UPDATE_MESSAGE"
+          };
+          dispatch(toggleSnackbar(true, updateMessage, "info"));
+        }
+        else {
+          moveToReview(state, dispatch);
+        }
+      }
+
+      if (activeStep !== 3) {
+        if (isFormValid) {
+          let responseStatus = "success";
+          if (activeStep === 1) {
+            prepareDocumentsUploadData(state, dispatch);
+          }
+          if (activeStep === 2) {
+            getMdmsData(state, dispatch);
+            let response = await createUpdateNocApplication(
+              state,
+              dispatch,
+              "INITIATE"
+            );
+            responseStatus = get(response, "status", "");
+          }
+          responseStatus === "success" && changeStep(state, dispatch);
+        }
+        else if (isMultiownerSelected) {
+          let errorMessage = {
+            labelName: "Please add all the owner details!",
+            labelKey: "ERR_FILL_MULTIPLE_OWNER"
+          };
+          dispatch(toggleSnackbar(true, errorMessage, "warning"));
+
+        }
+        else if (hasFieldToaster) {
+          let errorMessage = {
+            labelName: "Please fill all mandatory fields and upload the documents!",
+            labelKey: "ERR_UPLOAD_MANDATORY_DOCUMENTS_TOAST"
+          };
+          switch (activeStep) {
+            case 1:
+              errorMessage = {
+                labelName:
+                  "Please check the Missing/Invalid field for Property Details, then proceed!",
+                labelKey: "ERR_FILL_ALL_MANDATORY_FIELDS_PROPERTY_TOAST"
+              };
+              break;
+            case 2:
+              errorMessage = {
+                labelName:
+                  "Please fill all mandatory fields for Applicant Details, then proceed!",
+                labelKey: "ERR_FILL_ALL_MANDATORY_FIELDS_APPLICANT_TOAST"
+              };
+              break;
+          }
+          dispatch(toggleSnackbar(true, errorMessage, "warning"));
+        }
+      }
+      
     }
-    else if(isMultiownerSelected){
-      let errorMessage = {
-        labelName: "Please add all the owner details!",
-        labelKey: "ERR_FILL_MULTIPLE_OWNER"
-      };
-      dispatch(toggleSnackbar(true, errorMessage, "warning"));
+  } else {
+
+    if (activeStep === 1) {
+      let isPropertyLocationCardValid = validateFields(
+        "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children",
+        state,
+        dispatch
+      );
+      let isSinglePropertyCardValid = validateFields(
+        "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.singleBuildingContainer.children.singleBuilding.children.cardContent.children.singleBuildingCard.children",
+        state,
+        dispatch
+      );
+
+      // Multiple buildings cards validations
+      let multiplePropertyCardPath =
+        "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.multipleBuildingContainer.children.multipleBuilding.props.items";
+      let multiplePropertyCardItems = get(
+        state.screenConfiguration.screenConfig.apply,
+        multiplePropertyCardPath,
+        []
+      );
+      let isMultiplePropertyCardValid = true;
+      for (var j = 0; j < multiplePropertyCardItems.length; j++) {
+        if (
+          (multiplePropertyCardItems[j].isDeleted === undefined ||
+            multiplePropertyCardItems[j].isDeleted !== false) &&
+          !validateFields(
+            `${multiplePropertyCardPath}[${j}].item${j}.children.cardContent.children.multipleBuildingCard.children`,
+            state,
+            dispatch,
+            "apply"
+          )
+        )
+          isMultiplePropertyCardValid = false;
+      }
+
+      let noOfBuildings = get(
+        state,
+        "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.noOfBuildings"
+      );
+      if (noOfBuildings === "SINGLE") {
+        isMultiplePropertyCardValid = true;
+      } else {
+        isSinglePropertyCardValid = true;
+      }
+
+      if (
+        !isSinglePropertyCardValid ||
+        !isPropertyLocationCardValid ||
+        !isMultiplePropertyCardValid
+      ) {
+        isFormValid = false;
+        hasFieldToaster = true;
+      }
+
 
     }
-    else if (hasFieldToaster) {
-      let errorMessage = {
-        labelName: "Please fill all mandatory fields and upload the documents!",
-        labelKey: "ERR_UPLOAD_MANDATORY_DOCUMENTS_TOAST"
-      };
-      switch (activeStep) {
-        case 1:
-          errorMessage = {
-            labelName:
-              "Please check the Missing/Invalid field for Property Details, then proceed!",
-            labelKey: "ERR_FILL_ALL_MANDATORY_FIELDS_PROPERTY_TOAST"
-          };
-          break;
-        case 2:
-          errorMessage = {
-            labelName:
-              "Please fill all mandatory fields for Applicant Details, then proceed!",
-            labelKey: "ERR_FILL_ALL_MANDATORY_FIELDS_APPLICANT_TOAST"
-          };
-          break;
+    if (activeStep === 2) {
+      let isApplicantTypeCardValid = validateFields(
+        "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.applicantTypeSelection.children",
+        state,
+        dispatch
+      );
+      let isSingleApplicantCardValid = validateFields(
+        "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.singleApplicantContainer.children.individualApplicantInfo.children.cardContent.children.applicantCard.children",
+        state,
+        dispatch
+      );
+      let isInstitutionCardValid = validateFields(
+        "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.institutionContainer.children.institutionInfo.children.cardContent.children.applicantCard.children",
+        state,
+        dispatch
+      );
+
+      // Multiple applicants cards validations
+      let multipleApplicantCardPath =
+        "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.multipleApplicantContainer.children.multipleApplicantInfo.props.items";
+      // "components.div.children.formwizardThirdStep.children.applicantDetails.children.cardContent.children.applicantTypeContainer.children.multipleApplicantContainer.children.multipleApplicantInfo.props.items[0].item0.children.cardContent.children.applicantCard"
+      let multipleApplicantCardItems = get(
+        state.screenConfiguration.screenConfig.apply,
+        multipleApplicantCardPath,
+        []
+      );
+      let isMultipleApplicantCardValid = true;
+      for (var j = 0; j < multipleApplicantCardItems.length; j++) {
+        if (
+          (multipleApplicantCardItems[j].isDeleted === undefined ||
+            multipleApplicantCardItems[j].isDeleted !== false) &&
+          !validateFields(
+            `${multipleApplicantCardPath}[${j}].item${j}.children.cardContent.children.applicantCard.children`,
+            state,
+            dispatch,
+            "apply"
+          )
+        )
+          isMultipleApplicantCardValid = false;
       }
-      dispatch(toggleSnackbar(true, errorMessage, "warning"));
+
+      let selectedApplicantType = get(
+        state,
+        "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicantDetails.ownerShipType",
+        "SINGLE"
+      );
+      if (selectedApplicantType.includes("INSTITUTIONAL")) {
+        isSingleApplicantCardValid = true;
+        isMultipleApplicantCardValid = true;
+      } else if (selectedApplicantType.includes("MULTIPLEOWNERS")) {
+        isSingleApplicantCardValid = true;
+        isInstitutionCardValid = true;
+        let ownersArray = get(
+          state,
+          "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicantDetails.owners",
+          []
+        );
+        let ownersArraylength = ownersArray && ownersArray.length;
+        if (ownersArraylength < 2) {
+          isMultiownerSelected = true;
+          isFormValid = false;
+        }
+      } else {
+        isMultipleApplicantCardValid = true;
+        isInstitutionCardValid = true;
+      }
+
+      if (
+        !isApplicantTypeCardValid ||
+        !isSingleApplicantCardValid ||
+        !isInstitutionCardValid ||
+        !isMultipleApplicantCardValid
+      ) {
+        isFormValid = false;
+        hasFieldToaster = true;
+      }
+    }
+
+    if (activeStep === 3) {
+      if (getQueryArg(window.location.href, "action") === "edit") {
+        //EDIT FLOW
+        const businessId = getQueryArg(
+          window.location.href,
+          "applicationNumber"
+        );
+        const tenantId = getQueryArg(window.location.href, "tenantId");
+        dispatch(
+          setRoute(
+            `/fire-noc/search-preview?applicationNumber=${businessId}&tenantId=${tenantId}&edited=true`
+          )
+        );
+        const updateMessage = {
+          labelName: "Rates will be updated on submission",
+          labelKey: "TL_COMMON_EDIT_UPDATE_MESSAGE"
+        };
+        dispatch(toggleSnackbar(true, updateMessage, "info"));
+      }
+      else {
+        moveToReview(state, dispatch);
+      }
+    }
+
+    if (activeStep !== 3) {
+      if (isFormValid) {
+        let responseStatus = "success";
+        if (activeStep === 1) {
+          prepareDocumentsUploadData(state, dispatch);
+        }
+        if (activeStep === 2) {
+          getMdmsData(state, dispatch);
+          let response = await createUpdateNocApplication(
+            state,
+            dispatch,
+            "INITIATE"
+          );
+          responseStatus = get(response, "status", "");
+        }
+        responseStatus === "success" && changeStep(state, dispatch);
+      }
+      else if (isMultiownerSelected) {
+        let errorMessage = {
+          labelName: "Please add all the owner details!",
+          labelKey: "ERR_FILL_MULTIPLE_OWNER"
+        };
+        dispatch(toggleSnackbar(true, errorMessage, "warning"));
+
+      }
+      else if (hasFieldToaster) {
+        let errorMessage = {
+          labelName: "Please fill all mandatory fields and upload the documents!",
+          labelKey: "ERR_UPLOAD_MANDATORY_DOCUMENTS_TOAST"
+        };
+        switch (activeStep) {
+          case 1:
+            errorMessage = {
+              labelName:
+                "Please check the Missing/Invalid field for Property Details, then proceed!",
+              labelKey: "ERR_FILL_ALL_MANDATORY_FIELDS_PROPERTY_TOAST"
+            };
+            break;
+          case 2:
+            errorMessage = {
+              labelName:
+                "Please fill all mandatory fields for Applicant Details, then proceed!",
+              labelKey: "ERR_FILL_ALL_MANDATORY_FIELDS_APPLICANT_TOAST"
+            };
+            break;
+        }
+        dispatch(toggleSnackbar(true, errorMessage, "warning"));
+      }
+
+
     }
   }
+
 };
 
 export const changeStep = (
@@ -340,11 +563,11 @@ export const changeStep = (
   mode = "next",
   defaultActiveStep = -1
 ) => {
-  let activeStep = get(
-    state.screenConfiguration.screenConfig["apply"],
-    "components.div.children.stepper.props.activeStep",
-    0
-  );
+  // let activeStep = get(
+  //   state.screenConfiguration.screenConfig["apply"],
+  //   "components.div.children.stepper.props.activeStep",
+  //   0
+  // );
   if (defaultActiveStep === -1) {
     // if (activeStep === 2 && mode === "next") {
     //   const isDocsUploaded = get(

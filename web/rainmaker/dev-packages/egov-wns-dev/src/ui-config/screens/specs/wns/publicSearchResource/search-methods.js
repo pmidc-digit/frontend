@@ -120,7 +120,7 @@ const searchApiCall = async (state, dispatch) => {
         return;
       }
 
-    if (searchScreenObject.tenantId && searchScreenObject.locality && !(searchScreenObject.ids || searchScreenObject.mobileNumber || searchScreenObject.ownerName || searchScreenObject.connectionNumber)) {
+    if (searchScreenObject.tenantId && !(searchScreenObject.ids || searchScreenObject.mobileNumber || searchScreenObject.ownerName || searchScreenObject.connectionNumber)) {
         store.dispatch(
             toggleSnackbar(
                 true,

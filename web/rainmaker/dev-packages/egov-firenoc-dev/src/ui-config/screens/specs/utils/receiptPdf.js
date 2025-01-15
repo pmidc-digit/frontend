@@ -382,7 +382,8 @@ const getBuildings = data => {
   return retbuildings;
 };
 const getApplicationData = async (transformedData, ulbLogo, type) => {
-  console.log("transformedData33", transformedData);
+  debugger;
+
   const ddi=transformedData.buildings[0].uoms;
   var NoBase=0,NoHeight=0;
   Object.keys(ddi).map((key,i) => {
@@ -558,6 +559,76 @@ transformedData.buildings[0].uoms=reasonss;
       layout: borderLayout
     }
   ];
+ 
+  var buildAreaData =[];
+  var buildtableHead = [];
+  // ---- head table----
+    buildtableHead.push([
+      {
+        text: "Name of Building",
+        border: [true, true, true, true]
+      },
+      {
+        text: "No of Floors",
+        border: [true, true, true, true]
+      },
+      {
+        text: "Area (sq. mtr.)",
+        border: [true, true, true, true]
+      }
+    ]);
+    // -----------------
+  if(transformedData.buildings.length > 1){
+    
+  for(let mybuldingdata of transformedData.buildings){
+   
+    buildAreaData.push( [
+      {
+        text: mybuldingdata.name,
+        border: [true, true, true, true],
+        style: "receipt-table-value"
+      },
+      {
+        text: mybuldingdata.uoms.NO_OF_FLOORS,
+        border: [true, true, true, true],
+        style: "receipt-table-value"
+      },
+      {
+        text: mybuldingdata.uoms.BUILTUP_AREA,
+        border: [true, true, true, true],
+        style: "receipt-table-value"
+      },
+    ]);
+    
+  }
+  }
+
+  // ------------------------my details---------------------------
+ 
+  let nocDetailsmy = [];
+  if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title-my",
+    alignment: "left",
+    margin: [10, 0, 0, 0],
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+  }
+
+  // -------------------------------------------------------------
   let propertyDetails = [
     {
       text: "PROPERTY DETAILS",
@@ -1186,6 +1257,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -1391,6 +1464,8 @@ transformedData.buildings[0].uoms=reasonss;
         columns: nocSubheadTwo
       },
      ...nocDetails,
+     ...nocDetailsmy,
+     ...buildAreaData,
      ...propertyDetails,
      ...propertyLocationDetails,
      ...applicantDetails,
@@ -1532,7 +1607,7 @@ transformedData.buildings[0].uoms=reasonss;
 };
 
 const newgetApplicationData = async (transformedData, ulbLogo, type) => {
-  console.log("new type certificate data", transformedData);
+ 
   const ddi=transformedData.buildings[0].uoms;
   var NoBase=0,NoHeight=0;
   Object.keys(ddi).map((key,i) => {
@@ -1696,7 +1771,73 @@ transformedData.buildings[0].uoms=reasonss;
      // layout: borderLayout
     }
   ];
+// ------------------------my details---------------------------
+var buildAreaData =[];
+var buildtableHead = [];
+// ---- head table----
+buildtableHead.push([
+  {
+    text: "Name of Building",
+    border: [true, true, true, true]
+  },
+  {
+    text: "No of Floors",
+    border: [true, true, true, true]
+  },
+  {
+    text: "Area (sq. mtr.)",
+    border: [true, true, true, true]
+  }
+]);
+// -----------------
+if(transformedData.buildings.length > 1){
 
+for(let mybuldingdata of transformedData.buildings){
+ 
+  buildAreaData.push( [
+    {
+      text: mybuldingdata.name,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.NO_OF_FLOORS,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.BUILTUP_AREA,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+  ]);
+  
+}
+}
+
+let nocDetailsmy = [];
+if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title-my",
+    alignment: "left",
+    margin: [10, 0, 0, 0],
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+}
+// -------------------------------------------------------------
   let space = [
     {
       text: "",
@@ -2307,6 +2448,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -2712,7 +2855,7 @@ transformedData.buildings[0].uoms=reasonss;
 
         layout: {},
       },
-
+...nocDetailsmy,
       {
         style: "noc-head-new",
         table: {
@@ -3134,6 +3277,11 @@ transformedData.buildings[0].uoms=reasonss;
         color: "#484848",
         fontWeight: 500
       },
+      "noc-table-my":{
+        fontSize: 10,
+        width: 60,
+        margin:[100, 0, 0, 0]
+      },
       "noc-table": {
         fontSize: 10,
         color: "#484848",
@@ -3184,9 +3332,9 @@ transformedData.buildings[0].uoms=reasonss;
 
   return dd;
 };
-
+//-------------Renew pdf -----------
 const renewgetApplicationData = async (transformedData, ulbLogo, type) => {
-  console.log("new type certificate data", transformedData);
+  
   const ddi=transformedData.buildings[0].uoms;
   var NoBase=0,NoHeight=0;
   Object.keys(ddi).map((key,i) => {
@@ -3350,7 +3498,75 @@ transformedData.buildings[0].uoms=reasonss;
      // layout: borderLayout
     }
   ];
+// ------------------------my renew details---------------------------
 
+var buildAreaData =[];
+var buildtableHead = [];
+// ---- head table----
+buildtableHead.push([
+  {
+    text: "Name of Building",
+    border: [true, true, true, true]
+  },
+  {
+    text: "No of Floors",
+    border: [true, true, true, true]
+  },
+  {
+    text: "Area (sq. mtr.)",
+    border: [true, true, true, true]
+  }
+]);
+// -----------------
+if(transformedData.buildings.length > 1){
+  
+for(let mybuldingdata of transformedData.buildings){
+ 
+  buildAreaData.push([
+    {
+      text: mybuldingdata.name,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.NO_OF_FLOORS,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.BUILTUP_AREA,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+  ]);
+ 
+}
+}
+
+let nocDetailsmy = [];
+if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title-my",
+    alignment: "left",
+    margin: [10, 0, 0, 0],
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+}
+
+// -------------------------------------------------------------
   let space = [
     {
       text: "",
@@ -3961,6 +4177,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      //nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -4180,7 +4398,7 @@ transformedData.buildings[0].uoms=reasonss;
             [
               {
                 //text: `NOC No: ${transformedData.fireNOCNumber}`,
-                text: [  "NOC No: " ,
+                text: [  "NOC No:" ,
                 { text: `${transformedData.fireNOCNumber}`,
                 bold:true },
                 ],
@@ -4192,7 +4410,7 @@ transformedData.buildings[0].uoms=reasonss;
               {
 
                // text: `NOC Type: ${transformedData.nocType}`,
-                text: [  "NOC Type: " ,
+                text: [  "NOC Type:" ,
                 { text: `${transformedData.nocType}`,
                 bold:true },
                 ],
@@ -4229,7 +4447,7 @@ transformedData.buildings[0].uoms=reasonss;
             [
 
               {
-                text: ["                        Certified that the ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " at " , { text:`${transformedData.address}`, bold:true }, "comprised of ", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor) owned/occupied by ",{ text:`${transformedData.owners[0].name}`, bold:true }, " have compiled with the fire prevention and fire safety requirements of National Building Code and verified by the officer concerned of fire service on ", { text:`${transformedData.issuedDate}`, bold:true }, " in the presence of ", { text:`${transformedData.owners[0].name}`, bold:true }, " (Name of the owner or his representative) and that the building/premises is fit for occupancy " , { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (As per NBC) for period of ", { text:"one year", bold:true }, " from issue date. Subject to the following conditions."],
+                text: ["                       Certified that the ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " at " , { text:`${transformedData.address}`, bold:true }, "comprised of ", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor) owned/occupied by ",{ text:`${transformedData.owners[0].name}`, bold:true }, " have compiled with the fire prevention and fire safety requirements of National Building Code and verified by the officer concerned of fire service on ", { text:`${transformedData.issuedDate}`, bold:true }, " in the presence of ", { text:`${transformedData.owners[0].name}`, bold:true }, " (Name of the owner or his representative) and that the building/premises is fit for occupancy " , { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (As per NBC) for period of ", { text:"one year", bold:true }, " from issue date. Subject to the following conditions."],
                 border: [true, false, true, false],
                 alignment: "justify",
                 preserveLeadingSpaces: true
@@ -4256,7 +4474,7 @@ transformedData.buildings[0].uoms=reasonss;
             [
 
               {
-                text: ["Issued on ",{ text:`${transformedData.issuedDate}`, bold:true }," at ", { text:`${transformedData.corporationName}`, bold:true }],
+                text: ["Issued on two",{ text:`${transformedData.issuedDate}`, bold:true }," at ", { text:`${transformedData.corporationName}`, bold:true }],
 
                // text: `Issued on ${transformedData.issuedDate} at ${transformedData.corporationName}`,
 
@@ -4366,7 +4584,7 @@ transformedData.buildings[0].uoms=reasonss;
 
         layout: {},
       },
-
+      ...nocDetailsmy,
       {
         style: "noc-head-new",
         table: {
@@ -4788,6 +5006,11 @@ transformedData.buildings[0].uoms=reasonss;
         color: "#484848",
         fontWeight: 500
       },
+      "noc-table-my":{
+        fontSize: 10,
+        width: 60,
+        margin:[100, 0, 0, 0]
+      },
       "noc-table": {
         fontSize: 10,
         color: "#484848",
@@ -4838,9 +5061,9 @@ transformedData.buildings[0].uoms=reasonss;
 
   return dd;
 };
-
+//---------------------------end renew pdf--------------
 const provisionApplicationData = async (transformedData, ulbLogo, type) => {
-  console.log("provisional certificate", transformedData);
+ 
   const ddi=transformedData.buildings[0].uoms;
   var NoBase=0,NoHeight=0;
   Object.keys(ddi).map((key,i) => {
@@ -4967,7 +5190,7 @@ transformedData.buildings[0].uoms=reasonss;
             {
             //  text: `NOC No: ${transformedData.fireNOCNumber}`,
               text: [  "NOC No:" ,
-              { text: `${transformedData.fireNOCNumber}`,
+              { text: '${transformedData.fireNOCNumber}',
               bold:true },
                ],
               border: [false, false, false, false],
@@ -5008,7 +5231,75 @@ transformedData.buildings[0].uoms=reasonss;
      // layout: borderLayout
     }
   ];
+// ------------------------my details---------------------------
 
+var buildAreaData =[];
+var buildtableHead = [];
+// ---- head table----
+buildtableHead.push([
+  {
+    text: "Name of Building",
+    border: [true, true, true, true]
+  },
+  {
+    text: "No of Floors",
+    border: [true, true, true, true]
+  },
+  {
+    text: "Area (sq. mtr.)",
+    border: [true, true, true, true]
+  }
+]);
+// -----------------
+
+if(transformedData.buildings.length > 1){
+
+
+for(let mybuldingdata of transformedData.buildings){
+
+  buildAreaData.push( [
+    {
+      text: mybuldingdata.name,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.NO_OF_FLOORS,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+    {
+      text: mybuldingdata.uoms.BUILTUP_AREA,
+      border: [true, true, true, true],
+      style: "receipt-table-value"
+    },
+  ]);
+  
+}
+}
+let nocDetailsmy = [];
+if(transformedData.buildings.length > 1){
+nocDetailsmy.push([
+  {
+    text: "BUILDING DETAILS",
+    style: "noc-title-my",
+    alignment: "left",
+    margin: [10, 0, 0, 0],
+  },
+  {
+    style: "noc-table-my",
+    table: {
+      widths: ["25%", "25%", "25%", "25%"],
+      body: [
+        ...buildtableHead,
+        ...buildAreaData
+        ]
+    },
+    layout: borderLayout
+  }
+]);
+}
+// -------------------------------------------------------------
   let space = [
     {
       text: "",
@@ -5621,6 +5912,8 @@ transformedData.buildings[0].uoms=reasonss;
         }
       ];
       nocDetails = [];
+      nocDetailsmy = [];
+      buildAreaData = [];
       propertyDetails = [];
       propertyLocationDetails = [];
       applicantDetails = [];
@@ -5917,7 +6210,7 @@ transformedData.buildings[0].uoms=reasonss;
             [
 
               {
-                text:  ["                        Certified that the ", { text:`${transformedData.buildings[0].name}`, bold:true }, " at ", { text:`${transformedData.address}`, bold:true }, "has been inspected by the fire officer. This site is vacant/under-construction and is accessible to fire brigade. As per proposed drawing, building is to be constructed with", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor). Fire department has examined the fire safety layout plan/drawing and found it fit for occupancy of ", { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (as per NBC)."],
+                text:  ["                   Certified that the ", { text:`${transformedData.buildings[0].name}`, bold:true }, " at ", { text:`${transformedData.address}`, bold:true }, "has been inspected by the fire officer. This site is vacant/under-construction and is accessible to fire brigade. As per proposed drawing, building is to be constructed with", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor). Fire department has examined the fire safety layout plan/drawing and found it fit for occupancy of ", { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (as per NBC)."],
                 border: [true, false, true, false],
                 alignment: "justify",
                 textIndent : 50,
@@ -6029,7 +6322,7 @@ transformedData.buildings[0].uoms=reasonss;
 
         layout: {},
       },
-
+...nocDetailsmy,
       {
         style: "noc-head-new",
         table: {
@@ -6038,7 +6331,7 @@ transformedData.buildings[0].uoms=reasonss;
 
             [
               {
-                text: [{ text:"Provisional NOC", bold:true  }, " is issued subject to following conditions:"],
+                text: [{ text:"Provisional NOC ", bold:true  }, " is issued subject to following conditions:"],
                 border: [true, false, true, false],
                 alignment: "left",
               },
@@ -6064,9 +6357,6 @@ transformedData.buildings[0].uoms=reasonss;
                 alignment: "left",
               },
            ],
-
-
-
           ]
         },
 
@@ -6142,7 +6432,6 @@ transformedData.buildings[0].uoms=reasonss;
 
         layout: {},
       },
-
       {
         style: "noc-head-new",
         table: {
@@ -6158,9 +6447,6 @@ transformedData.buildings[0].uoms=reasonss;
 
               },
            ],
-
-
-
           ]
         },
 
@@ -6527,11 +6813,26 @@ transformedData.buildings[0].uoms=reasonss;
         color: "#484848",
         fontWeight: 500
       },
+      "noc-title-my":{
+        fontSize: 10,
+        bold: true,
+        width: 150,
+        marginleft : 40,
+        alignment: "center",
+        color: "#484848",
+        fontWeight: 500
+      },
+      "noc-table-my":{
+        fontSize: 10,
+        width: 60,
+        margin:[100, 0, 0, 0]
+      },
       "noc-table": {
         fontSize: 10,
         color: "#484848",
-        margin: [-20, -2, -8, -8]
+        margin:[100, 0, 0, 0]
       },
+      
       "receipt-header-details": {
         fontSize: 9,
         margin: [0, 0, 0, 8],
@@ -6594,22 +6895,20 @@ const generatePdf = async (state, dispatch, type) => {
     "applicationDataForPdf",
     {}
   );
-  console.log(applicationData, "applicationDatageneratepdf")
+  
 
   let paymentData = get(
     state.screenConfiguration.preparedFinalObject,
     "receiptDataForPdf",
     {}
   );
-  console.log(paymentData, "paymentData")
+
 
   let mdmsData = get(
     state.screenConfiguration.preparedFinalObject,
     "mdmsDataForPdf",
     {}
   );
-
-  console.log(mdmsData,"mdmsData")
 
   let ulbLogo = get(
     state.screenConfiguration.preparedFinalObject,
@@ -6622,7 +6921,7 @@ const generatePdf = async (state, dispatch, type) => {
     {}
   );
 
-  console.log(auditorData,"auditorData")
+ 
 /*    if (isEmpty(applicationData)) {
     console.log("Error in application data");
     return;
@@ -6660,8 +6959,8 @@ const generatePdf = async (state, dispatch, type) => {
         ulbLogo,
         "application"
       );
-      console.log("application_data", application_data);
-      console.log("application************", transformedData)
+      // console.log("application_data", application_data);
+      // console.log("application************", transformedData)
 
       application_data &&
       pdfMake.createPdf(application_data).download(fileName);
@@ -6695,7 +6994,7 @@ const generatePdf = async (state, dispatch, type) => {
       break;
     case "certificate_download":
       fileName = `noc_certificate_${transformedData.fireNOCNumber}`;
-      if(transformedData.nocType=="NEW" || transformedData.nocType=="RENEWAL" )
+      if(transformedData.nocType == "NEW")
       {
       application_data = await newgetApplicationData(
         transformedData,
@@ -6703,26 +7002,28 @@ const generatePdf = async (state, dispatch, type) => {
         "certificate"
       );
      }
-     
-    else
-     {
+     else if(transformedData.nocType == "PROVISIONAL"){
+      
       application_data = await provisionApplicationData(
         transformedData,
         ulbLogo,
         "certificate"
       );
      }
+         else
+     {
+      application_data = await renewgetApplicationData(
+        transformedData,
+        ulbLogo,
+        "certificate"
+      );
+     }
 
-
-     //console.log("certificate_download", application_data);
-     // console.log("certificate_download************", transformedData)
-
-      application_data &&
-      pdfMake.createPdf(application_data).download(fileName);
+      application_data && pdfMake.createPdf(application_data).download(fileName);
       break;
     case "certificate_print":
     fileName = `noc_certificate_${transformedData.fireNOCNumber}`;
-    if(transformedData.nocType=="NEW" || transformedData.nocType=="RENEWAL")
+    if(transformedData.nocType == "NEW")
     {
     application_data = await newgetApplicationData(
       transformedData,
@@ -6730,14 +7031,23 @@ const generatePdf = async (state, dispatch, type) => {
       "certificate"
     );
    }
-  else
-   {
+   else if(transformedData.nocType == "PROVISIONAL"){
+    
     application_data = await provisionApplicationData(
       transformedData,
       ulbLogo,
       "certificate"
     );
    }
+else
+   {
+    application_data = await renewgetApplicationData(
+      transformedData,
+      ulbLogo,
+      "certificate"
+    );
+   }
+
       application_data && pdfMake.createPdf(application_data).print();
       break;
 

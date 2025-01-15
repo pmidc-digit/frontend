@@ -38,6 +38,7 @@ export const searchResults = {
         }
       },
       {name : "Owner Name",labelKey: "WS_COMMON_TABLE_COL_OWN_NAME_LABEL" },
+      {name : "Mobile Number",labelKey: "WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL" },
       {name : "Status",labelKey: "WS_COMMON_TABLE_COL_STATUS_LABEL" },
       {name : "Due",labelKey: "WS_COMMON_TABLE_COL_DUE_LABEL" },
       {name : "Address",labelKey: "WS_COMMON_TABLE_COL_ADDRESS" },
@@ -48,7 +49,10 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, data) => {
-            if (data.rowData[4] !== undefined && typeof data.rowData[4] === 'number' && data.rowData[4] > 0) {
+            debugger;
+            
+            if (data.rowData[5] !== undefined && typeof data.rowData[5] === 'number' && data.rowData[5] >= 0) {
+                
               return (
                 <div className="linkStyle" onClick={() => getViewBillDetails(data)} style={{ color: '#fe7a51', textTransform: 'uppercase' }}>
                   <LabelContainer
@@ -80,7 +84,15 @@ export const searchResults = {
         options: {
           display: false
         }
+      },
+      {
+        name: "isLeagcy",
+        labelKey: "WS_COMMON_TABLE_COL_IS_LEGACY",
+        options: {
+          display: false
+        }
       }
+      
     ],
     title: {labelKey:"WS_HOME_SEARCH_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Connections"},
     options: {
@@ -110,13 +122,20 @@ export const searchResults = {
 };
 
 const getConnectionDetails = data => {
+  debugger;
+  let legacy
+  if(data.rowData[11]=== true){
+      legacy = true
+  }else{
+    legacy =false
+  }
   store.dispatch(
-    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}&due=${data.rowData[4]}`)
+    setRoute(`connection-details?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[9]}&service=${data.rowData[0]}&connectionType=${data.rowData[10]}&due=${data.rowData[5]}&legacy=${legacy}`)
   )
 }
 
 const getViewBillDetails = data => {
   store.dispatch(
-    setRoute( `viewBill?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[8]}&service=${data.rowData[0]}&connectionType=${data.rowData[9]}`)
+    setRoute( `viewBill?connectionNumber=${data.rowData[1]}&tenantId=${data.rowData[9]}&service=${data.rowData[0]}&connectionType=${data.rowData[10]}`)
   )
 }

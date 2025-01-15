@@ -9,10 +9,46 @@ import Label from "egov-ui-kit/utils/translationNode";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import RadioButtonForm from "./components/RadioButtonForm";
+import { httpRequest } from "../../../utils/api";
 import "./index.css";
-
-
-
+import { getTenantId, getUserInfo } from "../../../utils/localStorageUtils";
+//"egov-ui-kit/utils/localStorageUtils"
+var localityCode = null;
+var surveyIdcode = null;
+var editlocalityCode = null;
+const mapStateToProps = (state) => {
+  debugger;
+localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
+editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
+;
+surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
+  const { common, form } = state;
+  const { generalMDMSDataById } = common;
+  const FinancialYear = generalMDMSDataById && generalMDMSDataById.FinancialYear;
+  const getYearList = FinancialYear?Object.keys(FinancialYear).sort().reverse():null;
+  return { getYearList, form };
+};
+var tenantIdcode =getTenantId();
+var isLocMatch ;
+const getUserDataFromUuid = async (state, dispatch) => {
+  debugger;
+  let request = { searchCriteria: { tenantId: tenantIdcode} };
+  try {
+    const response = await httpRequest(
+      "/egov-searcher/rainmaker-pt-gissearch/GetTenantConfig/_get",
+      "_get",
+      [],
+      request);
+    if (response) {
+      const data = response.data.find(obj => {
+        return obj.locality == localityCode;
+      });
+      isLocMatch = data ? true : false;
+    }
+  } catch (error) {
+    console.log("functions-js getUserDataFromUuid error", error);
+  }
+};
 // const getYearList = () => {
 //   let today = new Date();
 //   let month = today.getMonth() + 1;
@@ -84,7 +120,7 @@ class YearDialog extends Component {
             <div className="dialogue-question">
               <Label label="PT_FINANCIAL_YEAR_PLACEHOLDER" fontSize="20px" color="black" />
             </div>
-            <div className="year-range-botton-cont">
+            <div className="year-range-botton-cont" style={{overflowY:"scroll",maxHeight:"300px"}}>
               {getYearList &&
                 Object.values(getYearList).map((item, index) => (
                   <YearDialogueHOC
@@ -107,14 +143,32 @@ class YearDialog extends Component {
               <Button
                 label={<Label label="PT_OK" buttonLabel={true} color="black" />}
                 labelColor="#fe7a51"
-                buttonStyle={{ border: "1px solid rgb(255, 255, 255)" }} onClick={() => {
+                buttonStyle={{ border: "1px solid rgb(255, 255, 255)" }} onClick={ async() => {
+                  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+                    await getUserDataFromUuid();
+                  }
+                   
+                 if(isLocMatch){
+                    if (this.state.selectedYear !== '' && surveyIdcode != null) {
+                      this.resetForm()
+                      history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
+                    }
+                    // else if(this.state.selectedYear !== ''){
+                    //   this.resetForm()
+                    //   history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
+                    // }
+                    else {
+                      alert('Please Select a Financial Year and Enter Survey Id');
+                    }
+                  } else{
                   if (this.state.selectedYear !== '') {
                     this.resetForm()
                     history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
                   }
                   else {
-                    alert('Please Select a Financial Year!');
+                    alert('Please Select a Financial Year! and Enter Survey Id');
                   }
+                }
                 }}></Button>
             </div>
           </div>,
@@ -129,15 +183,9 @@ class YearDialog extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { common, form } = state;
-  const { generalMDMSDataById } = common;
-  const FinancialYear = generalMDMSDataById && generalMDMSDataById.FinancialYear;
-  const getYearList = FinancialYear?Object.keys(FinancialYear).sort().reverse():null;
-  return { getYearList, form };
-};
 
 const mapDispatchToProps = (dispatch) => {
+  
   return {
     fetchGeneralMDMSData: (requestBody, moduleName, masterName) => dispatch(fetchGeneralMDMSData(requestBody, moduleName, masterName)),
     removeForm: (formkey) => dispatch(removeForm(formkey)),

@@ -153,8 +153,12 @@ class Property extends Component {
   onStatusChangePropertyClick = async() => {
     const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
+    try{
     if (selPropertyDetails.status == "ACTIVE") {
       selPropertyDetails.status="INACTIVE";
+      selPropertyDetails.additionalDetails.propertytobestatus="INACTIVE"
+      selPropertyDetails.isactive= false;
+      selPropertyDetails.isinactive= true;
         let payload = null;
         let queryObject = [
           {
@@ -181,15 +185,71 @@ class Property extends Component {
           { Property: selPropertyDetails }
     
         );
-    if(payload.Properties.length >0) 
+    if(payload.Properties.length >0) {
     alert("Property is now in INWORKFLOW state. Please approve it!");
-    else 
+    }
+    else {
     alert("Some error occured!! please try again.")
+    }
   }
 
 else {
   alert("This operation is not allowed as Property is not ACTIVE.");
   }
+}
+catch (e) { console.log(e);
+  this.props.toggleSnackbarAndSetText(
+    true,
+    { labelName: "Clear Pending dues before De-Enumerating the property", labelKey: "Clear Pending dues before De-Enumerating the property" },
+    "error"
+  );
+ 
+}
+};
+
+onStatusChangePropertyClickToActive = async() => {
+  const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
+  const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
+  if (selPropertyDetails.status == "INACTIVE") {
+    selPropertyDetails.status="ACTIVE";
+    selPropertyDetails.additionalDetails.propertytobestatus="ACTIVE";
+    selPropertyDetails.isactive= true;
+    selPropertyDetails.isinactive= false;
+      let payload = null;
+      let queryObject = [
+        {
+          key: "tenantId",
+          value: tenantId
+        },
+        {
+          key: "propertyIds",
+          value: propertyId
+        }
+      ];
+      selPropertyDetails.creationReason="STATUS";
+      const workflow = {
+        "businessService": "PT.CREATE",
+        "action": "OPEN",
+        "moduleName": "PT"
+      }
+      selPropertyDetails.workflow = workflow
+      payload = await httpRequest(
+        "post",
+        "/property-services/property/_update",
+        "_update",
+        queryObject,
+        { Property: selPropertyDetails }
+  
+      );
+  if(payload.Properties.length >0) 
+  alert("Property is now in INWORKFLOW state. Please approve it!");
+  else 
+  alert("Some error occured!! please try again.")
+}
+
+else {
+alert("This operation is not allowed as Property is not already active.");
+}
 };
   getAssessmentHistory = (selPropertyDetails, receiptsByYr = []) => {
     let assessmentList = [];
@@ -296,12 +356,13 @@ else {
 
 
     const propertyId = decodeURIComponent(this.props.match.params.propertyId);
+    //console.log("sdhsjdbsjd usgs dsuds "+JSON.stringify(this.props))
     const { totalBillAmountDue, Assessments } = this.props;
     if (Assessments && Assessments.length > 0 && Assessments[0].propertyId == propertyId && !this.state.billFetched) {
-      this.setState({ billFetched: true })
-      this.props.fetchTotalBillAmount([
+     this.setState({ billFetched: true })
+     this.props.fetchTotalBillAmount([
         { key: "consumerCode", value: propertyId },
-        { key: "tenantId", value: this.props.match.params.tenantId },
+       { key: "tenantId", value: this.props.match.params.tenantId },
         { key: "businessService", value: 'PT' }
       ]);
     }
@@ -369,20 +430,36 @@ else {
             toggleSnackbarAndSetText={this.props.toggleSnackbarAndSetText}
           />
         }
-        
-        <div id="tax-wizard-buttons" className="wizard-footer col-sm-12" style={{ textAlign: "right" }}>
-          <div className="button-container col-4 property-info-access-btn" style={{ float: "right" }}>
-            <Button
-              //disabled
-              //disabled= {process.env.REACT_APP_NAME === "Citizen" ? false : true}
+        <div id="tax-wizard-buttons" className="wizard-footer col-sm-16" style={{ textAlign: "right" }}>
+          <div className="button-container col-5 property-info-access-btn" style={{ float: "right" }}>
+          <Button
                label={
                  <Label buttonLabel={true}
                 //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
-                  label={'Make Property Inactive'} fontSize="14px"
+                  label={'Make Property Active'} fontSize="11px"
                    color="#fe7a51" />
-                   
                }
-              onClick={() => 
+               onClick={() => 
+                { 
+                  if (process.env.REACT_APP_NAME == "Citizen") {
+                    alert("Action to activate property is not allowed for citizen");
+                  }
+                  else{
+                  if(window.confirm("Are you sure you want to make property active?")){
+                this.onStatusChangePropertyClickToActive()}
+                }}}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
+              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
+            />
+            <Button
+               label={
+                 <Label buttonLabel={true}
+                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
+                  label={'Make Property Inactive'} fontSize="11px"
+                   color="#fe7a51" />
+               }
+               onClick={() => 
                 { 
                   if (process.env.REACT_APP_NAME == "Citizen") {
                     alert("Action to inactivate property is not allowed for citizen");
@@ -391,22 +468,41 @@ else {
                   if(window.confirm("Are you sure you want to make property Inactive?")){
                 this.onStatusChangePropertyClick()}
                 }}}
-              labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fe7a51" }}
-              
-              buttonStyle={{ border: "1px solid #fe7a51" }}
-              style={{ lineHeight: "auto", minWidth: "25%", marginRight: "2%" }}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
+              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
             />
             <Button
                label={
                  <Label buttonLabel={true}
-                   label={formWizardConstants[PROPERTY_FORM_PURPOSE.UPDATE].parentButton} fontSize="14px"
+                   label={formWizardConstants[PROPERTY_FORM_PURPOSE.UPDATE].parentButton} fontSize="11px"
                    color="#fe7a51" />
                }
               onClick={() => this.onEditPropertyClick()}
-              labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fe7a51" }}
-              buttonStyle={{ border: "1px solid #fe7a51" }}
-              style={{ lineHeight: "auto", minWidth: "25%", marginRight: "2%" }}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
+              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
             />
+             {/* <Button
+               label={
+                 <Label buttonLabel={true}
+                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
+                  label={'Make Property active'} fontSize="11px"
+                   color="#fe7a51" />
+               }
+               onClick={() => 
+                { 
+                  if (process.env.REACT_APP_NAME == "Citizen") {
+                    alert("Action to activate property is not allowed for citizen");
+                  }
+                  else{
+                  if(window.confirm("Are you sure you want to make property active?")){
+                this.onStatusChangePropertyClickToActive()}
+                }}}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
+              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              style={{ lineHeight: "auto", minWidth: "20%", marginRight: "2%" }}
+            /> */}
             <Button
               onClick={() => this.onAssessPayClick()}
               label={<Label buttonLabel={true} label={formWizardConstants[PROPERTY_FORM_PURPOSE.ASSESS].parentButton} fontSize="14px" />}
@@ -705,10 +801,11 @@ const mapStateToProps = (state, ownProps) => {
   const { urls, localizationLabels } = app;
   const { cities } = common;
   const { generalMDMSDataById } = state.common || {};
-  let { propertiesById, singleAssessmentByStatus = [], loading, receiptsByYr, totalBillAmountDue = 0, Assessments = [] } = state.properties || {};
+  let { propertiesById, propertiesByIdnew ,singleAssessmentByStatus = [], loading, receiptsByYr, totalBillAmountDue = 0, Assessments = [] } = state.properties || {};
   const tenantId = ownProps.match.params.tenantId;
   const propertyId = decodeURIComponent(ownProps.match.params.propertyId);
-  const selPropertyDetails = propertiesById[propertyId] || {};
+  // const selPropertyDetails = propertiesById[propertyId] || {};
+  const selPropertyDetails = propertiesByIdnew[propertyId] || {};
   loading = loading == false && Object.keys(selPropertyDetails).length > 0 ? false : true;
   const { documentsUploaded } = selPropertyDetails || [];
   const latestPropertyDetails = getLatestPropertyDetails(selPropertyDetails.propertyDetails);
@@ -737,7 +834,7 @@ const mapStateToProps = (state, ownProps) => {
   const propertyItems = [...addressInfo, ...assessmentInfo, ...ownerInfo];
   const customTitle = selPropertyDetails && selPropertyDetails.address && getCommaSeperatedAddress(selPropertyDetails.address, cities);
   const completedAssessments = getCompletedTransformedItems(pendingAssessments, cities, localizationLabels, propertyId);
-  // const completedAssessments = getCompletedTransformedItems(singleAssessmentByStatus, cities, localizationLabels);
+ // const completedAssessments = getCompletedTransformedItems(singleAssessmentByStatus, cities, localizationLabels);
   const sortedAssessments = completedAssessments && orderby(completedAssessments, ["epocDate"], ["desc"]);
   if (Assessments.length == 0) {
     totalBillAmountDue = 0

@@ -571,7 +571,7 @@ export const getPattern = type => {
     case "OperationalArea":
       return /^(0)*[1-9][0-9]{0,6}$/i;
     case "NoOfEmp":
-      return /^(0)*[1-9][0-9]{0,2}$/i;
+      return /^(0)*[1-9][0-9]{0,4}$/i;
     case "GSTNo":
       return /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}$/i;
     case "DoorHouseNo":
@@ -593,7 +593,7 @@ export const getPattern = type => {
     case "eventDescription":
       return /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*.:;“”‘’]{1,500}$/i;
     case "FireNOCNo":
-      return /^[a-zA-Z0-9-]*$/i;
+      return /^[a-zA-Z0-9-/]*$/i;
     case "consumerNo":
       return /^[a-zA-Z0-9/-]*$/i;
   }

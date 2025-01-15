@@ -141,12 +141,11 @@ export default class UpdateMobileDialog extends React.Component {
     var myHeaders = new Headers();
     let { property, propertyNumbers } = this.props;
     const { mobileNumber } = this.state.fields;
-
     if (property && property.owners && property.owners.length > 0) {
       property.owners.map(owner => {
         if (owner.uuid == propertyNumbers.uuid) {
           owner.mobileNumber = mobileNumber.value;
-          property.creationReason = "UPDATE";
+          //property.creationReason = "UPDATE";
           let documents = this.state.documents.filter(document => document.uploaded) || [];
           if (property.documents) {
             let docuNames = documents.map(doc => doc.code);
@@ -271,7 +270,7 @@ export default class UpdateMobileDialog extends React.Component {
 
   validateAndSendOtp = async () => {
     try {
-        debugger;
+        
       const newItem = { mobileNumber: this.state.fields.mobileNumber };
       if (Object.values(newItem).some((item) => item.value == "")) {
         this.setMessage("PT_SEC_ENTER_NAME_NUMBER", "ERROR");
@@ -374,6 +373,7 @@ export default class UpdateMobileDialog extends React.Component {
           backgroundColor: "white"
         }}
       >
+   {Object.keys(propertyNumbers).length != 0 && propertyNumbers.mobileNumber!="" && propertyNumbers.mobileNumber!="" ? 
         <div className="pt-update-popup-holder">
           {loadingStatus == "loading" &&
             <div><LoadingIndicator></LoadingIndicator>
@@ -453,6 +453,8 @@ export default class UpdateMobileDialog extends React.Component {
             <button type="button" disabled={this.state.verifyButton} style={{ width: '100%',marginTop:"10px" }} className={"button-verify-link"} onClick={() => this.validateAndCreate()} ><Label label="PTUPNO_VERUPD_NO"></Label></button>
           </div>}
         </div>
+     :  <div className="error-comp-second-num"><Label label={"Data load failed. Please refresh the page (F5) to retry. If issue persists, contact support."}></Label></div>              
+  }
         {errorMessage && <div className={type == "ERROR" ? "error-comp-second-num" : "success-comp-second-num"}><Label label={errorMessage}></Label></div>}
       </Dialog>
     )

@@ -202,7 +202,7 @@ export const NOCareaTypeField = {
             labelName: "Enter Parking Area (in Sq meters)",
             labelKey: "NOC_PROPERTY_DETAILS_PARKING_AREA_PLACEHOLDER"
           },
-          // required: true,
+           required: true,
           // pattern: getPattern("MobileNo"),
           errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
           jsonPath: "FireNOCs[0].fireNOCDetails.buildings[0].parkingArea",

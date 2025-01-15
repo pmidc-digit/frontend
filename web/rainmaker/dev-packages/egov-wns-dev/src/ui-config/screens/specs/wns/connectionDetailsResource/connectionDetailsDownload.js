@@ -31,179 +31,262 @@ const PAYMENTSEARCH = {
     URL: "/collection-services/payments/",
     ACTION: "_search",
   },
-  };
-  const getPaymentSearchAPI = (businessService='')=>{
-  if(businessService=='-1'){
+};
+const getPaymentSearchAPI = (businessService = '') => {
+  if (businessService == '-1') {
     return `${PAYMENTSEARCH.GET.URL}${PAYMENTSEARCH.GET.ACTION}`
-  }else if (process.env.REACT_APP_NAME === "Citizen") {
+  } else if (process.env.REACT_APP_NAME === "Citizen") {
     return `${PAYMENTSEARCH.GET.URL}${PAYMENTSEARCH.GET.ACTION}`;
   }
   return `${PAYMENTSEARCH.GET.URL}${businessService}/${PAYMENTSEARCH.GET.ACTION}`;
-  }
-const download = async(mode = "download", state,showConfirmation=false) => {
-let configKey="ws-onetime-receipt";
-const FETCHRECEIPT = {
-  GET: {
-    URL: "/collection-services/payments/_search",
-    ACTION: "_get",
-  },
-};
-  const DOWNLOADRECEIPT = {
-  GET: {
-    URL: "/pdf-service/v1/_create",
-    ACTION: "_get",
-  },
+}
+const download = async (mode = "download", state, showConfirmation = false) => {
+  let configKey = "ws-onetime-receipt";
+  const FETCHRECEIPT = {
+    GET: {
+      URL: "/collection-services/payments/_search",
+      ACTION: "_get",
+    },
   };
-let consumerCode = getQueryArg(window.location.href, "connectionNumber");
-let tenantId = getQueryArg(window.location.href, "tenantId");
-let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
-let queryObject = [
-  { key: "tenantId", value:tenantId },
-  { key: "applicationNumber", value: consumerCode?consumerCode:applicationNumber}
-];
-const queryObjectForConn = [
-  { key: "connectionNumber", value: consumerCode},
-  { key: "tenantId", value: tenantId }
-]
-const responseSewerage = await httpRequest(
-  "post",
-  "/sw-services/swc/_search",
-  "_search",
-  queryObjectForConn
-);
+  const DOWNLOADRECEIPT = {
+    GET: {
+      URL: "/pdf-service/v1/_create",
+      ACTION: "_get",
+    },
+  };
+  let consumerCode = getQueryArg(window.location.href, "connectionNumber");
+  let tenantId = getQueryArg(window.location.href, "tenantId");
+  //let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
+  // let queryObject = [
+  //   { key: "tenantId", value:tenantId },
+  //   { key: "applicationNumber", value: consumerCode?consumerCode:applicationNumber}
+  // ];
+  const queryObjectForConn = [
+    { key: "connectionNumber", value: consumerCode },
+    { key: "tenantId", value: tenantId }
+  ]
+  const responseSewerage = await httpRequest(
+    "post",
+    "/sw-services/swc/_search",
+    "_search",
+    queryObjectForConn
+  );
 
-const responseWater = await httpRequest(
-  "post",
-  "/ws-services/wc/_search",
-  "_search",
-  queryObjectForConn
-);
+  const responseWater = await httpRequest(
+    "post",
+    "/ws-services/wc/_search",
+    "_search",
+    queryObjectForConn
+  );
   let businessService = '';
-  let service=getQueryArg(window.location.href, "service");
-  if(service == "WATER"){
-businessService= 'WS.ONE_TIME_FEE'; 
+  let service = getQueryArg(window.location.href, "service");
+  if (service == "WATER") {
+    businessService = 'WS.ONE_TIME_FEE';
   }
-else {
-businessService= 'SW.ONE_TIME_FEE'; 
-} 
+  else {
+    businessService = 'SW.ONE_TIME_FEE';
+  }
 
-const receiptQueryString = [
-  {
-    key: "consumerCodes",
-    value: service=="WATER"?responseWater.WaterConnection[0].applicationNo:responseSewerage.SewerageConnections[0].applicationNo
-  },
-  {
-    key: "tenantId",
-    value: tenantId
-  },
-  {
-    key: "businessService",
-    value: businessService
-  }
-];
+
+  const receiptQueryString = [
+    {
+      key: "applicationNo",
+      value: service == "WATER" ? responseWater.WaterConnection[0].applicationNo : responseSewerage.SewerageConnections[0].applicationNo
+    },
+    {
+      key: "consumerCodes",
+      value: service == "WATER" ? responseWater.WaterConnection[0].connectionNo : responseSewerage.SewerageConnections[0].connectionNo
+    },
+    {
+      key: "tenantId",
+      value: tenantId
+    },
+    {
+      key: "businessService",
+      value: businessService
+    }
+  ];
+
   try {
-  await httpRequest("post",getPaymentSearchAPI(businessService), FETCHRECEIPT.GET.ACTION, receiptQueryString).then((payloadReceiptDetails) => {
-if(payloadReceiptDetails.Payments[0].payerName!=null){
-    payloadReceiptDetails.Payments[0].payerName=payloadReceiptDetails.Payments[0].payerName.trim();}
-    else if(payloadReceiptDetails.Payments[0].payerName == null && payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="FIRENOC" && payloadReceiptDetails.Payments[0].paidBy !=null)
-     { payloadReceiptDetails.Payments[0].payerName=payloadReceiptDetails.Payments[0].paidBy.trim();
-    }
-    if(payloadReceiptDetails.Payments[0].paidBy!=null)
-    {
-      payloadReceiptDetails.Payments[0].paidBy=payloadReceiptDetails.Payments[0].paidBy.trim();
-    }
-     
-  if(payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="SW.ONE_TIME_FEE"){
-      let dcbRow=null,dcbArray=[];
-      let installment,totalamount=0;
-      payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element,index) => {
-    if(element.amountPaid >0 || element.amountPaid < 0)
-    {
-    installment=convertEpochToDate(element.fromPeriod) +"-"+convertEpochToDate(element.toPeriod);
-    element.billAccountDetails.map((dd)=>{
-    if((dd.adjustedAmount > 0 || dd.adjustedAmount < 0) || (dd.amount < 0))
-    {
-      totalamount=totalamount+amount;
-dcbArray.push(dcbRow);
+    await httpRequest("post", getPaymentSearchAPI(businessService), FETCHRECEIPT.GET.ACTION, receiptQueryString).then((payloadReceiptDetails) => {
+      let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid
+      if (payloadReceiptDetails.Payments[0].payerName != null) {
+        payloadReceiptDetails.Payments[0].payerName = payloadReceiptDetails.Payments[0].payerName.trim();
+      }
+      else if (payloadReceiptDetails.Payments[0].payerName == null && payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "FIRENOC" && payloadReceiptDetails.Payments[0].paidBy != null) {
+        payloadReceiptDetails.Payments[0].payerName = payloadReceiptDetails.Payments[0].paidBy.trim();
+      }
+      if (payloadReceiptDetails.Payments[0].paidBy != null) {
+        payloadReceiptDetails.Payments[0].paidBy = payloadReceiptDetails.Payments[0].paidBy.trim();
       }
 
- 
-    });    
-    };
-      });
-  dcbRow={
-    "taxhead":"Total Amount Paid",
-    "amount":totalamount
-    };
-  dcbArray.push(dcbRow);
-      payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails=dcbArray;
-      }
-  
- 
-   const queryStr = [
-    { key: "key", value: configKey },
-    { key: "tenantId", value: receiptQueryString[1].value.split('.')[0] }
-    ]
-    if (payloadReceiptDetails && payloadReceiptDetails.Payments && payloadReceiptDetails.Payments.length == 0) {
-    console.log("Could not find any receipts");
-    store.dispatch(toggleSnackbar(true, { labelName: "Receipt not Found", labelKey: "ERR_RECEIPT_NOT_FOUND" }
-      , "error"));
-    return;
-    }
-    // Setting the Payer and mobile from Bill to reflect it in PDF
+      if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE") {
+        debugger;
+        let dcbRow = null, dcbArray = [];
+        let installment, totalamount = 0;
+        payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element, index) => {
+          if (element.amountPaid > 0 || element.amountPaid < 0) {
+            // installment=convertEpochToDate(element.fromPeriod) +"-"+convertEpochToDate(element.toPeriod);
+            element.billAccountDetails.map((dd) => {
+              // if((dd.adjustedAmount > 0 || dd.adjustedAmount < 0) || (dd.amount < 0))
+              // {
+              //   totalamount=0;
+              //   totalamount = totalamount + dd.amount;
+              //   dcbRow={
+              //     "taxhead":dd.taxHeadCode,
+              //     "amount":totalamount
+              //     };
+              //   dcbArray.push(dcbRow);
+              //   }
+              if ((dd.adjustedAmount > 0 || dd.adjustedAmount < 0) || (dd.amount < 0)) {
+                let code = null, amount = null;
+                if (dd.taxHeadCode == "WS_CHARGE") {
+                  code = "Water Charges";
+                  amount = dd.adjustedAmount;
+                }
+                else if (dd.taxHeadCode == "SW_CHARGE") {
+                  code = "Sewerage Charges";
+                  amount = dd.adjustedAmount;
+                }
+                else if (dd.taxHeadCode == "WS_FEE_ROUND_OFF" || dd.taxHeadCode == "SW_FEE_ROUND_OFF") {
+                  code = "Round Off";
+                  amount = dd.adjustedAmount;
 
-      if(payloadReceiptDetails.Payments[0].paymentMode=="CASH")
-    {
-      payloadReceiptDetails.Payments[0].instrumentDate=null;
-      payloadReceiptDetails.Payments[0].instrumentNumber=null;
-    }
-    if (!payloadReceiptDetails.Payments[0].payerName && process.env.REACT_APP_NAME === "Citizen" && billDetails) {
-    payloadReceiptDetails.Payments[0].payerName = billDetails.payerName;
-    // payloadReceiptDetails.Payments[0].paidBy = billDetails.payer;
-    payloadReceiptDetails.Payments[0].mobileNumber = billDetails.mobileNumber;
-    }
- if((payloadReceiptDetails.Payments[0].payerName==null || payloadReceiptDetails.Payments[0].mobileNumber==null)  && payloadReceiptDetails.Payments[0].paymentDetails[0].businessService=="FIRENOC" && process.env.REACT_APP_NAME === "Citizen")
-    {
-      payloadReceiptDetails.Payments[0].payerName=response.FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].name;
-      payloadReceiptDetails.Payments[0].mobileNumber= response.FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].mobileNumber;
-    }
-    const oldFileStoreId = get(payloadReceiptDetails.Payments[0], "fileStoreId")
-    if (oldFileStoreId) {
-    downloadReceiptFromFilestoreID(oldFileStoreId, mode,undefined,showConfirmation)
-    }
-    else {
-    httpRequest("post", DOWNLOADRECEIPT.GET.URL, DOWNLOADRECEIPT.GET.ACTION, queryStr, { Payments: payloadReceiptDetails.Payments }, { 'Accept': 'application/json' }, { responseType: 'arraybuffer' })
-      .then(res => {
-      res.filestoreIds[0]
-      if (res && res.filestoreIds && res.filestoreIds.length > 0) {
-        res.filestoreIds.map(fileStoreId => {
-        downloadReceiptFromFilestoreID(fileStoreId, mode,undefined,showConfirmation)
-        })
-      } else {
-        console.log('Some Error Occured while downloading Receipt!');
-        store.dispatch(toggleSnackbar(true, { labelName: "Error in Receipt Generation", labelKey: "ERR_IN_GENERATION_RECEIPT" }
-        , "error"));
+                }
+                else if (dd.taxHeadCode == "WS_TIME_INTEREST" || dd.taxHeadCode == "SW_TIME_INTEREST") {
+                  code = "Interest"; amount = dd.adjustedAmount;
+
+                }
+                else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY") {
+                  code = "Penalty"; amount = dd.adjustedAmount;
+
+                } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
+                  code = "Scrutiny Fee"; amount = dd.adjustedAmount;
+
+                } else if (dd.taxHeadCode == "WS_ROAD_CUTTING_CHARGE" || dd.taxHeadCode == "SW_ROAD_CUTTING_CHARGE") {
+                  code = "Road Cutting Charges"; amount = dd.adjustedAmount;
+
+                } else if (dd.taxHeadCode == "WS_METER_TESTING_FEE" || dd.taxHeadCode == "SW_METER_TESTING_FEE") {
+                  code = "Meter Testing Fee"; amount = dd.adjustedAmount;
+
+                } else if (dd.taxHeadCode == "WS_SECURITY_DEPOSIT" || dd.taxHeadCode == "SW_SECURITY_DEPOSIT") {
+                  code = "Security Deposit"; amount = dd.adjustedAmount;
+
+                } else if (dd.taxHeadCode == "WS_OTHER_FEE" || dd.taxHeadCode == "SW_OTHER_FEE") {
+                  code = "Other Fee"; amount = dd.adjustedAmount;
+
+                }
+                else if (dd.taxHeadCode == "WS_DISCHARGE_CHARGES" || dd.taxHeadCode == "SW_DISCHARGE_CHARGES") {
+                  code = "DISCHARGE CHARGES"; amount = dd.adjustedAmount;
+
+                }
+                else if (dd.taxHeadCode == "WS_CONNECTION_FEE" || dd.taxHeadCode == "SW_CONNECTION_FEE") {
+                  code = "Connection Fee"; amount = dd.adjustedAmount;
+
+                } else if (dd.taxHeadCode == "WS_COMPOSITION_FEE" || dd.taxHeadCode == "SW_COMPOSITION_FEE") {
+                  code = "Composition Fee"; amount = dd.adjustedAmount;
+
+                } else if (dd.taxHeadCode == "WS_FORM_FEE" || dd.taxHeadCode == "SW_FORM_FEE") {
+                  code = "Form Fee"; amount = dd.adjustedAmount;
+
+                }
+                else if (dd.taxHeadCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadCode == "WS_ADVANCE_CARRYFORWARD") {
+                  code = "Advance"; amount = dd.amount;
+
+                }
+                if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE") {
+                  dcbRow = {
+                    "taxhead": code,
+                    "amount": amount
+                  };
+                }
+                else {
+                  dcbRow = {
+                    "taxhead": code,
+                    "amount": amount
+                  };
+                }
+                totalamount = totalamount + amount;
+                dcbArray.push(dcbRow);
+              }
+
+            });
+          };
+        });
+        dcbRow = {
+          "taxhead": "Total Amount Paid",
+          "amount": toTalAmountPaid
+        };
+        dcbArray.push(dcbRow);
+        payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails = dcbArray;
       }
-      });
-    }
-  })
+
+
+      const queryStr = [
+        { key: "key", value: configKey },
+        { key: "tenantId", value: receiptQueryString[1].value.split('.')[0] }
+      ]
+      if (payloadReceiptDetails && payloadReceiptDetails.Payments && payloadReceiptDetails.Payments.length == 0) {
+        console.log("Could not find any receipts");
+        store.dispatch(toggleSnackbar(true, { labelName: "Receipt not Found", labelKey: "ERR_RECEIPT_NOT_FOUND" }
+          , "error"));
+        return;
+      }
+      // Setting the Payer and mobile from Bill to reflect it in PDF
+
+      if (payloadReceiptDetails.Payments[0].paymentMode == "CASH") {
+        payloadReceiptDetails.Payments[0].instrumentDate = null;
+        payloadReceiptDetails.Payments[0].instrumentNumber = null;
+      }
+      if (!payloadReceiptDetails.Payments[0].payerName && process.env.REACT_APP_NAME === "Citizen" && billDetails) {
+        payloadReceiptDetails.Payments[0].payerName = billDetails.payerName;
+        // payloadReceiptDetails.Payments[0].paidBy = billDetails.payer;
+        payloadReceiptDetails.Payments[0].mobileNumber = billDetails.mobileNumber;
+      }
+      if ((payloadReceiptDetails.Payments[0].payerName == null || payloadReceiptDetails.Payments[0].mobileNumber == null) && payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "FIRENOC" && process.env.REACT_APP_NAME === "Citizen") {
+        payloadReceiptDetails.Payments[0].payerName = response.FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].name;
+        payloadReceiptDetails.Payments[0].mobileNumber = response.FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].mobileNumber;
+      }
+      const oldFileStoreId = get(payloadReceiptDetails.Payments[0], "fileStoreId")
+      if (oldFileStoreId) {
+        downloadReceiptFromFilestoreID(oldFileStoreId, mode, undefined, showConfirmation)
+      }
+      else {
+
+        httpRequest("post", DOWNLOADRECEIPT.GET.URL, DOWNLOADRECEIPT.GET.ACTION, queryStr, { Payments: payloadReceiptDetails.Payments }, { 'Accept': 'application/json' }, { responseType: 'arraybuffer' })
+          .then(res => {
+            res.filestoreIds[0]
+            if (res && res.filestoreIds && res.filestoreIds.length > 0) {
+              res.filestoreIds.map(fileStoreId => {
+                downloadReceiptFromFilestoreID(fileStoreId, mode, undefined, showConfirmation)
+              })
+            } else {
+
+              console.log('Some Error Occured while downloading Receipt!');
+              store.dispatch(toggleSnackbar(true, { labelName: "Error in Receipt Generation", labelKey: "ERR_IN_GENERATION_RECEIPT" }
+                , "error"));
+            }
+          });
+      }
+    })
   } catch (exception) {
-  console.log('Some Error Occured while downloading Receipt!');
-  store.dispatch(toggleSnackbar(true, { labelName: "Error in Receipt Generation", labelKey: "ERR_IN_GENERATION_RECEIPT" }
-    , "error"));
+
+    console.log('Some Error Occured while downloading Receipt!');
+    store.dispatch(toggleSnackbar(true, { labelName: "Error in Receipt Generation", labelKey: "ERR_IN_GENERATION_RECEIPT" }
+      , "error"));
   }
 }
 let receiptDownloadObject = {
   label: { labelName: "Estimation Receipt", labelKey: "TL_RECEIPT" },
   link: () => {
-    download("download",false);
+    download("download", false);
   },
   leftIcon: "receipt"
 };
 let receiptPrintObject = {
   label: { labelName: "Estimation Receipt", labelKey: "TL_RECEIPT" },
   link: () => {
-    download("print",false);
+    download("print", false);
   },
   leftIcon: "receipt"
 };
@@ -224,10 +307,10 @@ let applicationPrintObject = {
 let downloadMenu = [];
 let printMenu = [];
 
-    downloadMenu = [applicationDownloadObject,receiptDownloadObject];
-    printMenu = [applicationPrintObject, receiptPrintObject];
-   
-export const connectionDetailsDownload = getCommonApplyFooter("RIGHT",{
+downloadMenu = [applicationDownloadObject, receiptDownloadObject];
+printMenu = [applicationPrintObject, receiptPrintObject];
+
+export const connectionDetailsDownload = getCommonApplyFooter("RIGHT", {
   // downloadButton: {
   //   componentPath: "Button",
   //   props: {
@@ -280,10 +363,10 @@ export const connectionDetailsDownload = getCommonApplyFooter("RIGHT",{
     componentPath: "DownloadPrintButton",
     props: {
       style: {
-              minWidth: "150px",
-              height: "48px",
-              marginRight: "10px"
-            },
+        minWidth: "150px",
+        height: "48px",
+        marginRight: "10px"
+      },
       data: {
         label: { labelName: "DOWNLOAD", labelKey: "TL_DOWNLOAD" },
         leftIcon: "cloud_download",

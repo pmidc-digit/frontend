@@ -161,7 +161,7 @@ class WorkFlowContainer extends React.Component {
       redirectQueryString,
       beforeSubmitHook
     } = this.props;
-    console.log("=========updateUrl",updateUrl);
+   // console.log("=========updateUrl",updateUrl);
     const tenant = getQueryArg(window.location.href, "tenantId");
     let data = get(preparedFinalObject, dataPath, []);
     if (moduleName === "NewTL") {
@@ -285,14 +285,17 @@ class WorkFlowContainer extends React.Component {
           data[0].fireNOCDetails.status = "CITIZENACTIONREQUIRED";
           data[0].fireNOCDetails.assignee = [get(preparedFinalObject, "FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].uuid", "")];
         }
- 
+        debugger
         if (window.location.href.includes("wns/search-preview")) {
           if(data.roadCuttingInfo && data.roadCuttingInfo.length > 0) {
-            data.roadCuttingInfo = [];
-            data.roadCuttingInfo = data.roadCuttingInfos || [];
-            data.roadCuttingInfos = [];
+            
+           // data.roadCuttingInfo = [];
+            data.roadCuttingInfo = data.roadCuttingInfo || [];
+           // data.roadCuttingInfos = [];
           }
+          
       }     
+     
       let payload = await httpRequest("post", updateUrl, "", [], {
         [dataPath]: data
       });
@@ -437,11 +440,23 @@ class WorkFlowContainer extends React.Component {
   };
 
 getRedirectUrl = (action, businessId, moduleName) => {
+  //debugger;
   const isAlreadyEdited = getQueryArg(window.location.href, "edited");
   const tenant = getQueryArg(window.location.href, "tenantId");
   const { ProcessInstances, baseUrlTemp, bserviceTemp, preparedFinalObject } = this.props;
   const { PTApplication = {} } = preparedFinalObject;
   const { propertyId } = PTApplication;
+  let dischragestr='';
+  //console.log("sdgshfdshdghs"+moduleName);
+  if(moduleName=== 'NewSW1' || moduleName === 'NewWS1'){
+   
+    const dischargeFee = getQueryArg(window.location.href,"dischargeFee");
+    const dischargeConnection = getQueryArg(window.location.href, "dischargeConnection");
+      if(dischargeConnection && dischargeConnection !== ''){
+        dischragestr = `&dischargeConnection=${dischargeConnection}&dischargeFee=${dischargeFee}`
+      }
+  } 
+ // console.log("wsDischarge"+dischragestr)
   let applicationStatus;
   if (ProcessInstances && ProcessInstances.length > 0) {
     applicationStatus = get(ProcessInstances[ProcessInstances.length - 1], "state.applicationStatus");
@@ -478,7 +493,7 @@ getRedirectUrl = (action, businessId, moduleName) => {
     case "PAY": return bservice ? `${payUrl}&businessService=${bservice}` : payUrl;
     case "EDIT": return isAlreadyEdited
       ? `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit&edited=true`
-      : `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit`;
+      : `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit${dischragestr}`;
   }
 };
 
@@ -542,6 +557,7 @@ getActionIfEditable = (status, businessId, moduleName, applicationState) => {
     localStorageGet("businessServiceData")
   );
   const data = find(businessServiceData, { businessService: moduleName });
+  
   const state = applicationState ? data && data.states && find(data.states, { applicationStatus: status, state: applicationState }) : find(data.states, { applicationStatus: status });
   let actions = [];
   state &&
@@ -553,8 +569,9 @@ getActionIfEditable = (status, businessId, moduleName, applicationState) => {
   const roleIndex = userRoles.findIndex(item => {
     if (actions.indexOf(item.code) > -1) return true;
   });
-
+ 
   let editAction = {};
+  let testdata ="&data=test"
   //  state.isStateUpdatable = true; // Hardcoded configuration for PT mutation Edit
   if (state && state.isStateUpdatable && actions.length > 0 && roleIndex > -1) {
     editAction = {
@@ -591,7 +608,7 @@ setBusinessServiceDataToLocalStorage = async (
 
 
 prepareWorkflowContract = (data, moduleName) => {
-  const {
+   const {
     getRedirectUrl,
     getHeaderName,
     checkIfTerminatedState,
@@ -602,7 +619,7 @@ prepareWorkflowContract = (data, moduleName) => {
   const businessServiceData = JSON.parse(
     localStorageGet("businessServiceData")
   );
-  if ( businessServiceData && businessServiceData[0].businessService != data[0].businessService ) {
+ // if ( businessServiceData || businessServiceData[0].businessService != data[0].businessService ) {
     const tenantId = getQueryArg(window.location.href, "tenantId");
     const queryObject = [
       { key: "tenantId", value: tenantId },
@@ -613,7 +630,7 @@ prepareWorkflowContract = (data, moduleName) => {
     ];
 
     this.setBusinessServiceDataToLocalStorage(queryObject);
-  }
+ // }
   
   let businessService = moduleName === data[0].businessService ? moduleName : data[0].businessService;
   let businessId = get(data[data.length - 1], "businessId");

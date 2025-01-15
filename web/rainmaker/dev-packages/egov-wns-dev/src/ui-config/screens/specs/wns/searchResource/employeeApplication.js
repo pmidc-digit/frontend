@@ -9,7 +9,11 @@ import {
   getLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { searchApiCall } from "./functions";
-import { resetFieldsForConnection } from '../../utils';
+import { resetFieldsForConnection} from '../../utils';
+import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { httpRequest } from "../../../../../ui-utils/api";
+import store from "../../../../../ui-redux/store";
+import { getTenantId,getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 
 export const wnsApplication = getCommonCard({
   subHeader: getCommonTitle({
@@ -21,7 +25,7 @@ export const wnsApplication = getCommonCard({
   wnsApplicationContainer: getCommonContainer({
     city: {
       uiFramework: "custom-containers-local",
-      moduleName: "egov-hrms",
+      moduleName: "egov-wns",
       componentPath: "AutosuggestContainer",
       jsonPath: "searchConnection.tenantId",
       gridDefination: {
@@ -48,13 +52,9 @@ export const wnsApplication = getCommonCard({
         jsonPath: "searchConnection.tenantId",
         labelsFromLocalisation: true,
         required: true,
-        disabled: true,
-        isDisabled:true,
-      },
+       },
       required: true,
-      disabled: true,
-      isDisabled:true,
-    },
+      },
     propertyid: getTextField({
         label: {
             labelKey: "WS_PROPERTY_ID_LABEL"
@@ -119,10 +119,64 @@ export const wnsApplication = getCommonCard({
             sm: 4
         },
         required: false,
-        // pattern: /^[a-zA-Z0-9-]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "searchConnection.oldConnectionNumber"
-    })
+    }),
+     //-------------locality--------------
+ propertyMohalla: {
+  uiFramework: "custom-containers",
+  componentPath: "AutosuggestContainer",
+  jsonPath:"searchConnection.locality",
+  required: true,
+  props: {
+    label: {
+      labelName: "Locality/Mohalla",
+      },
+    placeholder: {
+      labelName: "Select Locality/Mohalla",
+      },
+    
+    sourceJsonPath: "localities",
+    labelsFromLocalisation: true,
+    errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+    suggestions: [],
+    fullwidth: true,
+    required: false,
+    disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+    inputLabelProps: {
+      shrink: true
+    }
+    
+  },
+  
+  gridDefination: {
+    xs: 12,
+    sm: 4
+  }
+},
+//---------------locality-end--------------
+//-------------------Owner Name----------------------
+ownerName: getTextField({
+  label: {
+    labelName: "Owner Name",
+    labelKey: "Owner Name"
+  },
+  placeholder: {
+    labelName: "Enter Owner Name",
+    labelKey: "Owner Name"
+  },
+  gridDefination: {
+    xs: 12,
+    sm: 4,
+
+  },
+  required: false,
+ // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
+  errorMessage: "ERR_INVALID_PROPERTY_ID",
+  jsonPath: "searchConnection.name",
+  disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+}),
+//-------------------End Owner Name--------------------------------
   }),
 
   button: getCommonContainer({

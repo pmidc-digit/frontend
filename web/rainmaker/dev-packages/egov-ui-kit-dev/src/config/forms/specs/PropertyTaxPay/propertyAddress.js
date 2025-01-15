@@ -7,7 +7,11 @@ import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import filter from "lodash/filter";
 import get from "lodash/get";
 import sortBy from "lodash/sortBy";
+let floorDropDownData = [];
 
+floorDropDownData.push({ label: "2013-14", value: "2013-14" }, { label: "2014-15", value: "2014-15" }, { label: "2015-16", value: "2015-16" }, { label: "2016-17", value: "2016-17" }, { label: "2017-18", value: "2017-18" }, { label: "2018-19", value: "2018-19" },
+  { label: "2019-20", value: "2019-20" }, { label: "2020-21", value: "2020-21" },
+  { label: "2021-22", value: "2021-22" }, { label: "2022-23", value: "2022-23" }, { label: "2023-24", value: "2023-24" }, { label: "2024-25", value: "2024-25" });
 const formConfig = {
   name: "propertyAddress",
   fields: {
@@ -53,10 +57,6 @@ const formConfig = {
           fetchGeneralMDMSData(requestBody, "PropertyTax", getGeneralMDMSDataDropdownName())
         );
       },
-    },
-    dummy: {
-      numcols: 6,
-      type: "dummy",
     },
     houseNumber: {
       id: "house-number",
@@ -104,27 +104,28 @@ const formConfig = {
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       pattern: "^([0-9]){6}$",
     },
-    oldPID: {
-      id: "oldpid",
-      type: "textField",
-      className: "pt-old-pid-text-field",
-      //text: "PT_SEARCH_BUTTON",
-      //iconRedirectionURL: "https://pmidc.punjab.gov.in/propertymis/search.php",
-      jsonPath: "Properties[0].oldPropertyId",
-      floatingLabelText: "PT_PROPERTY_ADDRESS_EXISTING_PID",
-      hintText: "PT_PROPERTY_ADDRESS_EXISTING_PID_PLACEHOLDER",
-      numcols: 6,
-      errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
-      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-      toolTip: true,
-      pattern: /^[^\$\"'<>?\\\\~`!@$%^+={}*,.:;“”‘’]{1,64}$/i,
-      toolTipMessage: "PT_OLDPID_TOOLTIP_MESSAGE",
-      maxLength: 64,
-    },
+    // oldPID: {
+    //   id: "oldpid",
+    //   type: "textField",
+    //   className: "pt-old-pid-text-field",
+    //   //text: "PT_SEARCH_BUTTON",
+    //   //iconRedirectionURL: "https://pmidc.punjab.gov.in/propertymis/search.php",
+    //   jsonPath: "Properties[0].oldPropertyId",
+    //   floatingLabelText: "PT_PROPERTY_ADDRESS_EXISTING_PID",
+    //   hintText: "PT_PROPERTY_ADDRESS_EXISTING_PID_PLACEHOLDER",
+    //   numcols: 6,
+    //   errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
+    //   errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+    //   toolTip: true,
+    //   pattern: /^[^\$\"'<>?\\\\~`!@$%^+={}*,.:;“”‘’]{1,64}$/i,
+    //   toolTipMessage: "PT_OLDPID_TOOLTIP_MESSAGE",
+    //   maxLength: 64,
+    // },
     UID: {
       id: "UID",
       type: "textfield",
       className: "pt-old-pid-text-field",
+      required: process.env.REACT_APP_NAME === "Citizen" ? false : true,
       // text: "PT_SEARCH_BUTTON",
       // iconRedirectionURL: "https://pmidc.punjab.gov.in/propertymis/search.php",
       jsonPath: "Properties[0].surveyId",
@@ -133,6 +134,37 @@ const formConfig = {
       numcols: 6,
       errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+      // toolTip: true,
+      //pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
+      // toolTipMessage: "PT_OLDPID_TOOLTIP_MESSAGE",
+      maxLength: 64,
+    },
+    YearcreationProperty: {
+      id: "YearcreationProperty",
+      type: "AutocompleteDropdown",
+      className: "pt-old-pid-text-field",
+      // iconRedirectionURL: getTenantId()=='pb.amritsar'? "https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=8b678d4d5020448499054bf346843ea9": getTenantId()=='pb.hoshiarpur'?"https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=9bc1b255320a49c590dd17d4d258e054": "https://gis.punjab.gov.in",
+      jsonPath: "Properties[0].additionalDetails.yearConstruction",
+      floatingLabelText: "Year of creation of Property",
+      hintText: "Select",
+      numcols: 6,
+      gridDefination: {
+        xs: 12,
+        sm: 6
+      },
+      errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
+      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+
+      formName: "propertyAddress",
+      dropDownData: floorDropDownData,
+      updateDependentFields: ({ formKey, field, dispatch }) => {
+        if (field.value && field.value.length > 0) {
+          const mohalla = field.dropDownData.find((option) => {
+            return option.value === field.value;
+          });
+          dispatch(prepareFormData("Properties[0].additionalDetails.yearConstruction", mohalla.code));
+        }
+      },
       // toolTip: true,
       //pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
       // toolTipMessage: "PT_OLDPID_TOOLTIP_MESSAGE",

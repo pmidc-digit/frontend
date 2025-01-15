@@ -141,9 +141,6 @@ export const resetFields = (state, dispatch) => {
 
 };
 
-export const test = () =>{
-  alert("testing");
-}
 export const searchPropertyDetails = getCommonCard({
   subHeader: getCommonTitle({
     labelName: "Search Property",
@@ -153,8 +150,11 @@ export const searchPropertyDetails = getCommonCard({
   subParagraph: getCommonParagraph({
     labelName: "Provide at least one non-mandatory parameter to search for an application (In case of Search by locality and name . please select city name again)",
    //labelKey: "PT_HOME_SEARCH_RESULTS_DESC"
-    labelKey: "Provide at least one non-mandatory parameter to search for an application (In case of search by locality and name . please select city name again)"
-  }),
+    labelKey: "Provide at least one non-mandatory parameter to search for an application (In case of search by locality and name . please select city name again)",
+    
+  }
+  ),
+
   ulbCityContainer: getCommonContainer({
     ulbCity: {
       ...getSelectField({
@@ -288,6 +288,7 @@ export const searchPropertyDetails = getCommonCard({
       required: false,
       pattern: getPattern("MobileNo"),
       jsonPath: "ptSearchScreen.mobileNumber",
+      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       errorMessage: "ERR_INVALID_MOBILE_NUMBER"
     }),
     propertyTaxUniqueId: getTextField({
@@ -329,7 +330,7 @@ export const searchPropertyDetails = getCommonCard({
       jsonPath: "ptSearchScreen.oldpropertyids"
     }),
     
-       //-------------locality--------------
+  //-------------locality--------------
   propertyMohalla: {
     uiFramework: "custom-containers",
     componentPath: "AutosuggestContainer",
@@ -515,6 +516,7 @@ export const searchApplicationDetails = getCommonCard({
         position: "start"
       },
       required: false,
+    //  disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       pattern: getPattern("MobileNo"),
       jsonPath: "ptSearchScreen.mobileNumber",
       errorMessage: "ERR_INVALID_MOBILE_NUMBER"
@@ -534,6 +536,7 @@ export const searchApplicationDetails = getCommonCard({
 
       },
       required: false,
+     // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       pattern: /^[a-zA-Z0-9-]*$/i,
       errorMessage: "ERR_INVALID_PROPERTY_ID",
       jsonPath: "ptSearchScreen.ids"
@@ -612,16 +615,3 @@ export const searchProperty = getCommonContainer({
 export const searchApplication = getCommonContainer({
   searchApplicationDetails
 });
-
-
-
-
-
-
-
-
-
-
-
-
-//C:\Users\WalkingTree\Documents\frontend\web\rainmaker\dev-packages\egov-firenoc-dev\src\ui-config\screens\specs\fire-noc\applyResource\propertyLocationDetails.js

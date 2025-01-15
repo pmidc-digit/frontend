@@ -24,6 +24,12 @@ export const searchApiCall = async (state, dispatch) => {
     "searchCriteria",
     {}
   );
+  let batchtype = get(
+    state.screenConfiguration.preparedFinalObject.generateBillScreen,
+    "batchtype",
+    {}
+  );
+ 
   const isSearchBoxFirstRowValid = validateFields(
     "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children",
     state,
@@ -65,6 +71,7 @@ export const searchApiCall = async (state, dispatch) => {
     );
   } else {
     for (var key in searchScreenObject) {
+
       if (
         searchScreenObject.hasOwnProperty(key) &&
         searchScreenObject[key] === ""
@@ -77,16 +84,32 @@ export const searchApiCall = async (state, dispatch) => {
       "searchScreenMdmsData.BillingService.BusinessService"
     ).filter(item => item.code === searchScreenObject.businesService);
 
-    searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
+    if(batchtype == 'Batch'){
+      searchScreenObject.url = "/egov-searcher/bill-genie/batchbilling/_get";
+    }
+   else if(batchtype == 'Group'){
+      searchScreenObject.url = "/egov-searcher/bill-genie/groupbills/_get";
+    }  
+    else if(batchtype == 'Integrated Bill') {
+      searchScreenObject.url = "/egov-searcher/bill-genie/integratedbills/_get";  //added Url for integratedbills
+    } 
+    else{
+      searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
+    }
+
+   
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ?  getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const responseFromAPI = await getGroupBillSearch(dispatch,searchScreenObject);
+    
     const bills = (responseFromAPI && responseFromAPI.Bills) || [];
     dispatch(
       prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
     );
     const response = [];
+    //console.log("responseTest"+JSON.stringify(bills))
     for (let i = 0; i < bills.length; i++) {
-      if(get(bills[i], "status") === "ACTIVE" &&  get(bills[i], "totalAmount")>0 && get(bills[i].connection,"status").toUpperCase() === "ACTIVE"){
+     // if(get(bills[i], "status") === "ACTIVE" &&  get(bills[i], "totalAmount")>0 && get(bills[i].connection,"status").toUpperCase() === "ACTIVE"){
+    if(get(bills[i], "status") === "ACTIVE" &&  get(bills[i], "totalAmount")>0 ){
         response.push({
           consumerId: get(bills[i], "consumerCode"),
           billNo: get(bills[i], "billNumber"),
@@ -95,9 +118,11 @@ export const searchApiCall = async (state, dispatch) => {
           status : get(bills[i], "status"),
           tenantId: tenantId
         })
-      }      
+      }
+     // }      
     }
     try {
+     
       let data = response.map(item => ({
         ["ABG_COMMON_TABLE_COL_BILL_NO"]: item.billNo || "-",
         ["ABG_COMMON_TABLE_COL_CONSUMER_ID"]: item.consumerId || "-",

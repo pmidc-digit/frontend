@@ -123,7 +123,14 @@ const tradeSubTypeChange = (reqObj) => {
             ""
           )
         );
-
+        dispatch(
+          handleField(
+            "apply",
+            `components.div.children.formwizardFirstStep.children.tradeDetails.children.cardContent.children.tradeUnitCard.props.items[${index}].item${index}.children.cardContent.children.tradeUnitCardContainer.children.inHas`,
+            "props.value",
+            ""
+          )
+        );
         dispatch(
           pFO(
             `Licenses[0].tradeLicenseDetail.tradeUnits[${index}].uom`,
@@ -169,7 +176,7 @@ const tradeUnitCard = {
     scheama: getCommonGrayCard({
       header: getCommonSubHeader(
         {
-          labelName: "Trade Unit  ",
+          labelName: "Trade Unit22  ",
           labelKey: "TL_NEW_TRADE_DETAILS_TRADE_UNIT_HEADER"
         },
         {
@@ -388,6 +395,7 @@ const tradeUnitCard = {
               }
             },
             beforeFieldChange: (action, state, dispatch) => {
+            
               try {
                 let cardIndex = action.componentJsonpath
                   .split("items[")[1]
@@ -550,6 +558,46 @@ const tradeUnitCard = {
               } catch (e) {
                 console.log(e);
               }
+             },
+             afterFieldChange: (action, state, dispatch) => {
+              
+              let tradeUnitall= get(
+                  state,
+                  "screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail.tradeUnits",
+                  ""
+                );
+                let mdmstradeUnitall= get(
+                  state,
+                  "screenConfiguration.preparedFinalObject.applyScreenMdmsData.TradeLicense.MdmsTradeType",
+                  ""
+                );
+                dispatch(
+                  pFO(
+                    "applyScreenMdmsData.TradeLicense.validityYears",
+                    [{code :"1"}]
+                  )
+                );
+              for(let tunit of tradeUnitall){
+                for(let mdmstunit of mdmstradeUnitall){
+                 if(tunit.tradeType == mdmstunit.code){
+                  if(mdmstunit.ishazardous == true){
+                      dispatch(
+                        pFO(
+                          `Licenses[0].ishazardous`,
+                          "NEWTL.HAZ"
+                        )
+                      )
+                      dispatch(
+                        pFO(
+                          "applyScreenMdmsData.TradeLicense.validityYears",
+                          [{code :"1"}]
+                        )
+                      );
+                    }
+                  }
+                }
+              }
+             
             }
           },
           tradeUOM: getTextField({
@@ -560,7 +608,7 @@ const tradeUnitCard = {
             placeholder: {
               labelName: "UOM",
               labelKey: "TL_NEW_TRADE_DETAILS_UOM_UOM_PLACEHOLDER"
-            },
+            },            
             // required: true,
             props: {
               disabled: true
@@ -571,6 +619,7 @@ const tradeUnitCard = {
               sm: 4
             }
           }),
+         
           tradeUOMValue: getTextField({
             label: {
               labelName: "UOM Value",
@@ -1047,7 +1096,7 @@ export const tradeDetails = getCommonCard({
             )
           );
           // dispatch(pFO("Licenses[0].validFrom", null));
-          // dispatch(pFO("Licenses[0].validTo", null));
+           //dispatch(pFO("Licenses[0].validTo", null));
         }
       }
     },
@@ -1178,6 +1227,7 @@ export const tradeDetails = getCommonCard({
           "applyScreenMdmsData.common-masters.StructureSubTypeTransformed"
       }),
       beforeFieldChange: (action, state, dispatch) => {
+        debugger
         const tradeTypes = setFilteredTradeTypes(
           state,
           dispatch,
@@ -1247,15 +1297,16 @@ export const tradeDetails = getCommonCard({
       pattern: getPattern("OperationalArea"),
       jsonPath: "Licenses[0].tradeLicenseDetail.operationalArea"
     }),
+    /////
     tradeNoOfEmployee: getTextField({
       label: {
         labelName: "No. Of Employee",
         labelKey: "TL_NEW_TRADE_DETAILS_NO_EMPLOYEES_LABEL"
       },
-      props:{
-        className:"applicant-details-error",
-        disabled:getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
-      },
+      // props:{
+      //   className:"applicant-details-error",
+      //   disabled:getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
+      // },
       placeholder: {
         labelName: "Enter No. Of Employee",
         labelKey: "TL_NEW_TRADE_DETAILS_NO_EMPLOYEES_PLACEHOLDER"
@@ -1277,46 +1328,39 @@ export const tradeDetails = getCommonCard({
         labelKey: "Enter Old Receipt No."
       },
       jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.oldReceiptNumber"
-     })
-  //,
-  //   tradeRenewalYears:  {
-  //     ...getSelectField({
-  //     label: {
-  //       labelName: "Valid for No. of Years",
-  //       labelKey: "Valid for No. of Years"
-  //     },
-  //     placeholder: {
-  //       labelName: "Select Valid for No. of Years",
-  //       labelKey: "Select Valid for No. of Years"
-  //     },
-  //     props:{
-  //       className:"applicant-details-error"
-  //      //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
-  //     }, 
-  //     data: [
-  //       {
-  //         code: "1"
-  //       },
-  //       {
-  //         code: "2"
-  //       },
-  //       {
-  //         code: "3"
-  //       }
-  //     ],
-  //     // localePrefix: {
-  //     //   moduleName: "common-masters",
-  //     //   masterName: "STRUCTURETYPE"
-  //     // },
-  //     required: true,
-  //     jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.validityYears"
-  //   })
-  // }
+     }),
+     
 },
   {style:getQueryArg(window.location.href, "action") === "EDITRENEWAL"? {"cursor":"not-allowed"}:{}},
   ),
   tradeUnitCard,
-  accessoriesCard
+  accessoriesCard,
+//   tradeRenewalYears:  {
+//     ...getSelectField({
+//     label: {
+//       labelName: "Valid for No. of Years",
+//       labelKey: "Valid for No. of Years"
+//     },
+//     placeholder: {
+//       labelName: "Select Valid for No. of Years",
+//       labelKey: "Select Valid for No. of Years"
+//     },
+//     props:{
+//       className:"applicant-details-error"
+//      //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
+//     }, 
+//    // data: get(state.screenConfiguration.preparedFinalObject,"Licenses[0].ishazardous")==='NEWTL.HAZ'?[{code : "1"}]:[{code :"3"}],
+    
+//   //  localePrefix: {
+//   //     moduleName: "common-masters",
+//   //     masterName: "STRUCTURETYPE"
+//   //   },
+//     required: true,
+//     jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",
+//     sourceJsonPath:"applyScreenMdmsData.TradeLicense.validityYears"
+//   }),
+  
+// }
 });
 
 const setFieldsOnAddItem = (state, multiItemContent) => {

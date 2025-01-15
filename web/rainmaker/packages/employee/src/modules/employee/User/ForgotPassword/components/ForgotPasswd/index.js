@@ -3,6 +3,7 @@ import { Card, TextField, Image } from "components";
 import { Button} from "egov-ui-framework/ui-atoms";
 import Label from "egov-ui-kit/utils/translationNode";
 import logo from "egov-ui-kit/assets/images/logo_black.png";
+import logone from "egov-ui-kit/assets/images/pmidclogo.png";
 import "./index.css";
 import { CityPicker } from "modules/common";
 
@@ -15,7 +16,7 @@ const ForgotPasswd = ({ form, handleFieldChange }) => {
       className="user-screens-card forgot-passwd-card col-lg-offset-4 col-lg-4 col-md-offset-4 col-md-4"
       textChildren={
         <div>
-          <div className="rainmaker-displayInline" style={{ justifyContent: "center" }}>
+          <div className="rainmaker-displayInline msevaonelogo" style={{  }}>
             <div style={{ marginBottom: "24px" }}>
               <Image className="mseva-logo" source={`${logo}`} />
             </div >
@@ -26,6 +27,11 @@ const ForgotPasswd = ({ form, handleFieldChange }) => {
               <Label bold={true} color="black" fontSize= "24px" label="STATE_LABEL" />
            </div>
           </div>
+          <div className="rainmaker-displayInline pmidclogo" style={{  }}>
+            <div style={{  }}>
+              <Image className="mseva-logo" source={`${logone}`} />
+            </div >
+            </div>
           <Label
             style={{ marginBottom: "12px" }}
             className="text-center forgotpasswd"

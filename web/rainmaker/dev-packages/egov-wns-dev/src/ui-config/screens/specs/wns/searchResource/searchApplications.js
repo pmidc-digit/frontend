@@ -9,7 +9,7 @@ import {
   getDateField,
   getLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
-import { searchApiCall } from "./functions";
+import { searchApiCall, exceldatadownload } from "./functions";
 import { resetFieldsForApplication } from '../../utils';
 import {
   handleScreenConfigurationFieldChange as handleField,
@@ -228,7 +228,8 @@ export const searchApplications = getCommonCard({
           action: "condition",
           callBack: searchApiCall
         }
-      },
+      }
+    
     })
   })
 });

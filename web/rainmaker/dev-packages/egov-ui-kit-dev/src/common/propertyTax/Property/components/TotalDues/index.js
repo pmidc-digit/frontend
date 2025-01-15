@@ -1,22 +1,70 @@
 import { UpdateMobile } from "components";
 import { downloadBill } from "egov-common/ui-utils/commons";
 import { Tooltip } from "egov-ui-framework/ui-molecules";
-import { toggleSnackbarAndSetText } from "egov-ui-kit/redux/app/actions";
+import { toggleSnackbarAndSetText, prepareFinalObject } from "egov-ui-kit/redux/app/actions";
 import { initLocalizationLabels } from "egov-ui-kit/redux/app/utils";
 import { getTranslatedLabel } from "egov-ui-kit/utils/commons";
-import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
+import { getLocale, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import { routeToCommonPay } from "egov-ui-kit/utils/PTCommon/FormWizardUtils/formUtils";
 import Label from "egov-ui-kit/utils/translationNode";
 import get from "lodash/get";
 import React from "react";
+import { httpRequest } from "../../../../../utils/api"
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { TotalDuesButton } from "./components";
 import "./index.css";
-
+var localityCode = null;
+var isLocMatch ;
 const locale = getLocale() || "en_IN";
 const localizationLabelsData = initLocalizationLabels(locale);
+var tenantIdcode =getTenantId();
+var localityCode = null;
+var surveyIdcode = null;
+var editlocalityCode = null;
+const mapStateToProps = (state, ownProps) => {
+  const { propertiesById } = state.properties || {};
+  const propertyId = ownProps.consumerCode;
+  const selPropertyDetails = propertiesById[propertyId] || {};
+  const propertyDetails = selPropertyDetails.propertyDetails || [];
+  localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
+ editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
+;
+surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
+  return {
+    propertyDetails,
+    propertyId
+  };
+};
 
+debugger;
+const getUserDataFromUuid = async (state, dispatch) => {
+  
+  debugger;
+ if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
+  let request = { searchCriteria: { tenantId: tenantIdcode} };
+  try {
+    const response = await httpRequest(
+      "/egov-searcher/rainmaker-pt-gissearch/GetTenantConfig/_get",
+      "_get",
+      [],
+      request);
+    if (response) {
+      console.log("sss"  ,response);
+      const data = response.data.find(obj => {
+        return obj.locality == localityCode;
+      });
+      isLocMatch = data ? true : false;
+    }
+  } catch (error) {
+    console.log("functions-js getUserDataFromUuid error", error);
+  }
+}
+};
+
+if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
+  getUserDataFromUuid();
+}
 const labelStyle = {
   color: "rgba(0, 0, 0, 0.6)",
   fontWeight: 400,
@@ -136,10 +184,26 @@ class TotalDues extends React.Component {
             <div style={{ float: "right" }}>
               <TotalDuesButton
                 primary={true}
+                
                 labelText="PT_TOTALDUES_PAY"
                 onClickAction={() => {
+                  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
+                    if(isLocMatch){
+                      if(surveyIdcode != 'null'){
+                        payAction(consumerCode, tenantId);
+                      }
+                      else{
+                        alert("Please Enter Survey Id");
+                      }
+                    }
+                    else{
+                      payAction(consumerCode, tenantId);
+                    }
+                  }
+                else{
                   payAction(consumerCode, tenantId);
-                }}
+                }
+               }}
               />
             </div>
           </div>
@@ -149,16 +213,7 @@ class TotalDues extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { propertiesById } = state.properties || {};
-  const propertyId = ownProps.consumerCode;
-  const selPropertyDetails = propertiesById[propertyId] || {};
-  const propertyDetails = selPropertyDetails.propertyDetails || [];
-  return {
-    propertyDetails,
-    propertyId
-  };
-};
+
 
 
 const mapDispatchToProps = (dispatch) => {

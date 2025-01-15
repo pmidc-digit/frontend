@@ -1,6 +1,3 @@
-
-
-
 import { getTextField,getPattern,getSelectField } from "egov-ui-framework/ui-config/screens/specs/utils";
 import get from 'lodash/get';
 import {
@@ -8,14 +5,14 @@ import {
   prepareFinalObject
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 
-
+//import { getTenantId } from "../../utils/localStorageUtils";
 export const WSledgerId = {
     ledgerId: getTextField({
-        label: { labelKey: "WS_SERV_DETAIL_LEDGER_ID" },
+        label: { labelKey: "LedgerId / Area" },
         placeholder: { labelKey: "WS_SERV_DETAIL_LEDGER_ID_PLACEHOLDER" },
         gridDefination: { xs: 12, sm: 6 },
         jsonPath: "applyScreen.additionalDetails.ledgerId",
-        // pattern: /^[0-9]*$/i,
+        //pattern: /^[A-z0-9À-ž\s]*$/i,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
   }),
 };
@@ -51,7 +48,7 @@ export const WSbillingType = {
     ...getSelectField({
       label: { labelKey: "WS_SERV_DETAIL_BILLING_TYPE" },
       placeholder: { labelKey: "WS_SERV_DETAIL_BILING_TYPE_PLACEHOLDER" },
-      required: false,
+      required: true,
       sourceJsonPath: "applyScreenMdmsData.ws-services-masters.billingType",
       gridDefination: { xs: 12, sm: 6 },
       errorMessage: "ERR_INVALID_BILLING_PERIOD",
@@ -96,13 +93,13 @@ export const WSsubUsageType = {
       ...getSelectField({
         label: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE" },
         placeholder: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE_PLACEHOLDER" },
-        required: true,
+       // required: true,
         sourceJsonPath: "applyScreenMdmsData.ws-services-masters.subUsageType",
         gridDefination: { xs: 12, sm: 6 },
         errorMessage: "ERR_INVALID_BILLING_PERIOD",
         jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
         props: {
-          disabled: false
+         // disabled: false
         }
       }),
     }
@@ -155,9 +152,28 @@ othersFee : getTextField({
   pattern: getPattern("Amount"),
   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
   jsonPath: "applyScreen.additionalDetails.othersFee"
-})
-};
+}),
 
+// ConnectionFee : getTextField({
+//   label: {
+//     labelName: "Connection Fees",
+//     labelKey: "Connection Fees"
+//   },
+//   placeholder: {
+//     labelName: "Connection Fees",
+//     labelKey: "Connection Fees"
+//   },
+//   gridDefination: {
+//     xs: 12,
+//     sm: 6
+//   },
+//   required: false,
+//   //visible:  getTenantId() == pb.bassipathana ? true : false,
+//   pattern: getPattern("Amount"),
+//   errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+//   jsonPath: "applyScreen.additionalDetails.othersFee"
+// }),
+};
 export const WSMeterMakes = {
   meterMake: getTextField({
     label: {
@@ -170,8 +186,9 @@ export const WSMeterMakes = {
       xs: 12,
       sm: 6
     },
-    required: false,
-    pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
+    required: true,
+    //pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
+    pattern: /^[a-zA-Z0-9_.-]*$/,
     errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
     jsonPath: "applyScreen.additionalDetails.meterMake"
   }),

@@ -7,6 +7,7 @@ import Label from "egov-ui-kit/utils/translationNode";
 import { startSMSRecevier } from "egov-ui-kit/utils/commons";
 import Hidden from "@material-ui/core/Hidden";
 import logo from "egov-ui-kit/assets/images/logo_black.png";
+import logoone from "egov-ui-kit/assets/images/pmidclogo.png";
 import "./index.css";
 
 const LoginForm = ({ handleFieldChange, form, logoUrl,qrCodeURL,enableWhatsApp }) => {
@@ -20,10 +21,11 @@ const LoginForm = ({ handleFieldChange, form, logoUrl,qrCodeURL,enableWhatsApp }
       className={enableWhatsApp?"login-cardwidth user-screens-card":"login-cardwidthmob col-sm-offset-4 col-sm-4 user-screens-card"}
       textChildren={
         <div>
-          <div className="rainmaker-displayInline" style={{ justifyContent: "center" }}>
+          <div className="rainmaker-displayInline msevaonelogo" style={{  }}>
             <div style={{ marginBottom: "24px" }}>
               <Image className="mseva-logo" source={`${logo}`} />
             </div >
+            
           <div style={{marginLeft:"7px", marginBottom: "24px" }}>
           <Label bold={true}  fontSize= "23px" label="|" />
           </div>
@@ -31,6 +33,11 @@ const LoginForm = ({ handleFieldChange, form, logoUrl,qrCodeURL,enableWhatsApp }
               <Label bold={true} color="black" fontSize= "24px" label="STATE_LABEL" />
            </div>
           </div>
+          <div className="rainmaker-displayInline pmidclogo" style={{  }}>
+            <div style={{ marginBottom: "24px" }}>
+              <Image className="mseva-logo" source={`${logoone}`} />
+            </div >
+            </div>
           <Label style={{ marginBottom: "12px" }} className="text-center" bold={true} dark={true} fontSize={16} label="CORE_COMMON_LOGIN" />
           <Field fieldKey="phone" field={fields.phone} handleFieldChange={handleFieldChange}  />
           <div style={{ marginBottom: "24px", position: "relative", zIndex: 10 }} className="text-right">
@@ -89,10 +96,11 @@ const LoginForm = ({ handleFieldChange, form, logoUrl,qrCodeURL,enableWhatsApp }
       className={enableWhatsApp?"login-cardwidth user-screens-card":"login-cardwidthmob col-sm-offset-4 col-sm-4 user-screens-card"}
       textChildren={
         <div>
-          <div className="rainmaker-displayInline" style={{ justifyContent: "center" }}>
+          <div className="rainmaker-displayInline msevaonelogo" style={{  }}>
             <div style={{ marginBottom: "24px" }}>
               <Image className="mseva-logo" source={`${logo}`} />
             </div >
+            
           <div style={{marginLeft:"7px", marginBottom: "24px" }}>
           <Label bold={true}  fontSize= "23px" label="|" />
           </div>
@@ -100,6 +108,11 @@ const LoginForm = ({ handleFieldChange, form, logoUrl,qrCodeURL,enableWhatsApp }
               <Label bold={true} color="black" fontSize= "24px" label="STATE_LABEL" />
            </div>
           </div>
+          <div className="rainmaker-displayInline pmidclogo" style={{  }}>
+            <div style={{ marginBottom: "24px" }}>
+              <Image className="mseva-logo" source={`${logoone}`} />
+            </div >
+            </div>
           <Label style={{ marginBottom: "12px" }} className="text-center" bold={true} dark={true} fontSize={16} label="CORE_COMMON_LOGIN" />
           <Field fieldKey="phone" field={fields.phone} handleFieldChange={handleFieldChange}  />
           <div style={{ marginBottom: "24px", position: "relative", zIndex: 10 }} className="text-right">
@@ -158,10 +171,11 @@ const LoginForm = ({ handleFieldChange, form, logoUrl,qrCodeURL,enableWhatsApp }
       className="wha-user-screen-card"
       textChildren={
         <div>
-          <div className="rainmaker-displayInline" style={{ justifyContent: "center" }}>
+           <div className="rainmaker-displayInline msevaonelogo" style={{  }}>
             <div style={{ marginBottom: "24px" }}>
               <Image className="mseva-logo" source={`${logo}`} />
             </div >
+            
           <div style={{marginLeft:"7px", marginBottom: "24px" }}>
           <Label bold={true}  fontSize= "23px" label="|" />
           </div>
@@ -169,6 +183,11 @@ const LoginForm = ({ handleFieldChange, form, logoUrl,qrCodeURL,enableWhatsApp }
               <Label bold={true} color="black" fontSize= "24px" label="STATE_LABEL" />
            </div>
           </div>
+          <div className="rainmaker-displayInline pmidclogo" style={{  }}>
+            <div style={{ marginBottom: "24px" }}>
+              <Image className="mseva-logo" source={`${logoone}`} />
+            </div >
+            </div>
           <div className="rainmaker-displayInline" style={{ justifyContent: "center" }}>
           <div style={{ width: "50%",marginTop:"4%"}}>
           <Label style={{ marginBottom: "12px" }} className="text-center" bold={true} dark={true} fontSize={24} label="CORE_COMMON_LOGIN" />

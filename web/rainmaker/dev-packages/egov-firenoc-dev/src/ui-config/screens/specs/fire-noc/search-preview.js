@@ -416,11 +416,28 @@ const setSearchResponse = async (
       false
     );
   }
+
   let NOCTypeDta= get(response,
     "FireNOCs[0].fireNOCDetails.fireNOCType",
       ""
     )
+    debugger;
+    let diffDays ;
+    const getdate=get(response, "FireNOCs[0].fireNOCDetails.auditDetails.lastModifiedTime");
+    
+  let firenoclength = response.FireNOCs.length - 1;
+  let fireDate = response.FireNOCs[firenoclength].fireNOCDetails.issuedDate;
+  let currentDate = new Date();
+  let appDate = new Date(getdate);
+  //const appDate = convertDateToEpoch(fireDate);
+
+  let diffTime = Math.abs(appDate - currentDate);
+  diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  console.log(diffTime + " milliseconds");
+  console.log(diffDays + " days");
+          	  
     if(NOCTypeDta === "RENEWAL"){
+     // if (diffDays <= 455){
       dispatch(
         handleField(
           "search-preview",
@@ -429,6 +446,10 @@ const setSearchResponse = async (
           false
         )
       );
+    // }
+    // else{
+      // alert("NOC expired on 01-01-2023, max allowed time to apply for renewal is 90 days after expiry");
+   // }
     }
     else{
       dispatch(

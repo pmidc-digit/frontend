@@ -10,7 +10,7 @@ import "./index.css";
 class PropertTaxNotification extends Component {
   componentDidMount() {
     const { addBreadCrumbs, title } = this.props;
-    title && addBreadCrumbs({ title: title, path: window.location.pathname });
+    title && addBreadCrumbs({ title: "ONLINE BUILDING PLAN", path: window.location.pathname });
   }
   render() {
     const { urls, history } = this.props;
@@ -23,11 +23,11 @@ class PropertTaxNotification extends Component {
           textChildren={
             <div className="example-main-cont clearfix">
               <div className="col-sm-12 descriptionStyle">
-               
-                <a href="http://lgpunjab.gov.in/upload/uploadfiles/files/M-Corporation-PT.PDF" target="_blank"><h2>PROPERT TAX NOTIFICATION</h2></a>
-              
+
+                <a href="https://enaksha.lgpunjab.gov.in" target="_blank"><h2>ONLINE BUILDING PLAN</h2></a>
+
               </div>
-              
+
             </div>
           }
         />

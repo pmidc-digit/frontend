@@ -14,6 +14,7 @@ const formConfig = {
       floatingLabelText: "PT_COMMON_VASIKA_NO",
       hintText: "Vasika No",
       fullWidth: true,
+      
     },
     vasikaDate: {
       id: "vasikaDate",
