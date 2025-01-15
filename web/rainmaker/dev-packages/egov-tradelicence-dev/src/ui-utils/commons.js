@@ -619,7 +619,7 @@ else{
         owners && owners.filter(item => !item.hasOwnProperty("isDeleted"));
   // Add Validity Year in additionalDetail object for 3 Year Validity
         let validityYears = {
-          validityYears : 1
+          validityYears : parseInt(queryObject[0].tradeLicenseDetail.additionalDetail.validityYears)
       }
       set(queryObject[0], "tradeLicenseDetail.tradeUnits", mergedTradeUnits);
       set(queryObject[0], "tradeLicenseDetail.accessories", mergedAccessories);
