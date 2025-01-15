@@ -302,6 +302,7 @@ const showHideFiedsPendingForConnectionActivation = (action, state, dispatch) =>
 
 
 export const getData = async (action, state, dispatch) => {
+  //debugger
   let applicationNo = getQueryArg(window.location.href, "applicationNumber");
   const connectionNo = getQueryArg(window.location.href, "connectionNumber");
   const tenantId = getQueryArg(window.location.href, "tenantId");
@@ -366,7 +367,7 @@ export const getData = async (action, state, dispatch) => {
       // For Modify connection details
       if (isModifyMode() && !isModifyModeAction()) {
         // this delete for initiate modify connection 
-        if (!window.location.href.includes("mode=MODIFY&action=edit")) delete combinedArray[0].id; combinedArray[0].documents = [];
+        if (!window.location.href.includes("mode=MODIFY&action=edit")) delete combinedArray[0].id; //combinedArray[0].documents = [];
       }
       if (isModifyMode() && isModifyModeAction()) {
         // ModifyEdit should not call create.
@@ -679,6 +680,7 @@ const screenConfig = {
   name: "apply",
   // hasBeforeInitAsync:true,
   beforeInitScreen:  (action, state, dispatch) => {
+    //debugger
     // dispatch(prepareFinalObject("applyScreen.water", true));
     // dispatch(prepareFinalObject("applyScreen.sewerage", false));
     const propertyId = getQueryArg(window.location.href, "propertyId");

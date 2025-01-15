@@ -756,6 +756,7 @@ else{
     let validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch)
     
     if (validate) {
+      await pushTheDocsUploadedToRedux(state, dispatch);
       isFormValid = true;
       hasFieldToaster = false;
     } else {
