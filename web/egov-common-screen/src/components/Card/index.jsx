@@ -1,3 +1,4 @@
+import './indexX.css';
 import Propertyimg from '../../assets/img/icons/1.png';
 import Tradeimg from '../../assets/img/icons/3.png';
 import waterimg from '../../assets/img/icons/5.png';
@@ -8,7 +9,7 @@ import obps from '../../assets/img/icons/13.png';
 import pgr from '../../assets/img/icons/1q.png';
 import slideone from '../../assets/img/pmidcgurughar.jpg';
 import Faq from '../Faqs'
-import './index.css';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../myindex.css';
 export default function Card() {
