@@ -1,8 +1,6 @@
-import React from "react";
+
 import Faq from "react-faq-component";
 import "./index.css";
-
-
 const data = {
     title: "",
     rows: [
@@ -26,15 +24,15 @@ const data = {
         {
             title: "Why should I apply for a Trade License?",
             content: `A Trade License is permission issued by an Urban Local Body (ULB) to conduct specific trade or business according to the relevant rules, standards and safety guidelines on premises for which it has been issued. Any unauthorised running of trade is an offence which may result in a substantial penalty and subsequent prosecution. Business owners must apply for Trade License before commencement of any trade.`,
-        }, 
+        },
         {
             title: "Can I apply for a mutation of my registered property?",
             content: `Yes. You can apply for Mutation online by clicking on ‘Register Property' link under Property Tax section above. Please login, search for your property and open up the details page. You can initiate Mutation process by clicking on 'Transfer Ownership’ option`,
-        },    
+        },
         {
             title: "My property details have changed. How do I make these changes online? Do I need to submit documents while making changes to my existing property details?",
             content: `Currently, you will have to visit your ULB office to make these changes along with documents like ID Proof, Proof of Property Ownership and any other relevant document`,
-        },  
+        },
         {
             title: "How do I check my property tax online?",
             content: `You can check your property tax online by searching for your property`,
@@ -57,7 +55,6 @@ const data = {
         },
     ],
 };
-
 const styles = {
     // bgColor: 'white',
     titleTextColor: "black",
@@ -65,27 +62,25 @@ const styles = {
     rowTitleTextSize: "16px",
     // rowContentColor: 'grey',
     // arrowColor: "red",   
-    rowContentPaddingTop:"12px",
+    rowContentPaddingTop: "12px",
 
 };
 
 const config = {
-     animate: true,
-     arrowIcon: "+",
+    animate: true,
+    arrowIcon: "+",
     // tabFocus: true
 };
-
-
-export default function SectionFAQs() {
+export default function Faqs() {
 
     return (
         <div id="faqs">
-            {/* <Faq
+            <Faq
                 data={data}
                 styles={styles}
                 config={config}
-            /> */}
-            <h1>Sitemaps</h1>
+            />
+
         </div>
-    );
+    )
 }

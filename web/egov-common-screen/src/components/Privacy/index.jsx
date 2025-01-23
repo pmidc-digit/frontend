@@ -1,22 +1,7 @@
-import React from "react";
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-    Grid,
-    Card,
-    CardActions,
-    CardContent,
-    List,
-    ListItem,
-    ListItemText,
-    Typography,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import axios from "axios";
-import rightImage from "../../img/pmidc - final logo.png";
-import leftImage from "../../img/Govt. of Punjab.png";
-import slideone from '../../img/pmidcgurughar.jpg';
-import homeicon from '../../img/homepage-icon.png';
+
 import './index.css'
 
 
