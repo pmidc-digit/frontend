@@ -22,7 +22,9 @@ RUN apk --no-cache add git && \
     npm run build
 
 # Debug: Verify the build directory
-RUN ls -la /app/build
+RUN ls -la 
+RUN cd  kaniko
+RUN tree
 
 # Final stage
 FROM nginx:alpine
