@@ -21,9 +21,6 @@ RUN apk --update add git
 RUN npm i && npm run build
 
 # Debug: Verify the build directory
-RUN ls -la 
-RUN pwd
-
 # Final stage
 FROM nginx:alpine
 
@@ -34,5 +31,5 @@ ENV WEB_DIR=/var/web/common
 RUN mkdir -p ${WEB_DIR}
 
 # Copy the build output and nginx configuration
-COPY --from=build /app/build ${WEB_DIR}
+COPY --from=build /app/dist ${WEB_DIR}
 COPY --from=build /app/docker/nginx.conf /etc/nginx/conf.d/default.conf
