@@ -17,9 +17,8 @@ COPY ${WORK_DIR}/ .
 RUN ls -la /app
 
 # Install dependencies and build
-RUN apk --no-cache add git && \
-    npm install && \
-    npm run build
+RUN apk --update add git
+RUN npm i && npm run build
 
 # Debug: Verify the build directory
 RUN ls -la 
