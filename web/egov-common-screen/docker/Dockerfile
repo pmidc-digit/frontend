@@ -17,6 +17,7 @@ ENV WEB_DIR=/var/web/common
 
 RUN mkdir -p ${WEB_DIR}/
 
-CMD ls -a
+RUN ls -a
+
 COPY --from=build /app/build ${WEB_DIR}
 COPY --from=build /app/docker/nginx.conf /etc/nginx/conf.d/default.conf
