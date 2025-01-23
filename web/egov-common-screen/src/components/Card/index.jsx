@@ -1,4 +1,4 @@
-
+import './index.css';
 import Propertyimg from '../../assets/img/icons/1.png';
 import Tradeimg from '../../assets/img/icons/3.png';
 import waterimg from '../../assets/img/icons/5.png';
