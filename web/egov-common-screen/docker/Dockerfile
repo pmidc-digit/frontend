@@ -22,8 +22,7 @@ RUN npm i && npm run build
 
 # Debug: Verify the build directory
 RUN ls -la 
-RUN cd  kaniko
-RUN tree
+RUN pwd
 
 # Final stage
 FROM nginx:alpine
