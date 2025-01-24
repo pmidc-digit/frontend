@@ -12,10 +12,15 @@ COPY ${WORK_DIR} .
 RUN apk --update add git
 RUN npm i && npm run build
 
+RUN ls -la
+
 FROM nginx:alpine
 ENV WEB_DIR=/var/web
+
+RUN ls -la 
 
 RUN mkdir -p ${WEB_DIR}/
 
 COPY --from=build /common/app/build ${WEB_DIR}
+RUN ls -la 
 COPY --from=build /app/docker/nginx.conf /etc/nginx/conf.d/default.conf
