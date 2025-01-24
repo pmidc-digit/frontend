@@ -122,7 +122,7 @@ export default function Footer() {
                                     Contact Us
                                 </a><br />
                                 <a
-                                    href="/privacy"
+                                    href="/common/privacy"
                                     id="flink"
                                     //className={classes.block}
                                     target="_blank"

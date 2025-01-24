@@ -5,21 +5,23 @@ import Faq from './components/Faqs'
 import Footer from './components/Footer'
 import Privacy from './components/Privacy'
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
 
 
   return (
     <>
       <Header />
+      {/* //basename="/common" */}
+      <BrowserRouter basename="/common">
 
-      <Router>
         <Routes>
           <Route path="/" element={<Card />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<Card />} />
         </Routes>
-      </Router>
+
+      </BrowserRouter>
       {/* <Card />
       <center ><p style={{
         fontFamily: "Roboto",
