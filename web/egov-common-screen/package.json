@@ -2,6 +2,8 @@
   "name": "commonscreen",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://mseva-uat.lgpunjab.gov.in/common/",
+  "proxy": "https://mseva-uat.lgpunjab.gov.in",
   "type": "module",
   "scripts": {
     "dev": "vite",
