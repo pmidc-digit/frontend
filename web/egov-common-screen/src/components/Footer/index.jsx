@@ -301,8 +301,8 @@ export default function Footer() {
 
                     </table>     </center>
             </div>
-            <div class="footerchangen">
-                <div class="container">
+            <div className="footerchangen">
+                <div className="container">
                     <div className="row ">
 
                         <div className="col-sm-12 col-md-6">

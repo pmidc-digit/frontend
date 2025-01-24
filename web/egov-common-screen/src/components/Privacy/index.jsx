@@ -9,9 +9,9 @@ export default function privacy() {
 
     return (
         <>
-            <div class="container">
-                <div class="row features">
-                    <div class="col-sm-12 col-md-12">
+            <div className="container">
+                <div className="row features">
+                    <div className="col-sm-12 col-md-12">
                         <h1>Privacy Policy</h1>
                         <h3> Effective Date: 21 January 2025</h3>
 

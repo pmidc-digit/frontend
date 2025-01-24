@@ -18,76 +18,76 @@ export default function Card() {
             <div>
                 <div className="row">
                     <div className="col-sm-12 col-md-12">
-                        <img class="d-block w-100" src={slideone} alt="PMIDC" />
+                        <img className="d-block w-100" src={slideone} alt="PMIDC" />
                     </div>
                 </div>
 
-                <div class="secondpart">
-                    <div class="bodaypage">
-                        <div class="container">
-                            <div class="row features">
-                                <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                <div className="secondpart">
+                    <div className="bodaypage">
+                        <div className="container">
+                            <div className="row features">
+                                <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                                            <img src={Propertyimg} class="propertyimgone" alt='Punjab Property Tax' />
-                                            <h5 class="card-title">Property Tax</h5></a>
+                                            <img src={Propertyimg} className="propertyimgone" alt='Punjab Property Tax' />
+                                            <h5 className="card-title">Property Tax</h5></a>
 
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                                <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                                            <img src={Tradeimg} class="propertyimgone" alt='Punjab Trade license' />
-                                            <h5 class="card-title">Trade license</h5></a>
+                                            <img src={Tradeimg} className="propertyimgone" alt='Punjab Trade license' />
+                                            <h5 className="card-title">Trade license</h5></a>
 
                                     </div>
-                                </div>  <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                                </div>  <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                                            <img src={waterimg} class="propertyimgone" alt='Punjab Water' />
-                                            <h5 class="card-title">Water</h5></a>
+                                            <img src={waterimg} className="propertyimgone" alt='Punjab Water' />
+                                            <h5 className="card-title">Water</h5></a>
 
                                     </div>
-                                </div>  <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                                </div>  <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                                            <img src={Sewargeimg} class="propertyimgone" alt='Punjab Water' />
-                                            <h5 class="card-title">Sewerage</h5></a>
+                                            <img src={Sewargeimg} className="propertyimgone" alt='Punjab Water' />
+                                            <h5 className="card-title">Sewerage</h5></a>
 
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row featuresthree">
-                                <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                            <div className="row featuresthree">
+                                <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                                            <img src={Fireimg} class="propertyimgone" alt='Punjab Fire Noc' />
-                                            <h5 class="card-title">Fire Noc</h5></a>
+                                            <img src={Fireimg} className="propertyimgone" alt='Punjab Fire Noc' />
+                                            <h5 className="card-title">Fire Noc</h5></a>
 
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                                <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='http://petlicense.punjab.gov.in:8080/pet-license/' target="_new">
-                                            <img src={Petimg} class="propertyimgone" alt='Punjab Pet license' />
-                                            <h5 class="card-title">Pet license</h5></a>
+                                            <img src={Petimg} className="propertyimgone" alt='Punjab Pet license' />
+                                            <h5 className="card-title">Pet license</h5></a>
 
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                                <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='https://enaksha.lgpunjab.gov.in/' target="_new">
-                                            <img src={obps} class="propertyimgone" alt='Punjab E-Naksha' />
-                                            <h5 class="card-title">E-Naksha</h5></a>
+                                            <img src={obps} className="propertyimgone" alt='Punjab E-Naksha' />
+                                            <h5 className="card-title">E-Naksha</h5></a>
 
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-3">
-                                    <div class="cardservice ">
+                                <div className="col-sm-12 col-md-3">
+                                    <div className="cardservice ">
                                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
-                                            <img src={pgr} class="propertyimgone" alt='Punjab Public Grievance' />
-                                            <h5 class="card-title">Public Grievance</h5></a>
+                                            <img src={pgr} className="propertyimgone" alt='Punjab Public Grievance' />
+                                            <h5 className="card-title">Public Grievance</h5></a>
 
                                     </div>
                                 </div>
