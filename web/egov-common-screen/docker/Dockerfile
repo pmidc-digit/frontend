@@ -1,6 +1,6 @@
 FROM node:23.5.0-alpine3.21 AS build
 ARG WORK_DIR
-WORKDIR /app
+WORKDIR /common/app
 
 ENV NODE_OPTIONS "--max-old-space-size=1792"
 ENV NPM_CONFIG_PREFIX=/tmp/.npm-global
