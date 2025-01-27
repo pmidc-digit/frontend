@@ -176,9 +176,17 @@ export const updatePFOforSearchResults = async (
   // const payload = await getSearchResults(queryObject)
   // getQueryArg(window.location.href, "action") === "edit" &&
   //   (await setDocsForEditFlow(state, dispatch));
-
+  
   if (payload && payload.Licenses) {
+    debugger
+   let pValidityYears = get(payload.Licenses[0],'tradeLicenseDetail.additionalDetail.validityYears',[]);
     
+    if(pValidityYears && pValidityYears ===1){
+      dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1}]))
+    }else{
+      dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1},{code :2},{code :3}]))
+    }
+    dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",`${pValidityYears}`))
     let ownersInitial=get(payload.Licenses[0],'tradeLicenseDetail.owners',[]);
     set(payload.Licenses[0],'tradeLicenseDetail.owners',ownersInitial.filter(owner=>owner.userActive));
     dispatch(prepareFinalObject("Licenses[0]", payload.Licenses[0]));
@@ -189,6 +197,7 @@ export const updatePFOforSearchResults = async (
       structureType:structureType,
       structureSubType:get(payload,'Licenses[0].tradeLicenseDetail.structureType','')||'none'
     }]
+    
     dispatch(
       prepareFinalObject("DynamicMdms.common-masters.structureTypes.selectedValues", selectedValues));
       dispatch(

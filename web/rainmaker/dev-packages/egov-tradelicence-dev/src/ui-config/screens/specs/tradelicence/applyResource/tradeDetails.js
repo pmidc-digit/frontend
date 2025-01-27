@@ -574,7 +574,7 @@ const tradeUnitCard = {
                 dispatch(
                   pFO(
                     "applyScreenMdmsData.TradeLicense.validityYears",
-                    [{code :"1"},{code :"2"},{code :"3"}]
+                    [{code :1},{code :2},{code :3}]
                   )
                 );
               for(let tunit of tradeUnitall){
@@ -590,7 +590,7 @@ const tradeUnitCard = {
                       dispatch(
                         pFO(
                           "applyScreenMdmsData.TradeLicense.validityYears",
-                          [{code :"1"}]
+                          [{code :1}]
                         )
                       );
                     }
@@ -1349,6 +1349,9 @@ export const tradeDetails = getCommonCard({
        className:"applicant-details-error"
       //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
      }, 
+     inputLabelProps: {
+      shrink: true
+    },
     // data: get(state.screenConfiguration.preparedFinalObject,"Licenses[0].ishazardous")==='NEWTL.HAZ'?[{code : "1"}]:[{code :"3"}],
     
    //  localePrefix: {
