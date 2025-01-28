@@ -262,12 +262,12 @@ export const OwnerInfoCard = {
               {
                 labelName: "Father",
                 labelKey: "COMMON_RELATION_FATHER",
-                value: "FATHER"
+                value: "Father"
               },
               {
                 label: "Husband",
                 labelKey: "COMMON_RELATION_HUSBAND",
-                value: "HUSBAND"
+                value: "Husband"
               }
             ],
             jsonPath:
