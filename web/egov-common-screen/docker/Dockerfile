@@ -8,12 +8,12 @@ ENV HOME=/tmp
 
 # copy the project files
 COPY ${WORK_DIR} .
-RUN apk --update add git
 RUN npm i && npm run build
+RUN npm run dev
 
 # Create runtime image
 FROM nginx:mainline-alpine
-ENV WEB_DIR=/var/web/common
+ENV WEB_DIR=/var/web/common-screen
 
 RUN mkdir -p ${WEB_DIR}
 
