@@ -9,7 +9,6 @@ ENV HOME=/tmp
 # copy the project files
 COPY ${WORK_DIR} .
 RUN npm i && npm run build
-RUN npm run dev
 
 # Create runtime image
 FROM nginx:mainline-alpine
