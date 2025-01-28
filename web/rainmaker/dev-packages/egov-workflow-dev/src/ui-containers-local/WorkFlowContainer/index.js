@@ -268,7 +268,7 @@ class WorkFlowContainer extends React.Component {
       }
     }
     if (moduleName === "FIRENOC") {
-
+      
       set(data[0], "fireNOCDetails.tenantId", get(data[0], "tenantId", ""));
 
     }
@@ -364,7 +364,7 @@ class WorkFlowContainer extends React.Component {
   createWorkFLow = async (label, isDocRequired) => {
     const { toggleSnackbar, dataPath, preparedFinalObject } = this.props;
     let data = {};
-
+      debugger
     if (dataPath == "BPA" || dataPath == "Assessment" || dataPath == "Property" || dataPath === "Noc") {
 
       data = get(preparedFinalObject, dataPath, {})
@@ -376,6 +376,30 @@ class WorkFlowContainer extends React.Component {
     let appendToPath = ""
     if (dataPath === "FireNOCs") {
       appendToPath = "fireNOCDetails."
+      const FireNOCassigneeAction = get(preparedFinalObject,"FireNOCs[0].fireNOCDetails.status", [])
+      if(FireNOCassigneeAction === "FIELDINSPECTION"){
+        const fireNoCwfDocumentPresent = get(preparedFinalObject,"FireNOCs[0].fireNOCDetails.wfDocuments", []).length > 0;
+         const fireNOCName = get(preparedFinalObject,"FireNOCs[0].fireNOCDetails.name", "NA");
+       const fireNOCComments = get(preparedFinalObject,"FireNOCs[0].fireNOCDetails.comment", "NA");
+        const fireNOCDate = get(preparedFinalObject,"FireNOCs[0].fireNOCDetails.date", "NA");
+        
+        if(fireNOCComments ==="" || fireNOCComments=== "NA" || fireNOCComments === null){
+            alert("Please Enter the Comments");
+            return false;
+        }
+        if(fireNOCName === "" || fireNOCName=== "NA" || fireNOCName=== null){
+            alert("Please Enter the Name");
+            return false;
+        }
+        if(fireNOCDate === "" || fireNOCDate === "NA" || fireNOCDate === null){
+          alert("Please Enter the Date");
+          return false;
+        }
+          if(!fireNoCwfDocumentPresent ){
+            alert("Please Upload the Documents");
+            return false;
+        }
+      }
     } else if (dataPath === "Assessment" || dataPath === "Property" || dataPath === "BPA" || dataPath === "Noc") {
       appendToPath = "workflow."
     } else {
@@ -403,7 +427,7 @@ class WorkFlowContainer extends React.Component {
         const PTStatus = get(preparedFinalObject,"Property.workflow.action", []);
         const WSassigneePresent = get(preparedFinalObject,"WaterConnection[0].assignee", []) ? get(preparedFinalObject,"WaterConnection[0].assignee", []).length > 0 : false;
         const WSassigneeAction = get(preparedFinalObject,"WaterConnection[0].action", "");
-          if(assigneePresent || FirenocassigneePresent || PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" ||  assigneeAction === "SENDBACKTOCITIZEN"|| FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || PTassigneeAction === "REJECT" || PTassigneeAction === "SENDBACKTOCITIZEN" ){
+        if(assigneePresent || FirenocassigneePresent || PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" ||  assigneeAction === "SENDBACKTOCITIZEN"|| FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || PTassigneeAction === "REJECT" || PTassigneeAction === "SENDBACKTOCITIZEN" ){
             this.wfUpdate(label);
           }
       } else {
@@ -419,6 +443,7 @@ class WorkFlowContainer extends React.Component {
   //   }
   // };
    else {
+    debugger;
     const PTassigneeAction = get(preparedFinalObject,"Property.workflow.action", [])
     const FireNOCassigneeAction = get(preparedFinalObject,"FireNOCs[0].fireNOCDetails.action", [])
     const assigneeAction = get(preparedFinalObject,"Licenses[0].action", [])
@@ -432,11 +457,12 @@ class WorkFlowContainer extends React.Component {
     const WSassigneeAction = get(preparedFinalObject,"WaterConnection[0].action", "");
       if(assigneePresent || FirenocassigneePresent ||window.location.pathname.includes("bill-amend")|| PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "APPROVE_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" || assigneeAction ===  "CANCEL"|| assigneeAction ===  "RESUBMIT" || assigneeAction === "SENDBACKTOCITIZEN" ||WSassigneeAction ==="SEND_BACK_TO_CITIZEN"|| WSassigneeAction === "RESUBMIT_APPLICATION" || WSassigneeAction === "REJECT" || FireNOCassigneeAction ==="RESUBMIT" || FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || FireNOCassigneeAction === "CANCEL" || PTassigneeAction === "REJECT" ||PTassigneeAction === "SENDBACKTOCITIZEN" || assigneeStatus === "INITIATED"){
         this.wfUpdate(label);
-     }
-     else{
-       alert("Please select Assignee Name");
-     }
-}
+      }
+      
+      else{
+        alert("Please select Assignee Name");
+      }
+  }
   };
 
 getRedirectUrl = (action, businessId, moduleName) => {
