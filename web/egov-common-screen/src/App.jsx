@@ -13,8 +13,7 @@ function App() {
     <>
       <Header />
       {/* //basename="/common" */}
-      <BrowserRouter basename="/common">
-
+      <BrowserRouter >
         <Routes>
           <Route path="/" element={<Card />} />
           <Route path="/privacy" element={<Privacy />} />
