@@ -12,7 +12,7 @@ RUN npm i && npm run build
 
 # Create runtime image
 FROM nginx:mainline-alpine
-ENV WEB_DIR=/var/web/common-screen
+ENV WEB_DIR=/var/web/common
 
 RUN mkdir -p ${WEB_DIR}
 
