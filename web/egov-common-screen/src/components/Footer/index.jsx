@@ -8,6 +8,9 @@ import edge from "../../assets/img/edge.png";
 import mozilla from "../../assets/img/mozilla.png";
 import wz from "../../assets/img/w3c.jpg";
 import gigw from "../../assets/img/GIGW_LOGO.png";
+import { useState } from "react";
+import Privacy from '../Privacy'
+
 // import privacy from "../../assets/img/Data-Policy.pdf";
 // import BlockchainStrategy from "../../assets/img/BlockchainStrategymerged.pdf";
 // import AIStrategy from "../../assets/img/AIStrategymerged.pdf";
@@ -55,16 +58,40 @@ import gigw from "../../assets/img/GIGW_LOGO.png";
 //         color: theme.palette.text.secondary,
 //     },
 // }));
-
+const Popup = ({ onClose }) => {
+    return (
+        <div className="fixed inset-0 flex items-center justify-center   mycsss" >
+            <div className=" p-6 rounded-lg shadow-lg">
+                <Privacy />
+                <button
+                    className="mt-4 px-4 py-2 bg-red-500  rounded"
+                    onClick={onClose}
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    );
+};
 export default function Footer() {
-
+    const [isOpen, setIsOpen] = useState(false);
     return (
         <>
+
             <div className="footertop">
                 <div className='footerdesign'>
                     <div className="container">
                         <div className="row">
                             <div className="col-md-4 col-sm-6 col-xs-12 ">
+                                <div className="flex flex-col items-center justify-center min-h-screen">
+                                    {/* <button
+                                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                                        onClick={() => setIsOpen(true)}
+                                    >
+                                        Open Popup
+                                    </button> */}
+                                    {isOpen && <Popup onClose={() => setIsOpen(false)} />}
+                                </div>
                                 <p>
                                     <h5 className="header" style={{ fontSize: "1rem", marginTop: "-5px" }}>
                                         <b>Contact Details</b>
@@ -121,14 +148,15 @@ export default function Footer() {
                                 >
                                     Contact Us
                                 </a><br />
-                                <a
-                                    href="/privacy"
+                                <button
+
+                                    onClick={() => setIsOpen(true)}
                                     id="flink"
                                     //className={classes.block}
                                     target="_blank"
                                 >
                                     Privacy policy
-                                </a><br />
+                                </button><br />
                                 <a
                                     href="https://nesda.centralindia.cloudapp.azure.com/#/citizen-survey"
                                     id="flink"

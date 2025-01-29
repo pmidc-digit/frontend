@@ -6,6 +6,18 @@
     color: white;
 }
 
+.mycsss {
+    position: absolute;
+    top: 10%;
+    background: #000000c7;
+}
+
+#flink {
+    color: white;
+    background: #f0f8ff00;
+    border: none;
+}
+
 .footertop {
     font-size: 14px;
     font-weight: 600;
