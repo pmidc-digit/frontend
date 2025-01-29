@@ -41,6 +41,7 @@ const getPaymentSearchAPI = (businessService = '') => {
   return `${PAYMENTSEARCH.GET.URL}${businessService}/${PAYMENTSEARCH.GET.ACTION}`;
 }
 const download = async (mode = "download", state, showConfirmation = false) => {
+
   let configKey = "ws-onetime-receipt";
   const FETCHRECEIPT = {
     GET: {
@@ -221,10 +222,14 @@ const download = async (mode = "download", state, showConfirmation = false) => {
         payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails = dcbArray;
       }
 
-
+      debugger;
+      // const queryStr = [
+      //   { key: "key", value: configKey },
+      //   { key: "tenantId", value: receiptQueryString[1].value.split('.')[0] }
+      // ]
       const queryStr = [
         { key: "key", value: configKey },
-        { key: "tenantId", value: receiptQueryString[1].value.split('.')[0] }
+        { key: "tenantId", value: receiptQueryString[2].value }
       ]
       if (payloadReceiptDetails && payloadReceiptDetails.Payments && payloadReceiptDetails.Payments.length == 0) {
         console.log("Could not find any receipts");
@@ -252,7 +257,7 @@ const download = async (mode = "download", state, showConfirmation = false) => {
         downloadReceiptFromFilestoreID(oldFileStoreId, mode, undefined, showConfirmation)
       }
       else {
-
+        debugger
         httpRequest("post", DOWNLOADRECEIPT.GET.URL, DOWNLOADRECEIPT.GET.ACTION, queryStr, { Payments: payloadReceiptDetails.Payments }, { 'Accept': 'application/json' }, { responseType: 'arraybuffer' })
           .then(res => {
             res.filestoreIds[0]
