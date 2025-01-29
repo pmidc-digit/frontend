@@ -18,5 +18,5 @@ RUN mkdir -p ${WEB_DIR}
 
 COPY --from=build /app/dist ${WEB_DIR}/
 RUN ls -la /var/web
-RUN ls -la /var/wev/common
+RUN ls -la /var/web/common
 COPY --from=build /app/docker/nginx.conf /etc/nginx/conf.d/default.conf
