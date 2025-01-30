@@ -6,7 +6,7 @@
     color: white;
 }
 
-button.btn-close.btn-close-white {
+button.btn-close.btn-close-black {
     float: right;
     margin-top: 10px;
     margin-right: 10px;
@@ -15,7 +15,8 @@ button.btn-close.btn-close-white {
 .mycsss {
     position: absolute;
     top: 10%;
-    background: #000000c7;
+    color: black;
+    background: #ffffffe8;
 }
 
 #flink {

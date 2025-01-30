@@ -61,7 +61,7 @@ import Emerging from "../../assets/img/Emerging-Technologies.pdf";
 const Popup = ({ onClose }) => {
     return (
         <div className="fixed inset-0 flex items-center justify-center   mycsss" >
-            <button type="button" class="btn-close btn-close-white" aria-label="Close" onClick={onClose}></button>
+            <button type="button" class="btn-close btn-close-black" aria-label="Close" onClick={onClose}></button>
             <div className=" p-6 rounded-lg shadow-lg">
                 <Privacy />
                 <button
