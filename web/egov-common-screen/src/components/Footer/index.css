@@ -6,6 +6,12 @@
     color: white;
 }
 
+button.btn-close.btn-close-white {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
 .mycsss {
     position: absolute;
     top: 10%;

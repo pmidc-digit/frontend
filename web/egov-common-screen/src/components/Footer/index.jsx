@@ -11,10 +11,10 @@ import gigw from "../../assets/img/GIGW_LOGO.png";
 import { useState } from "react";
 import Privacy from '../Privacy'
 
-// import privacy from "../../assets/img/Data-Policy.pdf";
-// import BlockchainStrategy from "../../assets/img/BlockchainStrategymerged.pdf";
-// import AIStrategy from "../../assets/img/AIStrategymerged.pdf";
-// import Emerging from "../../assets/img/Emerging-Technologies.pdf";
+import privacy from "../../assets/img/Data-Policy.pdf";
+import BlockchainStrategy from "../../assets/img/BlockchainStrategymerged.pdf";
+import AIStrategy from "../../assets/img/AIStrategymerged.pdf";
+import Emerging from "../../assets/img/Emerging-Technologies.pdf";
 
 // const useStyles = makeStyles((theme) => ({
 //     root: {
@@ -61,6 +61,7 @@ import Privacy from '../Privacy'
 const Popup = ({ onClose }) => {
     return (
         <div className="fixed inset-0 flex items-center justify-center   mycsss" >
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" onClick={onClose}></button>
             <div className=" p-6 rounded-lg shadow-lg">
                 <Privacy />
                 <button
@@ -216,7 +217,7 @@ export default function Footer() {
                                     Fire NOC
                                 </a><br />
                                 <a
-                                    href="#"
+                                    href={AIStrategy}
                                     //className={classes.block}
                                     target="_blank"
                                     id="flink"
@@ -224,7 +225,7 @@ export default function Footer() {
                                     AI Strategy
                                 </a> <br />
                                 <a
-                                    href="#"
+                                    href={BlockchainStrategy}
                                     //className={classes.block}
                                     target="_blank"
                                     id="flink"
@@ -232,7 +233,7 @@ export default function Footer() {
                                     Block Chain Strategy
                                 </a> <br />
                                 <a
-                                    href="#"
+                                    href={Emerging}
                                     //className={classes.block}
                                     target="_blank"
                                     id="flink"
@@ -337,7 +338,7 @@ export default function Footer() {
                             <p>© 2025 PMIDC, GOVERNMENT OF PUNJAB. All Rights Reserved by PMIDC</p>
                         </div>
                         <div className="col-sm-12 col-md-6 lupwz">
-                            <p>Last updated on : 01-02-2024 | <img src={wz} alt='mSewa Punjab' className="wz" /> <img src={gigw} alt='mSewa Punjab' className="wz" /></p>
+                            <p>Last updated on : 31-01-2025 | <img src={wz} alt='mSewa Punjab' className="wz" /> <img src={gigw} alt='mSewa Punjab' className="wz" /></p>
                         </div>
                     </div>
                 </div>
