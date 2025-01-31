@@ -180,8 +180,8 @@ export const updatePFOforSearchResults = async (
   if (payload && payload.Licenses) {
     debugger
    let pValidityYears = get(payload.Licenses[0],'tradeLicenseDetail.additionalDetail.validityYears',[]);
-    
-    if(pValidityYears && pValidityYears ===1){
+  let workflowCode = get(payload.Licenses[0],'workflowCode');
+    if(workflowCode === 'NEWTL.HAZ'){
       dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1}]))
     }else{
       dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1},{code :2},{code :3}]))

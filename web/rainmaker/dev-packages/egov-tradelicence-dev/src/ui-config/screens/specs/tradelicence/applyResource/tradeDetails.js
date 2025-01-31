@@ -560,7 +560,7 @@ const tradeUnitCard = {
               }
              },
              afterFieldChange: (action, state, dispatch) => {
-              
+              debugger
               let tradeUnitall= get(
                   state,
                   "screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail.tradeUnits",
@@ -577,6 +577,8 @@ const tradeUnitCard = {
                     [{code :1},{code :2},{code :3}]
                   )
                 );
+             //let filterdtradeUnitall = tradeUnitall.filter(item => !item.isDeleted);
+             //console.log("filterdtradeUnitall"+JSON.stringify(filterdtradeUnitall))
               for(let tunit of tradeUnitall){
                 for(let mdmstunit of mdmstradeUnitall){
                  if(tunit.tradeType == mdmstunit.code){
@@ -1346,7 +1348,8 @@ export const tradeDetails = getCommonCard({
        labelKey: "Select Valid for No. of Years"
      },
      props:{
-       className:"applicant-details-error"
+       className:"applicant-details-error",
+       required: true,
       //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
      }, 
      inputLabelProps: {
