@@ -20,6 +20,7 @@ import "./index.css";
 class Footer extends React.Component {
   state = {
     open: false,
+    nocValid : false,
     data: {},
     employeeList: []
     //responseLength: 0
@@ -87,7 +88,7 @@ class Footer extends React.Component {
     );
     const firenocstatus = get(
       state,
-      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.status"
+      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.status","NA"
     );
     if (getdate) {
       const cd = getdate.split("PB-FN-");
@@ -99,6 +100,9 @@ class Footer extends React.Component {
       diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       console.log(diffTime + " milliseconds");
       console.log(diffDays + " days");
+    }
+    if(firenocstatus && firenocstatus.toUpperCase() == "FIELDINSPECTION"){
+      this.setState({ nocValid: true});
     }
     //if(firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED-DV" || firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED"){
     if (true) {
@@ -392,7 +396,7 @@ class Footer extends React.Component {
       state,
       dispatch
     } = this.props;
-    const { open, data, employeeList } = this.state;
+    const { open, data, employeeList, nocValid } = this.state;
     const { isDocRequired } = data;
     const appName = process.env.REACT_APP_NAME;
     const downloadMenu =
@@ -532,10 +536,12 @@ class Footer extends React.Component {
           open={open}
           onClose={this.onClose}
           dialogData={data}
+          nocValid={nocValid}
           dropDownData={employeeList}
           handleFieldChange={handleFieldChange}
           onButtonClick={onDialogButtonClick}
           dataPath={dataPath}
+
         />
       </div>
     );

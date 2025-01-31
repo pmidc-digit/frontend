@@ -1,74 +1,78 @@
-
-#card1{
+#card1 {
     background: #FFFFFF;
     box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12);
     border-radius: 8px;
 }
-#card2{
-    background: #FFFFFF;
-    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
 
-}
-#card3{
+#card2 {
     background: #FFFFFF;
     box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12);
     border-radius: 8px;
 
 }
+
+#card3 {
+    background: #FFFFFF;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+
+}
+
 .cardservice h5 {
     color: #F47738;
 }
-#paylink1
-{
+
+#paylink1 {
     background: #F47738;
     border-radius: 32px;
     width: 168px;
     height: 32px;
     left: 146px;
     top: 504px;
-    color:#FFFFFF;
+    color: #FFFFFF;
     margin-top: 10%;
 
 }
-#arrowicon1{
-    height: 12px;
-    width: 12px;
-}
-#arrowicon2{
-    height: 12px;
-    width: 12px;   
-}
-#arrowicon3{
+
+#arrowicon1 {
     height: 12px;
     width: 12px;
 }
 
-#paylink2
-{
+#arrowicon2 {
+    height: 12px;
+    width: 12px;
+}
+
+#arrowicon3 {
+    height: 12px;
+    width: 12px;
+}
+
+#paylink2 {
     background: #F47738;
     border-radius: 32px;
     width: 168px;
     height: 32px;
     left: 146px;
     top: 504px;
-    color:#FFFFFF;
+    color: #FFFFFF;
     margin-top: 5%;
 
 }
-#paylink3
-{   
+
+#paylink3 {
     background: #F47738;
     border-radius: 32px;
     width: 95px;
     height: 32px;
     left: 146px;
     top: 504px;
-    color:#FFFFFF;
+    color: #FFFFFF;
     margin-top: 10%;
 }
-#cardheadingsnew
-{
+
+#cardheadingsnew {
     width: 104px;
     height: 8px;
     left: 200px;
@@ -77,40 +81,39 @@
     font-weight: 500;
 }
 
-#carddescription
-{
+#carddescription {
     font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 14px;
-line-height: 20px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
 }
+
 @media only screen and (max-width: 576px) {
-    
-    
-    #card1
-            {
-                height: auto !important;
-                width: auto !important;
-                margin-top: 10px!important;
-                margin-left: auto !important; 
-            }
-            #card2
-            {
-                height: auto !important;
-                width: auto !important; 
-                margin-top: auto !important; 
-                margin-left: auto !important; 
-              
-            }
-            #card3
-            {
-                height: auto !important;
-                margin-top: auto !important; 
-                margin-left: auto !important; 
-                width: 100% !important;
-              
-            }
+
+
+    #card1 {
+        height: auto !important;
+        width: auto !important;
+        margin-top: 10px !important;
+        margin-left: auto !important;
+    }
+
+    #card2 {
+        height: auto !important;
+        width: auto !important;
+        margin-top: auto !important;
+        margin-left: auto !important;
+
+    }
+
+    #card3 {
+        height: auto !important;
+        margin-top: auto !important;
+        margin-left: auto !important;
+        width: 100% !important;
+
+    }
 
 
 }
@@ -118,7 +121,7 @@ line-height: 20px;
 
 @media only screen and (max-width: 1920px) {
 
-  /*   #container
+    /*   #container
    {
        margin-left: 2%;
    margin-right: 2%;
@@ -126,59 +129,54 @@ line-height: 20px;
    }  */
 
 
-   #griditem
-   {
-       z-index: 100;
-   }
+    #griditem {
+        z-index: 100;
+    }
 
-   #card1
-   {
-       height: 270px;
-       margin-top: -114px;
-   }
-   #card2
-   {
-       height: 270px;
-       margin-top: -114px;
-     
-   }
-   #card3
-   {
-       height: 270px;
-       margin-top: -114px;
-   }
+    #card1 {
+        height: 270px;
+        margin-top: -114px;
+    }
+
+    #card2 {
+        height: 270px;
+        margin-top: -114px;
+
+    }
+
+    #card3 {
+        height: 270px;
+        margin-top: -114px;
+    }
 
 }
 
 
 @media only screen and (max-width: 1600px) {
 
-     #container
-    {
+    #container {
         margin-left: 2%;
-    margin-right: 2%;
+        margin-right: 2%;
 
-    } 
+    }
 
 
-    #griditem
-    {
+    #griditem {
         z-index: 100;
     }
 
-    #card1
-    {
+    #card1 {
         height: 265px;
         margin-top: -114px;
     }
-    #card2
-    {
+
+    #card2 {
         height: 265px;
         margin-top: -114px;
-      
+
     }
-    #card3
-    {
+
+    #card3 {
         height: 265px;
         margin-top: -114px;
     }
@@ -189,42 +187,41 @@ line-height: 20px;
 @media only screen and (max-width: 1367px) {
 
 
-    #card1
-    {
+    #card1 {
         height: 285px;
         margin-top: -114px;
     }
-    #card2
-    {
+
+    #card2 {
         height: 285px;
         margin-top: -114px;
-      
+
     }
-    #card3
-    {
+
+    #card3 {
         height: 285px;
         margin-top: -114px;
     }
 
 
 }
+
 @media only screen and (max-width: 1280px) {
 
 
 
-    #card1
-    {
+    #card1 {
         height: 270px;
         margin-top: -114px;
     }
-    #card2
-    {
+
+    #card2 {
         height: 270px;
         margin-top: -114px;
-      
+
     }
-    #card3
-    {
+
+    #card3 {
         height: 270px;
         margin-top: -114px;
     }
@@ -239,24 +236,22 @@ line-height: 20px;
         //margin-left: 50px;
 
     } */
-    #griditem
-    {
+    #griditem {
         width: auto;
         z-index: 100;
     }
 
-    #card1
-    {
+    #card1 {
         height: 280px;
         margin-top: -114px;
     }
-    #card2
-    {
+
+    #card2 {
         height: 280px;
         margin-top: -114px;
     }
-    #card3
-    {
+
+    #card3 {
         height: 280px;
         margin-top: -114px;
     }
@@ -271,24 +266,23 @@ line-height: 20px;
         //margin-left: 50px;
 
     } */
-    #griditem
-    {
+    #griditem {
         width: auto;
         z-index: 100;
     }
 
-    #card1
-    {
+    #card1 {
         height: 326px;
         margin-top: -114px;
     }
-    #card2
-    {
-        height: 326px;;
+
+    #card2 {
+        height: 326px;
+        ;
         margin-top: -114px;
     }
-    #card3
-    {
+
+    #card3 {
         height: 326px;
         margin-top: -114px;
 
@@ -298,50 +292,47 @@ line-height: 20px;
 
 
 
-@media only screen and (max-width: 1025px)
-{
-    #card1
-    {
+@media only screen and (max-width: 1025px) {
+    #card1 {
         height: 310px;
         margin-top: -114px;
     }
-    #card2
-    {
+
+    #card2 {
         height: 310px;
         margin-top: -114px;
     }
-    #card3
-    {
+
+    #card3 {
         height: 310px;
         margin-top: -114px;
     }
-   
+
 }
 
-@media only screen and (max-width: 900px)
-{
-    #container
-    {
+@media only screen and (max-width: 900px) {
+    #container {
         margin-left: 0%;
-    margin-right: 0%;
+        margin-right: 0%;
 
-    } 
-    #card1
-    {
+    }
+
+    #card1 {
         height: 250px;
         margin-top: -50px;
     }
-    #card2
-    {
+
+    #card2 {
         height: 250px;
         margin-top: 0px;
     }
-    #card3
-    {
+
+    #card3 {
         height: 250px;
         margin-top: 0px;
 
     }
+
     #paylink1 {
         background: #F47738;
         border-radius: 32px;
@@ -352,6 +343,7 @@ line-height: 20px;
         color: #FFFFFF;
         margin-top: 7%;
     }
+
     #paylink2 {
         background: #F47738;
         border-radius: 32px;
@@ -362,6 +354,7 @@ line-height: 20px;
         color: #FFFFFF;
         margin-top: 7%;
     }
+
     #paylink3 {
         background: #F47738;
         border-radius: 32px;
@@ -372,34 +365,31 @@ line-height: 20px;
         color: #FFFFFF;
         margin-top: 7%;
     }
-  
+
 }
 
 
-@media only screen and (max-width: 800px)
-{
-    #container
-    {
+@media only screen and (max-width: 800px) {
+    #container {
         margin-left: 0%;
-    margin-right: 0%;
+        margin-right: 0%;
 
-    } 
-    #card1
-    {
+    }
+
+    #card1 {
         height: 250px;
         margin-top: -50px;
     }
-    #card2
-    {
+
+    #card2 {
         height: 250px;
         margin-top: 0px;
     }
-    #card3
-    {
+
+    #card3 {
         height: 250px;
         margin-top: 0px;
 
     }
-    
+
 }
-
