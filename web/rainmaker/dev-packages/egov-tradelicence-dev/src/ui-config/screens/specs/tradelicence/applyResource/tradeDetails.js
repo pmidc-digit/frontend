@@ -560,7 +560,7 @@ const tradeUnitCard = {
               }
              },
              afterFieldChange: (action, state, dispatch) => {
-              
+              debugger
               let tradeUnitall= get(
                   state,
                   "screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail.tradeUnits",
@@ -574,9 +574,11 @@ const tradeUnitCard = {
                 dispatch(
                   pFO(
                     "applyScreenMdmsData.TradeLicense.validityYears",
-                    [{code :"1"}]
+                    [{code :1},{code :2},{code :3}]
                   )
                 );
+             //let filterdtradeUnitall = tradeUnitall.filter(item => !item.isDeleted);
+             //console.log("filterdtradeUnitall"+JSON.stringify(filterdtradeUnitall))
               for(let tunit of tradeUnitall){
                 for(let mdmstunit of mdmstradeUnitall){
                  if(tunit.tradeType == mdmstunit.code){
@@ -590,7 +592,7 @@ const tradeUnitCard = {
                       dispatch(
                         pFO(
                           "applyScreenMdmsData.TradeLicense.validityYears",
-                          [{code :"1"}]
+                          [{code :1}]
                         )
                       );
                     }
@@ -1335,32 +1337,36 @@ export const tradeDetails = getCommonCard({
   ),
   tradeUnitCard,
   accessoriesCard,
-//   tradeRenewalYears:  {
-//     ...getSelectField({
-//     label: {
-//       labelName: "Valid for No. of Years",
-//       labelKey: "Valid for No. of Years"
-//     },
-//     placeholder: {
-//       labelName: "Select Valid for No. of Years",
-//       labelKey: "Select Valid for No. of Years"
-//     },
-//     props:{
-//       className:"applicant-details-error"
-//      //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
-//     }, 
-//    // data: get(state.screenConfiguration.preparedFinalObject,"Licenses[0].ishazardous")==='NEWTL.HAZ'?[{code : "1"}]:[{code :"3"}],
+   tradeRenewalYears:  {
+     ...getSelectField({
+     label: {
+       labelName: "Valid for No. of Years",
+       labelKey: "Valid for No. of Years"
+     },
+     placeholder: {
+       labelName: "Select Valid for No. of Years",
+       labelKey: "Select Valid for No. of Years"
+     },
+     props:{
+       className:"applicant-details-error",
+       required: true,
+      //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
+     }, 
+     inputLabelProps: {
+      shrink: true
+    },
+    // data: get(state.screenConfiguration.preparedFinalObject,"Licenses[0].ishazardous")==='NEWTL.HAZ'?[{code : "1"}]:[{code :"3"}],
     
-//   //  localePrefix: {
-//   //     moduleName: "common-masters",
-//   //     masterName: "STRUCTURETYPE"
-//   //   },
-//     required: true,
-//     jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",
-//     sourceJsonPath:"applyScreenMdmsData.TradeLicense.validityYears"
-//   }),
+   //  localePrefix: {
+   //     moduleName: "common-masters",
+   //     masterName: "STRUCTURETYPE"
+   //   },
+     required: true,
+     jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",
+     sourceJsonPath:"applyScreenMdmsData.TradeLicense.validityYears"
+   }),
   
-// }
+ }
 });
 
 const setFieldsOnAddItem = (state, multiItemContent) => {
