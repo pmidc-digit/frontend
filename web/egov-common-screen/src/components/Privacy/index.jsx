@@ -13,9 +13,9 @@ export default function privacy() {
                 <div className="row features">
                     <div className="col-sm-12 col-md-12">
                         <h1>Privacy Policy</h1>
-                        <h3> Effective Date: 21 January 2025</h3>
+                        <h3 className='efdate'> Effective Date: 21 January 2025</h3>
 
-                        <h2>MSEVA</h2>
+                        <h2 className='mseva'>MSEVA</h2>
                         <p>We values your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and protect your data when you use our mobile application mseva. By using the App, you agree to the practices outlined in this Privacy Policy.
                         </p>
                         <h3>1. Information We Collect</h3>
