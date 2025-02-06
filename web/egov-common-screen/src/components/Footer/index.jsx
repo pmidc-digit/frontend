@@ -149,15 +149,14 @@ export default function Footer() {
                                 >
                                     Contact Us
                                 </a><br />
-                                <button
-
-                                    onClick={() => setIsOpen(true)}
+                                 <a
+                                    href="https://mseva-uat.lgpunjab.gov.in/common/privacy"
                                     id="flink"
                                     //className={classes.block}
                                     target="_blank"
                                 >
                                     Privacy policy
-                                </button><br />
+                                </a><br />
                                 <a
                                     href="https://nesda.centralindia.cloudapp.azure.com/#/citizen-survey"
                                     id="flink"
