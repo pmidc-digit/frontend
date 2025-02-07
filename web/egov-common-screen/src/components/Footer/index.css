@@ -6,6 +6,25 @@
     color: white;
 }
 
+button.btn-close.btn-close-black {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.mycsss {
+    position: absolute;
+    top: 10%;
+    color: black;
+    background: #ffffffe8;
+}
+
+#flink {
+    color: white;
+    background: #f0f8ff00;
+    border: none;
+}
+
 .footertop {
     font-size: 14px;
     font-weight: 600;

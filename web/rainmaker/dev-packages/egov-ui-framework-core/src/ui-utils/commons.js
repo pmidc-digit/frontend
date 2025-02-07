@@ -204,6 +204,8 @@ export const replaceStrInPath = (inputString, search, replacement) => {
 };
 
 export const getFileUrlFromAPI = async (fileStoreId, tenantId) => {
+  debugger;
+  //tenantId = getQueryArg(window.location.href, "tenantId")
   const queryObject = [
     { key: "tenantId", value: tenantId || commonConfig.tenantId },
     { key: "fileStoreIds", value: fileStoreId }
