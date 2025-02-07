@@ -176,17 +176,9 @@ export const updatePFOforSearchResults = async (
   // const payload = await getSearchResults(queryObject)
   // getQueryArg(window.location.href, "action") === "edit" &&
   //   (await setDocsForEditFlow(state, dispatch));
-  
+
   if (payload && payload.Licenses) {
-    debugger
-   let pValidityYears = get(payload.Licenses[0],'tradeLicenseDetail.additionalDetail.validityYears',[]);
-  let workflowCode = get(payload.Licenses[0],'workflowCode');
-    if(workflowCode === 'NEWTL.HAZ'){
-      dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1}]))
-    }else{
-      dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1},{code :2},{code :3}]))
-    }
-    dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",`${pValidityYears}`))
+    
     let ownersInitial=get(payload.Licenses[0],'tradeLicenseDetail.owners',[]);
     set(payload.Licenses[0],'tradeLicenseDetail.owners',ownersInitial.filter(owner=>owner.userActive));
     dispatch(prepareFinalObject("Licenses[0]", payload.Licenses[0]));
@@ -197,7 +189,6 @@ export const updatePFOforSearchResults = async (
       structureType:structureType,
       structureSubType:get(payload,'Licenses[0].tradeLicenseDetail.structureType','')||'none'
     }]
-    
     dispatch(
       prepareFinalObject("DynamicMdms.common-masters.structureTypes.selectedValues", selectedValues));
       dispatch(
@@ -437,7 +428,9 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
       set(queryObject[0], "workflowCode", "NEWTL.HAZ");
     }
     else{
-      set(queryObject[0], "workflowCode", "NewTL");
+      //set(queryObject[0], "workflowCode", "NewTL");
+      set(queryObject[0], "workflowCode", "NEWTL.NHAZ");
+      
     }
     
     set(queryObject[0], "applicationType", "NEW");
@@ -628,7 +621,7 @@ else{
         owners && owners.filter(item => !item.hasOwnProperty("isDeleted"));
   // Add Validity Year in additionalDetail object for 3 Year Validity
         let validityYears = {
-          validityYears : parseInt(queryObject[0].tradeLicenseDetail.additionalDetail.validityYears)
+          validityYears : 1
       }
       set(queryObject[0], "tradeLicenseDetail.tradeUnits", mergedTradeUnits);
       set(queryObject[0], "tradeLicenseDetail.accessories", mergedAccessories);
