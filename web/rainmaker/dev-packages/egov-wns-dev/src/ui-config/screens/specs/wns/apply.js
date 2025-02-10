@@ -1,7 +1,7 @@
 import commonConfig from "config/common.js";
 import {
   getBreak, getCommonCard,
-  getCommonContainer, getCommonHeader, getCommonParagraph, getCommonTitle, getStepperObject
+  getCommonContainer, getCommonHeader, getCommonParagraph, getCommonTitle, getStepperObject, getLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, toggleSnackbar, unMountScreen } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
@@ -32,6 +32,10 @@ import { reviewModificationsEffective } from "./applyResource/reviewModification
 import { reviewOwner } from "./applyResource/reviewOwner";
 import './index.css'
 import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+
+const downloadselfcare = () => {
+  window.open('https://docs.google.com/gview?url=https://github.com/erramesh000/documentPMIDC/raw/main/Self%20Declaration...pdf', '_blank');
+}
 let isMode = isModifyMode();
 export const stepperData = () => {
   if (process.env.REACT_APP_NAME === "Citizen") {
@@ -106,6 +110,29 @@ export const documentDetails = getCommonCard({
       "Only one file can be uploaded for one document. If multiple files need to be uploaded then please combine all files in a pdf and then upload",
     labelKey: "WS_DOCUMENT_DETAILS_SUBTEXT"
   }),
+  downloadButton: {
+    componentPath: "Button",
+    props: {
+      variant: "outlined",
+      color: "primary",
+      style: {
+        minWidth: "150px",
+        height: "48px",
+        marginRight: "10px"
+      }
+    },
+    children: {
+      downloadButton: getLabel({
+        labelKey: "DOWNLOAD SELF DECLARATION"
+      })
+    },
+    onClickDefination: {
+      action: "condition",
+      callBack: (state, dispatch) => {
+        downloadselfcare();
+      }
+    },
+  },
   break: getBreak(),
   documentList: {
     uiFramework: "custom-containers-local",
@@ -151,7 +178,7 @@ export const getMdmsData = async dispatch => {
 
           ]
         },
-        { moduleName: "PropertyTax", masterDetails: [{ name: "PTWorkflow" }]}
+        { moduleName: "PropertyTax", masterDetails: [{ name: "PTWorkflow" }] }
       ]
     }
   };
@@ -206,29 +233,29 @@ export const getMdmsData = async dispatch => {
           filtered.push(item)
         return filtered
       }, [])
-      
-	  let payloadData=payload.MdmsRes['ws-services-masters'];
-         // console.log("Hello PayloadDAta"+tenantId);
-             // debugger;
+
+      let payloadData = payload.MdmsRes['ws-services-masters'];
+      // console.log("Hello PayloadDAta"+tenantId);
+      // debugger;
       let tenantId = getQueryArg(window.location.href, "tenantId");
-      if(tenantId === "pb.patiala"){
-          let groupsar = [];
-          const batches =payload &&
+      if (tenantId === "pb.patiala") {
+        let groupsar = [];
+        const batches = payload &&
           payloadData.groups.filter((item) => {
-              groupsar.push({ item });
-              return groupsar;
-            }, []);
-        payload.MdmsRes['ws-services-masters'].groups=batches;
+            groupsar.push({ item });
+            return groupsar;
+          }, []);
+        payload.MdmsRes['ws-services-masters'].groups = batches;
       }
-              
-                //console.log("sdjsdsj"+JSON.stringify(groupsar))
+
+      //console.log("sdjsdsj"+JSON.stringify(groupsar))
       payload.MdmsRes['ws-services-masters'].waterSource = filtered;
       payload.MdmsRes['ws-services-masters'].GROUND = GROUND;
       payload.MdmsRes['ws-services-masters'].SURFACE = SURFACE;
       payload.MdmsRes['ws-services-masters'].BULKSUPPLY = BULKSUPPLY;
-    //  
+      //  
 
-    } 
+    }
     //related to ownershipcategory
     let OwnerShipCategory = get(
       payload,
@@ -276,7 +303,7 @@ const showHideFieldModifyConnection = (action) => {
 
 const showHideFiedsPendingForConnectionActivation = (action, state, dispatch) => {
   let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
-  if(applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
+  if (applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
     set(action, "screenConfig.components.div.children.formwizardFirstStep.children.OwnerInfoCard.children.cardContent.children.tradeUnitCardContainer.children.numberOfTaps.props.disabled", true);
     set(action, "screenConfig.components.div.children.formwizardFirstStep.children.OwnerInfoCard.children.cardContent.children.tradeUnitCardContainer.children.pipeSize.props.isDisabled", true);
     set(action, "screenConfig.components.div.children.formwizardFirstStep.children.OwnerInfoCard.children.cardContent.children.tradeUnitCardContainer.children.getCheckboxContainer.props.disabled", true);
@@ -297,7 +324,7 @@ const showHideFiedsPendingForConnectionActivation = (action, state, dispatch) =>
     set(action, "screenConfig.components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea.props.disabled", false);
     set(action, "screenConfig.components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType.props.isDisabled", false);
   }
-}      
+}
 
 
 
@@ -372,7 +399,7 @@ export const getData = async (action, state, dispatch) => {
         // ModifyEdit should not call create.
         dispatch(prepareFinalObject("modifyAppCreated", true));
       }
-     
+
       dispatch(prepareFinalObject("applyScreen", findAndReplace(combinedArray[0], "null", "NA")));
       // For oldvalue display
       let oldcombinedArray = cloneDeep(combinedArray[0]);
@@ -515,7 +542,7 @@ export const getData = async (action, state, dispatch) => {
       }
       let UsageType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.property.usageCategory");
       let billingType = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.billingType");
-      if( getQueryArg(window.location.href, "action") === "edit" && billingType === "STANDARD") {
+      if (getQueryArg(window.location.href, "action") === "edit" && billingType === "STANDARD") {
         dispatch(
           handleField(
             "apply",
@@ -562,15 +589,15 @@ export const getData = async (action, state, dispatch) => {
         showHideFieldModifyConnection(action);
       }
       let docs = get(state, "screenConfiguration.preparedFinalObject");
-      console.log("sdsgd"+JSON.stringify(docs))
+      console.log("sdsgd" + JSON.stringify(docs))
       await prefillDocuments(docs, "displayDocs", dispatch);
       showHideFiedsPendingForConnectionActivation(action, state, dispatch);
       let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
-      if(applicationStatus === "PENDING_FOR_FIELD_INSPECTION") {
-        dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "required", true ) ); 
-        dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "props.required", true ) );
-        dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "required", true ) ); 
-        dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "props.required", true ) );
+      if (applicationStatus === "PENDING_FOR_FIELD_INSPECTION") {
+        dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "required", true));
+        dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "props.required", true));
+        dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "required", true));
+        dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "props.required", true));
       }
     }
     // showHideFiedsPendingForConnectionActivation(action, state, dispatch);
@@ -579,11 +606,11 @@ export const getData = async (action, state, dispatch) => {
     getApplyPropertyDetails(queryObject, dispatch, propertyID)
   }
 };
-const  getApplicationNoLabel= () => {
-  if (isModifyMode()&& !isModifyModeAction()) {
+const getApplicationNoLabel = () => {
+  if (isModifyMode() && !isModifyModeAction()) {
     return "WS_ACKNO_CONNECTION_NO_LABEL";
   }
-  return  "WS_ACKNO_APP_NO_LABEL" ;
+  return "WS_ACKNO_APP_NO_LABEL";
 }
 
 const getApplyPropertyDetails = async (queryObject, dispatch, propertyID) => {
@@ -593,12 +620,12 @@ const getApplyPropertyDetails = async (queryObject, dispatch, propertyID) => {
     dispatch(toggleSnackbar(true, { labelKey: `ERR_WS_PROP_STATUS_${propertyObj.status}`, labelName: `Property Status is ${propertyObj.status}` }, "warning"));
     showHideFieldsFirstStep(dispatch, propertyObj.propertyId, false);
   }
-  if(propertyObj && propertyObj.owners && propertyObj.owners.length > 0) {
+  if (propertyObj && propertyObj.owners && propertyObj.owners.length > 0) {
     propertyObj.owners = propertyObj.owners.filter(owner => owner.status == "ACTIVE");
   }
-  if(propertyObj.units == "NA" && propertyObj.additionalDetails && propertyObj.additionalDetails.subUsageCategory) {
+  if (propertyObj.units == "NA" && propertyObj.additionalDetails && propertyObj.additionalDetails.subUsageCategory) {
     propertyObj.units = [];
-    propertyObj.units.push({usageCategory: propertyObj.additionalDetails.subUsageCategory})
+    propertyObj.units.push({ usageCategory: propertyObj.additionalDetails.subUsageCategory })
   }
   dispatch(prepareFinalObject("applyScreen.property", findAndReplace(propertyObj, null, "NA")));
   dispatch(prepareFinalObject("searchScreen.propertyIds", propertyID));
@@ -678,159 +705,159 @@ const screenConfig = {
   uiFramework: "material-ui",
   name: "apply",
   // hasBeforeInitAsync:true,
-  beforeInitScreen:  (action, state, dispatch) => {
+  beforeInitScreen: (action, state, dispatch) => {
     // dispatch(prepareFinalObject("applyScreen.water", true));
     // dispatch(prepareFinalObject("applyScreen.sewerage", false));
     const propertyId = getQueryArg(window.location.href, "propertyId");
-    
+
     //let discharge = wsDischarge.split("-");
-    
-   // let dischargeFee = '12';
-   // let tenantId = getQueryArg(window.location.href, "tenantId");
+
+    // let dischargeFee = '12';
+    // let tenantId = getQueryArg(window.location.href, "tenantId");
     const applicationNumber = getQueryArg(window.location.href, "applicationNumber");
     const dischargeConnection = getQueryArg(window.location.href, "dischargeConnection");
     const dischargeFee = getQueryArg(window.location.href, "dischargeFee");
-    
+
     if (getQueryArg(window.location.href, "edited") != "true") {
-    pageReset(dispatch);
-    getData(action, state, dispatch).then(() => {
-      let ownershipCategory = get(
-        state,
-        "screenConfiguration.preparedFinalObject.applyScreenMdmsData.common-masters.OwnerShipCategory",
-        []
-      );
-      dispatch(
-        prepareFinalObject(
-          "OwnershipCategory",
-          ownershipCategory
-        )
-      );
-    });
-    
+      pageReset(dispatch);
+      getData(action, state, dispatch).then(() => {
+        let ownershipCategory = get(
+          state,
+          "screenConfiguration.preparedFinalObject.applyScreenMdmsData.common-masters.OwnerShipCategory",
+          []
+        );
+        dispatch(
+          prepareFinalObject(
+            "OwnershipCategory",
+            ownershipCategory
+          )
+        );
+      });
+
       dispatch(prepareFinalObject("applyScreen.water", true));
       dispatch(prepareFinalObject("applyScreen.sewerage", false));
       dispatch(prepareFinalObject("applyScreen.discharge", false));
-      dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",false));
-      dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",0));
-        
-    if (propertyId) {
-      togglePropertyFeilds(action, true);
-      if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.water") && get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
-        toggleWaterFeilds(action, true);
-        toggleSewerageFeilds(action, true);
-      } else if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
-        toggleWaterFeilds(action, false);
-        toggleSewerageFeilds(action, true);
-      } else {
-        toggleWaterFeilds(action, true);
-        toggleSewerageFeilds(action, false);
-      }
-    } else if (applicationNumber && getQueryArg(window.location.href, "action") === "edit") {
-        
-      togglePropertyFeilds(action, true);
+      dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
+      dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
 
-      if (applicationNumber.includes("SW")) {
-        if(dischargeConnection === 'true'){
-          dispatch(prepareFinalObject("applyScreen.water", false));
-          dispatch(prepareFinalObject("applyScreen.sewerage", true));
-          dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'true'));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        } else if(dischargeConnection === 'OnlyMotor'){
-          dispatch(prepareFinalObject("applyScreen.water", false));
-          dispatch(prepareFinalObject("applyScreen.sewerage", false));
-          dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'OnlyMotor'));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        }else if(dischargeConnection === 'both'){
-          dispatch(prepareFinalObject("applyScreen.water", false));
-          dispatch(prepareFinalObject("applyScreen.sewerage", true));
-          dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'both'));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        }else{
-          dispatch(prepareFinalObject("applyScreen.water", false));
-          dispatch(prepareFinalObject("applyScreen.sewerage", true));
-          dispatch(prepareFinalObject("applyScreen.discharge", false));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",''));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",'0'));
+      if (propertyId) {
+        togglePropertyFeilds(action, true);
+        if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.water") && get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
+          toggleWaterFeilds(action, true);
+          toggleSewerageFeilds(action, true);
+        } else if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
+          toggleWaterFeilds(action, false);
+          toggleSewerageFeilds(action, true);
+        } else {
+          toggleWaterFeilds(action, true);
+          toggleSewerageFeilds(action, false);
         }
-        
-        toggleWaterFeilds(action, false);
-        toggleSewerageFeilds(action, true);
+      } else if (applicationNumber && getQueryArg(window.location.href, "action") === "edit") {
+
+        togglePropertyFeilds(action, true);
+
+        if (applicationNumber.includes("SW")) {
+          if (dischargeConnection === 'true') {
+            dispatch(prepareFinalObject("applyScreen.water", false));
+            dispatch(prepareFinalObject("applyScreen.sewerage", true));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'true'));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+          } else if (dischargeConnection === 'OnlyMotor') {
+            dispatch(prepareFinalObject("applyScreen.water", false));
+            dispatch(prepareFinalObject("applyScreen.sewerage", false));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'OnlyMotor'));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+          } else if (dischargeConnection === 'both') {
+            dispatch(prepareFinalObject("applyScreen.water", false));
+            dispatch(prepareFinalObject("applyScreen.sewerage", true));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'both'));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+          } else {
+            dispatch(prepareFinalObject("applyScreen.water", false));
+            dispatch(prepareFinalObject("applyScreen.sewerage", true));
+            dispatch(prepareFinalObject("applyScreen.discharge", false));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", ''));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", '0'));
+          }
+
+          toggleWaterFeilds(action, false);
+          toggleSewerageFeilds(action, true);
+        } else {
+
+          if (dischargeConnection === 'true') {
+            dispatch(prepareFinalObject("applyScreen.water", true));
+            dispatch(prepareFinalObject("applyScreen.sewerage", false));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'true'));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+          } else if (dischargeConnection === 'OnlyMotor') {
+            dispatch(prepareFinalObject("applyScreen.water", false));
+            dispatch(prepareFinalObject("applyScreen.sewerage", false));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'OnlyMotor'));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+          } else if (dischargeConnection === 'both') {
+            dispatch(prepareFinalObject("applyScreen.water", true));
+            dispatch(prepareFinalObject("applyScreen.sewerage", false));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'both'));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+          } else {
+            dispatch(prepareFinalObject("applyScreen.water", true));
+            dispatch(prepareFinalObject("applyScreen.sewerage", false));
+            dispatch(prepareFinalObject("applyScreen.discharge", false));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", ''));
+            dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", '0'));
+          }
+          toggleWaterFeilds(action, true);
+          toggleSewerageFeilds(action, false);
+        }
       } else {
-        
-        if(dischargeConnection === 'true'){
-          dispatch(prepareFinalObject("applyScreen.water", true));
-          dispatch(prepareFinalObject("applyScreen.sewerage", false));
-          dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'true'));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        } else if(dischargeConnection === 'OnlyMotor'){
-          dispatch(prepareFinalObject("applyScreen.water", false));
-          dispatch(prepareFinalObject("applyScreen.sewerage", false));
-          dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'OnlyMotor'));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        }else if(dischargeConnection === 'both'){
-          dispatch(prepareFinalObject("applyScreen.water", true));
-          dispatch(prepareFinalObject("applyScreen.sewerage", false));
-          dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",'both'));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        }else{
-          dispatch(prepareFinalObject("applyScreen.water", true));
-          dispatch(prepareFinalObject("applyScreen.sewerage", false));
-          dispatch(prepareFinalObject("applyScreen.discharge", false));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",''));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",'0'));
+        togglePropertyFeilds(action, false)
+        if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.water") && get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
+          toggleWaterFeilds(action, true);
+          toggleSewerageFeilds(action, true);
+        } else if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
+          toggleWaterFeilds(action, false);
+          toggleSewerageFeilds(action, true);
+        } else {
+          toggleWaterFeilds(action, true);
+          toggleSewerageFeilds(action, false);
         }
-        toggleWaterFeilds(action, true);
-        toggleSewerageFeilds(action, false);
       }
     } else {
-      togglePropertyFeilds(action, false)
-      if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.water") && get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
-        toggleWaterFeilds(action, true);
-        toggleSewerageFeilds(action, true);
-      } else if (get(state.screenConfiguration.preparedFinalObject, "applyScreen.sewerage")) {
-        toggleWaterFeilds(action, false);
-        toggleSewerageFeilds(action, true);
-      } else {
-        toggleWaterFeilds(action, true);
-        toggleSewerageFeilds(action, false);
-      }
-    }
-  } else {
-    togglePropertyFeilds(action, true);applicationNumber
-    let searchQueryObject =[{ key: "tenantId", value: tenantId },{ key: "applicationNumber", value: applicationNumber}]
+      togglePropertyFeilds(action, true); applicationNumber
+      let searchQueryObject = [{ key: "tenantId", value: tenantId }, { key: "applicationNumber", value: applicationNumber }]
       if (applicationNumber.includes("SW")) {
-       
+
         dispatch(prepareFinalObject("applyScreen.water", false));
         dispatch(prepareFinalObject("applyScreen.sewerage", true));
-        if(dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor'){
+        if (dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor') {
           dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",dischargeConnection));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        }else{
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", dischargeConnection));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+        } else {
           dispatch(prepareFinalObject("applyScreen.discharge", false));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",false));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",0));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
         }
         toggleWaterFeilds(action, false);
         toggleSewerageFeilds(action, true);
       } else {
-        
+
         dispatch(prepareFinalObject("applyScreen.water", true));
         dispatch(prepareFinalObject("applyScreen.sewerage", false));
-        if(dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor'){
+        if (dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor') {
           dispatch(prepareFinalObject("applyScreen.discharge", true));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",dischargeConnection));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",dischargeFee));
-        }else{
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", dischargeConnection));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
+        } else {
           dispatch(prepareFinalObject("applyScreen.discharge", false));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",false));
-          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee",0));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
+          dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
         }
         toggleWaterFeilds(action, true);
         toggleSewerageFeilds(action, false);
@@ -846,7 +873,7 @@ const screenConfig = {
         applicationNumber
       );
       showHideFiedsPendingForConnectionActivation(action, state, dispatch);
-  }
+    }
     if (isModifyMode()) {
       triggerModificationsDisplay(action, true);
     } else {
@@ -861,9 +888,9 @@ const screenConfig = {
     let connectionNumber = getQueryArg(window.location.href, "connectionNumber");
     let tenantId = getQueryArg(window.location.href, "tenantId");
     let action1 = getQueryArg(window.location.href, "action");
-let modeaction1 = getQueryArg(window.location.href, "modeaction");
+    let modeaction1 = getQueryArg(window.location.href, "modeaction");
 
-let mode = getQueryArg(window.location.href, "mode");
+    let mode = getQueryArg(window.location.href, "mode");
     let modifyLink;
     if (isMode === "MODIFY") {
       modifyLink = `/wns/apply?`;
@@ -873,12 +900,12 @@ let mode = getQueryArg(window.location.href, "mode");
       modifyLink = modeaction1 ? modifyLink + `&modeaction=${modeaction1}` : modifyLink;
       modifyLink = isMode ? modifyLink + `&mode=${isMode}` : modifyLink;
       modifyLink = tenantId ? modifyLink + `&tenantId=${tenantId}` : modifyLink;
-      
+
     } else {
       modifyLink = "/wns/apply"
     }
-    set(action, "screenConfig.components.div.children.headerDiv.children.header.children.applicationNumberSewerage.props.mode",isModifyMode() && !isModifyModeAction());
-    set(action, "screenConfig.components.div.children.headerDiv.children.header.children.applicationNumberWater.props.mode",isModifyMode() && !isModifyModeAction());
+    set(action, "screenConfig.components.div.children.headerDiv.children.header.children.applicationNumberSewerage.props.mode", isModifyMode() && !isModifyModeAction());
+    set(action, "screenConfig.components.div.children.headerDiv.children.header.children.applicationNumberWater.props.mode", isModifyMode() && !isModifyModeAction());
     set(action, "screenConfig.components.div.children.formwizardFirstStep.children.IDDetails.children.cardContent.children.propertyID.children.clickHereLink.props.url", modifyLink)
     set(action, "screenConfig.components.div.children.formwizardFirstStep.children.IDDetails.children.cardContent.children.propertyID.children.clickHereLink.props.isMode", isMode)
     return action;
