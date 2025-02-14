@@ -178,7 +178,27 @@ export const updatePFOforSearchResults = async (
   //   (await setDocsForEditFlow(state, dispatch));
 
   if (payload && payload.Licenses) {
-    
+    let isHAZ = "NHAZ"
+    let pValidityYears = get(payload.Licenses[0],'tradeLicenseDetail.additionalDetail.validityYears',1);
+    let pTradeUnits = get(payload.Licenses[0],'tradeLicenseDetail.tradeUnits');
+    let mDMSTradeUnit =get(state.screenConfiguration.preparedFinalObject, 'applyScreenMdmsData.TradeLicense.MdmsTradeType')
+    for(let tradeData of pTradeUnits){
+       for(let tradeMdms of mDMSTradeUnit){
+        if(tradeData.tradeType === tradeMdms.code){
+           if(tradeMdms.ishazardous === true){
+              isHAZ = "HAZ"
+           }
+        }
+       }
+    }
+  //console.log("Hello HAZ"+isHAZ)
+   let workflowCode = get(payload.Licenses[0],'workflowCode');
+     if(isHAZ === 'HAZ'){
+       dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1}]))
+     }else{
+       dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears",[{code :1},{code :2},{code :3}]))
+     }
+     dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",`${pValidityYears}`))
     let ownersInitial=get(payload.Licenses[0],'tradeLicenseDetail.owners',[]);
     set(payload.Licenses[0],'tradeLicenseDetail.owners',ownersInitial.filter(owner=>owner.userActive));
     dispatch(prepareFinalObject("Licenses[0]", payload.Licenses[0]));
