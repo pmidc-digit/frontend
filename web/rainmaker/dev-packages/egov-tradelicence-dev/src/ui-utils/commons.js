@@ -428,7 +428,9 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
       set(queryObject[0], "workflowCode", "NEWTL.HAZ");
     }
     else{
-      set(queryObject[0], "workflowCode", "NewTL");
+      //set(queryObject[0], "workflowCode", "NewTL");
+      set(queryObject[0], "workflowCode", "NEWTL.NHAZ");
+      
     }
     
     set(queryObject[0], "applicationType", "NEW");

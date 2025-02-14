@@ -115,7 +115,7 @@ const getActiveConnectionObj = (connectionsObj) => {
 };
 
 const searchResults = async (action, state, dispatch, connectionNumber) => {
-
+    debugger
  
   /**
    * This methods holds the api calls and the responses of fetch bill and search connection for both water and sewerage service
@@ -144,13 +144,14 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       payloadData !== undefined &&
       payloadData.SewerageConnections.length > 0
     ) {
-      payloadData.SewerageConnections = sortpayloadDataObj(
-        payloadData.SewerageConnections
-      );
-      payloadData.SewerageConnections = payloadData.SewerageConnections.filter((element) => element.status == "Active");
+       payloadData.SewerageConnections = sortpayloadDataObj(
+         payloadData.SewerageConnections
+       );
+      const maxModifiedDate = Math.max(...payloadData.SewerageConnections.map(item => item.auditDetails.lastModifiedTime));
+      payloadData.SewerageConnections = payloadData.SewerageConnections.filter((element) =>  element.auditDetails.lastModifiedTime === maxModifiedDate);
       let sewerageConnection = getActiveConnectionObj(
-        payloadData.SewerageConnections
-      );
+         payloadData.SewerageConnections
+       );
      let propTenantId = sewerageConnection.property.tenantId.split(".")[0];
      
       sewerageConnection.service = serviceUrl;
@@ -290,6 +291,10 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       payloadData.WaterConnection = sortpayloadDataObj(
         payloadData.WaterConnection
       );
+      
+      const maxModifiedDate = Math.max(...payloadData.WaterConnection.map(item => item.auditDetails.lastModifiedTime));
+      payloadData.WaterConnection = payloadData.WaterConnection.filter((element) =>  element.auditDetails.lastModifiedTime === maxModifiedDate);
+      
       let waterConnection = getActiveConnectionObj(payloadData.WaterConnection);
       waterConnection.service = serviceUrl;
       let propTenantId = waterConnection.property.tenantId.split(".")[0];
