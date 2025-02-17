@@ -65,7 +65,7 @@ export const getOwnershipInfoUserCategory = (owner, generalMDMSDataById) => {
 
 export const getOwnerInfo = (latestPropertyDetails, generalMDMSDataById, oldPropertydetails = {}) => {
   const isInstitution =
-  latestPropertyDetails && (latestPropertyDetails.ownershipCategory === "INSTITUTIONALPRIVATE" || latestPropertyDetails.ownershipCategory === "INSTITUTIONALGOVERNMENT");
+    latestPropertyDetails && (latestPropertyDetails.ownershipCategory === "INSTITUTIONALPRIVATE" || latestPropertyDetails.ownershipCategory === "INSTITUTIONALGOVERNMENT");
   let { institution = {}, owners: ownerDetails = [], subOwnershipCategory, ownershipCategory } = latestPropertyDetails || {};
   let owner = [];
   ownerDetails = ownerDetails && Array.isArray(ownerDetails) && ownerDetails.sort((owner1, owner2) => owner1.name.localeCompare(owner2.name));
@@ -75,8 +75,8 @@ export const getOwnerInfo = (latestPropertyDetails, generalMDMSDataById, oldProp
   if (oldPropertydetails && oldPropertydetails.owners) {
     oldPropertydetails.owners = oldPropertydetails && oldPropertydetails.owners && Array.isArray(oldPropertydetails.owners) && oldPropertydetails.owners.sort((owner1, owner2) => owner1.name.localeCompare(owner2.name));
   }
-  if(latestPropertyDetails && latestPropertyDetails.owners && latestPropertyDetails.owners.length>0 && latestPropertyDetails.owners[0].hasOwnProperty('status'))
-  ownerDetails=ownerDetails.filter(item=> item.status=="ACTIVE");
+  if (latestPropertyDetails && latestPropertyDetails.owners && latestPropertyDetails.owners.length > 0 && latestPropertyDetails.owners[0].hasOwnProperty('status'))
+    ownerDetails = ownerDetails.filter(item => item.status == "ACTIVE");
 
   return (
     ownerDetails &&
@@ -113,7 +113,7 @@ export const getOwnerInfo = (latestPropertyDetails, generalMDMSDataById, oldProp
             }
             : {
               key: getTranslatedLabel("PT_OWNERSHIP_INFO_GENDER", localizationLabelsData),
-              value: owner&&owner.gender&&getLocaleLabels(`PT_FORM3_${owner.gender.toUpperCase()}`, `PT_FORM3_${owner.gender.toUpperCase()}`) || getLocaleLabels("NA", "NA"),
+              value: owner && owner.gender && getLocaleLabels(`PT_FORM3_${owner.gender.toUpperCase()}`, `PT_FORM3_${owner.gender.toUpperCase()}`) || getLocaleLabels("NA", "NA"),
               oldValue: oldPropertydetails && oldPropertydetails.owners && Array.isArray(oldPropertydetails.owners) && getLocaleLabels(`PT_FORM3_${oldPropertydetails.owners[index].gender.toUpperCase()}`, `PT_FORM3_${oldPropertydetails.owners[index].gender.toUpperCase()}`),
               jsonPath: 'gender'
             },
@@ -150,7 +150,7 @@ export const getOwnerInfo = (latestPropertyDetails, generalMDMSDataById, oldProp
             value: "" + (owner.ownerShipPercentage || "NA"),
             //value: "NA",
             //value: owner.ownerShipPercentage ? owner.ownerShipPercentage || "NA" : "",
-            oldValue: oldPropertydetails && oldPropertydetails.owners  && Array.isArray( oldPropertydetails.owners)&& oldPropertydetails.owners[index].ownerShipPercentage
+            oldValue: oldPropertydetails && oldPropertydetails.owners && Array.isArray(oldPropertydetails.owners) && oldPropertydetails.owners[index].ownerShipPercentage
           },
           isInstitution
             ? {
@@ -224,8 +224,8 @@ class OwnerInfo extends Component {
             masterDetails: [
               {
                 name: "MutationDocuments",
-              },{
-                name:"UpdateNumber"
+              }, {
+                name: "UpdateNumber"
               }
             ],
           },
@@ -249,8 +249,10 @@ class OwnerInfo extends Component {
     }
   }
   transformData = (property) => {
+
     const { owners, institution, ownershipCategory } = property;
     let itemKey = [];
+
     owners.map(item => {
       let owner = {};
       if (institution) {
@@ -267,6 +269,7 @@ class OwnerInfo extends Component {
           "PT_OWNERSHIP_INFO_CORR_ADDR": item.correspondenceAddress || "NA"
         }
       } else {
+
         owner = {
           "PT_OWNER_NAME": item.name || "NA",
           "PT_GUARDIANS_NAME": item.fatherOrHusbandName || "NA",
@@ -275,7 +278,7 @@ class OwnerInfo extends Component {
           "PT_OWNER_MOBILE_NO": item.mobileNumber || "NA",
           "PT_MUTATION_AUTHORISED_EMAIL": item.emailId || "NA",
           "PT_MUTATION_TRANSFEROR_SPECIAL_CATEGORY": item.ownerType || "NA",
-          "PT_OWNER_PERCENTAGE": ""+(item.ownerShipPercentage || "NA"),
+          "PT_OWNER_PERCENTAGE": "" + (item.ownerShipPercentage || "NA"),
           "PT_OWNERSHIP_INFO_CORR_ADDR": item.permanentAddress || "NA",
         };
         const document = checkDocument(item);
@@ -299,6 +302,7 @@ class OwnerInfo extends Component {
     return newList && Array.isArray(newList) && newList.filter(element => element.creationReason != 'UPDATE');
   }
   getPropertyResponse = async (propertyId, tenantId, dialogName) => {
+
     const queryObject = [
       { key: "propertyIds", value: propertyId },
       { key: "tenantId", value: tenantId },
@@ -314,7 +318,7 @@ class OwnerInfo extends Component {
       if (payload && payload.Properties.length > 0) {
 
 
-        payload.Properties = this.getUniqueList(payload.Properties);
+        // payload.Properties = this.getUniqueList(payload.Properties);
         payload.Properties.map((item) => {
           // let lastModifiedDate = convertEpochToDate(item.auditDetails.lastModifiedTime);
           let lastModifiedDate = item.auditDetails.lastModifiedTime;
@@ -331,11 +335,11 @@ class OwnerInfo extends Component {
       console.log(e);
     }
   }
-  
+
   openDialog = async (dialogName) => {
     const { properties, waterDetails, sewerDetails } = this.props;
     const { propertyId, tenantId } = properties;
-    if (this.props.totalBillAmountDue === 0  && waterDetails.length == 0 && sewerDetails.length == 0 && dialogName !== "viewHistory") {
+    if (this.props.totalBillAmountDue === 0 && waterDetails.length == 0 && sewerDetails.length == 0 && dialogName !== "viewHistory") {
       if (properties.status != "ACTIVE") {
         this.props.toggleSnackbarAndSetText(
           true,
@@ -361,7 +365,7 @@ class OwnerInfo extends Component {
     else if (this.props.totalBillAmountDue !== 0 || waterDetails.length > 0 || sewerDetails.length > 0) {
       this.setState({ pendingAmountDue: true });
     }
-     else {
+    else {
       this.setState({ [dialogName]: true });
     }
   };
@@ -372,7 +376,7 @@ class OwnerInfo extends Component {
 
 
   render() {
-    const { properties, editIcon, generalMDMSDataById, ownershipTransfer, viewHistory, totalBillAmountDue, waterDetails, sewerDetails, mdmsMutationDocuments, OldProperty ,updateNumberConfig} = this.props;
+    const { properties, editIcon, generalMDMSDataById, ownershipTransfer, viewHistory, totalBillAmountDue, waterDetails, sewerDetails, mdmsMutationDocuments, OldProperty, updateNumberConfig } = this.props;
     // properties.tenantId = getTenantId();
     let ownerInfo = [];
     let multipleOwner = false;
@@ -439,8 +443,8 @@ class OwnerInfo extends Component {
                         {ownerItem && <PropertyInfoCard items={ownerItem.items} additionalKey={{
                           key: getTranslatedLabel("PT_OWNERSHIP_INFO_MOBILE_NO", localizationLabelsData), tenantId: properties.tenantId,
                           propertyId: properties.propertyId,
-                          updateNumberConfig:updateNumberConfig
-                        }} ownerInfo={ownerInfo} header={header} showEditNumber={viewHistory || ownershipTransfer}  editIcon={editIcon}></PropertyInfoCard>}
+                          updateNumberConfig: updateNumberConfig
+                        }} ownerInfo={ownerInfo} header={header} showEditNumber={viewHistory || ownershipTransfer} editIcon={editIcon}></PropertyInfoCard>}
                       </div>
                     );
                   })}
@@ -455,7 +459,7 @@ class OwnerInfo extends Component {
             amount={totalBillAmountDue}
             tenantId={properties.tenantId}
             consumerCode={properties.propertyId}
-            documents = {mdmsMutationDocuments}
+            documents={mdmsMutationDocuments}
             closeDialogue={() => this.closeDialogue("docRequired")}
             routeUrl={`/pt-mutation/apply?consumerCode=${this.props.properties.propertyId}&tenantId=${this.props.properties.tenantId}`
             }
