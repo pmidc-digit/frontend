@@ -336,14 +336,7 @@ class Footer extends React.Component {
       open: false
     });
   };
-  chkTradeType = async(tradeUnits)=>{
-      debugger;
-       
-          
-        
-          
-      return uuType
-    }
+  
   tlPopUpClose =()=>{
     this.setState({
       tlpopUp : false
