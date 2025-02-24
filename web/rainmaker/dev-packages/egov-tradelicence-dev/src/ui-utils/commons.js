@@ -560,7 +560,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
 
         }
         else {
-          set(queryObject[0], "workflowCode", "NewTL");
+          set(queryObject[0], "workflowCode", "NEWTL.NHAZ");
         }
         set(queryObject[0], "tradeLicenseDetail.adhocPenalty", null);
         set(queryObject[0], "tradeLicenseDetail.adhocExemption", null);
@@ -641,7 +641,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         owners && owners.filter(item => !item.hasOwnProperty("isDeleted"));
       // Add Validity Year in additionalDetail object for 3 Year Validity
       let validityYears = {
-        validityYears: 1
+        validityYears: parseInt(queryObject[0].tradeLicenseDetail.additionalDetail.validityYears)
       }
       set(queryObject[0], "tradeLicenseDetail.tradeUnits", mergedTradeUnits);
       set(queryObject[0], "tradeLicenseDetail.accessories", mergedAccessories);
