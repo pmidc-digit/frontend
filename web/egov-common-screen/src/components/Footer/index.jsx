@@ -158,6 +158,14 @@ export default function Footer() {
                                     Privacy policy
                                 </a><br />
                                 <a
+                                    href="https://mseva-uat.lgpunjab.gov.in/common/impersonation"
+                                    id="flink"
+                                    //className={classes.block}
+                                    target="_blank"
+                                >
+                                    Impersonation Policy
+                                </a><br />
+                                <a
                                     href="https://nesda.centralindia.cloudapp.azure.com/#/citizen-survey"
                                     id="flink"
                                     //className={classes.block}
