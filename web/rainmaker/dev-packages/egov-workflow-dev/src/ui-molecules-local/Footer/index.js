@@ -330,7 +330,11 @@ class Footer extends React.Component {
       // this.setState({ open: true, data: item, employeeList });
     }
   };
-
+  tlPopUpClose = () => {
+    this.setState({
+      tlpopUp: false
+    });
+  };
   onClose = () => {
     this.setState({
       open: false
