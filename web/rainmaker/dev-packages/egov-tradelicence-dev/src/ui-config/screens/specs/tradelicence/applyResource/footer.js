@@ -22,8 +22,11 @@ const moveToSuccess = (LicenseData, dispatch) => {
   const purpose = "apply";
   const status = "success";
   dispatch(
+    // setRoute(
+    //   `/tradelicence/acknowledgement?purpose=${purpose}&status=${status}&applicationNumber=${applicationNo}&FY=${financialYear}&tenantId=${tenantId}`
+    // )
     setRoute(
-      `/tradelicence/acknowledgement?purpose=${purpose}&status=${status}&applicationNumber=${applicationNo}&FY=${financialYear}&tenantId=${tenantId}`
+      `/tradelicence/search-preview?applicationNumber=${applicationNo}&tenantId=${tenantId}`
     )
   );
 };
