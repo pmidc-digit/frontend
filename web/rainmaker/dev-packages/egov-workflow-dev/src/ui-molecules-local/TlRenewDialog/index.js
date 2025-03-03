@@ -15,8 +15,10 @@ import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import CloseIcon from "@material-ui/icons/Close";
 import { withStyles } from "@material-ui/core/styles";
 import { UploadMultipleFiles } from "egov-ui-framework/ui-molecules";
-import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
+import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { hideSpinner, showSpinner } from "egov-ui-kit/redux/common/actions";
+import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import "./index.css";
 
 const styles = theme => ({
@@ -67,7 +69,8 @@ class TlRenewDialog extends React.Component {
     return "Submit"
   };
   renewTradelicence = async (licenseData, tlValidity) => {
-    //this.props.showSpinner();
+    //debugger;
+      //showSpinner();
     let licences = [];
     let validityYears = {
       validityYears :tlValidity
@@ -91,12 +94,16 @@ class TlRenewDialog extends React.Component {
     const renewedapplicationNo = get(response, `Licenses[0].applicationNumber`);
     const licenseNumber = get(response, `Licenses[0].licenseNumber`);
     //console.log("Hello Response"+JSON.stringify(response))
-   // this.props.hideSpinner();
-    setRoute(
-      `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
-    );
+  //hideSpinner();
+  const reDirectUrl = `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`;
+    window.location.href = reDirectUrl;
+
+    // setRoute(
+    //   `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
+    // );
+
     } catch (exception) {
-     // this.props.hideSpinner();
+     hideSpinner();
       console.log(exception);
       toggleSnackbar(
         true,

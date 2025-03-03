@@ -361,7 +361,7 @@ class Footer extends React.Component {
         financialYear
       );
       var currentFinancialYear = this.getCurrentFinancialYear();
-      nextFinancialYear = currentFinancialYear;
+      //nextFinancialYear = currentFinancialYear;
       const wfCode = "DIRECTRENEWAL";
         set(licences[0], "action", "INITIATE");
         set(licences[0], "workflowCode", wfCode);
