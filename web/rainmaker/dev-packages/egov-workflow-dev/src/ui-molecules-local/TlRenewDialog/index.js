@@ -93,9 +93,14 @@ class TlRenewDialog extends React.Component {
     );
     const renewedapplicationNo = get(response, `Licenses[0].applicationNumber`);
     const licenseNumber = get(response, `Licenses[0].licenseNumber`);
-    //console.log("Hello Response"+JSON.stringify(response))
-  //hideSpinner();
-  const reDirectUrl = `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`;
+    const url = window.location.href
+    const userType = url.includes('employee') ? 'employee' : 'citizen';
+   
+    const reDirectUrl = process.env.NODE_ENV === "production"  ? 
+      `${userType}/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
+      :
+          `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`;
+    
     window.location.href = reDirectUrl;
 
     // setRoute(
