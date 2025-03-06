@@ -325,7 +325,7 @@ class OwnerInfo extends Component {
           if (!ownershipInfo[lastModifiedDate]) {
             ownershipInfo[lastModifiedDate] = [];
           }
-          item.owners = item.owners.filter(owner => owner.status == "ACTIVE")
+          // item.owners = item.owners.filter(owner => owner.status == "ACTIVE")
           ownershipInfo[lastModifiedDate].push(...this.transformData(item))
         });
         this.setState({ [dialogName]: true, ownershipInfo });
