@@ -68,14 +68,14 @@ class TlRenewDialog extends React.Component {
   getButtonLabelName = label => {
     return "Submit"
   };
-  renewTradelicence = async (licenseData, tlValidity) => {
+  renewTradelicence = async (licenseData, tlValidity, isHAZ) => {
     //debugger;
       //showSpinner();
     let licences = [];
     let validityYears = {
       validityYears :tlValidity
     }
-   const wfCode = "DIRECTRENEWAL";
+   const wfCode = isHAZ  ? "NEWTL.HAZ" : "DIRECTRENEWAL";
    const nextFinancialYear =  get(licenseData, "financialYear");
    const tenantId = get(licenseData, "tenantId");
    //console.log("nextFinancialYear"+nextFinancialYear)
@@ -241,7 +241,7 @@ class TlRenewDialog extends React.Component {
                       }}
                       className="bottom-button"
                      onClick={() =>
-                       this.renewTradelicence(licenseData, tlValidity)
+                       this.renewTradelicence(licenseData, tlValidity,isHAZ)
                      }
                     >
                       <LabelContainer
