@@ -69,8 +69,9 @@ class TlRenewDialog extends React.Component {
     return "Submit"
   };
   renewTradelicence = async (licenseData, tlValidity, isHAZ) => {
-    //debugger;
+    debugger;
       //showSpinner();
+      console.log("isHAZ"+isHAZ)
     let licences = [];
     let validityYears = {
       validityYears :tlValidity
@@ -79,7 +80,8 @@ class TlRenewDialog extends React.Component {
    const nextFinancialYear =  get(licenseData, "financialYear");
    const tenantId = get(licenseData, "tenantId");
    //console.log("nextFinancialYear"+nextFinancialYear)
-   set(licenseData, "tradeLicenseDetail.additionalDetail" ,validityYears)
+   set(licenseData, "workflowCode" ,wfCode)
+   set(licenseData,)
    licences.push(licenseData)
    try {
     const response = await httpRequest(
@@ -110,6 +112,7 @@ class TlRenewDialog extends React.Component {
     } catch (exception) {
      hideSpinner();
       console.log(exception);
+      alert(exception.message)
       toggleSnackbar(
         true,
         {
