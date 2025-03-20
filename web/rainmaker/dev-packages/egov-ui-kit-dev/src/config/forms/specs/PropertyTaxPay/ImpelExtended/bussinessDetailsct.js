@@ -4,46 +4,46 @@ import get from "lodash/get";
 // import moment from "moment";
 import { setFieldProperty, handleFieldChange } from "egov-ui-kit/redux/form/actions";
 const formConfig = {
-  name: "bussinessDetails",
+  name: "bussinessDetailsct",
   fields: {
-    VasikaNo: {
-      id: "vasikaNo",
-      className: "bussinessDetail1",
-      jsonPath: "Properties[0].additionalDetails.vasikaNo",
-      type: "textfield",
-      floatingLabelText: "PT_COMMON_VASIKA_NO",
-      hintText: "Vasika No",
-      fullWidth: true,
-      isVisible: false
+    // VasikaNo: {
+    //   id: "vasikaNo",
+    //   className: "bussinessDetail1",
+    //   jsonPath: "Properties[0].additionalDetails.vasikaNo",
+    //   type: "textfield",
+    //   floatingLabelText: "PT_COMMON_VASIKA_NO",
+    //   hintText: "Vasika No",
+    //   fullWidth: true,
+    //   isVisible: false
 
-    },
-    vasikaDate: {
-      id: "vasikaDate",
-      className: "bussinessDetail2",
-      jsonPath: "Properties[0].additionalDetails.vasikaDate",
-      type: "date",
-      floatingLabelText: "PT_COMMON_VASIKA_DATE",
-      hintText: "Vasika Date",
-      fullWidth: true,
-    },
-    allotmentNo: {
-      id: "allotmentNo",
-      className: "bussinessDetail3",
-      jsonPath: "Properties[0].additionalDetails.allotmentNo",
-      type: "textfield",
-      floatingLabelText: "PT_COMMON_ALLOTMENT_NO",
-      hintText: "Allotment No",
-      fullWidth: true,
-    },
-    allotmentDate: {
-      id: "allotmentDate",
-      className: "bussinessDetail4",
-      jsonPath: "Properties[0].additionalDetails.allotmentDate",
-      type: "date",
-      floatingLabelText: "PT_COMMON_ALLOTMENT_DATE",
-      hintText: "Allotment Date",
-      fullWidth: true,
-    },
+    // },
+    // vasikaDate: {
+    //   id: "vasikaDate",
+    //   className: "bussinessDetail2",
+    //   jsonPath: "Properties[0].additionalDetails.vasikaDate",
+    //   type: "date",
+    //   floatingLabelText: "PT_COMMON_VASIKA_DATE",
+    //   hintText: "Vasika Date",
+    //   fullWidth: true,
+    // },
+    // allotmentNo: {
+    //   id: "allotmentNo",
+    //   className: "bussinessDetail3",
+    //   jsonPath: "Properties[0].additionalDetails.allotmentNo",
+    //   type: "textfield",
+    //   floatingLabelText: "PT_COMMON_ALLOTMENT_NO",
+    //   hintText: "Allotment No",
+    //   fullWidth: true,
+    // },
+    // allotmentDate: {
+    //   id: "allotmentDate",
+    //   className: "bussinessDetail4",
+    //   jsonPath: "Properties[0].additionalDetails.allotmentDate",
+    //   type: "date",
+    //   floatingLabelText: "PT_COMMON_ALLOTMENT_DATE",
+    //   hintText: "Allotment Date",
+    //   fullWidth: true,
+    // },
     businessName: {
       id: "businessName",
       className: "bussinessDetail5",
