@@ -36,15 +36,27 @@ let ptSteps = [
   "PT_COMMON_SUMMARY"
 ];
 const citycondition = (selected) => {
-  let state = store.getState();
 
-  console.log("aaaaChnanged", get(state, 'form.propertyAddress.fields.city.value', null));
-  //console.log("aaaaChnangeStated", state);
-  // Use optional chaining to safely access nested properties
+  let state = store.getState();
   cityconditionval = get(state, 'form.propertyAddress.fields.city.value', null)
+  let removedIndex = -1;
   if (cityconditionval == 'pb.mohali' && selected <= 0) {
     let index = ptSteps.indexOf("PT_DOCUMENT_INFO");
-    ptSteps.splice(index, 1);
+    removedIndex = index;
+    if (index > 0) {
+      ptSteps.splice(index, 1);
+
+    }
+    else {
+      if (removedIndex !== -1 && !ptSteps.includes("PT_DOCUMENT_INFO")) {
+        ptSteps.splice(removedIndex, 0, "PT_DOCUMENT_INFO");
+      }
+    }
+  }
+  else {
+    if (removedIndex == -1 && !ptSteps.includes("PT_DOCUMENT_INFO") && cityconditionval != 'pb.mohali') {
+      ptSteps.splice(removedIndex, 0, "PT_DOCUMENT_INFO");
+    }
   }
 }
 
