@@ -58,12 +58,12 @@ const getCurrentFinancialYear = () => {
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1; // Months are 0-based in JavaScript
-
+ const lastTwoDigitFY = currentYear.toString().slice(-2);
   let financialYear;
   if (currentMonth >= 4) {
-    financialYear = currentYear % 100; // Get last two digits of current year
+    financialYear = `${currentYear}-${lastTwoDigitFY + 1}`;
   } else {
-    financialYear = (currentYear - 1) % 100; // Get last two digits of previous year
+    financialYear = `${currentYear - 1}-${lastTwoDigitFY}` ;
   }
 
   return financialYear;
@@ -72,13 +72,14 @@ const breakYear = (financialYear)=>{
   return parseInt(financialYear.split("-")[1]);
 }
 const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear) => {
-  //debugger
+  debugger
   let missingYears = [];
   if(tenantId === "pb.testing" || tenantId === "pb.patiala"){
   let checkedYears;
  
-  const currentFinancialYear = getCurrentFinancialYear()
-  const lastFifthFinancialYear = currentFinancialYear - 5;
+  const mFinancialYear = getCurrentFinancialYear()
+  const currentFinancialYear = breakYear(mFinancialYear)
+  const lastFifthFinancialYear = currentFinancialYear - 4;
   const newConstructionYear = constructionYear ==='NA' ? lastFifthFinancialYear : breakYear(constructionYear);
   let newAssessmentYear = assessmentArray.map((items)=>{
       return breakYear(items.financialYear)
