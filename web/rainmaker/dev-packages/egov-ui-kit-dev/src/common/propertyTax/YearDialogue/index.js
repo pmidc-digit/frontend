@@ -205,7 +205,7 @@ class YearDialog extends Component {
                  let assessed = checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear);
                  if(isLocMatch){
                     if (this.state.selectedYear !== '' && surveyIdcode != null) {
-                      if(assessed.length > 0){
+                       
                         if(breakYear(this.state.selectedYear)=== assessed[0]){
                           this.resetForm();
                           history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
@@ -213,11 +213,6 @@ class YearDialog extends Component {
                           alert("First Complete Your Assessment for Financial Year - 20"+(assessed[0]-1)+"-"+assessed[0]);
                           return false;
                         }
-                      }else{
-                        this.resetForm();
-                        history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
-                      } 
-                        
                      }
                     // else if(this.state.selectedYear !== ''){
                     //   this.resetForm()
@@ -228,18 +223,13 @@ class YearDialog extends Component {
                     }
                   } else{
                   if (this.state.selectedYear !== '') {
-                    if(assessed.length > 0){
-                      if(breakYear(this.state.selectedYear)=== assessed[0]){
-                        this.resetForm();
-                        history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
-                      }else{
-                        alert("First Complete Your Assessment for Financial Year - 20"+(assessed[0]-1)+"-"+assessed[0]);
-                        return false;
-                      }
-                    }else{
+                    if(breakYear(this.state.selectedYear)=== assessed[0]){
                       this.resetForm();
                       history && urlToAppend ? history.push(`${urlToAppend}&FY=${this.state.selectedYear}`) : history.push(`/property-tax/assessment-form`);
-                    } 
+                    }else{
+                      alert("First Complete Your Assessment for Financial Year - 20"+(assessed[0]-1)+"-"+assessed[0]);
+                      return false;
+                    }
                   }
                   else {
                     alert('Please Select a Financial Year! and Enter Survey Id');
