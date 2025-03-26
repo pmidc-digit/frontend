@@ -39,6 +39,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
   let queryObject = [];
   queryObject.push({ key: "searchType", value: "CONNECTION" });
   let searchScreenObject = get(state.screenConfiguration.preparedFinalObject, "searchConnection", {});
+  //console.log("searchScreenObject",searchScreenObject.tenantId)
   Object.keys(searchScreenObject).forEach((key) => (searchScreenObject[key] == "") && delete searchScreenObject[key]);
   if (
     Object.values(searchScreenObject).length <= 1
@@ -104,11 +105,12 @@ const renderSearchConnectionTable = async (state, dispatch) => {
       for (let i = 0; i < combinedSearchResults.length; i++) {
         let element = combinedSearchResults[i];
         if (element.connectionNo !== "NA" && element.connectionNo !== null) {
+
           let queryObjectForWaterFetchBill;
           if (element.service === serviceConst.WATER) {
-            queryObjectForWaterFetchBill = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "consumerCode", value: element.connectionNo }, { key: "businessService", value: "WS" }];
+            queryObjectForWaterFetchBill = [{ key: "tenantId", value: searchScreenObject.tenantId }, { key: "consumerCode", value: element.connectionNo }, { key: "businessService", value: "WS" }];
           } else {
-            queryObjectForWaterFetchBill = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "consumerCode", value: element.connectionNo }, { key: "businessService", value: "SW" }];
+            queryObjectForWaterFetchBill = [{ key: "tenantId", value: searchScreenObject.tenantId }, { key: "consumerCode", value: element.connectionNo }, { key: "businessService", value: "SW" }];
           }
 
           if (element.service === serviceConst.WATER &&
@@ -180,7 +182,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
         }
 
       }
-      console.log("jfdhegfwefbwk"+JSON.stringify(finalArray))
+     // console.log("jfdhegfwefbwk"+JSON.stringify(finalArray))
       showConnectionResults(finalArray, dispatch)
     } catch (err) { console.log(err) }
   }
