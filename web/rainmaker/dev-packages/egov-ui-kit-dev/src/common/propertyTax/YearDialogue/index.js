@@ -32,7 +32,7 @@ propertiestenantId = state.screenConfiguration.preparedFinalObject.propertiesAud
   const getYearList = FinancialYear?Object.keys(FinancialYear).sort().reverse():null;
   return { getYearList, form };
 };
-//let userType = JSON.parse(getUserInfo()).type;
+let userType = JSON.parse(getUserInfo()).type;
 var tenantIdcode =getTenantId();
 var isLocMatch ;
 const getUserDataFromUuid = async (state, dispatch) => {
@@ -198,10 +198,9 @@ class YearDialog extends Component {
                   if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
                     await getUserDataFromUuid();
                   }
-               //</div> let assessed = userType.toUpperCase() === 'CITIZEN' ? checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear)
-               // : checkAssessmentStatus(constructionYear,assessment,tenantIdcode,this.state.selectedYear);
+                let assessed = userType.toUpperCase() === 'CITIZEN' ? checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear)
+                : checkAssessmentStatus(constructionYear,assessment,tenantIdcode,this.state.selectedYear);
                  //console.log("assessed",assessed);
-                 let assessed = checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear);
                  if(isLocMatch){
                     if (this.state.selectedYear !== '' && surveyIdcode != null) {
                        
