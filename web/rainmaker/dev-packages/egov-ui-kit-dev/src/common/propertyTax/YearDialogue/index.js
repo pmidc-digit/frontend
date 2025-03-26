@@ -36,7 +36,7 @@ let userType = JSON.parse(getUserInfo()).type;
 var tenantIdcode =getTenantId();
 var isLocMatch ;
 const getUserDataFromUuid = async (state, dispatch) => {
-  //debugger;
+  debugger;
   let request = { searchCriteria: { tenantId: tenantIdcode} };
   try {
     const response = await httpRequest(
@@ -72,7 +72,7 @@ const breakYear = (financialYear)=>{
   return parseInt(financialYear.split("-")[1]);
 }
 const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear) => {
-  //debugger
+  debugger
   let missingYears = [];
   if(tenantId === "pb.testing" || tenantId === "pb.patiala"){
   let checkedYears;
