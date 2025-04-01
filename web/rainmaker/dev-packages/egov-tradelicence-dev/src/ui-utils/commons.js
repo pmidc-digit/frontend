@@ -373,6 +373,9 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         get(state.screenConfiguration.preparedFinalObject, "Licenses", [])
       )
     );
+    let applicationStatus = get(state.screenConfiguration.preparedFinalObject,
+      "Licenses[0].status", "NA"
+    );
     let additionalDetail = get(
       queryObject[0],
       "tradeLicenseDetail.additionalDetail"
@@ -554,7 +557,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         else {
           set(queryObject[0], "tradeLicenseDetail.owners", checkValidOwners(get(queryObject[0], "tradeLicenseDetail.owners", []), oldOwners));
         }
-        console.log(state.screenConfiguration.preparedFinalObject.Licenses[0]);
+        //console.log("jdvgsds",state.screenConfiguration.preparedFinalObject.Licenses[0]);
         if (state.screenConfiguration.preparedFinalObject.Licenses[0].workflowCode == "NEWTL.HAZ") {
           set(queryObject[0], "workflowCode", "NEWTL.HAZ");
 
@@ -564,9 +567,14 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         }
         set(queryObject[0], "tradeLicenseDetail.adhocPenalty", null);
         set(queryObject[0], "tradeLicenseDetail.adhocExemption", null);
-        updateResponse = await httpRequest("post", "/tl-services/v1/_update", "", [], {
-          Licenses: queryObject
-        })
+        //debugger
+        if(activeIndex === 1 && applicationStatus.toUpperCase() ==='INITIATED'){
+
+        }else{
+          updateResponse = await httpRequest("post", "/tl-services/v1/_update", "", [], {
+            Licenses: queryObject
+          })
+        }
       }
       //Renewal flow
 
@@ -605,7 +613,8 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         { key: "applicationNumber", value: updatedApplicationNo }
       ];
       let searchResponse = await getSearchResults(searchQueryObject);
-      if (isEditFlow) {
+      //debugger
+      if (isEditFlow || (activeIndex === 1 && applicationStatus.toUpperCase() ==='INITIATED')){
         searchResponse = { Licenses: queryObject };
       } else {
         dispatch(prepareFinalObject("Licenses", searchResponse ? searchResponse.Licenses : queryObject));
