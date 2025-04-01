@@ -1,4 +1,4 @@
-import { getOwnerCategoryByYear ,getOwnerCategory} from "egov-ui-kit/utils/PTCommon";
+import { getOwnerCategoryByYear, getOwnerCategory } from "egov-ui-kit/utils/PTCommon";
 import { setDependentFields } from "./utils/enableDependentFields";
 import get from "lodash/get";
 import set from "lodash/set";
@@ -40,6 +40,17 @@ const formConfig = {
       errorMessage: "PT_NAME_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
     },
+    ownerPan: {
+      id: "ownerPan",
+      jsonPath: "Properties[0].additionalDetails.ownerPan",
+      type: "textfield",
+      floatingLabelText: "PAN Number",
+      hintText: "PAN Number",
+      //pattern: /^[^{0-9}^\$\"'<>?\\\\~`!@#$%^()+={}\[\]*,_:;“”‘’]{1,64}$/i,
+      required: true,
+      errorMessage: "PT_NAME_ERROR_MESSAGE",
+      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+    },
     ownerEmail: {
       id: "ownerEmail",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].emailId",
@@ -50,6 +61,7 @@ const formConfig = {
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       pattern: /^(?=^.{1,64}$)((([^<>()\[\]\\.,;:\s$*@'"]+(\.[^<>()\[\]\\.,;:\s@'"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))$/,
     },
+
     ownerPercentage: {
       id: "ownerPercentage",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].ownerShipPercentage",
@@ -95,7 +107,7 @@ const formConfig = {
       localePrefix: { moduleName: "PropertyTax", masterName: "OwnerType" },
       jsonPath: "Properties[0].propertyDetails[0].owners[0].ownerType",
       type: "AutocompleteDropdown",
-      defaultSort:false,
+      defaultSort: false,
       floatingLabelText: "PT_FORM3_SPECIAL_CATEGORY",
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       dropDownData: [],
@@ -129,7 +141,7 @@ const formConfig = {
 
         dispatch(setFieldProperty(formKey, "ownerCategoryIdType", "dropDownData", documentTypes));
         dispatch(handleFieldChange(formKey, "ownerCategoryIdType", get(documentTypes, "[0].value", "")));
-        dispatch(setFieldProperty(formKey, "ownerCategoryIdType", "value", get(documentTypes, "[0].value", "")));       
+        dispatch(setFieldProperty(formKey, "ownerCategoryIdType", "value", get(documentTypes, "[0].value", "")));
         switch (value) {
           case "NONE":
             dispatch(handleFieldChange(formKey, "ownerCategoryId", null));
@@ -251,7 +263,7 @@ const formConfig = {
             .join(", ")
             .replace(/^(,\s)+|(,\s)+$/g, "")
             .replace(/(,\s){2,}/g, ", ")
-            .replace(":","");
+            .replace(":", "");
           dispatch(setFieldProperty(formKey, "ownerAddress", "value", correspondingAddress));
           dispatch(handleFieldChange(formKey, "ownerAddress", correspondingAddress));
         } else {

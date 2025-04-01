@@ -140,6 +140,9 @@ const OwnerInformation = ({
               )}
             </div>
             <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
+              <Field fieldKey="ownerPan" field={fields["ownerPan"]} handleFieldChange={handleFieldChange} disabled={disabled} />
+            </div>
+            <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
               <Field fieldKey="ownerEmail" field={fields["ownerEmail"]} handleFieldChange={handleFieldChange} disabled={disabled} />
             </div>
             <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
