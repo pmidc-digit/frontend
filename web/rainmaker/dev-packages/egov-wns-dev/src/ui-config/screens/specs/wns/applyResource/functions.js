@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { getPropertyResults, isActiveProperty, showHideFieldsFirstStep } from "../../../../../ui-utils/commons";
+import { getPropertyResults, isActiveProperty, showHideFieldsFirstStep, getMCLpropertyResult } from "../../../../../ui-utils/commons";
 import { getUserInfo, getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
 
 export const propertySearchApiCall = async (state, dispatch) => {
@@ -65,7 +65,7 @@ export const propertySearchApiCall = async (state, dispatch) => {
           showHideFieldsFirstStep(dispatch,propertyData.propertyId,false); 
           dispatch(prepareFinalObject("applyScreen.property", propertyData))         
         }else{          
-          let contractedCorAddress = "";
+         let contractedCorAddress = "";
 
           if(propertyData.address.doorNo !== null && propertyData.address.doorNo !== ""){
             contractedCorAddress += propertyData.address.doorNo + ", ";
@@ -103,6 +103,19 @@ export const propertySearchApiCall = async (state, dispatch) => {
       console.log(err)
     }
   }
+}
+
+export const propertyMCLSearchApiCall = async (state, dispatch) => {
+  
+  let tenantId = getTenantIdCommon();
+  let queryObject = [{ key: "tenantId", value: tenantId }];
+  let surveyUUID = get(state.screenConfiguration.preparedFinalObject, "searchScreen.propertyIds", {});
+
+
+  let response = await getMCLpropertyResult(surveyUUID, dispatch);
+  debugger
+  console.log("response", response)
+
 }
 
 const showHideFields = (dispatch, value) => {

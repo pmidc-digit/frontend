@@ -6,9 +6,12 @@ import {
   getTextField,
   getLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
-import { propertySearchApiCall } from './functions';
+import { propertySearchApiCall, propertyMCLSearchApiCall } from './functions';
 import { handlePropertySubUsageType, handleNA, resetFieldsForApplication } from '../../utils';
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
+import {getTenantId} from "egov-ui-kit/utils/localStorageUtils"
+
+const userTenantId = getTenantId();
 
 let isMode = getQueryArg(window.location.href, "mode");
 isMode = (isMode) ? isMode.toUpperCase() : "";
@@ -54,7 +57,7 @@ if(isMode==="MODIFY"){
 }
 export const propertyHeader = getCommonSubHeader({
   lKey:resetScreen(),
-  labelKey: "WS_COMMON_PROP_DETAIL",
+  labelKey: "WS_COMMON_PROP_DETAILdddsdsdsdsdsd",
   labelName: "Property Details"
 })
 
@@ -102,7 +105,7 @@ export const propertyID = getCommonContainer({
     },
     onClickDefination: {
       action: "condition",
-      callBack: propertySearchApiCall
+      callBack: propertyMCLSearchApiCall
     },
   },
   clickHereLink: {

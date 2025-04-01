@@ -8,7 +8,7 @@ import get from "lodash/get";
 import set from "lodash/set";
 import store from "redux/store";
 import { convertDateToEpoch, getTranslatedLabel } from "../ui-config/screens/specs/utils";
-import { httpRequest } from "./api";
+import { httpRequest, externalAPICAll } from "./api";
 export const serviceConst = {
     "WATER": "WATER",
     "SEWERAGE": "SEWERAGE"
@@ -354,6 +354,32 @@ export const getPropertyResults = async (queryObject, dispatch) => {
     }
 
 };
+
+export const getMCLpropertyResult = async(UIDNo,dispatch) =>{
+    dispatch(toggleSpinner());
+    try {
+        debugger
+        //const url = `https://uid.mcludhiana.gov.in/api/surveyuid/GetDataByUID?ULB=${encodeURIComponent("MCL")}&UIDNo=${encodeURIComponent(UIDNo)}`;
+        //const url = "https://uid.mcludhiana.gov.in/api/surveyuid/GetDataByUID"
+        const url = process.env.REACT_APP_EXT_API_MCL
+        const authHeader = "Basic bjRVS0t0VFY3Y2JyNnBzZ1hrMDVudz09OjU2dVZqUmhPODFaVE10Um5YbFN2REE9PQ=="; // Base64-encoded credentials
+        const params = {
+            "ULB" : "MCL",
+            "UIDNo" : UIDNo
+        }
+        const header = {
+            Authorization: authHeader,
+            "Content-Type": "application/json",
+        }
+        const response = await externalAPICAll(url,header, '', 'get', params);
+
+        dispatch(toggleSpinner());
+        return response; // Return API response data
+    } catch (error) {
+        dispatch(toggleSpinner());
+        console.error("Error fetching survey data:", error);
+    }
+}
 
 export const getPropertyResultsWODispatch = async (queryObject) => {
     try {

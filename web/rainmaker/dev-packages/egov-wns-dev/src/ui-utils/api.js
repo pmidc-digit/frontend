@@ -125,3 +125,45 @@ export const logoutRequest = async () => {
 
   throw new Error(apiError);
 };
+
+export const externalAPICAll = async (baseUrl,header,requestData, method, params)=>{
+    try{
+        debugger
+          const options = {
+            method: method.toUpperCase(), // Convert method to uppercase (GET, POST, etc.)
+            url: process.env.REACT_APP_EXT_API_MCL,
+            headers: header
+        };
+        if (method.toUpperCase() === "GET") {
+            options.params = params;
+        }
+        if (method.toUpperCase() === "POST" || method.toUpperCase() === "PUT") {
+            options.data = requestData;
+        }
+        const response = await axios(options);
+        store.dispatch(toggleSpinner());
+    if (responseStatus === 200 || responseStatus === 201) {
+      return response;
+    }
+    }catch (error){
+      const { data, status } = error.response;
+      if (status === 400 && data === "") {
+        apiError = "INVALID_TOKEN";
+      } else {
+        apiError =
+          (data.hasOwnProperty("Errors") &&
+            data.Errors &&
+            data.Errors.length &&
+            data.Errors[0].message) ||
+          (data.hasOwnProperty("error") &&
+            data.error.fields &&
+            data.error.fields.length &&
+            data.error.fields[0].message) ||
+          (data.hasOwnProperty("error_description") && data.error_description) ||
+          apiError;
+      }
+      store.dispatch(toggleSpinner());
+    }
+    
+
+}
