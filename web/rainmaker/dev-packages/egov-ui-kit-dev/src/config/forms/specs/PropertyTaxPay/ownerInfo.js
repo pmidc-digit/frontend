@@ -3,6 +3,7 @@ import { setDependentFields } from "./utils/enableDependentFields";
 import get from "lodash/get";
 import set from "lodash/set";
 import { setFieldProperty, handleFieldChange } from "egov-ui-kit/redux/form/actions";
+import { localStorageSet, localStorageGet, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 
 const formConfig = {
   name: "ownerInfo",
@@ -47,7 +48,7 @@ const formConfig = {
       floatingLabelText: "PAN Number",
       hintText: "PAN Number",
       //pattern: /^[^{0-9}^\$\"'<>?\\\\~`!@#$%^()+={}\[\]*,_:;“”‘’]{1,64}$/i,
-      required: true,
+      required: getTenantId() == 'pb.mohali' ? true : false,
       errorMessage: "PT_NAME_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
     },
