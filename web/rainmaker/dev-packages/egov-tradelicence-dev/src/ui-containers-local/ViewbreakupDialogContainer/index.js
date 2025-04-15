@@ -272,7 +272,7 @@ class ViewBreakupContainer extends React.Component {
       estimateCardData,
       validityYears
     } = this.props;
-    debugger
+    //debugger
     //console.log("validityYears"+JSON.stringify(validityYears));
     const finalTradeTotal = (tradeTotal+accessoriesTotal)*validityYears;
     const accesTradetotal = (tradeTotal+accessoriesTotal);
