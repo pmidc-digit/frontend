@@ -11,7 +11,9 @@
 // };
 
 export const getResultUrl = (moduleName,reportName) => {
-  let reportResultUrl = `/report/${moduleName}/_get`;
+  let windowURL = window.location.href;
+  let endpoints = windowURL.includes("report-v2") ? "report-v2" : "report";
+  let reportResultUrl = `/${endpoints}/${moduleName}/_get`;
   return reportResultUrl;
 }
 
