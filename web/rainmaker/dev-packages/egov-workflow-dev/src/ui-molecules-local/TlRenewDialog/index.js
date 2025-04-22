@@ -77,11 +77,16 @@ class TlRenewDialog extends React.Component {
       validityYears :tlValidity
     }
    const wfCode = isHAZ  ? "NEWTL.HAZ" : "DIRECTRENEWAL";
+   const action = isHAZ ? "APPLY" : "INITIATE";
+   const businessService = isHAZ ? "NewTL" : "NewTL"
+
    const nextFinancialYear =  get(licenseData, "financialYear");
    const tenantId = get(licenseData, "tenantId");
    //console.log("nextFinancialYear"+nextFinancialYear)
    set(licenseData, "workflowCode" ,wfCode)
-   set(licenseData,)
+   set (licenseData, "action", action)
+   set (licenseData, "businessService", businessService)
+   //set(licenseData,)
    licences.push(licenseData)
    try {
     const response = await httpRequest(
