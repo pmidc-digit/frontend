@@ -970,13 +970,21 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 export const applyForWater = async (state, dispatch) => {
     //debugger
     let queryObject = parserFunction(state);
+    let userType = JSON.parse(getUserInfo()).type.toUpperCase();
     //console.log("queryObject"+JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let method = waterId ? "UPDATE" : "CREATE";
     try {
-        const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
+        let parsedTenantId;
+        if(userType === 'EMPLOYEE'){
+            parsedTenantId = JSON.parse(getUserInfo()).tenantId
+        }else{
+            parsedTenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        }
+        //const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
         let response;
-        queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+       // queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+            queryObject.tenantId =parsedTenantId;
         if (method === "UPDATE") {
             queryObject.additionalDetails.appCreatedDate = get(
                 state.screenConfiguration.preparedFinalObject,
@@ -988,7 +996,7 @@ export const applyForWater = async (state, dispatch) => {
             let waterSubSource = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSubSource", null);
             queryObjectForUpdate.waterSource = queryObjectForUpdate.waterSource ? queryObjectForUpdate.waterSource : waterSource;
             queryObjectForUpdate.waterSubSource = queryObjectForUpdate.waterSubSource ? queryObjectForUpdate.waterSubSource : waterSubSource;
-            set(queryObjectForUpdate, "tenantId", tenantId);
+            set(queryObjectForUpdate, "tenantId", parsedTenantId);
             queryObjectForUpdate = { ...queryObjectForUpdate, ...queryObject }
             delete queryObjectForUpdate.roadCuttingInfosw
            // console.log("dhgdhf"+JSON.stringify(queryObjectForUpdate))
@@ -1059,13 +1067,21 @@ export const applyForWater = async (state, dispatch) => {
 
 export const applyForSewerage = async (state, dispatch) => {
     let queryObject = parserFunction(state);
+    let userType = JSON.parse(getUserInfo()).type.toUpperCase();
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     let method = sewerId ? "UPDATE" : "CREATE";
     try {
-        const tenantId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].property.tenantId");
+       // const tenantId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].property.tenantId");
         let response;
-        set(queryObject, "tenantId", tenantId);
-        queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        let parsedTenantId;
+        if(userType === 'EMPLOYEE'){
+            parsedTenantId = JSON.parse(getUserInfo()).tenantId
+        }else{
+            parsedTenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        }
+        //set(queryObject, "tenantId", tenantId);
+        //queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        queryObject.tenantId  = parsedTenantId;
         if (method === "UPDATE") {
             queryObject.additionalDetails.appCreatedDate = get(
                 state.screenConfiguration.preparedFinalObject,
@@ -1142,15 +1158,23 @@ export const applyForSewerage = async (state, dispatch) => {
 export const applyForBothWaterAndSewerage = async (state, dispatch) => {
     let method;
     let queryObject = parserFunction(state);
+    let userType = JSON.parse(getUserInfo()).type.toUpperCase();
     //console.log("dsgdsh"+JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     if (waterId && sewerId) { method = "UPDATE" } else { method = "CREATE" };
     try {
-        const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
+        //const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
         let response;
-        set(queryObject, "tenantId", tenantId);
-        queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        let parsedTenantId;
+        if(userType === 'EMPLOYEE'){
+            parsedTenantId = JSON.parse(getUserInfo()).tenantId
+        }else{
+            parsedTenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        }
+        //set(queryObject, "tenantId", tenantId);
+        //queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        queryObject.tenantId  = parsedTenantId;
         if (method === "UPDATE") {
             let queryObjectForUpdateWater = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0]");
             let waterSource = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSourceType", null);
