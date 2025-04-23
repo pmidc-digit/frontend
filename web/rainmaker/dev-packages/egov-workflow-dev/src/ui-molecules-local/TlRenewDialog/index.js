@@ -78,7 +78,7 @@ class TlRenewDialog extends React.Component {
     }
    const wfCode = isHAZ  ? "NEWTL.HAZ" : "DIRECTRENEWAL";
    const action = isHAZ ? "APPLY" : "INITIATE";
-   const businessService = isHAZ ? "TL" : "NewTL"
+   const businessService = isHAZ ? "TL" : "TL"
 
    const nextFinancialYear =  get(licenseData, "financialYear");
    const tenantId = get(licenseData, "tenantId");

@@ -386,6 +386,9 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
     if (additionalDetail == null) {
       set(queryObject[0], "tradeLicenseDetail.additionalDetail", null);
     }
+    let tradeUnitMDMS = get(state.screenConfiguration.preparedFinalObject.applyScreenMdmsData.TradeLicense,"MdmsTradeType", []);
+    let tradeUnitlicences = get(state.screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail,"tradeUnits",[]); 
+    let filterObject = filterTradeUnitsFromObjects(tradeUnitMDMS,tradeUnitlicences);
     //------ removing null from document array ------
     let documentArray = compact(get(queryObject[0], "tradeLicenseDetail.applicationDocuments"));
     let documents = getUniqueItemsFromArray(documentArray, "fileStoreId");
@@ -447,7 +450,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
     }
     debugger;
     set(queryObject[0], "tenantId", tenantId);
-    if (queryObject[0].ishazardous == "NEWTL.HAZ") {
+    if (filterObject === "NEWTL.HAZ") {
       set(queryObject[0], "workflowCode", "NEWTL.HAZ");
     }
     else {
@@ -558,7 +561,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
           set(queryObject[0], "tradeLicenseDetail.owners", checkValidOwners(get(queryObject[0], "tradeLicenseDetail.owners", []), oldOwners));
         }
         //console.log("jdvgsds",state.screenConfiguration.preparedFinalObject.Licenses[0]);
-        if (state.screenConfiguration.preparedFinalObject.Licenses[0].workflowCode == "NEWTL.HAZ") {
+        if (filterObject == "NEWTL.HAZ") {
           set(queryObject[0], "workflowCode", "NEWTL.HAZ");
 
         }
@@ -868,3 +871,17 @@ export const checkValidOwnersForRenewal = (currentOwners = [], oldOwners = []) =
 
   return [...currentOwners, ...oldOwners];
 }
+export const filterTradeUnitsFromObjects = (allTradeUnitsObj, someTradeUnitsObj) => {
+  let result;
+
+  for (let tunit in allTradeUnitsObj) {
+    for(let mdmstunit of someTradeUnitsObj){
+      if(tunit.tradeType == mdmstunit.code){
+        if(mdmstunit.ishazardous == true){}
+          result = "NEWTL.HAZ"
+      }
+    }
+  }
+
+  return result;
+};
