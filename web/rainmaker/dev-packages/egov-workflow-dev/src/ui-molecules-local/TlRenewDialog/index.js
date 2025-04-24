@@ -83,6 +83,7 @@ class TlRenewDialog extends React.Component {
    const nextFinancialYear =  get(licenseData, "financialYear");
    const tenantId = get(licenseData, "tenantId");
    //console.log("nextFinancialYear"+nextFinancialYear)
+   set(licenseData, "tradeLicenseDetail.additionalDetail", validityYears);
    set(licenseData, "workflowCode" ,wfCode)
    set (licenseData, "action", action)
    set (licenseData, "businessService", businessService)
