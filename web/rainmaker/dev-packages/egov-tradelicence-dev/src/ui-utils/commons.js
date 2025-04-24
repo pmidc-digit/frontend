@@ -386,6 +386,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
     if (additionalDetail == null) {
       set(queryObject[0], "tradeLicenseDetail.additionalDetail", null);
     }
+    //debugger
     let tradeUnitMDMS = get(state.screenConfiguration.preparedFinalObject.applyScreenMdmsData.TradeLicense,"MdmsTradeType", []);
     let tradeUnitlicences = get(state.screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail,"tradeUnits",[]); 
     let filterObject = filterTradeUnitsFromObjects(tradeUnitMDMS,tradeUnitlicences);
@@ -873,12 +874,13 @@ export const checkValidOwnersForRenewal = (currentOwners = [], oldOwners = []) =
 }
 export const filterTradeUnitsFromObjects = (allTradeUnitsObj, someTradeUnitsObj) => {
   let result;
-
-  for (let tunit in allTradeUnitsObj) {
+  //debugger;
+  for (let tunit of allTradeUnitsObj) {
     for(let mdmstunit of someTradeUnitsObj){
-      if(tunit.tradeType == mdmstunit.code){
-        if(mdmstunit.ishazardous == true){}
+      if(tunit.code == mdmstunit.tradeType){
+        if(tunit.ishazardous === true){
           result = "NEWTL.HAZ"
+        }  
       }
     }
   }
