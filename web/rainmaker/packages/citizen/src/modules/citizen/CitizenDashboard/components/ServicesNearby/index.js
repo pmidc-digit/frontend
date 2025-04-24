@@ -38,7 +38,7 @@ class ServicesNearby extends React.Component {
     const { onServiceClick } = this.props;
     return (
       <Grid container>
-        <Grid item xs={6} sm={6} align="center" style={{ paddingRight : 8,cursor: "pointer" }}  onClick={() => onServiceClick("events")}>
+        <Grid item xs={6} sm={6} align="center" style={{ paddingRight: 8, cursor: "pointer" }} onClick={() => onServiceClick("events")}>
           <Card className="servicelist-style"
             textChildren={
               <div className="local-information-cont" >
@@ -48,7 +48,7 @@ class ServicesNearby extends React.Component {
             }
           />
         </Grid>
-        <Grid item xs={6} sm={6} align="center" style={{ cursor: "pointer" }}  onClick={() => onServiceClick("my-city")}>
+        {/* <Grid item xs={6} sm={6} align="center" style={{ cursor: "pointer" }}  onClick={() => onServiceClick("my-city")}>
           <Card className="servicelist-style"
             textChildren={
               <div className="local-information-cont" >
@@ -57,7 +57,7 @@ class ServicesNearby extends React.Component {
               </div>
             }
           />
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   }
