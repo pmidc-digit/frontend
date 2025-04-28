@@ -157,7 +157,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
         value: tenantId
       },
       { key: "offset", value: "0" },
-      { key: "licenseNumbers", value: licenseNumber }
+      { key: "applicationNumber", value: applicationNumber }
     ];
     const payload = await getSearchResults(queryObjectSearch);
     const length = payload && payload.Licenses.length > 0 ? get(payload, `Licenses`, []).length : 0;
