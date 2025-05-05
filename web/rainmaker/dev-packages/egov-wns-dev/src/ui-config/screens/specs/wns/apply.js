@@ -65,8 +65,8 @@ import {
 import { reviewDocuments } from "./applyResource/reviewDocuments";
 import { reviewModificationsEffective } from "./applyResource/reviewModificationsEffective";
 import { reviewOwner } from "./applyResource/reviewOwner";
-import "./index.css";
-import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+import './index.css'
+import { getTenantId, getServiceName, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 
 const downloadselfcare = () => {
   window.open(
@@ -1099,6 +1099,7 @@ const screenConfig = {
   name: "apply",
   // hasBeforeInitAsync:true,
   beforeInitScreen: (action, state, dispatch) => {
+    debugger
     // dispatch(prepareFinalObject("applyScreen.water", true));
     // dispatch(prepareFinalObject("applyScreen.sewerage", false));
     const propertyId = getQueryArg(window.location.href, "propertyId");
@@ -1107,14 +1108,12 @@ const screenConfig = {
 
     // let dischargeFee = '12';
     // let tenantId = getQueryArg(window.location.href, "tenantId");
-    const applicationNumber = getQueryArg(
-      window.location.href,
-      "applicationNumber"
-    );
-    const dischargeConnection = getQueryArg(
-      window.location.href,
-      "dischargeConnection"
-    );
+    const serviceName = getServiceName();
+    let userInfo = JSON.parse(getUserInfo());
+    let userType = get(userInfo, "type");
+    const EODBservice = serviceName === 'BF_LG_SC' ? 'sewerage' : 'water'
+    const applicationNumber = getQueryArg(window.location.href, "applicationNumber");
+    const dischargeConnection = getQueryArg(window.location.href, "dischargeConnection");
     const dischargeFee = getQueryArg(window.location.href, "dischargeFee");
 
     if (getQueryArg(window.location.href, "edited") != "true") {
@@ -1125,21 +1124,27 @@ const screenConfig = {
           "screenConfiguration.preparedFinalObject.applyScreenMdmsData.common-masters.OwnerShipCategory",
           []
         );
-        dispatch(prepareFinalObject("OwnershipCategory", ownershipCategory));
+        dispatch(
+          prepareFinalObject(
+            "OwnershipCategory",
+            ownershipCategory
+          )
+        );
       });
-
-      dispatch(prepareFinalObject("applyScreen.water", true));
-      dispatch(prepareFinalObject("applyScreen.sewerage", false));
-      dispatch(prepareFinalObject("applyScreen.discharge", false));
-      dispatch(
-        prepareFinalObject(
-          "applyScreen.additionalDetails.dischargeConnection",
-          false
-        )
-      );
-      dispatch(
-        prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0)
-      );
+      if(userType.toUpperCase() === 'CITIZEN' && EODBservice === 'sewerage'){
+        dispatch(prepareFinalObject("applyScreen.water", false));
+        dispatch(prepareFinalObject("applyScreen.sewerage", true));
+        dispatch(prepareFinalObject("applyScreen.discharge", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
+      }else{
+        dispatch(prepareFinalObject("applyScreen.water", true));
+        dispatch(prepareFinalObject("applyScreen.sewerage", false));
+        dispatch(prepareFinalObject("applyScreen.discharge", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
+      }
+      
 
       if (propertyId) {
         togglePropertyFeilds(action, true);

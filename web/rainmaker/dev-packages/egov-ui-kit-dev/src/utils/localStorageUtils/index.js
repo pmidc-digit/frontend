@@ -27,7 +27,21 @@ export const getLocalizationLabels = () =>{
 export const getStoredModulesList = () =>{
   return localStorage.getItem("storedModulesList");
 };
-
+export const getThirdPartyName =()=>{
+  return localStorage.getItem("thirdPartyCode");
+}
+export const getThirdPartyURL =()=>{
+  return localStorage.getItem("thirdPartyReturnUrl");
+}
+export const getServiceName =()=>{
+  return localStorage.getItem("serviceName");
+}
+export const getAppid =()=>{
+  return localStorage.getItem("appid");
+}
+export const getIPin =()=>{
+  return localStorage.getItem("iPin");
+}
 //SET methods
 export const setUserInfo = (userInfo) => {
   localStorageSet("user-info", userInfo, null);
@@ -53,7 +67,6 @@ export const setReturnUrl = (url) => {
 export const setStoredModulesList =(storedModuleList) =>{
   localStorage.setItem("storedModulesList", storedModuleList);
 };
-
 //Remove Items (LOGOUT)
 export const clearUserDetails = () => {
   Object.keys(localStorage).forEach((key) => {
