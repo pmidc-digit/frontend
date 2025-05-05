@@ -398,7 +398,30 @@ export const searchPropertyDetails = getCommonCard({
     jsonPath: "ptSearchScreen.name",
     disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
   }),
-  //-------------------End Owner Name--------------------------------
+
+  surveyId: getTextField({
+    label: {
+      labelName: "Survey Id",
+      labelKey: "Survey Id"
+    },
+    placeholder: {
+      labelName: "Enter Survey Id",
+      labelKey: "Survey Id"
+    },
+    gridDefination: {
+      xs: 12,
+      sm: 4,
+
+    },
+    required: false,
+   // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
+    errorMessage: "ERR_INVALID_SURVEY_ID",
+    jsonPath: "ptSearchScreen.surveyId",
+    disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+  }),
+
+  
+  //-------------------End SurveyId --------------------------------
   }),
  
   button: getCommonContainer({
