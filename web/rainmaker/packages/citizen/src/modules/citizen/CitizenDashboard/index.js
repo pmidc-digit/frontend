@@ -92,10 +92,10 @@ class CitizenDashboard extends Component {
           <ServiceList history={history} setRoute={setRoute} />
           {whatsNewEvents && (
             <Label
-              label="DASHBOARD_LOCAL_INFORMATION_LABEL"
-              fontSize={16}
-              color="rgba(0, 0, 0, 0.87"
-              containerStyle={{ paddingTop: 16, paddingBottom: 8 }}
+              // label="DASHBOARD_LOCAL_INFORMATION_LABEL"
+              // fontSize={16}
+              // color="rgba(0, 0, 0, 0.87"
+              // containerStyle={{ paddingTop: 16, paddingBottom: 8 }}
             />
           )}
           {whatsNewEvents && <ServicesNearby history={history} onServiceClick={this.onServiceClick} />}
