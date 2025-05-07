@@ -608,6 +608,7 @@ const parserFunction = (state) => {
     //console.log("Hello Test"+JSON.stringify(queryObject))
     let iPin = getIPin();
     let appid = getAppid(); 
+    let thirdPartyCode=getThirdPartyName();
     let ckConnTypeWater = queryObject.water;
     let ckConnTypeSwerage = queryObject.sewerage;
     let ckDischarge = queryObject.discharge;
@@ -653,6 +654,7 @@ const parserFunction = (state) => {
             isexempted: false,
             iPin : iPin ? iPin : null,
             appid : appid ? appid :null,
+            thirdPartyCode : thirdPartyCode ? thirdPartyCode : null,
             dischargeConnection: dischargeConnection ? dischargeConnection : 'false',
             dischargeFee: dischargeFee ? dischargeFee : null,
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
@@ -974,7 +976,7 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 }
 
 export const applyForWater = async (state, dispatch) => {
-    debugger
+    
     let queryObject = parserFunction(state);
     let userType = JSON.parse(getUserInfo()).type.toUpperCase();
     let thirdPartyCode = getThirdPartyName();
@@ -1010,9 +1012,9 @@ export const applyForWater = async (state, dispatch) => {
            // console.log("dhgdhf"+JSON.stringify(queryObjectForUpdate))
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "waterSource", getWaterSource(queryObjectForUpdate.waterSource, queryObjectForUpdate.waterSubSource));
-            if(userType === 'CITIZEN' && thirdPartyCode ==='EODB'){
-                set(queryObjectForUpdate, "channel", thirdPartyCode)
-            }
+            // if(userType === 'CITIZEN' && thirdPartyCode ==='EODB'){
+            //     set(queryObjectForUpdate, "channel", thirdPartyCode)
+            // }
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             disableField('apply', "components.div.children.footer.children.payButton", dispatch);
             if (typeof queryObjectForUpdate.additionalDetails !== 'object') {
@@ -1114,9 +1116,9 @@ export const applyForSewerage = async (state, dispatch) => {
             set(queryObjectForUpdate, "additionalDetails.userCharges",queryObject.additionalDetails.userChargessw);
             set(queryObjectForUpdate, "additionalDetails.othersFee",queryObject.additionalDetails.othersFeesw);
             // code for EODB data sent in additional Details
-            if(userType === 'CITIZEN' && thirdPartyCode ==='EODB'){
-                set(queryObjectForUpdate, "channel", thirdPartyCode)
-            }
+            // if(userType === 'CITIZEN' && thirdPartyCode ==='EODB'){
+            //     set(queryObjectForUpdate, "channel", thirdPartyCode)
+            // }
             //console.log("swqueryObjectForUpdate"+JSON.stringify(queryObjectForUpdate));
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "connectionType", "Non Metered");
@@ -1215,10 +1217,10 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             
             queryObjectForUpdateSewerage = { ...queryObjectForUpdateSewerage, ...queryObject }
             set(queryObjectForUpdateSewerage, "roadCuttingInfo", queryObjectForUpdateSewerage.roadCuttingInfosw);
-            if(userType === 'CITIZEN' && thirdPartyCode ==='EODB'){
-                set(queryObjectForUpdateSewerage, "channel", thirdPartyCode)
-                set(queryObjectForUpdateWater, "channel", thirdPartyCode);
-            }
+            // if(userType === 'CITIZEN' && thirdPartyCode ==='EODB'){
+            //     set(queryObjectForUpdateSewerage, "channel", thirdPartyCode)
+            //     set(queryObjectForUpdateWater, "channel", thirdPartyCode);
+            // }
            // console.log("dsgdsh"+JSON.stringify(queryObject))
             queryObjectForUpdateSewerage = findAndReplace(queryObjectForUpdateSewerage, "NA", null);
             
