@@ -8,6 +8,7 @@ import edge from "../../assets/img/edge.png";
 import mozilla from "../../assets/img/mozilla.png";
 import wz from "../../assets/img/w3c.jpg";
 import gigw from "../../assets/img/GIGW_LOGO.png";
+import android from "../../assets/img/mseva-google-play.png"
 import { useState } from "react";
 import Privacy from '../Privacy'
 
@@ -111,6 +112,13 @@ export default function Footer() {
                                     <a href="mailto:pgrs.lg@punjab.gov.in" className='email'>pgrs.lg@punjab.gov.in</a>
                                     <br /></p>
                                 <p className="paragraph" >
+                                    Click here to download the MSEVA App<br />
+
+                                    <a href="#" target='_blank'>
+                                        <img src={android} style={{ width: "45%", marginRight: "6%" }} alt='mSewa Punjab' /></a>
+
+                                </p>
+                                <p className="paragraph" >
                                     For any  issues regarding online payments:<br />
                                     <p>
                                         <a href="mailto:egovdolg@gmail.com" className='email'>egovdolg@gmail.com</a>
@@ -149,7 +157,7 @@ export default function Footer() {
                                 >
                                     Contact Us
                                 </a><br />
-                                 <a
+                                <a
                                     href="https://mseva-uat.lgpunjab.gov.in/common/privacy"
                                     id="flink"
                                     //className={classes.block}
