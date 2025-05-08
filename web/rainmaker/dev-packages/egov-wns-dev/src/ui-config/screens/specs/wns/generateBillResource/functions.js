@@ -27,6 +27,7 @@ export const generateBillApiCall = async (state, dispatch) => {
     //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
     // }
     else {
+      debugger;
       let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
       if (batchtypechk == "Locality") {
         var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
@@ -189,8 +190,8 @@ export const searchBillApiCall = async (state, dispatch) => {
     //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
     // }
     // let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
-    else if (batchtypechk == "Group") {
-      let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+    else if (batchtypechk == "Group" || batchtypechk == "Batch") {
+      let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
 
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
