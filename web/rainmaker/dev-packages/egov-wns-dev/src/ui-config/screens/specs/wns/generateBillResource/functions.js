@@ -58,8 +58,8 @@ export const generateBillApiCall = async (state, dispatch) => {
             "tenantId": getTenantIdCommon(),
           }
         }
-        else if(batchtypechk == "Group") {
-          billSchedulerObject = { 
+        else if (batchtypechk == "Group") {
+          billSchedulerObject = {
             "transactionType": transactionType,
             "status": "INITIATED",
             "locality": '',
@@ -188,10 +188,10 @@ export const searchBillApiCall = async (state, dispatch) => {
 
     //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
     // }
-   // let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
-    else if(batchtypechk == "Group"){
-       let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
-   
+    // let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+    else if (batchtypechk == "Group") {
+      let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
       }
@@ -230,8 +230,8 @@ export const searchBillApiCall = async (state, dispatch) => {
 
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
-          locality = element.locality?element.locality: element.grup;
-         // group = element.grup;
+          locality = element.locality ? element.locality : element.grup;
+          // group = element.grup;
           billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
@@ -269,8 +269,8 @@ export const searchBillApiCall = async (state, dispatch) => {
 
     }
     else {
-      
-      
+      let mohallaDataCode = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "mohallaData", {});
+
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
       }
@@ -283,8 +283,10 @@ export const searchBillApiCall = async (state, dispatch) => {
       try {
         let tenant_Id = getTenantIdCommon();
         let response = null;
-  debugger;
+        debugger;
+        let servicety;
         if (transactionType == "WS") {
+          servicety = "Water";
           response = await httpRequest(
             "post",
             `ws-calculator/watercharges/scheduler/_search?tenantId=${tenant_Id}&locality=${mohallaDataCode}`,
@@ -294,6 +296,7 @@ export const searchBillApiCall = async (state, dispatch) => {
           );
         }
         else {
+          servicety = "Sewerage";
           response = await httpRequest(
             "post",
             `sw-calculator/seweragecharges/scheduler/_search?tenantId=${tenant_Id}&locality=${mohallaDataCode}`,
@@ -307,7 +310,7 @@ export const searchBillApiCall = async (state, dispatch) => {
         let searchBillArray = [];
         let billRow = null;
         let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId;
-
+        let recourdcount = response.billScheduler.length;
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
           locality = element.locality;
@@ -322,6 +325,8 @@ export const searchBillApiCall = async (state, dispatch) => {
             "billingcycleEnddate": billingcycleEnddate,
             "status": status,
             "tenantId": tenantId,
+            "recordcount": recourdcount,
+            "service": servicety
           };
           searchBillArray.push(billRow);
         });
