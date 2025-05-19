@@ -816,13 +816,13 @@ const screenConfig = {
 };
 
 //----------------- search code (feb17)---------------------- //
-let appid;
-let iPin;
-let thirdPartyCode;
+
 
 const searchResults = async (action, state, dispatch, applicationNumber, processInstanceAppStatus) => {
   debugger
-
+  let appid;
+  let iPin;
+  let thirdPartyCode;
   let queryObjForSearch = [{ key: "tenantId", value: tenantId }, { key: "applicationNumber", value: applicationNumber }]
   let viewBillTooltip = [], estimate, payload = [];
   if (service === serviceConst.WATER) {
@@ -870,7 +870,10 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     } else {
       set(action.screenConfig, "components.div.children.headerDiv.children.header1.children.connection.children.connectionNumber.visible", false);
     }
-
+    let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreenOld");
+     appid = applyScreenObject ? applyScreenObject.additionalDetails.appid : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.appid");
+     iPin = applyScreenObject ? applyScreenObject.additionalDetails.iPin : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.iPin");
+     thirdPartyCode = applyScreenObject ? applyScreenObject.additionalDetails.thirdPartyCode : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.thirdPartyCode");
     // to set documents 
     if (payload.WaterConnection[0].documents !== null && payload.WaterConnection[0].documents !== "NA") {
       await setDocuments(
@@ -956,9 +959,11 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       set(action.screenConfig, "components.div.children.headerDiv.children.header1.children.connection.children.connectionNumber.visible", false);
     }
     let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreenOld");
-    appid = applyScreenObject.service == "SEWERAGE" ? applyScreenObject.additionalDetails.appid : applyScreenObject.additionalDetails.appid;
-    iPin = applyScreenObject.service == "SEWERAGE" ? applyScreenObject.additionalDetails.iPin : applyScreenObject.additionalDetails.iPin;
-    thirdPartyCode = applyScreenObject.service == "SEWERAGE" ? applyScreenObject.additionalDetails.thirdPartyCode : applyScreenObject.additionalDetails.thirdPartyCode;
+     appid = applyScreenObject ? applyScreenObject.additionalDetails.appid : get(state.screenConfiguration.prepareFinalObject, "SewerageConnection[0].additionalDetails.appid");
+     iPin = applyScreenObject ? applyScreenObject.additionalDetails.iPin : get(state.screenConfiguration.prepareFinalObject, "SewerageConnection[0].additionalDetails.iPin");
+     thirdPartyCode = applyScreenObject ? applyScreenObject.additionalDetails.thirdPartyCode : get(state.screenConfiguration.prepareFinalObject, "SewerageConnection[0].additionalDetails.thirdPartyCode");
+
+
     // to set documents 
     dispatch(prepareFinalObject("applyScreen.additionalDetails.appid", appid))
     dispatch(prepareFinalObject("applyScreen.additionalDetails.iPin", iPin))
