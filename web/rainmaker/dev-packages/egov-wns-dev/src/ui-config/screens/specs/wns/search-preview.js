@@ -871,13 +871,13 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       set(action.screenConfig, "components.div.children.headerDiv.children.header1.children.connection.children.connectionNumber.visible", false);
     }
 
-    if (state.screenConfiguration.preparedFinalObject.applyScreenOld) {
-      let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreenOld");
-      appid = applyScreenObject ? applyScreenObject.additionalDetails.appid : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.appid");
-      iPin = applyScreenObject ? applyScreenObject.additionalDetails.iPin : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.iPin");
-      thirdPartyCode = applyScreenObject ? applyScreenObject.additionalDetails.thirdPartyCode : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.thirdPartyCode");
 
-    } // to set documents 
+    let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreenOld");
+    appid = applyScreenObject ? applyScreenObject.additionalDetails.appid : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.appid");
+    iPin = applyScreenObject ? applyScreenObject.additionalDetails.iPin : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.iPin");
+    thirdPartyCode = applyScreenObject ? applyScreenObject.additionalDetails.thirdPartyCode : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.thirdPartyCode");
+
+    // to set documents 
     if (payload.WaterConnection[0].documents !== null && payload.WaterConnection[0].documents !== "NA") {
       await setDocuments(
         state.screenConfiguration.preparedFinalObject,
