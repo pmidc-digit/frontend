@@ -149,7 +149,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
         (await searchResults(action, state, dispatch, applicationNumber, processInstanceAppStatus));
       }
       let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
-      //      console.log("applyScreen"+JSON.stringify(applyScreenObject))
+        //      console.log("applyScreen"+JSON.stringify(applyScreenObject))
       applyScreenObject.applicationNo.includes("WS") ? applyScreenObject.service = serviceConst.WATER : applyScreenObject.service = serviceConst.SEWERAGE;
       let parsedObject = parserFunction(findAndReplace(applyScreenObject, "NA", null));
       // console.log("parsedObject"+JSON.stringify(parsedObject))
@@ -1029,9 +1029,9 @@ const parserFunction = (obj) => {
         obj.additionalDetails.detailsProvidedBy !== null
       ) ? obj.additionalDetails.detailsProvidedBy : "",
 
-      appid: appid,
-      iPin: iPin,
-      thirdPartyCode: thirdPartyCode,
+      appid: waterDetails && waterDetails ? waterDetails.appid : null ,
+      iPin: waterDetails && waterDetails ? waterDetails.iPin : null,
+      thirdPartyCode: waterDetails && waterDetails ? waterDetails.thirdPartyCode : null,
       billingType: waterDetails && waterDetails ? waterDetails.billingType : null,
       billingAmount: waterDetails && waterDetails ? parseFloat(waterDetails.billingAmount) : null,
       connectionCategory: waterDetails && waterDetails ? waterDetails.connectionCategory : null,
