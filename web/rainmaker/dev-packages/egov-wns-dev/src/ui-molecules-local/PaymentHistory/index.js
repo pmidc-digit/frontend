@@ -322,7 +322,8 @@ class PaymentHistory extends Component {
           this.downloadReceiptFromFilestoreID(oldFileStoreId, "download", undefined, false)
         }
         else {
-
+          payloadReceiptDetails.Payments[0].ownerNumber = payloadReceiptDetails.Payments[0].ownerNumber.join(", ")
+          payloadReceiptDetails.Payments[0].ownername = payloadReceiptDetails.Payments[0].ownername.join(", ")
           httpRequest("post", DOWNLOADRECEIPT.GET.URL, DOWNLOADRECEIPT.GET.ACTION, queryStr, { Payments: payloadReceiptDetails.Payments }, { 'Accept': 'application/json' }, { responseType: 'arraybuffer' })
             .then(res => {
               res.filestoreIds[0]
