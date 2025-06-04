@@ -258,6 +258,9 @@ const download = async (mode = "download", state, showConfirmation = false) => {
       }
       else {
         debugger
+        payloadReceiptDetails.Payments[0].ownerNumber = payloadReceiptDetails.Payments[0].ownerNumber.join(", ");
+        payloadReceiptDetails.Payments[0].ownername = payloadReceiptDetails.Payments[0].ownername.join(", ");
+        payloadReceiptDetails.Payments[0].address = payloadReceiptDetails.Payments[0].address.replace(/[^a-zA-Z0-9 ]/g, ' ');
         httpRequest("post", DOWNLOADRECEIPT.GET.URL, DOWNLOADRECEIPT.GET.ACTION, queryStr, { Payments: payloadReceiptDetails.Payments }, { 'Accept': 'application/json' }, { responseType: 'arraybuffer' })
           .then(res => {
             res.filestoreIds[0]
