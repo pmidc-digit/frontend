@@ -45,6 +45,7 @@ export const generateBillApiCall = async (state, dispatch) => {
 
         let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
         let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+
         let billSchedulerObject;
 
         if (batchtypechk == "Batch") {
@@ -125,7 +126,7 @@ export const generateBillApiCall = async (state, dispatch) => {
 
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
-          locality = element.locality;
+          locality = element.locality ? element.locality : element.grup;
           billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
@@ -168,6 +169,8 @@ export const generateBillApiCall = async (state, dispatch) => {
 
 
 export const searchBillApiCall = async (state, dispatch) => {
+
+  debugger;
   var transactionType;
   // showHideApplicationTable(false, dispatch);
   // showHideConnectionTable(false, dispatch);
@@ -191,8 +194,9 @@ export const searchBillApiCall = async (state, dispatch) => {
     // }
     // let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
     else if (batchtypechk == "Group" || batchtypechk == "Batch") {
-      let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
-
+      let groupdataa = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+      let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
+      let groupdata = batchtypechk == "Group" ? groupdataa : batchdata;
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
       }
@@ -230,6 +234,7 @@ export const searchBillApiCall = async (state, dispatch) => {
         let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId;
 
         response.billScheduler.map((element, index) => {
+
           transactionType = element.transactionType;
           locality = element.locality ? element.locality : element.grup;
           // group = element.grup;
