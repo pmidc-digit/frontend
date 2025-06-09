@@ -2,7 +2,7 @@ import { Icon, TextFieldIcon } from "components";
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
 import { fetchFromLocalStorage, getModuleName } from "egov-ui-kit/utils/commons";
-import { getLocale, getStoredModulesList, getTenantId, localStorageGet, localStorageSet, setModule, setStoredModulesList } from "egov-ui-kit/utils/localStorageUtils";
+import { getLocale, getStoredModulesList, getTenantId, getUserInfo, localStorageGet, localStorageSet, setModule, setStoredModulesList } from "egov-ui-kit/utils/localStorageUtils";
 import Label from "egov-ui-kit/utils/translationNode";
 import { orderBy, some, split } from "lodash";
 import get from "lodash/get";
@@ -265,9 +265,18 @@ class ActionMenuComp extends Component {
     let actionList = actionListArr;
     let menuTitle = path.split(".");
     let activeItmem = localStorageGet("menuName");
+    if(process.env.REACT_APP_NAME === "Citizen"){
+      if(JSON.parse(getUserInfo()).roles.some((role)=> role.code === 'PESCO')){
+          menuItems = menuItems.filter(menu => menu.name.toUpperCase() === 'SWACH');
+          //menuItems = filterMenuItem;
+      }else{
+          menuItems = menuItems.filter(menu => menu.name.toUpperCase() !== 'SWACH');
+      }
+    }
     const showMenuItem = () => {
       const navigationURL = window.location.href.split("/").pop();
       if (searchText.length == 0) {
+        //console.log("menuItems",menuItems)
         return menuItems.map((item, index) => {
           let iconLeft;
           if (item.leftIcon) {
@@ -456,7 +465,7 @@ class ActionMenuComp extends Component {
       }
     };
 
-    return actionList ? (
+    return actionList ? (       
       <div ref={this.setWrapperRef}>
         <div className="whiteColor" />
         <div className="menu-item-title">
