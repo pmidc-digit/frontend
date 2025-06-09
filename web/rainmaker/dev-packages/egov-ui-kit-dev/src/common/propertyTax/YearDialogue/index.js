@@ -24,7 +24,7 @@ localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].
 editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
 surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
 constructionYear = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails.yearConstruction ? state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails.yearConstruction : "NA";
-assessment = state.properties.Assessments;
+assessment = state.properties.Assessments.filter((item)=> item.status === 'ACTIVE');
 propertiestenantId = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].tenantId;
   const { common, form } = state;
   const { generalMDMSDataById } = common;
@@ -74,6 +74,7 @@ const breakYear = (financialYear)=>{
 }
 const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear) => {
   debugger
+  console.log("assessmentArray",assessmentArray)
   let missingYears = [];
   if(tenantId === "pb.testing" || tenantId === "pb.patiala"){
   let checkedYears;
