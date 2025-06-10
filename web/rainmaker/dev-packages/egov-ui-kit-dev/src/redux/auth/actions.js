@@ -66,6 +66,7 @@ export const authenticated = (payload = {}) => {
   setTenantId(userInfo.tenantId);
   localStorageSet("expires-in", expiresIn);
   localStorageSet("last-login-time", lastLoginTime);
+  localStorageSet("CITIZEN.CITY",userInfo.permanentCity);
 
   return { type: authType.AUTHENTICATED, userInfo, accessToken };
 };
