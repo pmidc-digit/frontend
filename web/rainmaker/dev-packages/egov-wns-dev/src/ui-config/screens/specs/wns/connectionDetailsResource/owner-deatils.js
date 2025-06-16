@@ -34,7 +34,7 @@ export const ownerName = getLabelWithValue(
 export const ownerMobileNumber = getLabelWithValue(
   {
     labelName: "Mobile Number",
-    labelKey: "WS_OWN_DETAIL_MOBILE_NO_LABEL"
+    labelKey: "WS_OWN_DETAIL_MOBILE_NO_LABELtest2"
   },
   {
     jsonPath:
@@ -111,7 +111,7 @@ export const getOwnerDetails = (isEditable = true) => {
             sm: 10
           },
           ...getCommonSubHeader({
-            labelKey: "WS_COMMON_OWN_DETAIL"
+            labelKey: "WS_COMMON_OWN_DETAILtest1"
           })
         },
         editSection: {
@@ -179,7 +179,7 @@ const holderHeader = getHeader({
   labelName: "Connection Holder Details"
 })
 
-export const connectionHolderDetails={
+export const connectionHolderDetails = {
   mobileNumber: getLabelWithValueForModifiedLabel(
     {
       labelKey: "WS_CONN_HOLDER_OWN_DETAIL_MOBILE_NO_LABEL"
@@ -189,19 +189,19 @@ export const connectionHolderDetails={
       labelKey: "WS_OLD_LABEL_NAME"
     },
     { jsonPath: "applyScreenOld.connectionHolders[0].mobileNumber" }
-    
+
   ),
   name: getLabelWithValueForModifiedLabel(
     {
       labelName: "Name",
       labelKey: "WS_CONN_HOLDER_OWN_DETAIL_OWN_NAME_LABEL"
     },
-    { jsonPath: "WaterConnection[0].connectionHolders[0].name"},
+    { jsonPath: "WaterConnection[0].connectionHolders[0].name" },
     {
       labelKey: "WS_OLD_LABEL_NAME"
     },
-    { jsonPath: "applyScreenOld.connectionHolders[0].name"}
-    
+    { jsonPath: "applyScreenOld.connectionHolders[0].name" }
+
   ),
   gender: getLabelWithValueForModifiedLabel(
     {
@@ -209,7 +209,7 @@ export const connectionHolderDetails={
     },
     {
       jsonPath: "WaterConnection[0].connectionHolders[0].gender",
-      
+
       localePrefix: {
         moduleName: "COMMON",
         masterName: "GENDER"
@@ -220,7 +220,7 @@ export const connectionHolderDetails={
     },
     {
       jsonPath: "applyScreenOld.connectionHolders[0].gender",
-      
+
       localePrefix: {
         moduleName: "COMMON",
         masterName: "GENDER"
@@ -231,21 +231,21 @@ export const connectionHolderDetails={
     {
       labelKey: "WS_CONN_HOLDER_COMMON_FATHER_OR_HUSBAND_NAME"
     },
-    { jsonPath: "WaterConnection[0].connectionHolders[0].fatherOrHusbandName"},
+    { jsonPath: "WaterConnection[0].connectionHolders[0].fatherOrHusbandName" },
     {
       labelKey: "WS_OLD_LABEL_NAME"
     },
-    { jsonPath: "applyScreenOld.connectionHolders[0].fatherOrHusbandName"}
+    { jsonPath: "applyScreenOld.connectionHolders[0].fatherOrHusbandName" }
   ),
   relationship: getLabelWithValueForModifiedLabel(
     {
       labelKey: "WS_CONN_HOLDER_OWN_DETAIL_RELATION_LABEL"
     },
-    { jsonPath: "WaterConnection[0].connectionHolders[0].relationship"},
+    { jsonPath: "WaterConnection[0].connectionHolders[0].relationship" },
     {
       labelKey: "WS_OLD_LABEL_NAME"
     },
-    { jsonPath: "applyScreenOld.connectionHolders[0].relationship"}
+    { jsonPath: "applyScreenOld.connectionHolders[0].relationship" }
   ),
   correspondenceAddress: getLabelWithValueForModifiedLabel(
     {
@@ -253,14 +253,14 @@ export const connectionHolderDetails={
     },
     {
       jsonPath: "WaterConnection[0].connectionHolders[0].correspondenceAddress"
-     
+
     },
     {
       labelKey: "WS_OLD_LABEL_NAME"
     },
     {
       jsonPath: "applyScreenOld.connectionHolders[0].correspondenceAddress"
-     
+
     }
   ),
   specialApplicantCategory: getLabelWithValueForModifiedLabel(
@@ -269,14 +269,14 @@ export const connectionHolderDetails={
     },
     {
       jsonPath: "WaterConnection[0].connectionHolders[0].ownerType"
-      
+
     },
     {
       labelKey: "WS_OLD_LABEL_NAME"
     },
     {
       jsonPath: "applyScreenOld.connectionHolders[0].ownerType"
-      
+
     }
   )
 };
@@ -321,15 +321,15 @@ export const connHolderDetailsSummary = () => {
 }
 
 
-export const connectionHolderSameAsOwnerDetails={
+export const connectionHolderSameAsOwnerDetails = {
 
- sameAsOwnerDetails : getLabelWithValue(
+  sameAsOwnerDetails: getLabelWithValue(
     {
       labelKey: "WS_CONN_HOLDER_SAME_AS_OWNER_DETAILS"
     },
     { jsonPath: "WaterConnection[0].sameAsPropertyAddress" }
   )
-} 
+}
 
 export const connHolderDetailsSameAsOwnerSummary = () => {
   return getCommonGrayCard({
@@ -357,7 +357,7 @@ export const connHolderDetailsSameAsOwnerSummary = () => {
       componentPath: "MultiItem",
       props: {
         scheama: getCommonGrayCard({
-          sameAsOwnerDetails:getCommonContainer(connectionHolderSameAsOwnerDetails),
+          sameAsOwnerDetails: getCommonContainer(connectionHolderSameAsOwnerDetails),
         }),
         items: [],
         hasAddItem: false,
