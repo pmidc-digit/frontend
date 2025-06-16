@@ -10,6 +10,7 @@ import {
   getLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { httpRequest } from "../../../../ui-utils/api";
+import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
 import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { propertySearch, applicationSearch, dumm } from "./functions";
@@ -252,9 +253,9 @@ export const searchPropertyDetails = getCommonCard({
           )
         );
 
-        // dispatch(
-        //   fetchLocalizationLabel(getLocale(), action.value, action.value)
-        // );
+         dispatch(
+           fetchLocalizationLabel(getLocale(), action.value, action.value)
+         );
 
       } catch (e) {
         console.log(e);
