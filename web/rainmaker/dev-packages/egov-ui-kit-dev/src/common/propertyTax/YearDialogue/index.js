@@ -55,7 +55,6 @@ const getUserDataFromUuid = async (state, dispatch) => {
   }
 };
 const getCurrentFinancialYear = () => {
-  debugger
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1; // Months are 0-based in JavaScript
@@ -73,7 +72,6 @@ const breakYear = (financialYear)=>{
   return parseInt(financialYear.split("-")[1]);
 }
 const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear) => {
-  debugger
   console.log("assessmentArray",assessmentArray)
   let missingYears = [];
   if(tenantId === "pb.testing" || tenantId === "pb.patiala"){
@@ -93,14 +91,19 @@ const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,select
   }else{
     checkedYears = newConstructionYear;
   }
-    for (let year = checkedYears; year <= currentFinancialYear; year++){
-       if(!newAssessmentYear.includes(year)){
-        missingYears.push(year);
-       }
-    }
+    if(lastFifthFinancialYear > breakYear(selectedYear)){
+        missingYears.push(breakYear(selectedYear));
+    }else{
+      for (let year = checkedYears; year <= currentFinancialYear; year++){
+        if(!newAssessmentYear.includes(year)){
+          missingYears.push(year);
+        }
+      }
+    } 
   }else{
       missingYears.push(breakYear(selectedYear))
   }
+  //console.log("missingYears",missingYears)
   return  missingYears.sort((a, b) => a - b);
 };
 // const getYearList = () => {
@@ -203,7 +206,7 @@ class YearDialog extends Component {
                   }
                //</div> let assessed = userType.toUpperCase() === 'CITIZEN' ? checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear)
                // : checkAssessmentStatus(constructionYear,assessment,tenantIdcode,this.state.selectedYear);
-                 console.log("assessed",assessed);
+                 //console.log("assessed",assessed);
                  let assessed = checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear);
                  if(isLocMatch){
                     if (this.state.selectedYear !== '' && surveyIdcode != null) {
