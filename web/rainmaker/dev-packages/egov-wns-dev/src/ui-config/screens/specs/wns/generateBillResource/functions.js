@@ -30,9 +30,10 @@ export const generateBillApiCall = async (state, dispatch) => {
       debugger;
       let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
       if (batchtypechk == "Locality") {
-        var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
-          generateBillScreenObject["mohallaData"].lastIndexOf("(") + 1,
-          generateBillScreenObject["mohallaData"].lastIndexOf(")")).trim();
+        // var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
+        //   generateBillScreenObject["mohallaData"].lastIndexOf("(") + 1,
+        //   generateBillScreenObject["mohallaData"].lastIndexOf(")")).trim();
+        var mohallaDataCode = generateBillScreenObject["mohallaData"];
       }
       try {
         let transactionType = null;
