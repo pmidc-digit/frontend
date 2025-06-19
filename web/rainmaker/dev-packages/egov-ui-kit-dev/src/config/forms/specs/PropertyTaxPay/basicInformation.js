@@ -8,10 +8,10 @@ import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { getLocaleLabels } from "egov-ui-framework/ui-utils/commons.js";
 import { localStorageSet } from "egov-ui-kit/utils/localStorageUtils";
+import { setFieldProperty } from "egov-ui-kit/redux/form/actions";
 
 
 const options = [
-  
   { value: true, label: getLocaleLabels("Yes", "PT_COMMON_YES") },
   { value: false, label: getLocaleLabels("No", "PT_COMMON_NO") },
 ];
@@ -41,9 +41,34 @@ const formConfig = {
         sm: 6
       },
       updateDependentFields: ({ formKey, field, dispatch, state }) => {
+        
+        // stateBussinesasDetails=state
+        console.log("state in basic",state);
         removeFormKey(formKey, field, dispatch, state);
         dispatch(prepareFormData(`Properties[0].propertyDetails[0].units`, []));
         let minorObject = get(state, `common.generalMDMSDataById.UsageCategoryMinor[${field.value}]`);
+           const usageMajor = minorObject ? minorObject.usageCategoryMajor: field.value;
+
+          // now decide requiredness off the major
+          const isBizRequired = usageMajor !== "RESIDENTIAL";
+
+          // write into your shared prepareFormData
+          dispatch(
+            prepareFormData(
+              "Properties[0].additionalDetails.isBusinessNameRequired",
+              isBizRequired
+            )
+          );
+
+          // immediately flip the "required" flag on the businessName field
+          dispatch(
+            setFieldProperty(
+              "bussinessDetailsct",   
+              "businessName",         
+              "required",             
+              isBizRequired           
+            )
+          );
         if (!isEmpty(minorObject)) {
           dispatch(prepareFormData("Properties[0].propertyDetails[0].usageCategoryMajor", minorObject.usageCategoryMajor));
         } else {
