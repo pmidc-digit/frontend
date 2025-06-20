@@ -74,7 +74,7 @@ const breakYear = (financialYear)=>{
 const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear) => {
   console.log("assessmentArray",assessmentArray)
   let missingYears = [];
-  if(tenantId === "pb.testing" || tenantId === "pb.patiala"){
+ // if(tenantId === "pb.testing" || tenantId === "pb.patiala"){
   let checkedYears;
  
   const mFinancialYear = getCurrentFinancialYear()
@@ -100,9 +100,9 @@ const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,select
         }
       }
     } 
-  }else{
-      missingYears.push(breakYear(selectedYear))
-  }
+ // }else{
+ //     missingYears.push(breakYear(selectedYear))
+ // }
   //console.log("missingYears",missingYears)
   return  missingYears.sort((a, b) => a - b);
 };
