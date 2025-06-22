@@ -21,6 +21,8 @@ import List from "egov-ui-kit/components/List";
 import LoadingIndicator from "egov-ui-kit/components/LoadingIndicator";
 import MapLocation from "egov-ui-kit/components/MapLocation";
 import MobileNumberField from "egov-ui-kit/components/MobileNumberField";
+import SurveyIdField from "egov-ui-kit/components/SurveyIdField";
+
 import MultiSelectDropdown from "egov-ui-kit/components/MultiSelectDropdown";
 import ProfileSection from "egov-ui-kit/components/ProfileSection";
 import RadioButton from "egov-ui-kit/components/RadioButton";
@@ -46,6 +48,7 @@ export {
   Image,
   TextField,
   MobileNumberField,
+  SurveyIdField,
   TextFieldIcon,
   SelectField,
   Checkbox,
