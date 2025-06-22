@@ -41,26 +41,18 @@ const formConfig = {
         sm: 6
       },
       updateDependentFields: ({ formKey, field, dispatch, state }) => {
-        
-        // stateBussinesasDetails=state
-        console.log("state in basic",state);
         removeFormKey(formKey, field, dispatch, state);
         dispatch(prepareFormData(`Properties[0].propertyDetails[0].units`, []));
         let minorObject = get(state, `common.generalMDMSDataById.UsageCategoryMinor[${field.value}]`);
            const usageMajor = minorObject ? minorObject.usageCategoryMajor: field.value;
-
-          // now decide requiredness off the major
           const isBizRequired = usageMajor !== "RESIDENTIAL";
-
-          // write into your shared prepareFormData
           dispatch(
             prepareFormData(
               "Properties[0].additionalDetails.isBusinessNameRequired",
               isBizRequired
             )
           );
-
-          // immediately flip the "required" flag on the businessName field
+          
           dispatch(
             setFieldProperty(
               "bussinessDetailsct",   

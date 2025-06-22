@@ -64,6 +64,13 @@ class PTHome extends Component {
     const { numProperties, numDrafts, myApplicationsCount } = this.props;
     return [
       {
+        label: "PT_ADD_NEW_PROPERTY_BUTTON",
+        icon: (
+          <Icon style={iconStyle} action="custom" name="property-tax" />
+        ),
+        route: "/property-tax/assessment-form"
+      },
+      {
         label: "PT_PAYMENT_PAY_PROPERTY_TAX",
         icon: (
           <Icon style={iconStyle} action="custom" name="home-city-outline" />

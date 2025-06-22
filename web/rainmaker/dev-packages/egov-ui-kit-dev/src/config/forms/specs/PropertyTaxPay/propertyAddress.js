@@ -19,6 +19,8 @@ const formConfig = {
       id: "city",
       jsonPath: "PropertiesTemp[0].address.city",
       required: true,
+      formName: "propertyAddress",
+      errorMessage: "PT_PROPERTY_DETAILS_CITY_ERRORMSG",
       localePrefix: { moduleName: "tenant", masterName: "tenants" },
       labelsFromLocalisation: true,
       type: "AutocompleteDropdown",
@@ -148,6 +150,7 @@ const formConfig = {
       floatingLabelText: "Year of creation of Property",
       hintText: "Select",
       numcols: 6,
+      required: true,
       gridDefination: {
         xs: 12,
         sm: 6
