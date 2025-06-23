@@ -259,8 +259,8 @@ export const callPGService = async (state, dispatch) => {
           //   else{
           //   window.location = redirectionUrl;
           //   }
-          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS" || businessService.toUpperCase() == "SW") {
-
+          //if ((get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS") || (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "SW")) {
+          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && (businessService.toUpperCase() == "WS" ||  businessService.toUpperCase() == "SW")) {
             window.location = redirectionUrl;
           }
 
