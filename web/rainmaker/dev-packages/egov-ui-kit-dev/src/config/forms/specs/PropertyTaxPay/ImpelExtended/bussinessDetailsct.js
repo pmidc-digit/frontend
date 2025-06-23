@@ -52,7 +52,7 @@ const formConfig = {
       floatingLabelText: "PT_COMMON_BUSSINESS_NAME",
       hintText: "Bussiness Name",
       fullWidth: true,
-      required: true,
+      required: false,
       formName: "bussinessDetailsct",                       
       errorMessage: "PT_COMMON_BUSINESS_NAME_ERRORMSG",  
      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
