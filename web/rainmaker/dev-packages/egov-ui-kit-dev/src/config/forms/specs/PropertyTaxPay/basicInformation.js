@@ -8,10 +8,10 @@ import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { getLocaleLabels } from "egov-ui-framework/ui-utils/commons.js";
 import { localStorageSet } from "egov-ui-kit/utils/localStorageUtils";
+import { setFieldProperty } from "egov-ui-kit/redux/form/actions";
 
 
 const options = [
-  
   { value: true, label: getLocaleLabels("Yes", "PT_COMMON_YES") },
   { value: false, label: getLocaleLabels("No", "PT_COMMON_NO") },
 ];
@@ -44,6 +44,23 @@ const formConfig = {
         removeFormKey(formKey, field, dispatch, state);
         dispatch(prepareFormData(`Properties[0].propertyDetails[0].units`, []));
         let minorObject = get(state, `common.generalMDMSDataById.UsageCategoryMinor[${field.value}]`);
+           const usageMajor = minorObject ? minorObject.usageCategoryMajor: field.value;
+          const isBizRequired = usageMajor !== "RESIDENTIAL";
+          dispatch(
+            prepareFormData(
+              "Properties[0].additionalDetails.isBusinessNameRequired",
+              isBizRequired
+            )
+          );
+          
+          dispatch(
+            setFieldProperty(
+              "bussinessDetailsct",   
+              "businessName",         
+              "required",             
+              isBizRequired           
+            )
+          );
         if (!isEmpty(minorObject)) {
           dispatch(prepareFormData("Properties[0].propertyDetails[0].usageCategoryMajor", minorObject.usageCategoryMajor));
         } else {

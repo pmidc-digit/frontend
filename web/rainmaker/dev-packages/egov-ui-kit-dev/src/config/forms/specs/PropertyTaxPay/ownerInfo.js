@@ -18,6 +18,7 @@ const formConfig = {
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       pattern: /^[^{0-9}^\$\"'<>?\\\\~`!@#$%^()+={}\[\]*,_:;“”‘’]{1,64}$/i,
       errorMessage: "PT_NAME_ERROR_MESSAGE",
+       props: { inputProps: { tabIndex: 1 } },
     },
     ownerMobile: {
       id: "ownerMobile",
@@ -29,6 +30,30 @@ const formConfig = {
       pattern: /^([0]|((\+\d{1,2}[-]{0,1})))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/i,
       errorMessage: "PT_MOBILE_NUMBER_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+       props: { inputProps: { tabIndex: 2 } },
+    },
+
+    ownerGender: {
+      id: "ownerGender",
+      jsonPath: "Properties[0].propertyDetails[0].owners[0].gender",
+   type: "radioGroup",
+     props: {
+    // Remove tabIndex from container
+    className: "gender-radiogroup",
+    // Set proper individual radio button behavior
+    radioButtonItemStyle: { marginRight: "20px" },
+    labelStyle: { fontSize: "14px" },
+    selectedLabelStyle: { color: "#00bbd3" },
+    options: [
+      { value: "Male", tabIndex: 3 },
+      { value: "Female", tabIndex: 4 },
+      { value: "Trangender", tabIndex: 5 }
+    ],
+    // Important - this enables individual tab stops for each radio button
+    enableIndividualTabFocus: true,
+    // Remove container tabIndex to prevent interference
+    tabIndex: null
+  },
     },
     ownerGuardian: {
       id: "ownerGuardian",
@@ -40,6 +65,7 @@ const formConfig = {
       required: true,
       errorMessage: "PT_NAME_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+      props: { inputProps: { tabIndex: 6 } }
     },
     // ownerPan: {
     //   id: "ownerPan",
@@ -99,8 +125,11 @@ const formConfig = {
         sm: 6
       },
       dropDownData: [{ label: "Father", value: "Father" }, { label: "Husband", value: "Husband" }],
+      formName: "ownerInfo",
+      required: true,                    
+      errorMessage: "PT_ADDRESS_ERROR_MESSAGE", 
+      showFloatingLabelText: true, 
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-      formName: "ownerInfo"
     },
     ownerCategory: {
       id: "ownerCategory",
@@ -108,7 +137,7 @@ const formConfig = {
       localePrefix: { moduleName: "PropertyTax", masterName: "OwnerType" },
       jsonPath: "Properties[0].propertyDetails[0].owners[0].ownerType",
       type: "AutocompleteDropdown",
-      defaultSort: false,
+      defaultSort: false, 
       floatingLabelText: "PT_FORM3_SPECIAL_CATEGORY",
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       dropDownData: [],
@@ -119,6 +148,8 @@ const formConfig = {
       fullWidth: true,
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       formName: "ownerInfo",
+      showFloatingLabelText: true,
+      errorMessage: "PT_ADDRESS_ERROR_MESSAGE", 
       updateDependentFields: ({ formKey, field: sourceField, dispatch, state }) => {
         const { value } = sourceField;
         const dependentFields = ["ownerCategoryId", "ownerCategoryIdType"];
@@ -203,6 +234,8 @@ const formConfig = {
       toolTipMessage: "PT_DOCUMENT_ID_TOOLTIP_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       hideField: true,
+      showFloatingLabelText: true,
+      errorMessage: "PT_ADDRESS_ERROR_MESSAGE",
     },
     ownerCategoryIdType: {
       id: "ownerCategoryIdType",
@@ -210,7 +243,7 @@ const formConfig = {
       required: true,
       localePrefix: { moduleName: "PropertyTax", masterName: "OwnerTypeDocument" },
       type: "AutocompleteDropdown",
-      floatingLabelText: "PT_FORM3_DOCUMENT_ID_TYPE",
+      floatingLabelText: "PT_FORM3_DOCUMENT_ID_TYPE",  
       fullWidth: true,
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       toolTip: true,
@@ -223,6 +256,8 @@ const formConfig = {
         sm: 6
       },
       formName: "ownerInfo",
+      showFloatingLabelText: true,
+      errorMessage: "PT_ADDRESS_ERROR_MESSAGE",
       updateDependentFields: ({ formKey, field: sourceField, dispatch, state }) => {
         const { value } = sourceField;
         if (value === "Aadhar") {
@@ -234,10 +269,7 @@ const formConfig = {
         }
       },
     },
-    ownerGender: {
-      id: "ownerGender",
-      jsonPath: "Properties[0].propertyDetails[0].owners[0].gender",
-    },
+    
     isSameAsPropertyAddress: {
       id: "rcpt",
       type: "checkbox",
@@ -276,6 +308,9 @@ const formConfig = {
   beforeInitForm: (action, store, dispatch) => {
     try {
       let state = store.getState();
+       // ensure these two start blank so required kicks in
+  set(action, "form.fields.ownerCategory.value", "");
+  set(action, "form.fields.ownerRelationship.value", "")
       const OwnerTypes = get(state, `common.generalMDMSDataById.OwnerType`);
       // let financialYearFromQuery = window.location.search.split("FY=")[1];
       // financialYearFromQuery = financialYearFromQuery.split("&")[0];
