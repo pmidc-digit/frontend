@@ -549,6 +549,9 @@ export const getData = async (action, state, dispatch) => {
       }
       let payloadWater, payloadSewerage;
       if (applicationNo.includes("SW")) {
+        if (isModifyMode()) {
+          payloadSewerage.SewerageConnections[0].applicationType = "MODIFY_SEWERAGE_CONNECTION";
+        }
         try {
           payloadSewerage = await getSearchResultsForSewerage(
             queryObject,
@@ -1131,20 +1134,20 @@ const screenConfig = {
           )
         );
       });
-      if(userType.toUpperCase() === 'CITIZEN' && EODBservice === 'sewerage'){
+      if (userType.toUpperCase() === 'CITIZEN' && EODBservice === 'sewerage') {
         dispatch(prepareFinalObject("applyScreen.water", false));
         dispatch(prepareFinalObject("applyScreen.sewerage", true));
         dispatch(prepareFinalObject("applyScreen.discharge", false));
         dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
         dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
-      }else{
+      } else {
         dispatch(prepareFinalObject("applyScreen.water", true));
         dispatch(prepareFinalObject("applyScreen.sewerage", false));
         dispatch(prepareFinalObject("applyScreen.discharge", false));
         dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
         dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
       }
-      
+
 
       if (propertyId) {
         togglePropertyFeilds(action, true);
