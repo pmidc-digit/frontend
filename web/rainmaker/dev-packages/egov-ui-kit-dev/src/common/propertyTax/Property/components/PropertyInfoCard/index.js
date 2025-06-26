@@ -65,7 +65,7 @@ class PropertyInfoCard extends Component {
                                   style={{
                                     backgroundColor: "transparent",
                                     border: "none",
-                                    color: "#007bff",
+                                    color: "#fe7a51",
                                     cursor: "pointer",
                                     padding: 0,
                                     fontSize: "14px",
@@ -74,7 +74,7 @@ class PropertyInfoCard extends Component {
                                   onClick={item.onEdit}
                                   type="button"
                                 >
-                                  Editttt
+                                  EDIT
                                 </button>
                               </div>
                             )}

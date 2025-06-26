@@ -11,10 +11,7 @@ const localizationLabelsData = initLocalizationLabels(locale);
 
 
 export const getAddressItems = (properties, OldProperty) => {
-  // alert("test one");
 
-  console.log("aaaa", properties);
-  debugger;
   let oldTenantInfo = [], oldStateId = "", oldCityId = "", oldLocality = "";
   const { address = {}, tenantId = '' } = properties;
   const tenantInfo = tenantId.split('.') || [];
@@ -23,7 +20,7 @@ export const getAddressItems = (properties, OldProperty) => {
   const localityCode = address.locality && address.locality.code ? address.locality.code : 'NA';
   const propertyId = properties.propertyId;
   const surveyid = properties.surveyId;
-  const yearConsTruction = "properties.additionalDetails.yearConstruction";
+  const yearConsTruction = properties.additionalDetails && properties.additionalDetails.yearConstruction || 'NA';
   if (OldProperty) {
     oldTenantInfo = OldProperty.tenantId.split(".");
     oldStateId = oldTenantInfo[0] && oldTenantInfo[0].toUpperCase();
