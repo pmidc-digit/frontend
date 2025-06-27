@@ -63,20 +63,12 @@ class PTHome extends Component {
   getCardItems = () => {
     const { numProperties, numDrafts, myApplicationsCount } = this.props;
     return [
-      
       {
         label: "PT_PAYMENT_PAY_PROPERTY_TAX",
         icon: (
           <Icon style={iconStyle} action="custom" name="home-city-outline" />
         ),
         route: "/pt-mutation/propertySearch"
-      },
-      {
-        label: "PT_CREATE_NEW_PROPERTY_BUTTON",
-        icon: (
-          <Icon style={iconStyle} action="custom" name="property-tax" />
-        ),
-        route: "/property-tax/assessment-form"
       },
       {
         label: "PT_MY_PROPERTY_SCREEN_HEADER",

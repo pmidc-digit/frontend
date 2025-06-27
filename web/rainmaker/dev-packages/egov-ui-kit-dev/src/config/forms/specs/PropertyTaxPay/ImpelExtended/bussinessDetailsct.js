@@ -52,10 +52,7 @@ const formConfig = {
       floatingLabelText: "PT_COMMON_BUSSINESS_NAME",
       hintText: "Bussiness Name",
       fullWidth: true,
-      required: false,
-      formName: "bussinessDetailsct",                       
-      errorMessage: "PT_COMMON_BUSINESS_NAME_ERRORMSG",  
-     errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+      required: true,
     },
     remrks: {
       id: "remarks",
@@ -71,8 +68,6 @@ const formConfig = {
     try {
       let state = store.getState();
 
-      let isBusinessNameRequired = get(state.common.prepareFormData, "Properties[0].additionalDetails.isBusinessNameRequired", false);
-      set(action, "form.fields.businessName.required", isBusinessNameRequired);
       let vasikaD = get(state.common.prepareFormData, "Properties[0].additionalDetails.vasikaDate", "");
       let vasikaDate = vasikaD ? new Date(vasikaD) : null;
       let allotmentD = get(state.common.prepareFormData, "Properties[0].additionalDetails.allotmentDate", "");
