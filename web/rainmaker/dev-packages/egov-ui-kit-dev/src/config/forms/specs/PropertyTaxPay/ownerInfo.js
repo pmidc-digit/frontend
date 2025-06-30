@@ -102,6 +102,7 @@ const formConfig = {
       dropDownData: [{ label: "Father", value: "Father" }, { label: "Husband", value: "Husband" }],
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       formName: "ownerInfo",
+      required: true,
     },
     ownerCategory: {
       id: "ownerCategory",
@@ -299,7 +300,7 @@ const formConfig = {
       const formKey = get(action, "form.name", "");
       const state = store.getState();
       if (get(state, `form.${formKey}.fields.ownerRelationship.value`, "NONE") === "NONE") {
-        dispatch(handleFieldChange(formKey, "ownerRelationship", "FATHER"));
+        // dispatch(handleFieldChange(formKey, "ownerRelationship", "Father"));
       }
 
       if (get(state, `form.${formKey}.fields.ownerCategory.value`, "NONE") === "NONE") {
