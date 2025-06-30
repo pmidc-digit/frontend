@@ -63,7 +63,6 @@ class PTHome extends Component {
   getCardItems = () => {
     const { numProperties, numDrafts, myApplicationsCount } = this.props;
     return [
-      
       {
         label: "PT_PAYMENT_PAY_PROPERTY_TAX",
         icon: (
