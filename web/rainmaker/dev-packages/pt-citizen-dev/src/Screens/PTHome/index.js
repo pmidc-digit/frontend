@@ -70,7 +70,7 @@ class PTHome extends Component {
         ),
         route: "/pt-mutation/propertySearch"
       },
-       {
+      {
         label: "PT_CREATE_NEW_PROPERTY_BUTTON",
         icon: (
           <Icon style={iconStyle} action="custom" name="property-tax" />
