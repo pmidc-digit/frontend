@@ -355,6 +355,9 @@ export const getData = async (action, state, dispatch) => {
         payloadSewerage.SewerageConnections[0].water = false;
         payloadSewerage.SewerageConnections[0].sewerage = true;
         payloadSewerage.SewerageConnections[0].service = "Sewerage";
+        if (isModifyMode()) {
+          payloadSewerage.SewerageConnections[0].applicationType = "MODIFY_SEWERAGE_CONNECTION";
+        }
         dispatch(prepareFinalObject("SewerageConnection", payloadSewerage.SewerageConnections));
       } else {
         try { payloadWater = await getSearchResults(queryObject) } catch (error) { console.error(error); };
