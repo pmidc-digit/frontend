@@ -162,7 +162,7 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
 
 
 export const getSearchResults = async (queryObject, filter = false) => {
-    //debugger;
+
     try {
         const response = await httpRequest(
             "post",
@@ -968,7 +968,7 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 }
 
 export const applyForWater = async (state, dispatch) => {
-    //debugger
+
     let queryObject = parserFunction(state);
     //console.log("queryObject"+JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
@@ -990,8 +990,9 @@ export const applyForWater = async (state, dispatch) => {
             queryObjectForUpdate.waterSubSource = queryObjectForUpdate.waterSubSource ? queryObjectForUpdate.waterSubSource : waterSubSource;
             set(queryObjectForUpdate, "tenantId", tenantId);
             queryObjectForUpdate = { ...queryObjectForUpdate, ...queryObject }
+
             delete queryObjectForUpdate.roadCuttingInfosw
-           // console.log("dhgdhf"+JSON.stringify(queryObjectForUpdate))
+            // console.log("dhgdhf"+JSON.stringify(queryObjectForUpdate))
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "waterSource", getWaterSource(queryObjectForUpdate.waterSource, queryObjectForUpdate.waterSubSource));
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
@@ -1002,7 +1003,7 @@ export const applyForWater = async (state, dispatch) => {
             queryObjectForUpdate.additionalDetails.locality = queryObjectForUpdate.property.address.locality.code;
             queryObjectForUpdate = findAndReplace(queryObjectForUpdate, "NA", null);
             queryObjectForUpdate.additionalDetails.waterSubUsageType = queryObjectForUpdate.additionalDetails.waterSubUsageType ? queryObjectForUpdate.additionalDetails.waterSubUsageType : null;
-           // console.log("queryObjectForUpdate" + JSON.stringify(queryObjectForUpdate));
+            // console.log("queryObjectForUpdate" + JSON.stringify(queryObjectForUpdate));
             await httpRequest("post", "/ws-services/wc/_update", "", [], { WaterConnection: queryObjectForUpdate });
             let searchQueryObject = [{ key: "tenantId", value: queryObjectForUpdate.tenantId }, { key: "applicationNumber", value: queryObjectForUpdate.applicationNo }];
             let searchResponse = await getSearchResults(searchQueryObject);
@@ -1058,6 +1059,27 @@ export const applyForWater = async (state, dispatch) => {
 }
 
 export const applyForSewerage = async (state, dispatch) => {
+
+    if (isModifyMode()) {
+
+        dispatch(
+            handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
+                "visible",
+                false
+            )
+        );
+        dispatch(
+            handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
+                "visible",
+                false
+            )
+        );
+
+    }
     let queryObject = parserFunction(state);
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     let method = sewerId ? "UPDATE" : "CREATE";
@@ -1075,10 +1097,11 @@ export const applyForSewerage = async (state, dispatch) => {
 
             queryObjectForUpdate = { ...queryObjectForUpdate, ...queryObject }
             //delete queryObjectForUpdate.roadCuttingInfo;
+
             set(queryObjectForUpdate, "roadCuttingInfo", queryObjectForUpdate.roadCuttingInfosw)
-            set(queryObjectForUpdate, "additionalDetails.compositionFee",queryObject.additionalDetails.compositionFeesw);
-            set(queryObjectForUpdate, "additionalDetails.userCharges",queryObject.additionalDetails.userChargessw);
-            set(queryObjectForUpdate, "additionalDetails.othersFee",queryObject.additionalDetails.othersFeesw);
+            set(queryObjectForUpdate, "additionalDetails.compositionFee", queryObject.additionalDetails.compositionFeesw);
+            set(queryObjectForUpdate, "additionalDetails.userCharges", queryObject.additionalDetails.userChargessw);
+            set(queryObjectForUpdate, "additionalDetails.othersFee", queryObject.additionalDetails.othersFeesw);
             //console.log("swqueryObjectForUpdate"+JSON.stringify(queryObjectForUpdate));
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "connectionType", "Non Metered");
@@ -1104,7 +1127,7 @@ export const applyForSewerage = async (state, dispatch) => {
             }
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
             today = convertDateToEpoch(today);
-            //debugger
+
             let today = new Date();
             let dd = String(today.getDate()).padStart(2, '0');
             let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -1113,6 +1136,7 @@ export const applyForSewerage = async (state, dispatch) => {
             today = convertDateToEpoch(today);
             queryObject.dateEffectiveFrom = queryObject.dateEffectiveFrom == 0 ? today : queryObject.dateEffectiveFrom;
             set(queryObject, "processInstance.action", "INITIATE");
+            //  set(queryObject, "roadCuttingInfo", queryObjectForUpdate.roadCuttingInfosw)
             queryObject = findAndReplace(queryObject, "NA", null);
             response = await httpRequest("post", "/sw-services/swc/_create", "", [], { SewerageConnection: queryObject });
             dispatch(prepareFinalObject("SewerageConnection", response.SewerageConnections));
@@ -1160,13 +1184,14 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             let queryObjectForUpdateSewerage = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0]");
             queryObjectForUpdateWater = { ...queryObjectForUpdateWater, ...queryObject }
             queryObjectForUpdateWater = findAndReplace(queryObjectForUpdateWater, "NA", null);
-            
+
             queryObjectForUpdateSewerage = { ...queryObjectForUpdateSewerage, ...queryObject }
+
             set(queryObjectForUpdateSewerage, "roadCuttingInfo", queryObjectForUpdateSewerage.roadCuttingInfosw);
-           
-           // console.log("dsgdsh"+JSON.stringify(queryObject))
+
+            // console.log("dsgdsh"+JSON.stringify(queryObject))
             queryObjectForUpdateSewerage = findAndReplace(queryObjectForUpdateSewerage, "NA", null);
-            
+
             //delete queryObjectForUpdateWater.roadCuttingInfosw;
             //delete queryObjectForUpdateSewerage.roadCuttingInfo;
             set(queryObjectForUpdateWater, "processInstance.action", "SUBMIT_APPLICATION");
@@ -1198,16 +1223,16 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
                 queryObjectForUpdateSewerage.additionalDetails = {};
             }
             queryObjectForUpdateSewerage.additionalDetails.locality = queryObjectForUpdateSewerage.property.address.locality.code;
-           
 
-            
-           // console.log("wsqueryObjectForUpdateSewerage"+JSON.stringify(queryObjectForUpdateWater));
-            
+
+
+            // console.log("wsqueryObjectForUpdateSewerage"+JSON.stringify(queryObjectForUpdateWater));
+
             await httpRequest("post", "/ws-services/wc/_update", "", [], { WaterConnection: queryObjectForUpdateWater });
 
-                set(queryObjectForUpdateSewerage, "additionalDetails.compositionFee", queryObjectForUpdateSewerage.additionalDetails.compositionFeesw);
-                set(queryObjectForUpdateSewerage, "additionalDetails.userCharges", queryObjectForUpdateSewerage.additionalDetails.userChargessw);
-                set(queryObjectForUpdateSewerage, "additionalDetails.othersFee", queryObjectForUpdateSewerage.additionalDetails.othersFeesw);
+            set(queryObjectForUpdateSewerage, "additionalDetails.compositionFee", queryObjectForUpdateSewerage.additionalDetails.compositionFeesw);
+            set(queryObjectForUpdateSewerage, "additionalDetails.userCharges", queryObjectForUpdateSewerage.additionalDetails.userChargessw);
+            set(queryObjectForUpdateSewerage, "additionalDetails.othersFee", queryObjectForUpdateSewerage.additionalDetails.othersFeesw);
             // console.log("swqueryObjectForUpdateSewerage"+JSON.stringify(queryObjectForUpdateSewerage));
             await httpRequest("post", "/sw-services/swc/_update", "", [], { SewerageConnection: queryObjectForUpdateSewerage });
             let searchQueryObjectWater = [
@@ -1230,7 +1255,7 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             if (typeof queryObject.additionalDetails !== 'object') {
                 queryObject.additionalDetails = {};
             }
-            //debugger;
+
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
             set(queryObject, "processInstance.action", "INITIATE");
             queryObject = findAndReplace(queryObject, "NA", null);
