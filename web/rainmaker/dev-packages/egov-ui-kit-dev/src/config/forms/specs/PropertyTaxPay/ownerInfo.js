@@ -212,6 +212,7 @@ const formConfig = {
       required: true,
       localePrefix: { moduleName: "PropertyTax", masterName: "OwnerTypeDocument" },
       type: "AutocompleteDropdown",
+      floatingLabelText: "PT_FORM3_DOCUMENT_ID_TYPE",
       fullWidth: true,
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       toolTip: true,
