@@ -80,6 +80,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "lerna": "^3.17.0",
+    "npm-force-resolutions": "0.0.10",
     "run-p": "0.0.0",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1"
@@ -95,5 +96,9 @@
     "react-google-maps": "^9.4.5",
     "react-json-to-csv": "^1.0.4",
     "xlsx": "^0.18.5"
+  },
+  "resolutions": {
+    "glob": "7.2.3",
+    "minimatch": "^3.1.2"
   }
 }
