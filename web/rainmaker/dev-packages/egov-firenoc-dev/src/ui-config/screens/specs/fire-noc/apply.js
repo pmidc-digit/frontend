@@ -186,9 +186,10 @@ const getFirstListFromDotSeparated = list => {
       return item.code.split(".")[0];
     }
   });
-  list = [...new Set(list)].map(item => {
-    return { code: item };
-  });
+  list = [...new Set(list)]
+  .map(item => ({ code: item }));
+  list = list.filter(item => item.code);
+  //console.log("Hello List", list);
   return list;
 };
 
