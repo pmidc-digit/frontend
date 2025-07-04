@@ -263,9 +263,9 @@ export const callPGService = async (state, dispatch) => {
           if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS" || businessService.toUpperCase() == "SW") {
 
             window.location = redirectionUrl;
-          }
+          }*/
 
-          else if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
+          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
             window.location = redirectionUrl;
           }
           else {
@@ -273,8 +273,8 @@ export const callPGService = async (state, dispatch) => {
             displayRazorpay(goToPaymentGateway);
 
           }
-            */
-          displayRazorpay(goToPaymentGateway);
+
+
         }
       } catch (e) {
         dispatch(handleField("pay", buttonJsonpath, "props.disabled", false));
