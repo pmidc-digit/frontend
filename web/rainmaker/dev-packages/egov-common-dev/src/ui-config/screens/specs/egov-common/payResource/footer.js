@@ -259,6 +259,7 @@ export const callPGService = async (state, dispatch) => {
           //   else{
           //   window.location = redirectionUrl;
           //   }
+          /*
           if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS" || businessService.toUpperCase() == "SW") {
 
             window.location = redirectionUrl;
@@ -272,6 +273,8 @@ export const callPGService = async (state, dispatch) => {
             displayRazorpay(goToPaymentGateway);
 
           }
+            */
+          displayRazorpay(goToPaymentGateway);
         }
       } catch (e) {
         dispatch(handleField("pay", buttonJsonpath, "props.disabled", false));
