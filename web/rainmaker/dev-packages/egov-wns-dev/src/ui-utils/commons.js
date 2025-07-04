@@ -108,12 +108,12 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
                 let queryObject1 = [];
                 uuids = uuids.substring(0, uuids.length - 1);
                 if (process.env.REACT_APP_NAME === "Citizen") {
-                    if(window.location.pathname.includes('withoutAuth/wns/public-search')){
+                    if (window.location.pathname.includes('withoutAuth/wns/public-search')) {
                         queryObject1 = [{ key: "propertyIds", value: uuids }];
-                    }else{
+                    } else {
                         queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
                     }
-                   // queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
+                    // queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
                     //queryObject1 = [{ key: "propertyIds", value: uuids }];
                 } else {
                     queryObject1 = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "propertyIds", value: uuids }];
@@ -1089,6 +1089,26 @@ export const applyForWater = async (state, dispatch) => {
 }
 
 export const applyForSewerage = async (state, dispatch) => {
+    if (isModifyMode()) {
+
+        dispatch(
+            handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
+                "visible",
+                false
+            )
+        );
+        dispatch(
+            handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
+                "visible",
+                false
+            )
+        );
+
+    }
     let queryObject = parserFunction(state);
     let userType = JSON.parse(getUserInfo()).type.toUpperCase();
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
