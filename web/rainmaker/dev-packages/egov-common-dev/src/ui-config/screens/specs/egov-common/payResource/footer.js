@@ -260,11 +260,11 @@ export const callPGService = async (state, dispatch) => {
           //   window.location = redirectionUrl;
           //   }
           //if ((get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS") || (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "SW")) {
-          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && (businessService.toUpperCase() == "WS" ||  businessService.toUpperCase() == "SW")) {
-            window.location = redirectionUrl;
-          }
-
-          else if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
+          /*  if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && (businessService.toUpperCase() == "WS" ||  businessService.toUpperCase() == "SW")) {
+              window.location = redirectionUrl;
+            }
+  */
+          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
             window.location = redirectionUrl;
           }
           else {
