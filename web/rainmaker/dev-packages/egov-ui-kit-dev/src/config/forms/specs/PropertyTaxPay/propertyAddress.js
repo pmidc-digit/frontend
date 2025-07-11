@@ -192,12 +192,12 @@ const formConfig = {
       }
       const tenant = get(state, 'form.propertyAddress.fields.city.value', null);
       const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);    
-    const yearConstructionValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
+    // const yearConstructionValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
     // get(state, 'Properties[0].additionalDetails.yearConstruction', null) ||  get(state, 'form.Properties[0].additionalDetails.yearConstruction', null) ||
     
-    if (yearConstructionValue) {
-      dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearConstructionValue));
-    }
+    // if (yearConstructionValue) {
+    //   dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearConstructionValue));
+    // }
 
       if (process.env.REACT_APP_NAME === "Citizen" && tenant && mohallaDropDownData.length == 0) {
         const dataFetchConfig = {
