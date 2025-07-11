@@ -110,6 +110,22 @@ export const resetFields = (state, dispatch) => {
   dispatch(
     handleField(
       "propertySearch",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ownerName",
+      "props.value",
+      ""
+    )
+  );
+  dispatch(
+    handleField(
+      "propertySearch",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.surveyId",
+      "props.value",
+      ""
+    )
+  );
+  dispatch(
+    handleField(
+      "propertySearch",
       "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[1].tabContent.searchApplicationDetails.children.cardContent.children.appNumberContainer.children.applicationPropertyTaxUniqueId",
       "props.value",
       ""
@@ -137,6 +153,10 @@ export const resetFields = (state, dispatch) => {
   ))
   dispatch(prepareFinalObject(
     "ptSearchScreen.name",
+    ''
+  ))
+  dispatch(prepareFinalObject(
+    "ptSearchScreen.surveyId",
     ''
   ))
 
