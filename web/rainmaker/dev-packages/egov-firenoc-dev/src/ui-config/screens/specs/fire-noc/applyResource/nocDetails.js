@@ -169,8 +169,36 @@ debugger;
       );
     }
   }
-  if (response.FireNOCs.length > 0) {
-   alert("Data has been successfully Searched.");
+   if (response.FireNOCs.length > 0) {
+    // Validate usage type against MDMS data
+    const oldNocUsageType = get(
+      response,
+      "FireNOCs[0].fireNOCDetails.buildings[0].usageType",
+      ""
+    );
+    const mdmsBuildingTypes = get(
+      state,
+      "screenConfiguration.preparedFinalObject.applyScreenMdmsData.firenoc.BuildingType",
+      []
+    );
+
+    // Check if the building type is inactive
+    const matchingBuildingTypes = mdmsBuildingTypes.filter(
+      (buildingType) => buildingType.code === oldNocUsageType
+    );
+    if (
+      matchingBuildingTypes.length > 0 &&
+      matchingBuildingTypes[0].active === false
+    ) {
+      alert("FIRE_NOC_INVALID_USAGE_TYPE_MESSAGE");
+
+      setTimeout(() => {
+        window.location.href = "/fire-noc/search";
+      }, 3000);
+      return;
+    } else {
+      alert("Data has been successfully Searched.");
+    }
   }
   let isLegacy = false;
   if (!get(response, "FireNOCs", []).length) {
