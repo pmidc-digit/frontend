@@ -309,7 +309,7 @@ export const searchPropertyDetails = getCommonCard({
       required: false,
       pattern: getPattern("MobileNo"),
       jsonPath: "ptSearchScreen.mobileNumber",
-      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+      // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       errorMessage: "ERR_INVALID_MOBILE_NUMBER"
     }),
     propertyTaxUniqueId: getTextField({
@@ -377,7 +377,7 @@ export const searchPropertyDetails = getCommonCard({
       suggestions: [],
       fullwidth: true,
       required: false,
-      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+      // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
      // type:hidden,
       inputLabelProps: {
         shrink: true
@@ -417,7 +417,7 @@ export const searchPropertyDetails = getCommonCard({
    // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
     errorMessage: "ERR_INVALID_PROPERTY_ID",
     jsonPath: "ptSearchScreen.name",
-    disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+    // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
   }),
 
   surveyId: getTextField({
