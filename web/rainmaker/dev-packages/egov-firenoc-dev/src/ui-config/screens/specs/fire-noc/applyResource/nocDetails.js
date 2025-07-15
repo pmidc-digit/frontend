@@ -190,10 +190,10 @@ debugger;
       matchingBuildingTypes.length > 0 &&
       matchingBuildingTypes[0].active === false
     ) {
-      alert("FIRE_NOC_INVALID_USAGE_TYPE_MESSAGE");
+      alert("The usage type from the old NOC is not valid in the current system. Please go on punjab invest portal.");
 
       setTimeout(() => {
-        window.location.href = "/fire-noc/search";
+        window.location.href = "/employee/fire-noc/search";
       }, 3000);
       return;
     } else {
