@@ -170,7 +170,35 @@ debugger;
     }
   }
   if (response.FireNOCs.length > 0) {
-   alert("Data has been successfully Searched.");
+    // Validate usage type against MDMS data
+    const oldNocUsageType = get(
+      response,
+      "FireNOCs[0].fireNOCDetails.buildings[0].usageType",
+      ""
+    );
+    const mdmsBuildingTypes = get(
+      state,
+      "screenConfiguration.preparedFinalObject.applyScreenMdmsData.firenoc.BuildingType",
+      []
+    );
+
+    // Check if the building type is inactive
+    const matchingBuildingTypes = mdmsBuildingTypes.filter(
+      (buildingType) => buildingType.code === oldNocUsageType
+    );
+    if (
+      matchingBuildingTypes.length > 0 &&
+      matchingBuildingTypes[0].active === false
+    ) {
+      alert("The usage type from the old NOC is not valid in the current system. Please go on punjab invest portal.");
+
+      setTimeout(() => {
+        window.location.href = "/employee/fire-noc/search";
+      }, 3000);
+      return;
+    } else {
+      alert("Data has been successfully Searched.");
+    }
   }
   let isLegacy = false;
   if (!get(response, "FireNOCs", []).length) {
