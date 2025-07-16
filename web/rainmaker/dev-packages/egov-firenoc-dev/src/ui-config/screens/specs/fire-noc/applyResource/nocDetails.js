@@ -169,7 +169,7 @@ debugger;
       );
     }
   }
-   if (response.FireNOCs.length > 0) {
+  if (response.FireNOCs.length > 0) {
     // Validate usage type against MDMS data
     const oldNocUsageType = get(
       response,
