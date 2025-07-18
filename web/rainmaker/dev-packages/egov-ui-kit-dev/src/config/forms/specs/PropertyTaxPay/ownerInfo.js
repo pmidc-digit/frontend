@@ -26,7 +26,8 @@ const formConfig = {
       floatingLabelText: "PT_FORM3_MOBILE_NO",
       hintText: "PT_FORM3_MOBILE_NO_PLACEHOLDER",
       required: true,
-      pattern: /^([0]|((\+\d{1,2}[-]{0,1})))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/i,
+      // pattern: /^([0]|((\+\d{1,2}[-]{0,1})))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/i,
+      pattern: /^(?!.*(\d)\1{9})([0]|(\+\d{1,2}-?))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       errorMessage: "PT_MOBILE_NUMBER_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
     },
@@ -71,10 +72,10 @@ const formConfig = {
       floatingLabelText: "PT_SEARCHPROPERTY_TABEL_OWNERSHIPPERCENTAGE",
       hintText: "PT_FORM3_OWNERPERCENTAGE_PLACEHOLDER",
       pattern: /^[1-9][0-9]?$|^100$/i,
-      required: false,
+      required: true,
       errorMessage: "PT_PERCENTAGE_ERROR_MESSAGE",
-      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 }
-      //,value:"100"
+      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+      //,value:"100",
 
     },
     ownerAddress: {
@@ -212,6 +213,7 @@ const formConfig = {
       required: true,
       localePrefix: { moduleName: "PropertyTax", masterName: "OwnerTypeDocument" },
       type: "AutocompleteDropdown",
+      floatingLabelText: "PT_FORM3_DOCUMENT_ID_TYPE",
       fullWidth: true,
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       toolTip: true,

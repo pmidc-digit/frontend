@@ -705,7 +705,7 @@ export const pincode = {
     //errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
     errorMessage: "PT_PINCODE_ERROR_MESSAGE",
     errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-    pattern: "^([0-9]){6}$",
+    pattern: "^(?!000000|111111|222222|333333|444444|555555|666666|777777|888888|999999)(14[0-9][0-9][0-9][0-9]|151[0-9]{3}|1520[0-9]{2}|1521[0-2][0-9]|15213[0-2])$",
   },
 };
 

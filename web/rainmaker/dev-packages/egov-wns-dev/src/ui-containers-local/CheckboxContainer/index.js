@@ -85,7 +85,7 @@ class CheckboxLabels extends React.Component {
     const { jsonPathDischarge, approveCheck, onFieldChange } = this.props;
     //console.log("jsonPathDischarge"+jsonPathDischargeConnection);
     this.setState({ [name]: event.target.checked, interChange: true }, () => {
-      if (this.state.checkedSewerage) {
+          if (this.state.checkedSewerage) {
         toggleSewerage(onFieldChange, true);
         if (this.state.checkedWater) { toggleWater(onFieldChange, true); }
         else { toggleWater(onFieldChange, false); }
@@ -99,8 +99,44 @@ class CheckboxLabels extends React.Component {
             }
             else{
               approveCheck('applyScreen.additionalDetails.dischargeConnection', 'true');
-            }
-        }
+            }}
+
+            // Donot remove the below comment as this is important for the discharge connection
+
+      // Handle field visibility for discharge applications
+      // if (this.state.checkedDischarge) {
+      //   // Discharge should show water fields (since it uses water form fields)
+      //   toggleWater(onFieldChange, true);
+      //   if (this.state.checkedSewerage) {
+      //     toggleSewerage(onFieldChange, true);
+      //   } else {
+      //     toggleSewerage(onFieldChange, false);
+      //   }
+      // } else {
+      //   // When discharge is unchecked, handle visibility based on other selections
+      //   if (this.state.checkedWater) {
+      //     toggleWater(onFieldChange, true);
+      //   } else {
+      //     toggleWater(onFieldChange, false);
+      //   }
+      //   if (this.state.checkedSewerage) {
+      //     toggleSewerage(onFieldChange, true);
+      //   } else {
+      //     toggleSewerage(onFieldChange, false);
+      //   }
+      // }
+      
+      // approveCheck(jsonPathDischarge, this.state.checkedDischarge);
+      // if(this.state.checkedDischarge === true){
+      //     if(this.state.checkedWater !== true && this.state.checkedSewerage !== true){
+      //       approveCheck('applyScreen.additionalDetails.dischargeConnection', 'OnlyMotor');
+      //     }else if(this.state.checkedWater === true && this.state.checkedSewerage === true){
+      //         approveCheck('applyScreen.additionalDetails.dischargeConnection','both');
+      //     }
+      //     else{
+      //         approveCheck('applyScreen.additionalDetails.dischargeConnection', 'true');
+      //       }
+      //   }
     });
   }
   handleDischargeAmount = (name, dispatch)=> event=>{
