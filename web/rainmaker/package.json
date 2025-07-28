@@ -99,7 +99,7 @@
   },
   "resolutions": {
     "glob": "7.2.3",
-    "minimatch": "^3.1.2"
+    "minimatch": "^3.1.2",
     "source-map": "0.6.0"
   }
 }
