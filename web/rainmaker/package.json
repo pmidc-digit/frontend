@@ -103,7 +103,8 @@
     "source-map": "0.6.0",
 
     "tough-cookie": "^4.0.0",
-    "@evocateur/libnpmpublish/figgy-pudding": "4.0.1",
-    "@lerna/create-symlink/mkdirp-promise": "6.1.0"
+    "figgy-pudding": "3.5.2",
+    "@lerna/create-symlink/mkdirp-promise": "6.1.0",
+    "inflight": "1.0.6"
   }
 }
