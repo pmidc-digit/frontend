@@ -98,7 +98,8 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, tableMeta) => (
-              <a href="javascript:void(0)" onClick={() => downloadBill(tableMeta.rowData[1], tableMeta.rowData[5])}>{value}</a>
+               <a href="javascript:void(0)" onClick={() =>  downloadBill(tableMeta.rowData[1], tableMeta.rowData[7], tableMeta.rowData[6],tableMeta.rowData[9],tableMeta.rowData[8])}>{value}</a>
+             
           )
         }
       },  
@@ -107,8 +108,36 @@ export const searchResults = {
       {labelName: "Bill Date", labelKey: "ABG_COMMON_TABLE_COL_BILL_DATE"},
       {labelName: "Status", labelKey: "ABG_COMMON_TABLE_COL_STATUS"},
       {
-        labelName: "Tenant Id",
+        labelName: "Receipt Key",
+        labelKey: "RECEIPT_KEY",
+        options: {
+          display: false
+        }
+      },
+      {
+        labelName: "Bill Key",
+        labelKey: "BILL_KEY",
+        options: {
+          display: false
+        }
+      },
+      {
+        labelName: "Tenant ID",
         labelKey: "TENANT_ID",
+        options: {
+          display: false
+        }
+      },
+      {
+        labelName: "Business Service",
+        labelKey: "BUSINESS_SERVICE",
+        options: {
+          display: false
+        }
+      },
+      {
+        labelName: "Bill Search URL",
+        labelKey: "BILL_SEARCH_URL",
         options: {
           display: false
         }

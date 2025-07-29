@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
 localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
 editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
 surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
-constructionYear = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails.yearConstruction ? state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails.yearConstruction : "NA";
+constructionYear = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails ? state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails.yearConstruction : "NA";
 assessment = state.properties.Assessments.filter((item)=> item.status === 'ACTIVE');
 propertiestenantId = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].tenantId;
   const { common, form } = state;
