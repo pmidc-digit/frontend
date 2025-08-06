@@ -1,4 +1,4 @@
-import { getOwnerCategoryByYear ,getOwnerCategory} from "egov-ui-kit/utils/PTCommon";
+import { getOwnerCategoryByYear, getOwnerCategory } from "egov-ui-kit/utils/PTCommon";
 import { setDependentFields } from "./utils/enableDependentFields";
 import get from "lodash/get";
 import set from "lodash/set";
@@ -57,7 +57,7 @@ const formConfig = {
       floatingLabelText: "PT_SEARCHPROPERTY_TABEL_OWNERSHIPPERCENTAGE",
       hintText: "PT_FORM3_OWNERPERCENTAGE_PLACEHOLDER",
       pattern: /^[1-9][0-9]?$|^100$/i,
-      required: false,
+      required: true,
       errorMessage: "PT_PERCENTAGE_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 }
       //,value:"100"
@@ -95,7 +95,7 @@ const formConfig = {
       localePrefix: { moduleName: "PropertyTax", masterName: "OwnerType" },
       jsonPath: "Properties[0].propertyDetails[0].owners[0].ownerType",
       type: "AutocompleteDropdown",
-      defaultSort:false,
+      defaultSort: false,
       floatingLabelText: "PT_FORM3_SPECIAL_CATEGORY",
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       dropDownData: [],
@@ -129,7 +129,7 @@ const formConfig = {
 
         dispatch(setFieldProperty(formKey, "ownerCategoryIdType", "dropDownData", documentTypes));
         dispatch(handleFieldChange(formKey, "ownerCategoryIdType", get(documentTypes, "[0].value", "")));
-        dispatch(setFieldProperty(formKey, "ownerCategoryIdType", "value", get(documentTypes, "[0].value", "")));       
+        dispatch(setFieldProperty(formKey, "ownerCategoryIdType", "value", get(documentTypes, "[0].value", "")));
         switch (value) {
           case "NONE":
             dispatch(handleFieldChange(formKey, "ownerCategoryId", null));
@@ -251,7 +251,7 @@ const formConfig = {
             .join(", ")
             .replace(/^(,\s)+|(,\s)+$/g, "")
             .replace(/(,\s){2,}/g, ", ")
-            .replace(":","");
+            .replace(":", "");
           dispatch(setFieldProperty(formKey, "ownerAddress", "value", correspondingAddress));
           dispatch(handleFieldChange(formKey, "ownerAddress", correspondingAddress));
         } else {
