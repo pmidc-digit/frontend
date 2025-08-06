@@ -15,7 +15,7 @@ export const Eodb = ({ open, onClose }) => {
     >
       <div style={{ marginBottom: "12px", color: "#555" }}>
         <b>
-          This service is currently unavailable for commercial and industrial
+          This service is currently unavailable for institutional and industrial
           properties.
           <br />
           To apply for a Water & Sewerage connection, please visit the Invest

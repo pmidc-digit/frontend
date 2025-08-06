@@ -98,7 +98,7 @@ export const propertySearchApiCall = async (state, dispatch) => {
           
           // Check if property type is commercial and show EODB dialog
           const propertyType = get(propertyData, "usageCategory", null);
-          if (propertyType === "NONRESIDENTIAL.COMMERCIAL") {
+          if (propertyType === "NONRESIDENTIAL.INSTITUTIONAL" || propertyType === "NONRESIDENTIAL.INDUSTRIAL") {
             dispatch(
               prepareFinalObject("eodbDialog", {
                 open: true
