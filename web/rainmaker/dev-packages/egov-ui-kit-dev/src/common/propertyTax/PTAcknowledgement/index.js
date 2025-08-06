@@ -47,7 +47,12 @@ class PTAcknowledgement extends React.Component {
   onGoBackClick = () => {
     const propertyIDD=getQueryArg(window.location.href,"propertyId");
     const tenant=getQueryArg(window.location.href,"tenantId");
-    store.dispatch(setRoute("/property-tax/property/" + propertyIDD + "/" + tenant));
+    if (process.env.REACT_APP_NAME === "Citizen") {
+      store.dispatch(setRoute("/property-tax/my-properties/property/" + propertyIDD + "/" + tenant));
+    }else{
+      store.dispatch(setRoute("/property-tax/property/" + propertyIDD + "/" + tenant));
+    }
+      
   };
   download() {
     const { UlbLogoForPdf, selPropertyDetails, generalMDMSDataById } = this.props;
