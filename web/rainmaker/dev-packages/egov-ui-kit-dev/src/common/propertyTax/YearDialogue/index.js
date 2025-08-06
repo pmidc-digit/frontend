@@ -69,6 +69,9 @@ const getCurrentFinancialYear = () => {
   return financialYear;
 };
 const breakYear = (financialYear)=>{
+  if (!financialYear || typeof financialYear !== "string" || !financialYear.includes("-")) {
+    return null; // or handle as needed
+  }
   return parseInt(financialYear.split("-")[1]);
 }
 const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear) => {
