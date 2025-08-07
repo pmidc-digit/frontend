@@ -763,10 +763,8 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
     });
   };
   showLoading() {
-    console.log("Data loading...");
   }
   hideLoading() {
-    console.log("Data loaded");
   }
   render() {
     const { value, filter, searchFilter, businessServiceSla, dataLoading } = this.state;
