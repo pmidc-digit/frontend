@@ -1538,6 +1538,16 @@ const screenConfig = {
       componentPath: "ViewBreakupContainer",
       props: { open: false, maxWidth: "md", screenKey: "apply" },
     },
+    /* code start: Add EODB dialog component to screen configuration */
+    eodbDialog: {
+      uiFramework: "custom-containers-local",
+      moduleName: "egov-wns",
+      componentPath: "EodbDialogContainer",
+      props: { 
+        open: false
+      }
+    }
+    /* code end: Add EODB dialog component to screen configuration */
   },
 };
 

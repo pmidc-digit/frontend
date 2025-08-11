@@ -1,8 +1,10 @@
 import get from "lodash/get";
+import React, { Component, useState } from "react";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getPropertyResults, isActiveProperty, showHideFieldsFirstStep } from "../../../../../ui-utils/commons";
 import { getUserInfo, getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
+import { Eodb } from "../EODB/index";
 
 export const propertySearchApiCall = async (state, dispatch) => {
   showHideFields(dispatch, false);
@@ -93,6 +95,26 @@ export const propertySearchApiCall = async (state, dispatch) => {
           }
           dispatch(prepareFinalObject("applyScreen.property", propertyData))
           showHideFields(dispatch, true);
+          
+          // Check if property type is commercial and show EODB dialog
+          const propertyType = get(propertyData, "usageCategory", null);
+          if (propertyType === "NONRESIDENTIAL.INSTITUTIONAL" || propertyType === "NONRESIDENTIAL.INDUSTRIAL") {
+            dispatch(
+              prepareFinalObject("eodbDialog", {
+                open: true
+              })
+            );
+            
+            // Show the dialog by updating screen configuration
+            dispatch(
+              handleField(
+                "apply",
+                "components.eodbDialog",
+                "props.open",
+                true
+              )
+            );
+          }
         }
       } else {
         showHideFields(dispatch, false);
@@ -104,6 +126,60 @@ export const propertySearchApiCall = async (state, dispatch) => {
     }
   }
 }
+
+export const handleEodbDialogClose = (state, dispatch) => {
+  // Set dialog state to close in Redux store
+  dispatch(
+    prepareFinalObject("eodbDialog", {
+      open: false
+    })
+  );
+  
+  // Hide the dialog by updating screen configuration
+  dispatch(
+    handleField(
+      "apply",
+      "components.eodbDialog",
+      "props.open",
+      false
+    )
+  );
+};
+
+export const clearSearchResults = (state, dispatch) => {
+  // Clear the search screen data
+  dispatch(
+    prepareFinalObject("searchScreen", {})
+  );
+  
+  // Clear the property data
+  dispatch(
+    prepareFinalObject("applyScreen.property", {})
+  );
+  
+  // Hide all the property-related fields
+  showHideFields(dispatch, false);
+  
+  // Clear owner details
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardFirstStep.children.ownerDetails.children.cardContent.children.ownerDetail.children.cardContent.children.headerDiv",
+      "props.items",
+      []
+    )
+  );
+  
+  // Clear connection holder details
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardFirstStep.children.connectionHolderDetails.children.cardContent.children.holderDetails.children.headerDiv",
+      "props.items",
+      []
+    )
+  );
+};
 
 const showHideFields = (dispatch, value) => {
   dispatch(

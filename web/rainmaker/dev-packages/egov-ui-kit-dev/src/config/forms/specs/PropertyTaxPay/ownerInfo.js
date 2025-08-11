@@ -100,7 +100,7 @@ const formConfig = {
         xs: 12,
         sm: 6
       },
-      dropDownData: [{ label: "Father", value: "Father" }, { label: "Husband", value: "Husband" }],
+      dropDownData: [{ label: "Father", value: "Father" }, { label: "Husband", value: "Husband" }, { label: "Mother", value: "Mother" } ],
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       formName: "ownerInfo",
       required: true,
