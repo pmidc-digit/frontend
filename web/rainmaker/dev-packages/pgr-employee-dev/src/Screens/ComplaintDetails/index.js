@@ -338,18 +338,22 @@ class ComplaintDetails extends Component {
               <div>
                 {(role === "ao" &&
                   complaint.complaintStatus.toLowerCase() !== "closed") ||
-                (role === "employee" &&
-                  isAssignedToEmployee &&
-                  complaint.complaintStatus.toLowerCase() === "assigned" &&
-                  complaint.complaintStatus.toLowerCase() !== "closed") ? (
+                  (role === "employee" &&
+                    isAssignedToEmployee &&
+                    complaint.complaintStatus.toLowerCase() === "assigned" &&
+                    complaint.complaintStatus.toLowerCase() !== "closed") ? (
                   <ActionButton
                     btnOneLabel={btnOneLabel}
                     btnOneOnClick={() =>
                       this.btnOneOnClick(serviceRequestId, btnOneLabel)
                     }
                     btnTwoLabel={btnTwoLabel}
-                    btnTwoOnClick={() =>
+                    btnTwoOnClick={() => {
+                      alert("rrrrr");
                       this.btnTwoOnClick(serviceRequestId, btnTwoLabel)
+                    }
+
+
                     }
                   />
                 ) : (
@@ -448,7 +452,7 @@ const mapStateToProps = (state, ownProps) => {
   const serviceRequestId = ownProps.match.params.serviceRequestId;
   let selectedComplaint =
     complaints["byId"][
-      decodeURIComponent(ownProps.match.params.serviceRequestId)
+    decodeURIComponent(ownProps.match.params.serviceRequestId)
     ];
   let filedUserName =
     selectedComplaint &&
@@ -466,11 +470,11 @@ const mapStateToProps = (state, ownProps) => {
     )[1] === "Citizen Service Representative";
   const role =
     roleFromUserInfo(userInfo.roles, "GRO") ||
-    roleFromUserInfo(userInfo.roles, "DGRO")
+      roleFromUserInfo(userInfo.roles, "DGRO")
       ? "ao"
       : roleFromUserInfo(userInfo.roles, "CSR")
-      ? "csr"
-      : "employee";
+        ? "csr"
+        : "employee";
 
   let isAssignedToEmployee = true;
   if (selectedComplaint) {
@@ -486,7 +490,7 @@ const mapStateToProps = (state, ownProps) => {
         complaints.categoriesById,
         selectedComplaint.serviceCode
       ),
-      phone:selectedComplaint.phone || "NA",
+      phone: selectedComplaint.phone || "NA",
       applicationNo: selectedComplaint.serviceRequestId,
       description: selectedComplaint.description,
       submittedDate: getDateFromEpoch(
@@ -534,7 +538,7 @@ const mapStateToProps = (state, ownProps) => {
     timeLine = selectedComplaint.actions.filter(
       action => action.status && action.status
     );
-    timeLine = timeLine.sort((timeLine1,timeLine2)=> timeLine2.when - timeLine1.when);
+    timeLine = timeLine.sort((timeLine1, timeLine2) => timeLine2.when - timeLine1.when);
 
     isAssignedToEmployee = id == findLatestAssignee(timeLine) ? true : false; //not checking for type equality due to mismatch
     timeLine.map(action => {
@@ -571,8 +575,8 @@ const mapStateToProps = (state, ownProps) => {
           getPropertyFromObj(
             designationsById,
             employeeById &&
-              employeeById[gro] &&
-              employeeById[gro].assignments[0].designation,
+            employeeById[gro] &&
+            employeeById[gro].assignments[0].designation,
             "name",
             ""
           );

@@ -4,6 +4,7 @@ import Header from './components/Header'
 import Faq from './components/Faqs'
 import Footer from './components/Footer'
 import Privacy from './components/Privacy'
+import UnderConstruction from './components/UnderConstruction'
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
@@ -12,15 +13,16 @@ function App() {
   return (
     <>
       <Header />
+      <UnderConstruction />
       {/* //basename="/common" */}
-      <BrowserRouter basename="/common">
+      {/* <BrowserRouter basename="/common">
         <Routes>
           <Route path="/" element={<Card />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<Card />} />
         </Routes>
 
-      </BrowserRouter>
+      </BrowserRouter> */}
       {/* <Card />
       <center ><p style={{
         fontFamily: "Roboto",
@@ -40,7 +42,7 @@ function App() {
         }}>
       </div>
       <Faq /> */}
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }
