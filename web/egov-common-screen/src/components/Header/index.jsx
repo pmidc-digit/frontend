@@ -42,7 +42,6 @@ export default function Header() {
                         <div className="col-sm-12 col-md-6">
                             <div className="rightharder">
                                 {/* <a href="https://mseva.lgpunjab.gov.in/employee/language-selection" target="_blank">Employee Login </a> */}
-
                                 <img id="rightimg" src={rightImage} />
                             </div>
                         </div>

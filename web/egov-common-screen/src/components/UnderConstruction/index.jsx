@@ -1,4 +1,4 @@
-import './index.css';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ucg from './ucs.jpg'
 export default function UnderConstruction() {
