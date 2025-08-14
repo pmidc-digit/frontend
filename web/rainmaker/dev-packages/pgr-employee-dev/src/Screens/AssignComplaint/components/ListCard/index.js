@@ -59,7 +59,7 @@ export default class ListCard extends Component {
           id: depDetails,
           primaryText: (
             <Label
-              label={getNameFromId(departmentById, depDetails, `COMMON_MASTERS_DEPARTMENT_${depDetails}`)}
+              label={getNameFromId(departmentById, depDetails,`COMMON_MASTERS_DEPARTMENT_${depDetails}` )}
               dark={true}
               bold={true}
               containerStyle={{ position: "absolute", top: 0, left: 0 }}
@@ -75,7 +75,7 @@ export default class ListCard extends Component {
               leftAvatar: <Image circular={true} source={depItem.photo ? depItem.photo : faceOne} style={this.avatarStyle} />,
               secondaryText: (
                 <Label
-                  label={depItem && depItem.assignments && getNameFromId(designationsById, depItem.assignments[0].designation, `COMMON_MASTERS_DESIGNATION_${depItem.assignments[0].designation}`)}
+                  label={depItem && depItem.assignments && getNameFromId(designationsById, depItem.assignments[0].designation,`COMMON_MASTERS_DESIGNATION_${depItem.assignments[0].designation}` )}
                   style={{ letterSpacing: 0 }}
                 />
               ),
@@ -182,13 +182,13 @@ export default class ListCard extends Component {
       return dataSource.filter((result) => {
         return typeof result["primaryText"] === "object"
           ? result["primaryText"].props.label
-            .replace(/\s+/g, "")
-            .toLowerCase()
-            .indexOf(searchTerm) !== -1
+              .replace(/\s+/g, "")
+              .toLowerCase()
+              .indexOf(searchTerm) !== -1
           : result["primaryText"]
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .indexOf(searchTerm) !== -1;
+              .toLowerCase()
+              .replace(/\s+/g, "")
+              .indexOf(searchTerm) !== -1;
       });
     }
   };
@@ -306,8 +306,8 @@ export default class ListCard extends Component {
                 {displayInitialList
                   ? renderList(prepareResultsForDisplay(dataSource), false)
                   : isEmployeeDirectory
-                    ? renderList(prepareResultsForDisplay(results), false)
-                    : renderList(prepareResultsForDisplay(results), true)}
+                  ? renderList(prepareResultsForDisplay(results), false)
+                  : renderList(prepareResultsForDisplay(results), true)}
               </div>
             </div>
           }

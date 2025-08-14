@@ -21,13 +21,13 @@ import "./index.css";
 class Footer extends React.Component {
   state = {
     open: false,
-    nocValid: false,
+    nocValid : false,
     data: {},
     employeeList: [],
-    tlpopUp: false,
-    licenseData: [],
-    wFCode: "",
-    isHAZ: false
+    tlpopUp : false,
+    licenseData : [],
+    wFCode : "",
+    isHAZ : false
     //responseLength: 0
   };
 
@@ -93,7 +93,7 @@ class Footer extends React.Component {
     );
     const firenocstatus = get(
       state,
-      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.status", "NA"
+      "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.status","NA"
     );
     if (getdate) {
       const cd = getdate.split("PB-FN-");
@@ -106,8 +106,8 @@ class Footer extends React.Component {
       console.log(diffTime + " milliseconds");
       console.log(diffDays + " days");
     }
-    if (firenocstatus && firenocstatus.toUpperCase() == "FIELDINSPECTION") {
-      this.setState({ nocValid: true });
+    if(firenocstatus && firenocstatus.toUpperCase() == "FIELDINSPECTION"){
+      this.setState({ nocValid: true});
     }
     //if(firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED-DV" || firenocstatus.toUpperCase() == "CITIZENACTIONREQUIRED"){
     if (true) {
@@ -179,7 +179,7 @@ class Footer extends React.Component {
 
         const payload = await httpRequest(
           "post",
-          "/egov-hrms/employees/_searchaaa",
+          "/egov-hrms/employees/_search",
           "",
           queryObj
         );
@@ -286,7 +286,7 @@ class Footer extends React.Component {
 
         const payload = await httpRequest(
           "post",
-          "/egov-hrms/employees/_searchdddd",
+          "/egov-hrms/employees/_search",
           "",
           queryObj
         );
@@ -336,89 +336,89 @@ class Footer extends React.Component {
       open: false
     });
   };
-
-  tlPopUpClose = () => {
+  
+  tlPopUpClose =()=>{
     this.setState({
-      tlpopUp: false
+      tlpopUp : false
     })
   }
-  openTLPopup = async (financialYear, tenantId) => {
-    //console.log("shdgshdfs")
-    debugger;
-    let payload = null;
-    let uuType = "TL"
-    const { setRoute, state, toggleSnackbar } = this.props;
-    const licences = get(
-      state.screenConfiguration.preparedFinalObject,
-      `Licenses`
-    );
-    const licenseWorkflow = get(
-      state.screenConfiguration.preparedFinalObject,
-      `Licenses[0].workflowCode`
-    );
-    this.setState({
-      wFCode: licenseWorkflow
-    })
-    var nextFinancialYear = await getNextFinancialYearForRenewal(
-      financialYear
-    );
-    var currentFinancialYear = this.getCurrentFinancialYear();
-    nextFinancialYear = currentFinancialYear;
-    const wfCode = "DIRECTRENEWAL";
-    set(licences[0], "action", "INITIATE");
-    set(licences[0], "workflowCode", wfCode);
-    set(licences[0], "applicationType", "RENEWAL");
-    set(licences[0], "financialYear", nextFinancialYear);
-    set(licences[0], "tradeLicenseDetail.adhocPenalty", null);
-    set(licences[0], "tradeLicenseDetail.adhocExemption", null);
-    this.setState({
-      tlpopUp: true,
-      licenseData: licences[0]
-    })
-    let mdmsBody = {
-      MdmsCriteria: {
-        tenantId: "pb",
-        moduleDetails: [
-          {
-            moduleName: "TradeLicense",
-            masterDetails: [{ name: "TradeType" }]
-          }
-        ]
-      }
-    };
-    let tradeDataFetched = get(licences[0], "tradeLicenseDetail")
-    try {
-
-      payload = await httpRequest(
-        "post",
-        "/egov-mdms-service/v1/_search",
-        "_search",
-        [],
-        mdmsBody
+  openTLPopup = async (financialYear, tenantId)=>{
+      //console.log("shdgshdfs")
+      debugger;
+      let payload = null;
+      let uuType ="TL"
+      const { setRoute, state, toggleSnackbar } = this.props;
+      const licences = get(
+        state.screenConfiguration.preparedFinalObject,
+        `Licenses`
       );
-      const tradeUnitMDMS = payload.MdmsRes.TradeLicense;
-      for (let tradeData of tradeDataFetched.tradeUnits) {
-        //  console.log("tradeData"+JSON.stringify(tradeData))
-        for (let tradeMdms of tradeUnitMDMS.TradeType) {
-          if (tradeData.tradeType === tradeMdms.code) {
-            // console.log(tradeData.tradeType+"==>"+tradeMdms.ishazardous)
-            if (tradeMdms.ishazardous === true) {
-              this.setState({
-                isHAZ: true
-              })
-              return false;
-            }
-
+      const licenseWorkflow = get(
+        state.screenConfiguration.preparedFinalObject,
+        `Licenses[0].workflowCode`
+      );
+      this.setState({
+        wFCode : licenseWorkflow
+      })
+      var nextFinancialYear = await getNextFinancialYearForRenewal(
+        financialYear
+      );
+      var currentFinancialYear = this.getCurrentFinancialYear();
+      nextFinancialYear = currentFinancialYear;
+      const wfCode = "DIRECTRENEWAL";
+        set(licences[0], "action", "INITIATE");
+        set(licences[0], "workflowCode", wfCode);
+        set(licences[0], "applicationType", "RENEWAL");
+        set(licences[0], "financialYear", nextFinancialYear);
+        set(licences[0], "tradeLicenseDetail.adhocPenalty", null);
+        set(licences[0], "tradeLicenseDetail.adhocExemption", null);
+        this.setState({
+          tlpopUp : true,
+          licenseData : licences[0]
+        })
+        let mdmsBody = {
+          MdmsCriteria: {
+            tenantId: "pb",
+            moduleDetails: [
+              {
+                moduleName: "TradeLicense",
+                masterDetails: [{ name: "TradeType"}]
+              }
+            ]
           }
+        };
+        let tradeDataFetched = get(licences[0],"tradeLicenseDetail")
+        try {
+            
+          payload = await httpRequest(
+            "post",
+            "/egov-mdms-service/v1/_search",
+            "_search",
+            [],
+            mdmsBody
+          );
+          const tradeUnitMDMS = payload.MdmsRes.TradeLicense;
+           for(let tradeData of tradeDataFetched.tradeUnits){
+            //  console.log("tradeData"+JSON.stringify(tradeData))
+             for(let tradeMdms of tradeUnitMDMS.TradeType){
+              if(tradeData.tradeType === tradeMdms.code){
+                 // console.log(tradeData.tradeType+"==>"+tradeMdms.ishazardous)
+                 if(tradeMdms.ishazardous === true){
+                  this.setState({
+                      isHAZ : true
+                    })
+                    return false;
+                 }
+                
+               }
+             }
+           } 
+          
+        }catch(e){
+          console.log(e.message)
         }
-      }
-
-    } catch (e) {
-      console.log(e.message)
-    }
-
+      
   }
-    ;
+  ;
   render() {
     const {
       contractData,
@@ -522,8 +522,8 @@ class Footer extends React.Component {
           label: "Submit",
           labelKey: "WF_TL_RENEWAL_SUBMIT_BUTTON",
           link: () => {
-            // this.renewTradelicence(financialYear, tenantId);
-            this.openTLPopup(financialYear, tenantId, licenseWorkflow);
+           // this.renewTradelicence(financialYear, tenantId);
+           this.openTLPopup(financialYear, tenantId, licenseWorkflow);
           }
         };
         if (responseLength > 1) {
@@ -583,9 +583,9 @@ class Footer extends React.Component {
         <TlRenewDialog
           open={tlpopUp}
           onClose={this.tlPopUpClose}
-          licenseData={licenseData}
-          wFCode={wFCode}
-          isHAZ={isHAZ}
+          licenseData ={licenseData}
+          wFCode = {wFCode}
+          isHAZ ={isHAZ}
         />
       </div>
     );

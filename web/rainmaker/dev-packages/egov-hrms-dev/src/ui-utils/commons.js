@@ -26,11 +26,10 @@ export const getLocaleLabelsforTL = (label, labelKey, localizationLabels) => {
 
 // HRMS Search API
 export const getSearchResults = async (queryObject, dispatch) => {
-  alert("test");
   try {
     const response = await httpRequest(
       "post",
-      "/egov-hrms/employees/_searchjjjj",
+      "/egov-hrms/employees/_search",
       "",
       queryObject
     );
