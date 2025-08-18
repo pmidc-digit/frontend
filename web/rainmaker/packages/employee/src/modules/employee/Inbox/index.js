@@ -84,9 +84,9 @@ class Inbox extends Component {
 
     return (
       <div>
-        <marquee style={{ color: "red", fontStyle: "italic", fontSize: "20px", margin: "20px 0" }}>
+        {/* <marquee style={{ color: "red", fontStyle: "italic", fontSize: "20px", margin: "20px 0" }}>
           Planned Downtime Notice: The mSeva Punjab application will be unavailable from 15th August 2025 to 18th August 2025 due to scheduled maintenance. We regret the inconvenience and appreciate your understanding.
-        </marquee>
+        </marquee> */}
         <div className="rainmaker-topHeader" style={{ marginTop: "0px", justifyContent: "space-between" }}>
           {Loading && isLoading && <LoadingIndicator></LoadingIndicator>}
           <div className="rainmaker-topHeader flex">
