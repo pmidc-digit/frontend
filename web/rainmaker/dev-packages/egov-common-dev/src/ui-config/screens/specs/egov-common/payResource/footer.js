@@ -797,7 +797,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].additionalDetails = details;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].fromPeriod = from;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].toPeriod = to;
-
+      payloadReceiptDetails.Payments[0].validityYears = response.FireNOCs[0].fireNOCDetails.additionalDetail  ? response.FireNOCs[0].fireNOCDetails.additionalDetail.validityYears : 1;
 
     }
     const queryStr = [

@@ -606,7 +606,13 @@ export const loadApplicationData = async (applicationNumber, tenant) => {
         "NA"
       )
     );
-
+    data.validityYears = nullToNa(
+      get(
+        response,
+        "FireNOCs[0].fireNOCDetails.additionalDetail.validityYears",
+        "NA"
+      )
+    );
     // Documents
 
     // User Data
