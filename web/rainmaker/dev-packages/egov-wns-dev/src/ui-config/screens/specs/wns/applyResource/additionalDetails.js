@@ -371,6 +371,26 @@ export const additionDetails = getCommonCard({
             );
 
           }
+          else if (ConectionCategory == "LEGACY") {
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
+                "visible",
+                false
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
+                "visible",
+                false
+              )
+            );
+
+          }
+
           else {
             dispatch(
               handleField(
@@ -392,6 +412,22 @@ export const additionDetails = getCommonCard({
               handleField(
                 "apply",
                 "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer",
+                "visible",
+                true
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
+                "visible",
+                true
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
                 "visible",
                 true
               )
