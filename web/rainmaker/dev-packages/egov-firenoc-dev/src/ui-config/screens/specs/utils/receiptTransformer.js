@@ -71,7 +71,8 @@ export const loadUlbLogo = utenantId => {
     );
     canvas = null;
   };
-  img.src = `https://pb-egov-assets.s3.ap-south-1.amazonaws.com/${utenantId}/logo.png`
+  img.src =`https://s3.ap-south-1.amazonaws.com/pb-egov-assets/${utenantId}/logo.png`
+  //img.src = `https://pb-egov-assets.s3.ap-south-1.amazonaws.com/${utenantId}/logo.png`
   //img.src = 'https://pb-egov-assets.s3.ap-south-1.amazonaws.com/pb.mohali/logo.png'
  //img.src = `/pb-egov-assets/${utenantId}/logo.png`; 
  //img.src = '/pb-egov-assets/pb/Punjab_FS_logo.jpg'; 
