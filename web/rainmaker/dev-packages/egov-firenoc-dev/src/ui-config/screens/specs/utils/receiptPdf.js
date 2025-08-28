@@ -579,7 +579,7 @@ transformedData.buildings[0].uoms=reasonss;
     ]);
     // -----------------
   if(transformedData.buildings.length > 1){
-    
+
   for(let mybuldingdata of transformedData.buildings){
    
     buildAreaData.push( [
@@ -607,6 +607,7 @@ transformedData.buildings[0].uoms=reasonss;
  
   let nocDetailsmy = [];
   if(transformedData.buildings.length > 1){
+    //console.log("buildAreaData",buildAreaData)
 nocDetailsmy.push([
   {
     text: "BUILDING DETAILS",
@@ -1609,6 +1610,7 @@ nocDetailsmy.push([
 const newgetApplicationData = async (transformedData, ulbLogo, type) => {
   //debugger
   const ddi=transformedData.buildings[0].uoms;
+  const validityYears = transformedData.validityYears === 'NA' ? 1 : transformedData.validityYears;
   var NoBase=0,NoHeight=0;
   Object.keys(ddi).map((key,i) => {
   if(key == "NO_OF_BASEMENTS")
@@ -1623,7 +1625,8 @@ const newgetApplicationData = async (transformedData, ulbLogo, type) => {
     reasonss = {
       "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
       "NO_OF_BASEMENTS":0,
-      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+      "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
       }
   }
 else if(NoBase >0 && NoHeight == 0)
@@ -1631,7 +1634,8 @@ else if(NoBase >0 && NoHeight == 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else if(NoBase >0 && NoHeight> 0)
@@ -1639,7 +1643,8 @@ else if(NoBase >0 && NoHeight> 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else 
@@ -1647,10 +1652,11 @@ else
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":0,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
-
+//console.log("reasonss",reasonss)
 transformedData.buildings[0].uoms=reasonss;
   transformedData=updateMohall(transformedData)
   let borderLayout = {
@@ -1791,7 +1797,7 @@ buildtableHead.push([
 ]);
 // -----------------
 if(transformedData.buildings.length > 1){
-
+  //debugger
 for(let mybuldingdata of transformedData.buildings){
  
   buildAreaData.push( [
@@ -2718,7 +2724,7 @@ nocDetailsmy.push([
             [
 
               {
-                text: ["                        Certified that the ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " at " , { text:`${transformedData.address}`, bold:true }, "comprised of ", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS} `?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor) owned/occupied by ",{ text:`${transformedData.owners[0].name}`, bold:true }, " have compiled with the fire prevention and fire safety requirements of National Building Code and verified by the officer concerned of fire service on ", { text:`${transformedData.issuedDate}`, bold:true }, " in the presence of ", { text:`${transformedData.owners[0].name}`, bold:true }, " (Name of the owner or his representative) and that the building/premises is fit for occupancy " , { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (As per NBC) for period of ", { text:`${transformedData.validityYears} Year(s)`, bold:true }, " from issue date. Subject to the following conditions."],
+                text: ["                        Certified that the ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " at " , { text:`${transformedData.address}`, bold:true }, "comprised of ", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS} `?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor) owned/occupied by ",{ text:`${transformedData.owners[0].name}`, bold:true }, " have compiled with the fire prevention and fire safety requirements of National Building Code and verified by the officer concerned of fire service on ", { text:`${transformedData.issuedDate}`, bold:true }, " in the presence of ", { text:`${transformedData.owners[0].name}`, bold:true }, " (Name of the owner or his representative) and that the building/premises is fit for occupancy " , { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (As per NBC) for period of ", { text:`${validityYears} Year(s)`, bold:true }, " from issue date. Subject to the following conditions."],
                 border: [true, false, true, false],
                 alignment: "justify",
                 preserveLeadingSpaces: true
@@ -3334,7 +3340,7 @@ nocDetailsmy.push([
 };
 //-------------Renew pdf -----------
 const renewgetApplicationData = async (transformedData, ulbLogo, type) => {
-  
+  const validityYears = transformedData.validityYears === 'NA' ? 1 : transformedData.validityYears;
   const ddi=transformedData.buildings[0].uoms;
   var NoBase=0,NoHeight=0;
   Object.keys(ddi).map((key,i) => {
@@ -3350,7 +3356,8 @@ const renewgetApplicationData = async (transformedData, ulbLogo, type) => {
     reasonss = {
       "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
       "NO_OF_BASEMENTS":0,
-      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+      "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
       }
   }
 else if(NoBase >0 && NoHeight == 0)
@@ -3358,7 +3365,8 @@ else if(NoBase >0 && NoHeight == 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else if(NoBase >0 && NoHeight> 0)
@@ -3366,7 +3374,8 @@ else if(NoBase >0 && NoHeight> 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else 
@@ -3374,7 +3383,8 @@ else
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":0,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 
@@ -4447,7 +4457,7 @@ nocDetailsmy.push([
             [
 
               {
-                text: ["                       Certified that the ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " at " , { text:`${transformedData.address}`, bold:true }, "comprised of ", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor) owned/occupied by ",{ text:`${transformedData.owners[0].name}`, bold:true }, " have compiled with the fire prevention and fire safety requirements of National Building Code and verified by the officer concerned of fire service on ", { text:`${transformedData.issuedDate}`, bold:true }, " in the presence of ", { text:`${transformedData.owners[0].name}`, bold:true }, " (Name of the owner or his representative) and that the building/premises is fit for occupancy " , { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (As per NBC) for period of ", { text: `${transformedData.validityYears} Year(s)`, bold:true }, " from issue date. Subject to the following conditions."],
+                text: ["                       Certified that the ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " at " , { text:`${transformedData.address}`, bold:true }, "comprised of ", { text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, "  basements and ", { text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (Upper floor) owned/occupied by ",{ text:`${transformedData.owners[0].name}`, bold:true }, " have compiled with the fire prevention and fire safety requirements of National Building Code and verified by the officer concerned of fire service on ", { text:`${transformedData.issuedDate}`, bold:true }, " in the presence of ", { text:`${transformedData.owners[0].name}`, bold:true }, " (Name of the owner or his representative) and that the building/premises is fit for occupancy " , { text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ", { text:`${transformedData.NBCSubGroup}`, bold:true }, " (As per NBC) for period of ", { text: `${validityYears} Year(s)`, bold:true }, " from issue date. Subject to the following conditions."],
                 border: [true, false, true, false],
                 alignment: "justify",
                 preserveLeadingSpaces: true
@@ -6956,7 +6966,7 @@ const generatePdf = async (state, dispatch, type) => {
       let fileName = `noc_application_${transformedData.applicationNumber}`;
       let application_data = await getApplicationData(
         transformedData,
-        ulbLogo,
+       ulbLogo,
         "application"
       );
       // console.log("application_data", application_data);
