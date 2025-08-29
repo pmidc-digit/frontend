@@ -5093,7 +5093,8 @@ const provisionApplicationData = async (transformedData, ulbLogo, type) => {
     reasonss = {
       "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
       "NO_OF_BASEMENTS":0,
-      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+      "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
       }
   }
 else if(NoBase >0 && NoHeight == 0)
@@ -5101,7 +5102,8 @@ else if(NoBase >0 && NoHeight == 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else if(NoBase >0 && NoHeight> 0)
@@ -5109,7 +5111,8 @@ else if(NoBase >0 && NoHeight> 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else 
@@ -5117,7 +5120,8 @@ else
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":0,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 
