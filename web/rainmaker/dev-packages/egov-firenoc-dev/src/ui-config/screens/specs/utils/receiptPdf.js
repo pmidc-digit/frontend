@@ -399,7 +399,8 @@ const getApplicationData = async (transformedData, ulbLogo, type) => {
     reasonss = {
       "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
       "NO_OF_BASEMENTS":0,
-      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+      "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+      "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
       }
   }
 else if(NoBase >0 && NoHeight == 0)
@@ -407,7 +408,8 @@ else if(NoBase >0 && NoHeight == 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else if(NoBase >0 && NoHeight> 0)
@@ -415,7 +417,8 @@ else if(NoBase >0 && NoHeight> 0)
   reasonss = {
     "HEIGHT_OF_BUILDING": transformedData.buildings[0].uoms.HEIGHT_OF_BUILDING,
     "NO_OF_BASEMENTS":transformedData.buildings[0].uoms.NO_OF_BASEMENTS,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 else 
@@ -423,7 +426,8 @@ else
   reasonss = {
     "HEIGHT_OF_BUILDING": 0,
     "NO_OF_BASEMENTS":0,
-    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS
+    "NO_OF_FLOORS":transformedData.buildings[0].uoms.NO_OF_FLOORS,
+    "BUILTUP_AREA":transformedData.buildings[0].uoms.BUILTUP_AREA,
     }
 }
 
@@ -2777,7 +2781,7 @@ nocDetailsmy.push([
 
             [
               {
-                text: ["                        ਤਸਦੀਕ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਕ‌ਿ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, ", ",{ text:`${transformedData.address}`, bold:true }, " ਸਮੇਤ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, " ਬੇਸਮਟ ਅਤੇ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (ਉਪਰਲੀ ਮੰਜ਼ਿਲ) ਮਲਕੀਅਤ/ਕਬਜ਼ਾਦਾਰ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " ਰਾਸ਼ਟਰੀ ਬਿਲਡਿੰਗ ਕੋਡ ਅਨੁਸਾਰ ਅੱਗ ਬੁਝਾਉਣ ਦੇ ਪ੍ਰਭਾਵ ਅਤੇ ਬਚਾਅ ਦੀਆਂ ਲੌੜਾਂ ਨੂੰ ਪੂਰਾ ਕਰਦੀ ਹੈ  ਜਿਸ ਨੂੰ ਸਬੰਧਤ ਫਾਇਰ ਅਧਿਕਾਰੀ ਵੱਲੌਂ ",{ text:`${transformedData.owners[0].name}`, bold:true }, " (ਮਾਲਕ ਜਾਂ ਉਸ ਦੇ ਪ੍ਰਤਿਨਿਧੀ ਦਾ ਨਾਮ ) ਦੀ ਮੋਜੂਦਗੀ ਵਿੱਚ ",{ text:`${transformedData.issuedDate}`, bold:true }, " ਨੂੰ ਪ੍ਰਮਾਣਿਤ ਕੀਤਾ ਗਿਆ ਅਤੇ ਇਮਾਰਤ / ਬਿਲਡਿੰਗ ",{ text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ",{ text:`${transformedData.NBCSubGroup}`, bold:true }, " (ਐਨ. ਬੀ. ਸੀ. ਦੇ ਅਨੁਸਾਰ) ਦੀ ਆਬਾਦੀ ਲਈ Issue date ਤੌਂ ",{ text:"ਇੱਕ ਸਾਲ", bold:true }, " ਤੱਕ ਯੋਗ ਹੈ ਜਿਸ ਲਈ ਨਿਮਨ ਅਨੁਸਾਰ ਹਦਾਇਤਾਂ ਹਨ।"],
+                text: ["                        ਤਸਦੀਕ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਕ‌ਿ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, ", ",{ text:`${transformedData.address}`, bold:true }, " ਸਮੇਤ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, " ਬੇਸਮਟ ਅਤੇ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (ਉਪਰਲੀ ਮੰਜ਼ਿਲ) ਮਲਕੀਅਤ/ਕਬਜ਼ਾਦਾਰ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " ਰਾਸ਼ਟਰੀ ਬਿਲਡਿੰਗ ਕੋਡ ਅਨੁਸਾਰ ਅੱਗ ਬੁਝਾਉਣ ਦੇ ਪ੍ਰਭਾਵ ਅਤੇ ਬਚਾਅ ਦੀਆਂ ਲੌੜਾਂ ਨੂੰ ਪੂਰਾ ਕਰਦੀ ਹੈ  ਜਿਸ ਨੂੰ ਸਬੰਧਤ ਫਾਇਰ ਅਧਿਕਾਰੀ ਵੱਲੌਂ ",{ text:`${transformedData.owners[0].name}`, bold:true }, " (ਮਾਲਕ ਜਾਂ ਉਸ ਦੇ ਪ੍ਰਤਿਨਿਧੀ ਦਾ ਨਾਮ ) ਦੀ ਮੋਜੂਦਗੀ ਵਿੱਚ ",{ text:`${transformedData.issuedDate}`, bold:true }, " ਨੂੰ ਪ੍ਰਮਾਣਿਤ ਕੀਤਾ ਗਿਆ ਅਤੇ ਇਮਾਰਤ / ਬਿਲਡਿੰਗ ",{ text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ",{ text:`${transformedData.NBCSubGroup}`, bold:true }, " (ਐਨ. ਬੀ. ਸੀ. ਦੇ ਅਨੁਸਾਰ) ਦੀ ਆਬਾਦੀ ਲਈ Issue date ਤੌਂ ",{ text:`${validityYears} ਸਾਲ`, bold:true }, " ਤੱਕ ਯੋਗ ਹੈ ਜਿਸ ਲਈ ਨਿਮਨ ਅਨੁਸਾਰ ਹਦਾਇਤਾਂ ਹਨ।"],
                 border: [true, false, true, false],
                 alignment: "justify",
                 preserveLeadingSpaces: true
@@ -4510,7 +4514,7 @@ nocDetailsmy.push([
 
             [
               {
-                text: ["                        ਤਸਦੀਕ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਕ‌ਿ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, ", ",{ text:`${transformedData.address}`, bold:true }, " ਸਮੇਤ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, " ਬੇਸਮਟ ਅਤੇ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (ਉਪਰਲੀ ਮੰਜ਼ਿਲ) ਮਲਕੀਅਤ/ਕਬਜ਼ਾਦਾਰ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " ਰਾਸ਼ਟਰੀ ਬਿਲਡਿੰਗ ਕੋਡ ਅਨੁਸਾਰ ਅੱਗ ਬੁਝਾਉਣ ਦੇ ਪ੍ਰਭਾਵ ਅਤੇ ਬਚਾਅ ਦੀਆਂ ਲੌੜਾਂ ਨੂੰ ਪੂਰਾ ਕਰਦੀ ਹੈ  ਜਿਸ ਨੂੰ ਸਬੰਧਤ ਫਾਇਰ ਅਧਿਕਾਰੀ ਵੱਲੌਂ ",{ text:`${transformedData.owners[0].name}`, bold:true }, " (ਮਾਲਕ ਜਾਂ ਉਸ ਦੇ ਪ੍ਰਤਿਨਿਧੀ ਦਾ ਨਾਮ ) ਦੀ ਮੋਜੂਦਗੀ ਵਿੱਚ ",{ text:`${transformedData.issuedDate}`, bold:true }, " ਨੂੰ ਪ੍ਰਮਾਣਿਤ ਕੀਤਾ ਗਿਆ ਅਤੇ ਇਮਾਰਤ / ਬਿਲਡਿੰਗ ",{ text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ",{ text:`${transformedData.NBCSubGroup}`, bold:true }, " (ਐਨ. ਬੀ. ਸੀ. ਦੇ ਅਨੁਸਾਰ) ਦੀ ਆਬਾਦੀ ਲਈ Issue date ਤੌਂ ",{ text:"ਇੱਕ ਸਾਲ", bold:true }, " ਤੱਕ ਯੋਗ ਹੈ ਜਿਸ ਲਈ ਨਿਮਨ ਅਨੁਸਾਰ ਹਦਾਇਤਾਂ ਹਨ।"],
+                text: ["                        ਤਸਦੀਕ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਕ‌ਿ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, ", ",{ text:`${transformedData.address}`, bold:true }, " ਸਮੇਤ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`?`${transformedData.buildings[0].uoms.NO_OF_BASEMENTS}`:'0', bold:true }, " ਬੇਸਮਟ ਅਤੇ ",{ text:`${transformedData.buildings[0].uoms.NO_OF_FLOORS}`, bold:true }, " (ਉਪਰਲੀ ਮੰਜ਼ਿਲ) ਮਲਕੀਅਤ/ਕਬਜ਼ਾਦਾਰ ",{ text:`${transformedData.buildings[0].name}`, bold:true }, " ਰਾਸ਼ਟਰੀ ਬਿਲਡਿੰਗ ਕੋਡ ਅਨੁਸਾਰ ਅੱਗ ਬੁਝਾਉਣ ਦੇ ਪ੍ਰਭਾਵ ਅਤੇ ਬਚਾਅ ਦੀਆਂ ਲੌੜਾਂ ਨੂੰ ਪੂਰਾ ਕਰਦੀ ਹੈ  ਜਿਸ ਨੂੰ ਸਬੰਧਤ ਫਾਇਰ ਅਧਿਕਾਰੀ ਵੱਲੌਂ ",{ text:`${transformedData.owners[0].name}`, bold:true }, " (ਮਾਲਕ ਜਾਂ ਉਸ ਦੇ ਪ੍ਰਤਿਨਿਧੀ ਦਾ ਨਾਮ ) ਦੀ ਮੋਜੂਦਗੀ ਵਿੱਚ ",{ text:`${transformedData.issuedDate}`, bold:true }, " ਨੂੰ ਪ੍ਰਮਾਣਿਤ ਕੀਤਾ ਗਿਆ ਅਤੇ ਇਮਾਰਤ / ਬਿਲਡਿੰਗ ",{ text:`${transformedData.NBCGroup}`, bold:true }, " subdivision ",{ text:`${transformedData.NBCSubGroup}`, bold:true }, " (ਐਨ. ਬੀ. ਸੀ. ਦੇ ਅਨੁਸਾਰ) ਦੀ ਆਬਾਦੀ ਲਈ Issue date ਤੌਂ ",{ text:`${validityYears} ਸਾਲ`, bold:true }, " ਤੱਕ ਯੋਗ ਹੈ ਜਿਸ ਲਈ ਨਿਮਨ ਅਨੁਸਾਰ ਹਦਾਇਤਾਂ ਹਨ।"],
                 border: [true, false, true, false],
                 alignment: "justify",
                 preserveLeadingSpaces: true
