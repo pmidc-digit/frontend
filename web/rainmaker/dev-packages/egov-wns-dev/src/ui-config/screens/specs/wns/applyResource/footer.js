@@ -213,7 +213,6 @@ const getMdmsData = async (state, dispatch) => {
 };
 
 const callBackForNext = async (state, dispatch) => {
-
   window.scrollTo(0, 0);
   let activeStep = get(state.screenConfiguration.screenConfig["apply"], "components.div.children.stepper.props.activeStep", 0);
   let isFormValid = true;
@@ -827,10 +826,11 @@ else{
       // }
     }
     else {
-     
+        //debugger
       let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
       let roadCuttingInfosw = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
-
+      if (roadCuttingInfo === 'NA') roadCuttingInfo =[]
+      if (roadCuttingInfosw === 'NA') roadCuttingInfosw =[]
       let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
       if (applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
         let waterSourceType = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSourceType", "");
@@ -974,8 +974,8 @@ else{
 
   }
   if (activeStep === 3) {
-    let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
-    let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
+    let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].water");
+    let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].sewerage");
     let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
     if (roadCuttingInfo && roadCuttingInfo.length > 0) {
       let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.isEmpty !== true);
@@ -1019,61 +1019,46 @@ else{
     }
   }
   let applyFor = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
-  if(applyFor.water == true ){
-    if(applyFor.sewerage == true){
-      dispatch(
-        handleField(
-          "apply",
-          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-          "visible",
-          true
-        )
-      );
-      dispatch(
-        handleField(
-          "apply",
-          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-          "visible",
-          true
-        )
-      );
-    }else{
-      dispatch(
-        handleField(
-          "apply",
-          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-          "visible",
-          true
-        )
-      );
-      dispatch(
-        handleField(
-          "apply",
-          "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-          "visible",
-          false
-        )
-      );
+  if (!isModifyMode()) {
+    const waterVisible = applyFor.water ;
+    const sewerageVisible = applyFor.sewerage;
 
-    }
-  }else{
-    dispatch(
-      handleField(
-        "apply",
-        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-        "visible",
-        true
-      )
-    );
-    dispatch(
-          handleField(
-            "apply",
-            "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-            "visible",
-            false
-          )
-        );
-  }
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+      "visible",
+      waterVisible
+    )
+  );
+
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+      "visible",
+      sewerageVisible
+    )
+  );
+}else{
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+      "visible",
+      false
+    )
+  );
+
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+      "visible",
+      false
+    )
+  );
+}
 };
 
 const moveToSuccess = (combinedArray, dispatch) => {

@@ -581,6 +581,9 @@ export const getData = async (action, state, dispatch) => {
         payloadWater.WaterConnection[0].water = true;
         payloadWater.WaterConnection[0].sewerage = false;
         payloadWater.WaterConnection[0].service = "Water";
+          if (isModifyMode()) {
+          payloadWater.WaterConnection[0].applicationType = "MODIFY_WATER_CONNECTION";
+        }
         dispatch(
           prepareFinalObject("WaterConnection", payloadWater.WaterConnection)
         );
