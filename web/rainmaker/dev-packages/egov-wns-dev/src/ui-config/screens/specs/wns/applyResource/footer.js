@@ -974,8 +974,17 @@ else{
 
   }
   if (activeStep === 3) {
-    let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].water");
-    let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].sewerage");
+    let waterId
+    let sewerId
+    if (!isModifyMode()){
+      waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
+      sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
+    }else{
+      waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].water");
+      sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].sewerage");
+    }
+     
+    
     let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
     if (roadCuttingInfo && roadCuttingInfo.length > 0) {
       let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.isEmpty !== true);
