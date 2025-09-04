@@ -21,6 +21,7 @@ import {
 } from "egov-ui-framework/ui-utils/commons";
 
 const saveData = async (state, dispatch) => {
+    let mode = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.mode")
     let data = get(state, "screenConfiguration.preparedFinalObject.metereading");
     if (data === undefined || data === null || data == []) {
         dispatch(
@@ -197,7 +198,7 @@ const saveData = async (state, dispatch) => {
     // console.log(data)
     data.tenantId = getQueryArg(window.location.href, "tenantId")
     data.generateDemand=true;
-    createMeterReading(dispatch, data)
+    createMeterReading(dispatch, data, mode)
 
 }
 
