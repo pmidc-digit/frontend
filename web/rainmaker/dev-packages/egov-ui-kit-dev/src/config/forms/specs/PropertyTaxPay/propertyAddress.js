@@ -11,7 +11,7 @@ let floorDropDownData = [];
 
 floorDropDownData.push({ label: "2013-14", value: "2013-14" }, { label: "2014-15", value: "2014-15" }, { label: "2015-16", value: "2015-16" }, { label: "2016-17", value: "2016-17" }, { label: "2017-18", value: "2017-18" }, { label: "2018-19", value: "2018-19" },
   { label: "2019-20", value: "2019-20" }, { label: "2020-21", value: "2020-21" },
-  { label: "2021-22", value: "2021-22" }, { label: "2022-23", value: "2022-23" }, { label: "2023-24", value: "2023-24" }, { label: "2024-25", value: "2024-25" });
+  { label: "2021-22", value: "2021-22" }, { label: "2022-23", value: "2022-23" }, { label: "2023-24", value: "2023-24" }, { label: "2024-25", value: "2024-25" }, { label: "2025-26", value: "2025-26" });
 const formConfig = {
   name: "propertyAddress",
   fields: {
@@ -19,6 +19,7 @@ const formConfig = {
       id: "city",
       jsonPath: "PropertiesTemp[0].address.city",
       required: true,
+      formName: "propertyAddress",
       localePrefix: { moduleName: "tenant", masterName: "tenants" },
       labelsFromLocalisation: true,
       type: "AutocompleteDropdown",
@@ -102,7 +103,8 @@ const formConfig = {
       //errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
       errorMessage: "PT_PINCODE_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-      pattern: "^([0-9]){6}$",
+      // pattern: "^([0-9]){6}$",
+      pattern: "^(?!000000|111111|222222|333333|444444|555555|666666|777777|888888|999999)(14[0-9][0-9][0-9][0-9]|151[0-9]{3}|1520[0-9]{2}|1521[0-2][0-9]|15213[0-2])$",
     },
     // oldPID: {
     //   id: "oldpid",
@@ -146,6 +148,7 @@ const formConfig = {
       // iconRedirectionURL: getTenantId()=='pb.amritsar'? "https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=8b678d4d5020448499054bf346843ea9": getTenantId()=='pb.hoshiarpur'?"https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=9bc1b255320a49c590dd17d4d258e054": "https://gis.punjab.gov.in",
       jsonPath: "Properties[0].additionalDetails.yearConstruction",
       floatingLabelText: "Year of creation of Property",
+      required: true,
       hintText: "Select",
       numcols: 6,
       gridDefination: {
@@ -154,7 +157,6 @@ const formConfig = {
       },
       errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-
       formName: "propertyAddress",
       dropDownData: floorDropDownData,
       updateDependentFields: ({ formKey, field, dispatch }) => {
@@ -190,7 +192,13 @@ const formConfig = {
         dispatch(setFieldProperty("propertyAddress", "city", "dropDownData", sortBy(dd, ["label"])));
       }
       const tenant = get(state, 'form.propertyAddress.fields.city.value', null);
-      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);
+      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);    
+    // const yearConstructionValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
+    // get(state, 'Properties[0].additionalDetails.yearConstruction', null) ||  get(state, 'form.Properties[0].additionalDetails.yearConstruction', null) ||
+    
+    // if (yearConstructionValue) {
+    //   dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearConstructionValue));
+    // }
 
       if (process.env.REACT_APP_NAME === "Citizen" && tenant && mohallaDropDownData.length == 0) {
         const dataFetchConfig = {

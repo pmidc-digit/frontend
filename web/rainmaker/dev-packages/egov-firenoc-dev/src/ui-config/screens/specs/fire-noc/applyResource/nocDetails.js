@@ -8,6 +8,7 @@ import {
   getTextField,
   getPattern,
   getSelectField,
+  getLabel,
   convertDateToEpoch
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import {
@@ -170,7 +171,70 @@ debugger;
     }
   }
   if (response.FireNOCs.length > 0) {
-   alert("Data has been successfully Searched.");
+    // Validate usage type against MDMS data
+    const oldNocUsageType = get(
+      response,
+      "FireNOCs[0].fireNOCDetails.buildings[0].usageType",
+      ""
+    );
+    const mdmsBuildingTypes = get(
+      state,
+      "screenConfiguration.preparedFinalObject.applyScreenMdmsData.firenoc.BuildingType",
+      []
+    );
+
+    // Check if the building type is inactive
+    const matchingBuildingTypes = mdmsBuildingTypes.filter(
+      (buildingType) => buildingType.code === oldNocUsageType
+    );
+    if (
+      matchingBuildingTypes.length > 0 &&
+      matchingBuildingTypes[0].active === false
+    ) {
+      alert("The usage type from the old NOC is not valid in the current system. Please go on punjab invest portal.");
+
+      setTimeout(() => {
+        window.location.href = "/employee/fire-noc/search";
+      }, 3000);
+      return;
+    } else {
+      alert("Data has been successfully Searched.");
+      // Disable the old fire NOC number input field
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardFirstStep.children.nocDetails.children.cardContent.children.nocDetailsContainer.children.oldFIRENocNumber",
+          "props.disabled",
+          true
+        )
+      );
+
+      // Gray out/disable the search button
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardFirstStep.children.nocDetails.children.cardContent.children.nocDetailsContainer.children.searchOldNocButton",
+          "props.disabled",
+          true
+        )
+      );
+
+      // Update search button style to appear grayed out
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardFirstStep.children.nocDetails.children.cardContent.children.nocDetailsContainer.children.searchOldNocButton",
+          "props.style",
+          {
+            marginTop: "14px",
+            height: "40px",
+            backgroundColor: "#cccccc",
+            color: "#666666",
+            cursor: "not-allowed",
+          }
+        )
+      );	  
+    }
   }
   let isLegacy = false;
   if (!get(response, "FireNOCs", []).length) {
@@ -296,6 +360,10 @@ export const nocDetails = getCommonCard({
             },
           ],
           jsonPath: "FireNOCs[0].fireNOCDetails.fireNOCType",
+          gridDefination: {
+          xs: 12,
+          sm: 4,
+        },
           //required: true
           // props: {
           //   disabled: false
@@ -321,6 +389,25 @@ export const nocDetails = getCommonCard({
                 false
               )
             );
+            // hide search button for PROVISIONAL 
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardFirstStep.children.nocDetails.children.cardContent.children.nocDetailsContainer.children.searchOldNocButton",
+              "visible",
+              false
+            )
+          );
+          
+          // Re-enable building name field for non-renewal applications
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.singleBuildingContainer.children.singleBuilding.children.cardContent.children.singleBuildingCard.children.buildingName",
+              "props.disabled",
+              false
+            )
+          );
   
           }
           else if (action.value === "RENEWAL") {
@@ -340,6 +427,27 @@ export const nocDetails = getCommonCard({
                 false
               )
             );
+
+            // show search button for RENEWAL
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardFirstStep.children.nocDetails.children.cardContent.children.nocDetailsContainer.children.searchOldNocButton",
+              "visible",
+              true
+            )
+          );
+          
+          // Disable building name field for renewal applications
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.singleBuildingContainer.children.singleBuilding.children.cardContent.children.singleBuildingCard.children.buildingName",
+              "props.disabled",
+              true
+            )
+          );
+
           }
   
           else {
@@ -359,6 +467,27 @@ export const nocDetails = getCommonCard({
                 false
               )
             );
+
+            // hide search button for non-RENEWAL 
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardFirstStep.children.nocDetails.children.cardContent.children.nocDetailsContainer.children.searchOldNocButton",
+                "visible",
+                false
+              )
+            );
+  
+            // Re-enable building name field for non-renewal applications
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardSecondStep.children.propertyDetails.children.cardContent.children.propertyDetailsConatiner.children.buildingDataCard.children.singleBuildingContainer.children.singleBuilding.children.cardContent.children.singleBuildingCard.children.buildingName",
+                "props.disabled",
+                false
+              )
+            );
+
           }
           if(get(state.screenConfiguration.preparedFinalObject, "FireNOCs[0].fireNOCDetails.action", "") === "SENDBACKTOCITIZEN" || getQueryArg(window.location.href,"edited")) {
             dispatch(
@@ -431,19 +560,24 @@ export const nocDetails = getCommonCard({
         visible: false,
         // pattern: getPattern("MobileNo"),
         jsonPath: "FireNOCs[0].oldFireNOCNumber",
-        iconObj: {
-          iconName: "search",
-          position: "end",
-          color: "#FE7A51",
-          onClickDefination: {
-            action: "condition",
+        gridDefination: {
+          xs: 12,
+          sm: 4,
+        },
+
+        // iconObj: {
+        //   iconName: "search",
+        //   position: "end",
+        //   color: "#FE7A51",
+        //   onClickDefination: {
+        //     action: "condition",
+
+        //     callBack: (state, dispatch, fieldInfo) => {
+        //       loadProvisionalNocData2(state, dispatch);
+        //     },
             
-            callBack: (state, dispatch, fieldInfo) => {
-              loadProvisionalNocData2(state, dispatch);
-            },
-            
-          }
-        }
+        //   }
+        // }
         // title: {
         //   value: "Please search owner profile linked to the mobile no.",
         //   key: "TL_MOBILE_NO_TOOLTIP_MESSAGE"
@@ -453,5 +587,37 @@ export const nocDetails = getCommonCard({
   
       })
     },
+    // add Search button next to input 
+    searchOldNocButton: {
+      uiFramework: "custom-atoms",
+      componentPath: "Button",
+      gridDefination: {
+        xs: 12,
+        sm: 4,
+      },
+      props: {
+        variant: "contained",
+        color: "primary",
+        style: {
+          marginTop: "14px",
+          height: "40px",
+          backgroundColor: "#FE7A51",
+          color: "#fff",
+        },
+      },
+      children: {
+        buttonLabel: getLabel({
+          labelName: "Search",
+          labelKey: "NOC_SEARCH_BUTTON",
+        }),
+      },
+      onClickDefination: {
+        action: "condition",
+        callBack: (state, dispatch, fieldInfo) => {
+          loadProvisionalNocData2(state, dispatch);
+        },
+      },
+      visible: false,
+    }
   })
 });

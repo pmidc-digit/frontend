@@ -130,7 +130,7 @@ import {
       },
       required: true,
       jsonPath: "connectionHolders[0].relationship",
-      data: [{ code: "Father" }, { code: "Husband" }],
+      data: [{ code: "Father" }, { code: "Husband" }, { code: "Mother" }],
       localePrefix: {
         moduleName: "common-masters",
         masterName: "OwnerType"

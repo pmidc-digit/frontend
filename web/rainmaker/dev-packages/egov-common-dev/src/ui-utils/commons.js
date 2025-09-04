@@ -503,6 +503,7 @@ export const setApplicationNumberBox = (state, dispatch, applicationNo) => {
 };
 
 export const downloadReceiptFromFilestoreID = (fileStoreId, mode, tenantId, showConfirmation = false) => {
+
 	getFileUrlFromAPI(fileStoreId, tenantId).then(async (fileRes) => {
 		if (fileRes && !fileRes[fileStoreId]) {
 			console.error('ERROR IN DOWNLOADING RECEIPT');
@@ -554,6 +555,7 @@ const getUserDataFromUuid = async bodyObject => {
 	}
 };
 export const download = async (receiptQueryString, mode = "download", configKey, state, showConfirmation = false) => {
+
 	if (state && process.env.REACT_APP_NAME === "Citizen" && configKey === "consolidatedreceipt") {
 		const uiCommonPayConfig = get(state.screenConfiguration.preparedFinalObject, "commonPayInfo");
 		configKey = get(uiCommonPayConfig, "receiptKey", "consolidatedreceipt")
@@ -1189,6 +1191,7 @@ export const downloadBill = async (consumerCode, tenantId, configKey = "consolid
 	let oldConnection = null, ledgerId = null, propertyId = null;
 	let rate = await getMdmsData(businesService);
 	if (businesService == "SW") {
+
 		configKey = "sw-bill";
 		oldConnection = responseSewerage.SewerageConnections[0].oldConnectionNo;
 		ledgerId = responseSewerage.SewerageConnections[0].additionalDetails.ledgerId;
@@ -1205,6 +1208,8 @@ export const downloadBill = async (consumerCode, tenantId, configKey = "consolid
 		// configKey="ws-bill";
 
 		const billResponse = await httpRequest("post", FETCHBILL.GET.URL, FETCHBILL.GET.ACTION, [], { searchCriteria });
+		billResponse.Bills[0].additionalDetails.mydata = "tested my data";
+		//set(billResponse.Bills[0].additionalDetails.mydata, "tested my data");
 		const oldFileStoreId = get(billResponse.Bills[0], "fileStoreId")
 		if (oldFileStoreId) {
 			downloadReceiptFromFilestoreID(oldFileStoreId, 'download')
@@ -1215,7 +1220,14 @@ export const downloadBill = async (consumerCode, tenantId, configKey = "consolid
 			addDetail = {
 				"penaltyRate": rate
 			}
+
 			billResponse.Bills[0].additionalDetails = addDetail;
+			if (businesService == "SW") {
+				billResponse.Bills[0].additionalDetails.latePaymentc = billResponse.Bills[0].tenantId == "pb.patiala" ? '0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+			}
+			else if (businesService == "WS") {
+				billResponse.Bills[0].additionalDetails.latePaymentc = billResponse.Bills[0].tenantId == "pb.patiala" ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+			}
 			const queryStr = [
 				{ key: "key", value: configKey },
 				{ key: "tenantId", value: commonConfig.tenantId }

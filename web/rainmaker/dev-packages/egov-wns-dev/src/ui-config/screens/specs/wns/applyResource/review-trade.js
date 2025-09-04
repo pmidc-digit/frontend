@@ -313,6 +313,34 @@ export const propertyDetails={
       callBack: handleNA      
     }
   ),
+  reviewSurveyID: getLabelWithValueForModifiedLabel(
+    {
+      labelName: "Survey Id",
+      labelKey: "Survey Id"
+    },
+    { jsonPath: "WaterConnection[0].property.surveyId",
+    callBack: handleNA },{
+      labelKey: "WS_OLD_LABEL_NAME"
+    },
+    {
+      jsonPath: "WaterConnectionOld[0].property.surveyId",
+      callBack: handleNA      
+    }
+  ),
+  reviewOldpropertyId: getLabelWithValueForModifiedLabel(
+    {
+      labelName: "Old Property Id",
+      labelKey: "Old Property Id"
+    },
+    { jsonPath: "WaterConnection[0].property.oldPropertyId",
+    callBack: handleNA },{
+      labelKey: "WS_OLD_LABEL_NAME"
+    },
+    {
+      jsonPath: "WaterConnectionOld[0].property.oldPropertyId",
+      callBack: handleNA      
+    }
+  ),
 }
 
 const getPropertyDetails = {

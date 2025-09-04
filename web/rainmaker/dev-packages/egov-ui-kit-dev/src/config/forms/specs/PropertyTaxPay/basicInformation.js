@@ -11,7 +11,6 @@ import { localStorageSet } from "egov-ui-kit/utils/localStorageUtils";
 
 
 const options = [
-  
   { value: true, label: getLocaleLabels("Yes", "PT_COMMON_YES") },
   { value: false, label: getLocaleLabels("No", "PT_COMMON_NO") },
 ];

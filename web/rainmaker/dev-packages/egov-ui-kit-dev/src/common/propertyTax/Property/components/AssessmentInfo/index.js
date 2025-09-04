@@ -177,22 +177,24 @@ var vasika_date =(additionalDetails && additionalDetails.vasikaDate)? convertLoc
 
   return (
     additionalDetails && [
-          {
-            key: "PT_COMMON_VASIKA_NO",
-            value:  additionalDetails.vasikaNo || "NA", //noOfFloors
-          },
-          {
-            key: "PT_COMMON_VASIKA_DATE",
-            value: vasika_date ? `${vasika_date}` : "NA",
-          },
-          {
-            key: "PT_COMMON_ALLOTMENT_NO",
-            value:  additionalDetails.allotmentNo || "NA",
-          },
-          {
-            key: "PT_COMMON_ALLOTMENT_DATE",
-            value: allotment_date ? `${allotment_date}` : "NA",
-          },
+          ...(process.env.REACT_APP_NAME !== "Citizen" ? [
+            {
+              key: "PT_COMMON_VASIKA_NO",
+              value:  additionalDetails.vasikaNo || "NA",
+            },
+            {
+              key: "PT_COMMON_VASIKA_DATE",
+              value: vasika_date ? `${vasika_date}` : "NA",
+            },
+            {
+              key: "PT_COMMON_ALLOTMENT_NO",
+              value:  additionalDetails.allotmentNo || "NA",
+            },
+            {
+              key: "PT_COMMON_ALLOTMENT_DATE",
+              value: allotment_date ? `${allotment_date}` : "NA",
+            }
+          ] : []),
           {
             key: "PT_COMMON_BUSSINESS_NAME",
             value:  additionalDetails.businessName || "NA",

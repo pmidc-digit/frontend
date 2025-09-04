@@ -15,8 +15,10 @@ import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import CloseIcon from "@material-ui/icons/Close";
 import { withStyles } from "@material-ui/core/styles";
 import { UploadMultipleFiles } from "egov-ui-framework/ui-molecules";
-import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
+import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { hideSpinner, showSpinner } from "egov-ui-kit/redux/common/actions";
+import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import "./index.css";
 
 const styles = theme => ({
@@ -66,17 +68,26 @@ class TlRenewDialog extends React.Component {
   getButtonLabelName = label => {
     return "Submit"
   };
-  renewTradelicence = async (licenseData, tlValidity) => {
-    //this.props.showSpinner();
+  renewTradelicence = async (licenseData, tlValidity, isHAZ) => {
+    debugger;
+      //showSpinner();
+      console.log("isHAZ"+isHAZ)
     let licences = [];
     let validityYears = {
       validityYears :tlValidity
     }
-   const wfCode = "DIRECTRENEWAL";
+   const wfCode = isHAZ  ? "NEWTL.HAZ" : "DIRECTRENEWAL";
+   const action = isHAZ ? "APPLY" : "INITIATE";
+   const businessService = isHAZ ? "TL" : "TL"
+
    const nextFinancialYear =  get(licenseData, "financialYear");
    const tenantId = get(licenseData, "tenantId");
    //console.log("nextFinancialYear"+nextFinancialYear)
-   set(licenseData, "tradeLicenseDetail.additionalDetail" ,validityYears)
+   set(licenseData, "tradeLicenseDetail.additionalDetail", validityYears);
+   set(licenseData, "workflowCode" ,wfCode)
+   set (licenseData, "action", action)
+   set (licenseData, "businessService", businessService)
+   //set(licenseData,)
    licences.push(licenseData)
    try {
     const response = await httpRequest(
@@ -90,14 +101,24 @@ class TlRenewDialog extends React.Component {
     );
     const renewedapplicationNo = get(response, `Licenses[0].applicationNumber`);
     const licenseNumber = get(response, `Licenses[0].licenseNumber`);
-    //console.log("Hello Response"+JSON.stringify(response))
-   // this.props.hideSpinner();
-    setRoute(
-      `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
-    );
+    const url = window.location.href
+    const userType = url.includes('employee') ? 'employee' : 'citizen';
+   
+    const reDirectUrl = process.env.NODE_ENV === "production"  ? 
+      `${userType}/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
+      :
+          `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`;
+    
+    window.location.href = `acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`;
+
+    // setRoute(
+    //   `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
+    // );
+
     } catch (exception) {
-     // this.props.hideSpinner();
+     hideSpinner();
       console.log(exception);
+      alert(exception.message)
       toggleSnackbar(
         true,
         {
@@ -229,7 +250,7 @@ class TlRenewDialog extends React.Component {
                       }}
                       className="bottom-button"
                      onClick={() =>
-                       this.renewTradelicence(licenseData, tlValidity)
+                       this.renewTradelicence(licenseData, tlValidity,isHAZ)
                      }
                     >
                       <LabelContainer

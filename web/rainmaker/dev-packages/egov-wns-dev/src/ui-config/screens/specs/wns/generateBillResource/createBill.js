@@ -15,7 +15,7 @@ import get from 'lodash/get';
 import { groupBy } from "lodash";
 let localityhide = false;
 let batchhide = false;
-let arr =[
+let arr = [
   {
     code: "Batch",
     value: "Batch",
@@ -26,8 +26,8 @@ let arr =[
   }
 
 ];
-if(getTenantIdCommon() == "pb.patiala"){
-  arr.push({code: "Group",value: "Group"});
+if (getTenantIdCommon() == "pb.patiala") {
+  arr.push({ code: "Group", value: "Group" });
 }
 // const createBills = (dispatch) => 
 //    {
@@ -139,117 +139,121 @@ export const createBill = getCommonCard({
 
       },
       afterFieldChange: async (action, state, dispatch) => {
-       
-       
+
+
         let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.generateBillScreen.batchtype");
-        if(ConectionCategory=="Batch"){
-        try {
-          let payload = await httpRequest(
+        if (ConectionCategory == "Batch") {
+          try {
+            let payload = await httpRequest(
+              "post",
+              "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Block",
+              "_search",
+              [{ key: "tenantId", value: getTenantIdCommon() }],
+              {}
+            );
+            let batchar = [];
+            const batches =
+              payload &&
+              payload.TenantBoundary[0] &&
+              payload.TenantBoundary[0].boundary &&
+              payload.TenantBoundary[0].boundary.filter((item) => {
+                batchar.push({ item });
+                return batchar;
+              }, []);
+            dispatch(
+              prepareFinalObject(
+                "applyScreenMdmsData.tenant.batchs",
+                batches
+              )
+            );
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.groups", ""));
+
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        else if (ConectionCategory == "Group") {
+          let mdmsBody = {
+            MdmsCriteria: {
+              tenantId: getTenantIdCommon(),
+              moduleDetails: [
+                {
+                  moduleName: "ws-services-masters",
+                  masterDetails: [{ name: "groups" }]
+                }
+              ]
+            }
+          };
+          try {
+            let payload = await httpRequest(
+              "post",
+              "/egov-mdms-service/v1/_search",
+              "_search",
+              [],
+              mdmsBody
+
+            );
+            payload = payload.MdmsRes['ws-services-masters'];
+            let groupsar = [];
+            const batches =
+              payload &&
+              payload.groups.filter((item) => {
+                groupsar.push({ item });
+                return groupsar;
+              }, []);
+            dispatch(
+              prepareFinalObject(
+                "applyScreenMdmsData.tenant.groups",
+                batches
+              )
+            );
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs", ""));
+
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        else {
+          //locality
+          debugger
+          let response = await httpRequest(
             "post",
-            "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Block",
+            "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
             "_search",
             [{ key: "tenantId", value: getTenantIdCommon() }],
             {}
           );
-          let batchar = [];
-          const batches =
-            payload &&
-            payload.TenantBoundary[0] &&
-            payload.TenantBoundary[0].boundary &&
-            payload.TenantBoundary[0].boundary.filter((item) => {
-              batchar.push({ item });
-              return batchar;
-            }, []);
+          let mohallaDataArray = [];
+          let mohallaDataRow = null;
+          let name, code;
+          response.TenantBoundary[0].boundary.map((element, index) => {
+            name = element.name + "( " + element.code + " )";
+            code = element.code;
+            mohallaDataRow = {
+              "code": code,
+              "name": name
+            };
+            mohallaDataArray.push(mohallaDataRow);
+
+          });
+
+          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", mohallaDataArray));
           dispatch(
             prepareFinalObject(
               "applyScreenMdmsData.tenant.batchs",
-              batches
+              ""
             )
-          );
-          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
-          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.groups",""));
 
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      else if(ConectionCategory=="Group"){
-        let mdmsBody = {
-          MdmsCriteria: {
-            tenantId: getTenantIdCommon(),
-            moduleDetails: [
-              {
-                moduleName: "ws-services-masters",
-                masterDetails: [{ name: "groups"}]
-              }
-            ]
-          }
-        };
-        try {
-          let payload = await httpRequest(
-            "post",
-            "/egov-mdms-service/v1/_search",
-            "_search",
-            [],
-            mdmsBody
-           
           );
-          payload = payload.MdmsRes['ws-services-masters'];
-          let groupsar = [];
-          const batches =
-            payload &&
-            payload.groups.filter((item) => {
-              groupsar.push({ item });
-              return groupsar;
-            }, []);
           dispatch(
             prepareFinalObject(
               "applyScreenMdmsData.tenant.groups",
-              batches
+              ""
             )
           );
-          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
-          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs",""));
-
-        } catch (e) {
-          console.log(e);
         }
-      }
-      else{
-//locality
-let response = await httpRequest(
-  "post",
-  "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
-  "_search",
-  [{ key: "tenantId", value: getTenantIdCommon() }],
-  {}
-);
-let mohallaDataArray = [];
-let mohallaDataRow=null;
-let name,code;
-response.TenantBoundary[0].boundary.map((element,index) => {
-  name = element.name + "( "+element.code+" )";
- // code=element.code;
-  mohallaDataRow={"code":name};
- mohallaDataArray.push(mohallaDataRow);
-
-});
-
-dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", mohallaDataArray));
-dispatch(
-  prepareFinalObject(
-    "applyScreenMdmsData.tenant.batchs",
-    ""
-  )
-  
-);
-dispatch(
-  prepareFinalObject(
-    "applyScreenMdmsData.tenant.groups",
-    ""
-  )  
-);
-      }
       },
       required: false,
 
@@ -333,9 +337,9 @@ dispatch(
   //---------------------------------------------------------------------------------------
   //             Reset Button and Submit Button
   //-----------------------------------------------------------------------------------------
- 
- 
-  
+
+
+
   //-------------------------
   button: getCommonContainer({
     buttonContainer: getCommonContainer({

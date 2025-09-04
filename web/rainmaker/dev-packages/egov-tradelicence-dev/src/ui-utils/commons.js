@@ -206,28 +206,7 @@ export const updatePFOforSearchResults = async (
   //   (await setDocsForEditFlow(state, dispatch));
 
   if (payload && payload.Licenses) {
-    //debugger
-    let isHAZ = "NHAZ"
-    let pValidityYears = get(payload.Licenses[0], 'tradeLicenseDetail.additionalDetail.validityYears', 1);
-    let pTradeUnits = get(payload.Licenses[0], 'tradeLicenseDetail.tradeUnits');
-    let mDMSTradeUnit = get(state.screenConfiguration.preparedFinalObject, 'applyScreenMdmsData.TradeLicense.MdmsTradeType')
-    for (let tradeData of pTradeUnits) {
-      for (let tradeMdms of mDMSTradeUnit) {
-        if (tradeData.tradeType === tradeMdms.code) {
-          if (tradeMdms.ishazardous === true) {
-            isHAZ = "HAZ"
-          }
-        }
-      }
-    }
-    //console.log("Hello HAZ"+isHAZ)
-    let workflowCode = get(payload.Licenses[0], 'workflowCode');
-    if (isHAZ === 'HAZ') {
-      dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears", [{ code: 1 }]))
-    } else {
-      dispatch(prepareFinalObject("applyScreenMdmsData.TradeLicense.validityYears", [{ code: 1 }, { code: 2 }, { code: 3 }]))
-    }
-    dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.validityYears", `${pValidityYears}`))
+
     let ownersInitial = get(payload.Licenses[0], 'tradeLicenseDetail.owners', []);
     set(payload.Licenses[0], 'tradeLicenseDetail.owners', ownersInitial.filter(owner => owner.userActive));
     dispatch(prepareFinalObject("Licenses[0]", payload.Licenses[0]));
@@ -402,6 +381,9 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         get(state.screenConfiguration.preparedFinalObject, "Licenses", [])
       )
     );
+    let applicationStatus = get(state.screenConfiguration.preparedFinalObject,
+      "Licenses[0].status", "NA"
+    );
     let additionalDetail = get(
       queryObject[0],
       "tradeLicenseDetail.additionalDetail"
@@ -412,6 +394,10 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
     if (additionalDetail == null) {
       set(queryObject[0], "tradeLicenseDetail.additionalDetail", null);
     }
+    //debugger
+    let tradeUnitMDMS = get(state.screenConfiguration.preparedFinalObject.applyScreenMdmsData.TradeLicense, "MdmsTradeType", []);
+    let tradeUnitlicences = get(state.screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail, "tradeUnits", []);
+    let filterObject = filterTradeUnitsFromObjects(tradeUnitMDMS, tradeUnitlicences);
     //------ removing null from document array ------
     let documentArray = compact(get(queryObject[0], "tradeLicenseDetail.applicationDocuments"));
     let documents = getUniqueItemsFromArray(documentArray, "fileStoreId");
@@ -477,8 +463,8 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
       set(queryObject[0], "workflowCode", "NEWTL.HAZ");
     }
     else {
-      set(queryObject[0], "workflowCode", "NewTL");
-      //set(queryObject[0], "workflowCode", "NEWTL.NHAZ");
+      //set(queryObject[0], "workflowCode", "NewTL");
+      set(queryObject[0], "workflowCode", "NEWTL.NHAZ");
 
     }
 
@@ -593,9 +579,14 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         }
         set(queryObject[0], "tradeLicenseDetail.adhocPenalty", null);
         set(queryObject[0], "tradeLicenseDetail.adhocExemption", null);
-        updateResponse = await httpRequest("post", "/tl-services/v1/_update", "", [], {
-          Licenses: queryObject
-        })
+        //debugger
+        if (activeIndex === 1 && applicationStatus.toUpperCase() === 'INITIATED') {
+
+        } else {
+          updateResponse = await httpRequest("post", "/tl-services/v1/_update", "", [], {
+            Licenses: queryObject
+          })
+        }
       }
       //Renewal flow
 
@@ -634,7 +625,8 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         { key: "applicationNumber", value: updatedApplicationNo }
       ];
       let searchResponse = await getSearchResults(searchQueryObject);
-      if (isEditFlow) {
+      //debugger
+      if (isEditFlow || (activeIndex === 1 && applicationStatus.toUpperCase() === 'INITIATED')) {
         searchResponse = { Licenses: queryObject };
       } else {
         dispatch(prepareFinalObject("Licenses", searchResponse ? searchResponse.Licenses : queryObject));

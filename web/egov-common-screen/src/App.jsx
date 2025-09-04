@@ -4,8 +4,6 @@ import Header from './components/Header'
 import Faq from './components/Faqs'
 import Footer from './components/Footer'
 import Privacy from './components/Privacy'
-import UnderConstruction from './components/UnderConstruction'
-
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
@@ -20,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Card />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/impersonation" element={<Impersonation />} />
           <Route path="*" element={<Card />} />
         </Routes>
 

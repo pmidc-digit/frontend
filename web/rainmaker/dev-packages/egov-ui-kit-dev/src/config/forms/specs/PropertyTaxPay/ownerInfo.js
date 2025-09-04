@@ -3,6 +3,7 @@ import { setDependentFields } from "./utils/enableDependentFields";
 import get from "lodash/get";
 import set from "lodash/set";
 import { setFieldProperty, handleFieldChange } from "egov-ui-kit/redux/form/actions";
+import { localStorageSet, localStorageGet, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 
 const formConfig = {
   name: "ownerInfo",
@@ -25,10 +26,12 @@ const formConfig = {
       floatingLabelText: "PT_FORM3_MOBILE_NO",
       hintText: "PT_FORM3_MOBILE_NO_PLACEHOLDER",
       required: true,
-      pattern: /^([0]|((\+\d{1,2}[-]{0,1})))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/i,
+      // pattern: /^([0]|((\+\d{1,2}[-]{0,1})))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/i,
+      pattern: /^(?!.*(\d)\1{9})([0]|(\+\d{1,2}-?))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       errorMessage: "PT_MOBILE_NUMBER_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
     },
+
     ownerGuardian: {
       id: "ownerGuardian",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].fatherOrHusbandName",
@@ -40,6 +43,17 @@ const formConfig = {
       errorMessage: "PT_NAME_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
     },
+    // ownerPan: {
+    //   id: "ownerPan",
+    //   jsonPath: "Properties[0].additionalDetails.ownerPan",
+    //   type: "textfield",
+    //   floatingLabelText: "PAN Number",
+    //   hintText: "PAN Number",
+    //   //pattern: /^[^{0-9}^\$\"'<>?\\\\~`!@#$%^()+={}\[\]*,_:;“”‘’]{1,64}$/i,
+    //   required: getTenantId() == 'pb.mohali' ? true : false,
+    //   errorMessage: "PT_NAME_ERROR_MESSAGE",
+    //   errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+    // },
     ownerEmail: {
       id: "ownerEmail",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].emailId",
@@ -50,6 +64,7 @@ const formConfig = {
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       pattern: /^(?=^.{1,64}$)((([^<>()\[\]\\.,;:\s$*@'"]+(\.[^<>()\[\]\\.,;:\s@'"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))$/,
     },
+
     ownerPercentage: {
       id: "ownerPercentage",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].ownerShipPercentage",
@@ -59,8 +74,8 @@ const formConfig = {
       pattern: /^[1-9][0-9]?$|^100$/i,
       required: true,
       errorMessage: "PT_PERCENTAGE_ERROR_MESSAGE",
-      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 }
-      //,value:"100"
+      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+      //,value:"100",
 
     },
     ownerAddress: {
@@ -85,9 +100,10 @@ const formConfig = {
         xs: 12,
         sm: 6
       },
-      dropDownData: [{ label: "Father", value: "FATHER" }, { label: "Husband", value: "HUSBAND" }],
+      dropDownData: [{ label: "Father", value: "Father" }, { label: "Husband", value: "Husband" }, { label: "Mother", value: "Mother" }],
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-      formName: "ownerInfo"
+      formName: "ownerInfo",
+      required: true,
     },
     ownerCategory: {
       id: "ownerCategory",
@@ -221,10 +237,12 @@ const formConfig = {
         }
       },
     },
+
     ownerGender: {
       id: "ownerGender",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].gender",
     },
+
     isSameAsPropertyAddress: {
       id: "rcpt",
       type: "checkbox",
@@ -284,7 +302,7 @@ const formConfig = {
       const formKey = get(action, "form.name", "");
       const state = store.getState();
       if (get(state, `form.${formKey}.fields.ownerRelationship.value`, "NONE") === "NONE") {
-        dispatch(handleFieldChange(formKey, "ownerRelationship", "FATHER"));
+        // dispatch(handleFieldChange(formKey, "ownerRelationship", "Father"));
       }
 
       if (get(state, `form.${formKey}.fields.ownerCategory.value`, "NONE") === "NONE") {

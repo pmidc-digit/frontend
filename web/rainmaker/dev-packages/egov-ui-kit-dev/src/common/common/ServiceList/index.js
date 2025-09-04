@@ -7,6 +7,7 @@ import Icon from "egov-ui-kit/components/Icon";
 import Label from "egov-ui-kit/utils/translationNode";
 import React from "react";
 import { connect } from "react-redux";
+import { getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import "./index.css";
 
 const styles = (theme) => ({
@@ -59,9 +60,15 @@ class ServiceList extends React.Component {
   };
   componentWillReceiveProps(nextProps) {
     const { menu } = nextProps;
+    const citizenRoleCode = JSON.parse(getUserInfo()).roles;
+    console.log("menu",citizenRoleCode)
     let list;
     if (process.env.REACT_APP_NAME === "Citizen") {
-      list = menu && menu.filter((item) => item.url === "card" && item.name.startsWith("rainmaker-citizen"));
+      if(citizenRoleCode.some((role)=> role.code === 'PESCO')){
+        list = menu && menu.filter((item) => item.url === "card" && item.name.startsWith("rainmaker-citizen-Swach"));
+      }else{
+        list = menu && menu.filter((item) => item.url === "card" && item.name.startsWith("rainmaker-citizen") && item.name !== 'rainmaker-citizen-Swach');
+      }
     } else {
       list = menu && menu.filter((item) => item.url === "card");
     }

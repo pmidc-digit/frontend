@@ -3,7 +3,7 @@ import { downloadReceiptFromFilestoreID } from "egov-common/ui-utils/commons";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, toggleSnackbar, toggleSpinner } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { disableField, enableField, getFileUrl, getFileUrlFromAPI, getQueryArg, getTransformedLocale, setDocuments } from "egov-ui-framework/ui-utils/commons";
 import { getPaymentSearchAPI } from "egov-ui-kit/utils/commons";
-import { getTenantIdCommon, getUserInfo, getLocale, getLocalization } from "egov-ui-kit/utils/localStorageUtils";
+import { getTenantIdCommon, getUserInfo, getLocale, getLocalization, getAppid, getIPin, getThirdPartyURL, getThirdPartyName } from "egov-ui-kit/utils/localStorageUtils";
 import get from "lodash/get";
 import set from "lodash/set";
 import store from "redux/store";
@@ -108,7 +108,13 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
                 let queryObject1 = [];
                 uuids = uuids.substring(0, uuids.length - 1);
                 if (process.env.REACT_APP_NAME === "Citizen") {
-                    queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
+                    if (window.location.pathname.includes('withoutAuth/wns/public-search')) {
+                        queryObject1 = [{ key: "propertyIds", value: uuids }];
+                    } else {
+                        queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
+                    }
+                    // queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
+                    //queryObject1 = [{ key: "propertyIds", value: uuids }];
                 } else {
                     queryObject1 = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "propertyIds", value: uuids }];
                 }
@@ -603,8 +609,12 @@ export const prepareDocumentsUploadData = (state, dispatch) => {
 };
 
 const parserFunction = (state) => {
+    debugger;
     let queryObject = JSON.parse(JSON.stringify(get(state.screenConfiguration.preparedFinalObject, "applyScreen", {})));
     //console.log("Hello Test"+JSON.stringify(queryObject))
+    let iPin = getIPin();
+    let appid = getAppid();
+    let thirdPartyCode = getThirdPartyName();
     let ckConnTypeWater = queryObject.water;
     let ckConnTypeSwerage = queryObject.sewerage;
     let ckDischarge = queryObject.discharge;
@@ -612,6 +622,7 @@ const parserFunction = (state) => {
     let sewerageDetails = get(state.screenConfiguration.preparedFinalObject, "SewerageConnection[0]", {});
     let dischargeConnection;
     let dischargeFee;
+
     if (ckDischarge === true) {
         if (ckConnTypeWater === true && ckConnTypeSwerage === true) {
             dischargeConnection = queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : waterDetails.additionalDetails.dischargeConnection;
@@ -647,7 +658,10 @@ const parserFunction = (state) => {
                 queryObject.additionalDetails.detailsProvidedBy !== null
             ) ? queryObject.additionalDetails.detailsProvidedBy : "",
             isexempted: false,
-            dischargeConnection: dischargeConnection ? dischargeConnection : null,
+            iPin: queryObject.additionalDetails.iPin ? queryObject.additionalDetails.iPin : iPin,
+            appid: queryObject.additionalDetails.appid ? queryObject.additionalDetails.appid : appid,
+            thirdPartyCode: queryObject.additionalDetails.thirdPartyCode ? queryObject.additionalDetails.thirdPartyCode : thirdPartyCode,
+            dischargeConnection: dischargeConnection ? dischargeConnection : 'false',
             dischargeFee: dischargeFee ? dischargeFee : null,
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
             billingAmount: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.billingAmount) : null,
@@ -970,13 +984,23 @@ export const applyForWaterOrSewerage = async (state, dispatch) => {
 export const applyForWater = async (state, dispatch) => {
 
     let queryObject = parserFunction(state);
+    let userType = JSON.parse(getUserInfo()).type.toUpperCase();
+    let thirdPartyCode = getThirdPartyName();
+    let thirdPartyReturnUrl = getThirdPartyURL();
     //console.log("queryObject"+JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let method = waterId ? "UPDATE" : "CREATE";
     try {
-        const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
+        let parsedTenantId;
+        if (userType === 'EMPLOYEE') {
+            parsedTenantId = JSON.parse(getUserInfo()).tenantId
+        } else {
+            parsedTenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        }
+        //const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
         let response;
-        queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        // queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        queryObject.tenantId = parsedTenantId;
         if (method === "UPDATE") {
             queryObject.additionalDetails.appCreatedDate = get(
                 state.screenConfiguration.preparedFinalObject,
@@ -988,13 +1012,16 @@ export const applyForWater = async (state, dispatch) => {
             let waterSubSource = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSubSource", null);
             queryObjectForUpdate.waterSource = queryObjectForUpdate.waterSource ? queryObjectForUpdate.waterSource : waterSource;
             queryObjectForUpdate.waterSubSource = queryObjectForUpdate.waterSubSource ? queryObjectForUpdate.waterSubSource : waterSubSource;
-            set(queryObjectForUpdate, "tenantId", tenantId);
+            set(queryObjectForUpdate, "tenantId", parsedTenantId);
             queryObjectForUpdate = { ...queryObjectForUpdate, ...queryObject }
 
             delete queryObjectForUpdate.roadCuttingInfosw
             // console.log("dhgdhf"+JSON.stringify(queryObjectForUpdate))
             set(queryObjectForUpdate, "processInstance.action", "SUBMIT_APPLICATION");
             set(queryObjectForUpdate, "waterSource", getWaterSource(queryObjectForUpdate.waterSource, queryObjectForUpdate.waterSubSource));
+            // if(userType === 'CITIZEN' && thirdPartyCode ==='EODB'){
+            //     set(queryObjectForUpdate, "channel", thirdPartyCode)
+            // }
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             disableField('apply', "components.div.children.footer.children.payButton", dispatch);
             if (typeof queryObjectForUpdate.additionalDetails !== 'object') {
@@ -1010,6 +1037,10 @@ export const applyForWater = async (state, dispatch) => {
             dispatch(prepareFinalObject("WaterConnection", searchResponse.WaterConnection));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             enableField('apply', "components.div.children.footer.children.payButton", dispatch);
+            // code for EODB application redirect   
+            if (userType === 'CITIZEN' && thirdPartyCode === 'EODB') {
+                window.location = thirdPartyReturnUrl
+            }
         } else {
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             disableField('apply', "components.div.children.footer.children.payButton", dispatch);
@@ -1059,36 +1090,26 @@ export const applyForWater = async (state, dispatch) => {
 }
 
 export const applyForSewerage = async (state, dispatch) => {
-
-    if (isModifyMode()) {
-
-        dispatch(
-            handleField(
-                "apply",
-                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
-                "visible",
-                false
-            )
-        );
-        dispatch(
-            handleField(
-                "apply",
-                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
-                "visible",
-                false
-            )
-        );
-
-    }
     let queryObject = parserFunction(state);
+    let userType = JSON.parse(getUserInfo()).type.toUpperCase();
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     let method = sewerId ? "UPDATE" : "CREATE";
+    let thirdPartyCode = getThirdPartyName();
+    let thirdPartyReturnUrl = getThirdPartyURL();
     try {
-        const tenantId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].property.tenantId");
+        // const tenantId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].property.tenantId");
         let response;
-        set(queryObject, "tenantId", tenantId);
-        queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        let parsedTenantId;
+        if (userType === 'EMPLOYEE') {
+            parsedTenantId = JSON.parse(getUserInfo()).tenantId
+        } else {
+            parsedTenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        }
+        //set(queryObject, "tenantId", tenantId);
+        //queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        queryObject.tenantId = parsedTenantId;
         if (method === "UPDATE") {
+            debugger;
             queryObject.additionalDetails.appCreatedDate = get(
                 state.screenConfiguration.preparedFinalObject,
                 "SewerageConnection[0].additionalDetails.appCreatedDate"
@@ -1119,6 +1140,10 @@ export const applyForSewerage = async (state, dispatch) => {
             dispatch(prepareFinalObject("SewerageConnection", searchResponse.SewerageConnections));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             enableField('apply', "components.div.children.footer.children.payButton", dispatch);
+            // Redirect URL for EODB
+            if (userType === 'CITIZEN' && thirdPartyCode === 'EODB') {
+                window.location = thirdPartyReturnUrl
+            }
         } else {
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             disableField('apply', "components.div.children.footer.children.payButton", dispatch);
@@ -1166,15 +1191,25 @@ export const applyForSewerage = async (state, dispatch) => {
 export const applyForBothWaterAndSewerage = async (state, dispatch) => {
     let method;
     let queryObject = parserFunction(state);
+    let userType = JSON.parse(getUserInfo()).type.toUpperCase();
+    let thirdPartyCode = getThirdPartyName();
+    let thirdPartyReturnUrl = getThirdPartyURL();
     //console.log("dsgdsh"+JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     if (waterId && sewerId) { method = "UPDATE" } else { method = "CREATE" };
     try {
-        const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
+        //const tenantId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.tenantId");
         let response;
-        set(queryObject, "tenantId", tenantId);
-        queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        let parsedTenantId;
+        if (userType === 'EMPLOYEE') {
+            parsedTenantId = JSON.parse(getUserInfo()).tenantId
+        } else {
+            parsedTenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        }
+        //set(queryObject, "tenantId", tenantId);
+        //queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
+        queryObject.tenantId = parsedTenantId;
         if (method === "UPDATE") {
             let queryObjectForUpdateWater = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0]");
             let waterSource = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSourceType", null);
@@ -1249,6 +1284,9 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             dispatch(prepareFinalObject("SewerageConnection", sewerageResponse.SewerageConnections));
             enableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             enableField('apply', "components.div.children.footer.children.payButton", dispatch);
+            if (userType === 'CITIZEN' && thirdPartyCode === 'EODB') {
+                window.location = thirdPartyReturnUrl
+            }
         } else {
             disableField('apply', "components.div.children.footer.children.nextButton", dispatch);
             disableField('apply', "components.div.children.footer.children.payButton", dispatch);

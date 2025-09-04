@@ -80,6 +80,9 @@ class CitizenDashboard extends Component {
     return (
       <Screen loading={loading}>
         {/* <SearchService history={history} /> */}
+        {/* <marquee style={{ color: "red", fontStyle: "italic", fontSize: "20px", margin: "20px 0" }}>
+          Planned Downtime Notice: The mSeva Punjab application will be unavailable from 15th August 2025 to 18th August 2025 due to scheduled maintenance. We regret the inconvenience and appreciate your understanding.
+        </marquee> */}
         <div className="citizen-dashboard-cont">
           {whatsNewEvents && (
             <Label
@@ -92,10 +95,10 @@ class CitizenDashboard extends Component {
           <ServiceList history={history} setRoute={setRoute} />
           {whatsNewEvents && (
             <Label
-              label="DASHBOARD_LOCAL_INFORMATION_LABEL"
-              fontSize={16}
-              color="rgba(0, 0, 0, 0.87"
-              containerStyle={{ paddingTop: 16, paddingBottom: 8 }}
+              // label="DASHBOARD_LOCAL_INFORMATION_LABEL"
+              // fontSize={16}
+              // color="rgba(0, 0, 0, 0.87"
+              // containerStyle={{ paddingTop: 16, paddingBottom: 8 }}
             />
           )}
           {whatsNewEvents && <ServicesNearby history={history} onServiceClick={this.onServiceClick} />}
