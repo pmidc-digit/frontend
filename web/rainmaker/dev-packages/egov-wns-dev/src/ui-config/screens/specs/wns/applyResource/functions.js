@@ -4,7 +4,6 @@ import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getPropertyResults, isActiveProperty, showHideFieldsFirstStep } from "../../../../../ui-utils/commons";
 import { getUserInfo, getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
-import { Eodb } from "../EODB/index";
 
 export const propertySearchApiCall = async (state, dispatch) => {
   showHideFields(dispatch, false);
@@ -14,7 +13,7 @@ export const propertySearchApiCall = async (state, dispatch) => {
   dispatch(
     handleField(
       "apply",
-      "components.div.children.formwizardFirstStep.children.ownerDetails.children.cardContent.children.ownerDetail.children.cardContent.children.headerDiv",
+      "components.div.children.formwizard FirstStep.children.ownerDetails.children.cardContent.children.ownerDetail.children.cardContent.children.headerDiv",
       "props.items",
       []
     )
@@ -62,58 +61,77 @@ export const propertySearchApiCall = async (state, dispatch) => {
       let response = await getPropertyResults(queryObject, dispatch);
       if (response && response.Properties.length > 0) {
         let propertyData = response.Properties[0];
-        if(!isActiveProperty(propertyData)){
-          dispatch(toggleSnackbar(true, { labelKey: `ERR_WS_PROP_STATUS_${propertyData.status}`, labelName: `Property Status is ${propertyData.status}` }, "warning"));     
-          showHideFieldsFirstStep(dispatch,propertyData.propertyId,false); 
-          dispatch(prepareFinalObject("applyScreen.property", propertyData))         
-        }else{          
-          let contractedCorAddress = "";
+        if (!isActiveProperty(propertyData)) {
+          dispatch(toggleSnackbar(true, { labelKey: `ERR_WS_PROP_STATUS_${propertyData.status}`, labelName: `Property Status is ${propertyData.status}` }, "warning"));
+          showHideFieldsFirstStep(dispatch, propertyData.propertyId, false);
+          dispatch(prepareFinalObject("applyScreen.property", propertyData))
+        } else {
+          let contractedCorAddress = "";
 
-          if(propertyData.address.doorNo !== null && propertyData.address.doorNo !== ""){
+          if (propertyData.address.doorNo !== null && propertyData.address.doorNo !== "") {
             contractedCorAddress += propertyData.address.doorNo + ", ";
           }
-          if(propertyData.address.buildingName !== null && propertyData.address.buildingName !== ""){
+          if (propertyData.address.buildingName !== null && propertyData.address.buildingName !== "") {
             contractedCorAddress += propertyData.address.buildingName + ", ";
-          }        
+          }
           contractedCorAddress += propertyData.address.locality.name + ", " + propertyData.address.city;
 
-          for(var i=0; i<propertyData.owners.length;i++){ 
-            if(propertyData.owners[i].correspondenceAddress == 'NA' || propertyData.owners[i].correspondenceAddress == null || propertyData.owners[i].correspondenceAddress == ""){
-              if(propertyData.owners[i].permanentAddress == 'NA' || propertyData.owners[i].permanentAddress == null || propertyData.owners[i].permanentAddress == ""){
-                propertyData.owners[i].correspondenceAddress = contractedCorAddress;
-              }else{
-                propertyData.owners[i].correspondenceAddress = propertyData.owners[i].permanentAddress;
-              }
-            } 
-              if(propertyData && propertyData.owners && propertyData.owners.length > 0) {
-                propertyData.owners = propertyData.owners.filter(owner => owner.status == "ACTIVE");
-              }   
-          }
-        if(propertyData.units == "NA" && propertyData.additionalDetails && propertyData.additionalDetails.subUsageCategory) {
+          for (var i = 0; i < propertyData.owners.length; i++) {
+            if (propertyData.owners[i].correspondenceAddress == 'NA' || propertyData.owners[i].correspondenceAddress == null || propertyData.owners[i].correspondenceAddress == "") {
+              if (propertyData.owners[i].permanentAddress == 'NA' || propertyData.owners[i].permanentAddress == null || propertyData.owners[i].permanentAddress == "") {
+                propertyData.owners[i].correspondenceAddress = contractedCorAddress;
+              } else {
+                propertyData.owners[i].correspondenceAddress = propertyData.owners[i].permanentAddress;
+              }
+            }
+            if (propertyData && propertyData.owners && propertyData.owners.length > 0) {
+              propertyData.owners = propertyData.owners.filter(owner => owner.status == "ACTIVE");
+            }
+          }
+          if (propertyData.units == "NA" && propertyData.additionalDetails && propertyData.additionalDetails.subUsageCategory) {
             propertyData.units = [];
-            propertyData.units.push({usageCategory: propertyData.additionalDetails.subUsageCategory})
+            propertyData.units.push({ usageCategory: propertyData.additionalDetails.subUsageCategory })
           }
           dispatch(prepareFinalObject("applyScreen.property", propertyData))
           showHideFields(dispatch, true);
-          
+
           // Check if property type is commercial and show EODB dialog
           const propertyType = get(propertyData, "usageCategory", null);
           if (propertyType === "NONRESIDENTIAL.INSTITUTIONAL" || propertyType === "NONRESIDENTIAL.INDUSTRIAL") {
-            dispatch(
-              prepareFinalObject("eodbDialog", {
-                open: true
-              })
-            );
-            
-            // Show the dialog by updating screen configuration
-            dispatch(
-              handleField(
-                "apply",
-                "components.eodbDialog",
-                "props.open",
-                true
-              )
-            );
+            if (isModifyMode()) {
+              dispatch(
+                prepareFinalObject("eodbDialog", {
+                  open: false
+                })
+              );
+
+              // Show the dialog by updating screen configuration
+              dispatch(
+                handleField(
+                  "apply",
+                  "components.eodbDialog",
+                  "props.open",
+                  false
+                )
+              );
+            }
+            else {
+              dispatch(
+                prepareFinalObject("eodbDialog", {
+                  open: true
+                })
+              );
+
+              // Show the dialog by updating screen configuration
+              dispatch(
+                handleField(
+                  "apply",
+                  "components.eodbDialog",
+                  "props.open",
+                  true
+                )
+              );
+            }
           }
         }
       } else {
@@ -134,7 +152,7 @@ export const handleEodbDialogClose = (state, dispatch) => {
       open: false
     })
   );
-  
+
   // Hide the dialog by updating screen configuration
   dispatch(
     handleField(
@@ -151,15 +169,15 @@ export const clearSearchResults = (state, dispatch) => {
   dispatch(
     prepareFinalObject("searchScreen", {})
   );
-  
+
   // Clear the property data
   dispatch(
     prepareFinalObject("applyScreen.property", {})
   );
-  
+
   // Hide all the property-related fields
   showHideFields(dispatch, false);
-  
+
   // Clear owner details
   dispatch(
     handleField(
@@ -169,7 +187,7 @@ export const clearSearchResults = (state, dispatch) => {
       []
     )
   );
-  
+
   // Clear connection holder details
   dispatch(
     handleField(
