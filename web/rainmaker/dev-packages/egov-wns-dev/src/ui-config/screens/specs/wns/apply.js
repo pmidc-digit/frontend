@@ -528,6 +528,7 @@ const showHideFiedsPendingForConnectionActivation = (
 };
 
 export const getData = async (action, state, dispatch) => {
+  //debugger
   let applicationNo = getQueryArg(window.location.href, "applicationNumber");
   const connectionNo = getQueryArg(window.location.href, "connectionNumber");
   const tenantId = getQueryArg(window.location.href, "tenantId");
@@ -580,6 +581,9 @@ export const getData = async (action, state, dispatch) => {
         payloadWater.WaterConnection[0].water = true;
         payloadWater.WaterConnection[0].sewerage = false;
         payloadWater.WaterConnection[0].service = "Water";
+          if (isModifyMode()) {
+          payloadWater.WaterConnection[0].applicationType = "MODIFY_WATER_CONNECTION";
+        }
         dispatch(
           prepareFinalObject("WaterConnection", payloadWater.WaterConnection)
         );
@@ -668,9 +672,11 @@ export const getData = async (action, state, dispatch) => {
           delete combinedArray[0].id;
         combinedArray[0].documents = [];
       }
-      if (isModifyMode() && isModifyModeAction()) {
+      if (isModifyMode() && !isModifyModeAction()) {
         // ModifyEdit should not call create.
-        dispatch(prepareFinalObject("modifyAppCreated", true));
+          if (!window.location.href.includes("mode=MODIFY&action=edit")){
+            dispatch(prepareFinalObject("modifyAppCreated", true));
+          }
       }
 
       dispatch(
