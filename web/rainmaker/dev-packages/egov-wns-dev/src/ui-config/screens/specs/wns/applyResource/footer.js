@@ -497,18 +497,23 @@ const callBackForNext = async (state, dispatch) => {
       let usageTypes = [];
       if (propertyUsageType) {
         subUsageType && subUsageType.map(items => {
-          if (items["parentUsageType"] === (propertyUsageType.split(".")[1] || propertyUsageType)) {
+          
+          // Compare with full property usage type, not split
+          if (items["parentUsageType"] === propertyUsageType) {
             let obj = {};
-            obj.code = items.name,
-              obj.name = items.code,
-              obj.parentUsageType = items.parentUsageType,
-              obj.active = items.active
+            obj.code = items.code;  
+            obj.name = items.name;  
+            obj.parentUsageType = items.parentUsageType;
+            obj.active = items.active;
             usageTypes.push(obj);
-            if (waterSubUsageType === items.code) {
+            
+            if (waterSubUsageType === items.name) {
               dispatch(prepareFinalObject("applyScreen.additionalDetails.waterSubUsageType", items.name));
             }
           }
         })
+      } else {
+        console.log("Property Usage Type is empty/undefined");
       }
       dispatch(prepareFinalObject("applyScreenMdmsData.ws-services-masters.subUsageType", usageTypes));
     }
