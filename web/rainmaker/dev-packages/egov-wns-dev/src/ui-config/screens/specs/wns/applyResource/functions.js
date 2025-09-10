@@ -4,7 +4,7 @@ import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getPropertyResults, isActiveProperty, showHideFieldsFirstStep } from "../../../../../ui-utils/commons";
 import { getUserInfo, getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
-
+import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 export const propertySearchApiCall = async (state, dispatch) => {
   showHideFields(dispatch, false);
   let tenantId = getTenantIdCommon();
@@ -98,7 +98,9 @@ export const propertySearchApiCall = async (state, dispatch) => {
           // Check if property type is commercial and show EODB dialog
           const propertyType = get(propertyData, "usageCategory", null);
           if (propertyType === "NONRESIDENTIAL.INSTITUTIONAL" || propertyType === "NONRESIDENTIAL.INDUSTRIAL") {
-            if (isModifyMode()) {
+            let isModifyModee = getQueryArg(window.location.href, "mode") === "MODIFY"
+
+            if (isModifyModee) {
               dispatch(
                 prepareFinalObject("eodbDialog", {
                   open: false
@@ -114,6 +116,7 @@ export const propertySearchApiCall = async (state, dispatch) => {
                   false
                 )
               );
+
             }
             else {
               dispatch(
