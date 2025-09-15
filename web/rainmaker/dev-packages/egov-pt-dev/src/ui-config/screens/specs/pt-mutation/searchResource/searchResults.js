@@ -323,7 +323,7 @@ const navigate=(url)=>{
 }
 
 const propertyInformationScreenLink=(propertyId,tenantId)=>{
-  debugger
+  // debugger
   if(process.env.REACT_APP_NAME == "Citizen"){
     return `/property-tax/my-properties/property/${propertyId}/${tenantId}`;
   }else{

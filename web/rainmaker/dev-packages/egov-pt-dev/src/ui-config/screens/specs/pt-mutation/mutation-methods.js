@@ -1,4 +1,3 @@
-
 import {
   getTextField,
   getSelectField,
@@ -18,11 +17,12 @@ import { propertySearch, applicationSearch, dumm } from "./functions";
 
 
 export const resetFields = (state, dispatch) => {
+  // Reset ULB City field
   if (process.env.REACT_APP_NAME == "Citizen") {
     dispatch(
       handleField(
         "propertySearch",
-        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ulbCity",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.mandatorySection.children.ulbCity",
         "props.value",
         ""
       )
@@ -35,7 +35,7 @@ export const resetFields = (state, dispatch) => {
     dispatch(
       handleField(
         "propertySearch",
-        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ulbCity",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.mandatorySection.children.ulbCity",
         "props.isDisabled",
         false
       )
@@ -43,16 +43,16 @@ export const resetFields = (state, dispatch) => {
     dispatch(
       handleField(
         "propertySearch",
-        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ulbCity",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.mandatorySection.children.ulbCity",
         "isDisabled",
         false
       )
     );
-  }else{
+  } else {
     dispatch(
       handleField(
         "propertySearch",
-        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ulbCity",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.mandatorySection.children.ulbCity",
         "props.isDisabled",
         true
       )
@@ -60,17 +60,18 @@ export const resetFields = (state, dispatch) => {
     dispatch(
       handleField(
         "propertySearch",
-        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ulbCity",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.mandatorySection.children.ulbCity",
         "isDisabled",
         true
       )
     );
   }
 
+  // Reset Combination 1 fields (Property Tax Unique ID + Survey ID + Mobile Number)
   dispatch(
     handleField(
       "propertySearch",
-      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ownerMobNo",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
       "props.value",
       ""
     )
@@ -78,7 +79,26 @@ export const resetFields = (state, dispatch) => {
   dispatch(
     handleField(
       "propertySearch",
-      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.propertyTaxUniqueId",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
+      "props.value",
+      ""
+    )
+  );
+
+  dispatch(
+    handleField(
+      "propertySearch",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
+      "props.value",
+      ""
+    )
+  );
+
+  // Reset Combination 2 fields (Existing Property ID + Owner Name + Locality)
+  dispatch(
+    handleField(
+      "propertySearch",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
       "props.value",
       ""
     )
@@ -86,11 +106,21 @@ export const resetFields = (state, dispatch) => {
   dispatch(
     handleField(
       "propertySearch",
-      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.existingPropertyId",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
       "props.value",
       ""
     )
   );
+  dispatch(
+    handleField(
+      "propertySearch",
+      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
+      "props.value",
+      []
+    )
+  );
+
+  // Reset Application Search tab fields
   dispatch(
     handleField(
       "propertySearch",
@@ -110,55 +140,20 @@ export const resetFields = (state, dispatch) => {
   dispatch(
     handleField(
       "propertySearch",
-      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.ownerName",
-      "props.value",
-      ""
-    )
-  );
-  dispatch(
-    handleField(
-      "propertySearch",
-      "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.ulbCityContainer.children.surveyId",
-      "props.value",
-      ""
-    )
-  );
-  dispatch(
-    handleField(
-      "propertySearch",
       "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[1].tabContent.searchApplicationDetails.children.cardContent.children.appNumberContainer.children.applicationPropertyTaxUniqueId",
       "props.value",
       ""
     )
   );
-  dispatch(prepareFinalObject(
-    "ptSearchScreen.acknowledgementIds",
-    ''
-  ))
-  dispatch(prepareFinalObject(
-    "ptSearchScreen.ids",
-    ''
-  ))
-  dispatch(prepareFinalObject(
-    "ptSearchScreen.mobileNumber",
-    ''
-  ))
-  dispatch(prepareFinalObject(
-    "ptSearchScreen.oldpropertyids",
-    ''
-  ))
-  dispatch(prepareFinalObject(
-    "ptSearchScreen.locality",
-    ''
-  ))
-  dispatch(prepareFinalObject(
-    "ptSearchScreen.name",
-    ''
-  ))
-  dispatch(prepareFinalObject(
-    "ptSearchScreen.surveyId",
-    ''
-  ))
+
+  // Reset all state objects
+  dispatch(prepareFinalObject("ptSearchScreen.acknowledgementIds", ''))
+  dispatch(prepareFinalObject("ptSearchScreen.ids", ''))
+  dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ''))
+  dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ''))
+  dispatch(prepareFinalObject("ptSearchScreen.locality", []))
+  dispatch(prepareFinalObject("ptSearchScreen.name", ''))
+  dispatch(prepareFinalObject("ptSearchScreen.surveyId", ''))
 
 };
 
@@ -169,149 +164,125 @@ export const searchPropertyDetails = getCommonCard({
   }),
 
   subParagraph: getCommonParagraph({
-    labelName: "Provide at least one non-mandatory parameter to search for an application (In case of Search by locality and name . please select city name again)",
-   //labelKey: "PT_HOME_SEARCH_RESULTS_DESC"
-    labelKey: "Provide at least one non-mandatory parameter to search for an application (In case of search by locality and name . please select city name again)",
-    
+    labelName: "Select ULB City (mandatory), then choose ONE combination: 1) Property ID or Survey ID or Mobile Number, 2) Existing Property ID, Locality, or Owner Name + Locality",
+    labelKey: "PT_SEARCH_COMBINATION_DESC",
   }
   ),
 
-  ulbCityContainer: getCommonContainer({
+  // Mandatory ULB City Field
+  mandatorySection: getCommonContainer({
     ulbCity: {
       ...getSelectField({
-      uiFramework: "custom-containers-local",
-      moduleName: "egov-pt",
-      componentPath: "AutosuggestContainer",
-      props: {
-        className: "autocomplete-dropdown",
-        suggestions: [],
-        label: {
-          labelName: "ULB",
-          labelKey: "PT_ULB_CITY"
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-pt",
+        componentPath: "AutosuggestContainer",
+        props: {
+          className: "autocomplete-dropdown",
+          suggestions: [],
+          label: {
+            labelName: "ULB (Mandatory)",
+            labelKey: "PT_ULB_CITY_MANDATORY"
+          },
+          placeholder: {
+            labelName: "Select ULB",
+            labelKey: "PT_ULB_CITY_PLACEHOLDER"
+          },
+          localePrefix: {
+            moduleName: "TENANT",
+            masterName: "TENANTS"
+          },
+          jsonPath: "ptSearchScreen.tenantId",
+          sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
+          labelsFromLocalisation: true,
+          required: true,
+          isClearable: true,
+          disabled: process.env.REACT_APP_NAME === "Citizen" ? false : true,
+          inputLabelProps: {
+            shrink: true
+          }
         },
-        placeholder: {
-          labelName: "Select ULB",
-          labelKey: "PT_ULB_CITY_PLACEHOLDER"
-        },
-        localePrefix: {
-          moduleName: "TENANT",
-          masterName: "TENANTS"
-        },
+        required: true,
         jsonPath: "ptSearchScreen.tenantId",
         sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
-        labelsFromLocalisation: true,
-        required: true,
-        isClearable: true,
-        disabled: process.env.REACT_APP_NAME === "Citizen" ? false : true,
-        inputLabelProps: {
-          shrink: true
-        }
-      },
-      required: true,
-      jsonPath: "ptSearchScreen.tenantId",
-      sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
-    }),
-    beforeFieldChange: async (action, state, dispatch) => {
-      //Below only runs for citizen - not required here in employee
+      }),
+      beforeFieldChange: async (action, state, dispatch) => {
+        //Below only runs for citizen - not required here in employee
 
-      try {
-        let payload = await httpRequest(
-          "post",
-          "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
-          "_search",
-          [{ key: "tenantId", value: action.value }],
-          {}
-        );
-        console.log("payload", payload)
-        const mohallaData =
-          payload &&
-          payload.TenantBoundary[0] &&
-          payload.TenantBoundary[0].boundary &&
-          payload.TenantBoundary[0].boundary.reduce((result, item) => {
-            result.push({
-              ...item,
-              name: `${action.value
-                .toUpperCase()
-                .replace(
-                  /[.]/g,
-                  "_"
-                )}_REVENUE_${item.code
+        try {
+          let payload = await httpRequest(
+            "post",
+            "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+            "_search",
+            [{ key: "tenantId", value: action.value }],
+            {}
+          );
+          console.log("payload", payload)
+          const mohallaData =
+            payload &&
+            payload.TenantBoundary[0] &&
+            payload.TenantBoundary[0].boundary &&
+            payload.TenantBoundary[0].boundary.reduce((result, item) => {
+              result.push({
+                ...item,
+                name: `${action.value
                   .toUpperCase()
-                  .replace(/[._:-\s\/]/g, "_")}`
-            });
-            return result;
-          }, []);
+                  .replace(
+                    /[.]/g,
+                    "_"
+                  )}_REVENUE_${item.code
+                    .toUpperCase()
+                    .replace(/[._:-\s\/]/g, "_")}`
+              });
+              return result;
+            }, []);
 
-        console.log(mohallaData, "mohallaData")
+          console.log(mohallaData, "mohallaData")
 
+          dispatch(
+            prepareFinalObject(
+              "applyScreenMdmsData.tenant.localities",
+              mohallaData
+            )
+          );
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children.propertyMohalla",
+              "props.suggestions",
+              mohallaData
+            )
+          );
+          const mohallaLocalePrefix = {
+            moduleName: action.value,
+            masterName: "REVENUE"
+          };
+          dispatch(
+            handleField(
+              "apply",
+              "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children.propertyMohalla",
+              "props.localePrefix",
+              mohallaLocalePrefix
+            )
+          );
 
+          dispatch(
+            fetchLocalizationLabel(getLocale(), action.value, action.value)
+          );
 
-        dispatch(
-          prepareFinalObject(
-            "applyScreenMdmsData.tenant.localities",
-            mohallaData
-          )
-        );
-        dispatch(
-          handleField(
-            "apply",
-            "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children.propertyMohalla",
-            "props.suggestions",
-            mohallaData
-          )
-        );
-        const mohallaLocalePrefix = {
-          moduleName: action.value,
-          masterName: "REVENUE"
-        };
-        dispatch(
-          handleField(
-            "apply",
-            "components.div.children.formwizardSecondStep.children.propertyLocationDetails.children.cardContent.children.propertyDetailsConatiner.children.propertyMohalla",
-            "props.localePrefix",
-            mohallaLocalePrefix
-          )
-        );
+        } catch (e) {
+          console.log(e);
+        }
 
-         dispatch(
-           fetchLocalizationLabel(getLocale(), action.value, action.value)
-         );
-
-      } catch (e) {
-        console.log(e);
-      }
-
-    },
-      gridDefination: {
-        xs: 12,
-        sm: 4
-      }
-    },
-    ownerMobNo: getTextField({
-      label: {
-        labelName: "Owner Mobile No.",
-        labelKey: "PT_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"
-      },
-      placeholder: {
-        labelName: "Enter your mobile No.",
-        labelKey: "PT_HOME_SEARCH_RESULTS_OWN_MOB_PLACEHOLDER"
       },
       gridDefination: {
         xs: 12,
-        sm: 4,
+        sm: 12
+      }
+    }
+  }),
 
-
-      },
-      iconObj: {
-        label: "+91 |",
-        position: "start"
-      },
-      required: false,
-      pattern: getPattern("MobileNo"),
-      jsonPath: "ptSearchScreen.mobileNumber",
-      // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
-      errorMessage: "ERR_INVALID_MOBILE_NUMBER"
-    }),
+  // Combination 1 Fields
+  combination1Container: getCommonContainer({
     propertyTaxUniqueId: getTextField({
       label: {
         labelName: "Property Tax Unique Id",
@@ -324,13 +295,187 @@ export const searchPropertyDetails = getCommonCard({
       gridDefination: {
         xs: 12,
         sm: 4,
-
       },
       required: false,
       pattern: /^[a-zA-Z0-9-]*$/i,
       errorMessage: "ERR_INVALID_PROPERTY_ID",
-      jsonPath: "ptSearchScreen.ids"
+      jsonPath: "ptSearchScreen.ids",
+      beforeFieldChange: async (action, state, dispatch) => {
+        // Only reset when user starts typing (not on clear/empty)
+        const value = typeof action.value === 'string' ? action.value.trim() : action.value;
+        if (!value || value === "") return;
+        
+        // Clear combination 2 data from state
+        dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.name", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.locality", []));
+        
+        // Reset UI fields
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
+            "props.value",
+            []
+          )
+        );
+      },
     }),
+
+    surveyId: getTextField({
+      label: {
+        labelName: "Survey Id",
+        labelKey: "Survey Id"
+      },
+      placeholder: {
+        labelName: "Enter Survey Id",
+        labelKey: "Survey Id"
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 4,
+      },
+      required: false,
+      errorMessage: "ERR_INVALID_SURVEY_ID",
+      jsonPath: "ptSearchScreen.surveyId",
+      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+      beforeFieldChange: async (action, state, dispatch) => {
+        // Only reset when user starts typing (not on clear/empty)
+        const value = typeof action.value === 'string' ? action.value.trim() : action.value;
+        if (!value || value === "") return;
+        
+        // Clear combination 2 data from state
+        dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.name", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.locality", []));
+        
+        // Reset UI fields
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
+            "props.value",
+            []
+          )
+        );
+      },
+    }),
+
+    ownerMobNo: getTextField({
+      label: {
+        labelName: "Owner Mobile No.",
+        labelKey: "PT_HOME_SEARCH_RESULTS_OWN_MOB_LABEL"
+      },
+      placeholder: {
+        labelName: "Enter your mobile No.",
+        labelKey: "PT_HOME_SEARCH_RESULTS_OWN_MOB_PLACEHOLDER"
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 4,
+      },
+      iconObj: {
+        label: "+91 |",
+        position: "start"
+      },
+      required: false,
+      pattern: getPattern("MobileNo"),
+      jsonPath: "ptSearchScreen.mobileNumber",
+      errorMessage: "ERR_INVALID_MOBILE_NUMBER",
+      beforeFieldChange: async (action, state, dispatch) => {
+        // Only reset when user starts typing (not on clear/empty)
+        const value = typeof action.value === 'string' ? action.value.trim() : action.value;
+        if (!value || value === "") return;
+        
+        // Clear combination 2 data from state
+        dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.name", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.locality", []));
+        
+        // Reset UI fields
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
+            "props.value",
+            []
+          )
+        );
+      },
+    })
+  }),
+
+  // OR separator
+  orText: {
+    uiFramework: "custom-atoms",
+    componentPath: "Label",
+    props: {
+      label: "OR",
+      style: {
+        textAlign: "center",
+        fontSize: "16px",
+        fontWeight: "bold",
+        margin: "16px 0",
+        color: "#666",
+        display: "block"
+      }
+    },
+    gridDefination: {
+      xs: 12,
+      sm: 12
+    }
+  },
+
+  // Combination 2 Fields
+  combination2Container: getCommonContainer({
     existingPropertyId: getTextField({
       label: {
         labelName: "Existing Property ID",
@@ -343,108 +488,176 @@ export const searchPropertyDetails = getCommonCard({
       gridDefination: {
         xs: 12,
         sm: 4,
-
       },
       required: false,
-      pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
+      pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;""'']{1,64}$/i,
       errorMessage: "ERR_INVALID_PROPERTY_ID",
-      jsonPath: "ptSearchScreen.oldpropertyids"
-    }),
-    
-  //-------------locality--------------
-  propertyMohalla: {
-    uiFramework: "custom-containers",
-    componentPath: "AutosuggestContainer",
-    jsonPath:"ptSearchScreen.locality",
-    required: true,
-    props: {
-      style: {
-        width: "100%",
-        cursor: "pointer"
+      jsonPath: "ptSearchScreen.oldpropertyids",
+      beforeFieldChange: async (action, state, dispatch) => {
+        // Only reset when user starts typing (not on clear/empty)
+        const value = typeof action.value === 'string' ? action.value.trim() : action.value;
+        if (!value || value === "") return;
+        
+        // Clear combination 1 data from state
+        dispatch(prepareFinalObject("ptSearchScreen.ids", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.surveyId", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ""));
+        
+        // Reset UI fields
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
+            "props.value",
+            ""
+          )
+        );
+
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
+            "props.value",
+            ""
+          )
+        );
       },
+    }),
+
+    ownerName: getTextField({
       label: {
-        labelName: "Locality/Mohalla",
-       // labelKey: "NOC_PROPERTY_DETAILS_MOHALLA_LABEL"
+        labelName: "Owner Name",
+        labelKey: "Owner Name"
       },
       placeholder: {
-        labelName: "Select Locality/Mohalla",
-        //labelKey: "NOC_PROPERTY_DETAILS_MOHALLA_PLACEHOLDER"
+        labelName: "Enter Owner Name",
+        labelKey: "Owner Name"
       },
-      jsonPath:"ptSearchScreen.locality",
-      sourceJsonPath: "applyScreenMdmsData.tenant.localities",
-      labelsFromLocalisation: true,
-      errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-      suggestions: [],
-      fullwidth: true,
+      gridDefination: {
+        xs: 12,
+        sm: 4,
+      },
       required: false,
-      // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
-     // type:hidden,
-      inputLabelProps: {
-        shrink: true
+      errorMessage: "ERR_INVALID_PROPERTY_ID",
+      jsonPath: "ptSearchScreen.name",
+      beforeFieldChange: async (action, state, dispatch) => {
+        // Only reset when user starts typing (not on clear/empty)
+        const value = typeof action.value === 'string' ? action.value.trim() : action.value;
+        if (!value || value === "") return;
+        
+        // Clear combination 1 data from state
+        dispatch(prepareFinalObject("ptSearchScreen.ids", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.surveyId", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ""));
+        
+        // Reset UI fields
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
+            "props.value",
+            ""
+          )
+        );
+
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
+            "props.value",
+            ""
+          )
+        );
+      },
+    }),
+
+    propertyMohalla: {
+      uiFramework: "custom-containers",
+      componentPath: "AutosuggestContainer",
+      jsonPath: "ptSearchScreen.locality",
+      required: false,
+      props: {
+        style: {
+          width: "100%",
+          cursor: "pointer"
+        },
+        label: {
+          labelName: "Locality/Mohalla",
+        },
+        placeholder: {
+          labelName: "Select Locality/Mohalla",
+        },
+        jsonPath: "ptSearchScreen.locality",
+        sourceJsonPath: "applyScreenMdmsData.tenant.localities",
+        labelsFromLocalisation: true,
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        suggestions: [],
+        fullwidth: true,
+        required: false,
+        inputLabelProps: {
+          shrink: true
+        }
+      },
+      beforeFieldChange: async (action, state, dispatch) => {
+        // Only reset when user starts typing (not on clear/empty)
+        const value = typeof action.value === 'string' ? action.value.trim() : action.value;
+        if (!value || value === "") return;
+        
+        // Clear combination 1 data from state
+        dispatch(prepareFinalObject("ptSearchScreen.ids", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.surveyId", ""));
+        dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ""));
+        
+        // Reset UI fields
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
+            "props.value",
+            ""
+          )
+        );
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
+            "props.value",
+            ""
+          )
+        );
+
+        dispatch(
+          handleField(
+            "propertySearch",
+            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
+            "props.value",
+            ""
+          )
+        );
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 4
       }
-      // className: "tradelicense-mohalla-apply"
-    },
-    beforeFieldChange: async (action, state, dispatch) => {
-      // dispatch(
-      //   prepareFinalObject(
-      //     "Licenses[0].tradeLicenseDetail.address.locality.name",
-      //     action.value && action.value.label
-      //   )
-      // );
-    },
-    gridDefination: {
-      xs: 12,
-      sm: 4
     }
-  },
-  //---------------locality-end--------------
-  //-------------------Owner Name----------------------
-  ownerName: getTextField({
-    label: {
-      labelName: "Owner Name",
-      labelKey: "Owner Name"
-    },
-    placeholder: {
-      labelName: "Enter Owner Name",
-      labelKey: "Owner Name"
-    },
-    gridDefination: {
-      xs: 12,
-      sm: 4,
-
-    },
-    required: false,
-   // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
-    errorMessage: "ERR_INVALID_PROPERTY_ID",
-    jsonPath: "ptSearchScreen.name",
-    // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
   }),
 
-  surveyId: getTextField({
-    label: {
-      labelName: "Survey Id",
-      labelKey: "Survey Id"
-    },
-    placeholder: {
-      labelName: "Enter Survey Id",
-      labelKey: "Survey Id"
-    },
-    gridDefination: {
-      xs: 12,
-      sm: 4,
-
-    },
-    required: false,
-   // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
-    errorMessage: "ERR_INVALID_SURVEY_ID",
-    jsonPath: "ptSearchScreen.surveyId",
-    disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
-  }),
-
-  
-  //-------------------End SurveyId --------------------------------
-  }),
- 
   button: getCommonContainer({
     buttonContainer: getCommonContainer({
       resetButton: {
@@ -560,7 +773,7 @@ export const searchApplicationDetails = getCommonCard({
         position: "start"
       },
       required: false,
-    //  disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+      //  disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       pattern: getPattern("MobileNo"),
       jsonPath: "ptSearchScreen.mobileNumber",
       errorMessage: "ERR_INVALID_MOBILE_NUMBER"
@@ -580,7 +793,7 @@ export const searchApplicationDetails = getCommonCard({
 
       },
       required: false,
-     // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
+      // disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       pattern: /^[a-zA-Z0-9-]*$/i,
       errorMessage: "ERR_INVALID_PROPERTY_ID",
       jsonPath: "ptSearchScreen.ids"
