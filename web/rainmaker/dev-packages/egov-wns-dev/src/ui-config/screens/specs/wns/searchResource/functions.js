@@ -107,6 +107,21 @@ const renderSearchConnectionTable = async (state, dispatch) => {
         "warning"
       )
     );
+  } else if (
+    searchScreenObject["name"] && 
+    searchScreenObject["name"].trim() !== "" && 
+    (!searchScreenObject["locality"] || searchScreenObject["locality"].trim() === "")
+  ) {
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Please select a locality when searching by owner name.",
+          labelKey: "ERR_WS_OWNER_NAME_LOCALITY_REQUIRED",
+        },
+        "error"
+      )
+    );
   } else {
     for (var key in searchScreenObject) {
       if (
