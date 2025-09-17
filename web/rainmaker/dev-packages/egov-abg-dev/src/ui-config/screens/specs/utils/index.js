@@ -136,6 +136,7 @@ export const downloadMultipleBill = async (
 
     addDetail = {
       penaltyRate: rate,
+      latePaymentc: bills[0].tenantId == "pb.patiala" ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage'
     };
     bills = bills.filter((item) => item.totalAmount > 0);
     bills.map((item) => {
