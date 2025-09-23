@@ -1,19 +1,15 @@
 @media only screen and (min-width: 768px) {
   .notifications-screen-style {
-    padding: 12px 8px 60px 8px !important;
-  }
-}
+    padding: 12px 8px 60px 8px !important; } }
 
 .rainmaker-displayInline.pmidclogo {
   justify-content: right;
   width: 61px;
   position: absolute;
   left: 340px;
-  top: 10px;
-}
+  top: 10px; }
 
 /*POPUP STYLES*/
-
 .mypop {
   text-align: center;
   width: 600px;
@@ -26,8 +22,7 @@
   background: white;
   border-radius: 8px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-}
+  overflow: hidden; }
 
 .mypop h1 {
   margin: 0;
@@ -35,16 +30,14 @@
   background: #f7f7f7;
   border-bottom: 1px solid #eaeaea;
   font-size: 22px;
-  color: #333;
-}
+  color: #333; }
 
 .mypop img {
   max-width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
-  padding: 15px;
-}
+  padding: 15px; }
 
 .popup-overlay {
   position: fixed;
@@ -53,8 +46,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 999;
-}
+  z-index: 999; }
 
 .popup-close {
   position: absolute;
@@ -70,5 +62,4 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
