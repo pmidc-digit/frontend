@@ -16,6 +16,96 @@ import { propertySearch, applicationSearch, dumm } from "./functions";
 // import "./index.css";
 
 
+// Helper function to clear Combination 1 fields (only if they have values)
+const clearCombination1Fields = (state, dispatch) => {
+  const stateData = state.screenConfiguration.preparedFinalObject;
+  const ptSearchScreen = stateData && stateData.ptSearchScreen;
+
+  // Check if any combination 1 fields have values
+  const hasCombo1Data = (ptSearchScreen && ptSearchScreen.ids) ||
+                        (ptSearchScreen && ptSearchScreen.surveyId) ||
+                        (ptSearchScreen && ptSearchScreen.mobileNumber);
+
+  // Only clear if there's data to clear
+  if (hasCombo1Data) {
+    // Clear combination 1 data from state
+    dispatch(prepareFinalObject("ptSearchScreen.ids", ""));
+    dispatch(prepareFinalObject("ptSearchScreen.surveyId", ""));
+    dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ""));
+
+    // Reset UI fields
+    dispatch(
+      handleField(
+        "propertySearch",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
+        "props.value",
+        ""
+      )
+    );
+    dispatch(
+      handleField(
+        "propertySearch",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
+        "props.value",
+        ""
+      )
+    );
+    dispatch(
+      handleField(
+        "propertySearch",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
+        "props.value",
+        ""
+      )
+    );
+  }
+};
+
+// Helper function to clear Combination 2 fields (only if they have values)
+const clearCombination2Fields = (state, dispatch) => {
+  const stateData = state.screenConfiguration.preparedFinalObject;
+  const ptSearchScreen = stateData && stateData.ptSearchScreen;
+
+  // Check if any combination 2 fields have values
+  const hasCombo2Data = (ptSearchScreen && ptSearchScreen.oldpropertyids) ||
+                        (ptSearchScreen && ptSearchScreen.name) ||
+                        (ptSearchScreen && ptSearchScreen.locality && ptSearchScreen.locality.length > 0);
+
+  // Only clear if there's data to clear
+  if (hasCombo2Data) {
+    // Clear combination 2 data from state
+    dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ""));
+    dispatch(prepareFinalObject("ptSearchScreen.name", ""));
+    dispatch(prepareFinalObject("ptSearchScreen.locality", []));
+
+    // Reset UI fields
+    dispatch(
+      handleField(
+        "propertySearch",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
+        "props.value",
+        ""
+      )
+    );
+    dispatch(
+      handleField(
+        "propertySearch",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
+        "props.value",
+        ""
+      )
+    );
+    dispatch(
+      handleField(
+        "propertySearch",
+        "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
+        "props.value",
+        []
+      )
+    );
+  }
+};
+
 export const resetFields = (state, dispatch) => {
   // Reset ULB City field
   if (process.env.REACT_APP_NAME == "Citizen") {
@@ -301,40 +391,12 @@ export const searchPropertyDetails = getCommonCard({
       errorMessage: "ERR_INVALID_PROPERTY_ID",
       jsonPath: "ptSearchScreen.ids",
       beforeFieldChange: async (action, state, dispatch) => {
-        // Only reset when user starts typing (not on clear/empty)
+        // Only clear combination 2 when user starts typing (not on clear/empty)
         const value = typeof action.value === 'string' ? action.value.trim() : action.value;
         if (!value || value === "") return;
-        
-        // Clear combination 2 data from state
-        dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.name", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.locality", []));
-        
-        // Reset UI fields
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
-            "props.value",
-            []
-          )
-        );
+
+        // Clear combination 2 fields (only if they have values)
+        clearCombination2Fields(state, dispatch);
       },
     }),
 
@@ -356,40 +418,12 @@ export const searchPropertyDetails = getCommonCard({
       jsonPath: "ptSearchScreen.surveyId",
       disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
       beforeFieldChange: async (action, state, dispatch) => {
-        // Only reset when user starts typing (not on clear/empty)
+        // Only clear combination 2 when user starts typing (not on clear/empty)
         const value = typeof action.value === 'string' ? action.value.trim() : action.value;
         if (!value || value === "") return;
-        
-        // Clear combination 2 data from state
-        dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.name", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.locality", []));
-        
-        // Reset UI fields
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
-            "props.value",
-            []
-          )
-        );
+
+        // Clear combination 2 fields (only if they have values)
+        clearCombination2Fields(state, dispatch);
       },
     }),
 
@@ -415,40 +449,12 @@ export const searchPropertyDetails = getCommonCard({
       jsonPath: "ptSearchScreen.mobileNumber",
       errorMessage: "ERR_INVALID_MOBILE_NUMBER",
       beforeFieldChange: async (action, state, dispatch) => {
-        // Only reset when user starts typing (not on clear/empty)
+        // Only clear combination 2 when user starts typing (not on clear/empty)
         const value = typeof action.value === 'string' ? action.value.trim() : action.value;
         if (!value || value === "") return;
-        
-        // Clear combination 2 data from state
-        dispatch(prepareFinalObject("ptSearchScreen.oldpropertyids", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.name", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.locality", []));
-        
-        // Reset UI fields
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.existingPropertyId",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.ownerName",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination2Container.children.propertyMohalla",
-            "props.value",
-            []
-          )
-        );
+
+        // Clear combination 2 fields (only if they have values)
+        clearCombination2Fields(state, dispatch);
       },
     })
   }),
@@ -494,41 +500,12 @@ export const searchPropertyDetails = getCommonCard({
       errorMessage: "ERR_INVALID_PROPERTY_ID",
       jsonPath: "ptSearchScreen.oldpropertyids",
       beforeFieldChange: async (action, state, dispatch) => {
-        // Only reset when user starts typing (not on clear/empty)
+        // Only clear combination 1 when user starts typing (not on clear/empty)
         const value = typeof action.value === 'string' ? action.value.trim() : action.value;
         if (!value || value === "") return;
-        
-        // Clear combination 1 data from state
-        dispatch(prepareFinalObject("ptSearchScreen.ids", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.surveyId", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ""));
-        
-        // Reset UI fields
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
-            "props.value",
-            ""
-          )
-        );
 
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
-            "props.value",
-            ""
-          )
-        );
+        // Clear combination 1 fields (only if they have values)
+        clearCombination1Fields(state, dispatch);
       },
     }),
 
@@ -549,41 +526,12 @@ export const searchPropertyDetails = getCommonCard({
       errorMessage: "ERR_INVALID_PROPERTY_ID",
       jsonPath: "ptSearchScreen.name",
       beforeFieldChange: async (action, state, dispatch) => {
-        // Only reset when user starts typing (not on clear/empty)
+        // Only clear combination 1 when user starts typing (not on clear/empty)
         const value = typeof action.value === 'string' ? action.value.trim() : action.value;
         if (!value || value === "") return;
-        
-        // Clear combination 1 data from state
-        dispatch(prepareFinalObject("ptSearchScreen.ids", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.surveyId", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ""));
-        
-        // Reset UI fields
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
-            "props.value",
-            ""
-          )
-        );
 
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
-            "props.value",
-            ""
-          )
-        );
+        // Clear combination 1 fields (only if they have values)
+        clearCombination1Fields(state, dispatch);
       },
     }),
 
@@ -615,41 +563,12 @@ export const searchPropertyDetails = getCommonCard({
         }
       },
       beforeFieldChange: async (action, state, dispatch) => {
-        // Only reset when user starts typing (not on clear/empty)
+        // Only clear combination 1 when user starts typing (not on clear/empty)
         const value = typeof action.value === 'string' ? action.value.trim() : action.value;
         if (!value || value === "") return;
-        
-        // Clear combination 1 data from state
-        dispatch(prepareFinalObject("ptSearchScreen.ids", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.surveyId", ""));
-        dispatch(prepareFinalObject("ptSearchScreen.mobileNumber", ""));
-        
-        // Reset UI fields
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.propertyTaxUniqueId",
-            "props.value",
-            ""
-          )
-        );
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.surveyId",
-            "props.value",
-            ""
-          )
-        );
 
-        dispatch(
-          handleField(
-            "propertySearch",
-            "components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails.children.cardContent.children.combination1Container.children.ownerMobNo",
-            "props.value",
-            ""
-          )
-        );
+        // Clear combination 1 fields (only if they have values)
+        clearCombination1Fields(state, dispatch);
       },
       gridDefination: {
         xs: 12,
