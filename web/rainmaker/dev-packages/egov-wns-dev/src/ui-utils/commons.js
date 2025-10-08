@@ -53,9 +53,10 @@ export const pushTheDocsUploadedToRedux = async (state, dispatch) => {
                 let applyScreenObj = findAndReplace(applyScreenObject, 0, null);
                 // applyScreenObj.additionalDetails.waterSubUsageType = applyScreenObj && applyScreenObj.additionalDetails && applyScreenObj.additionalDetails.waterSubUsageType ? applyScreenObj.additionalDetails.waterSubUsageType : null;
                 if (!(applyScreenObj && applyScreenObj.additionalDetails && applyScreenObj.additionalDetails.waterSubUsageType)) {
-                    applyScreenObj.additionalDetails = {
-                        waterSubUsageType: null
-                    }
+                    // applyScreenObj.additionalDetails = {
+                    //     waterSubUsageType: null
+                    // }
+                    applyScreenObj.additionalDetails.waterSubUsageType = null;
                 }
                 dispatch(prepareFinalObject("applyScreen", applyScreenObj));
                 if (getQueryArg(window.location.href, "action") === "edit") {

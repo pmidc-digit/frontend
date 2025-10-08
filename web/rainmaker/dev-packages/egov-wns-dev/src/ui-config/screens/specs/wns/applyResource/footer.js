@@ -804,6 +804,7 @@ else{
   }
   /* validations for Additional /Docuemnts details screen */
   if (activeStep === 2 && process.env.REACT_APP_NAME !== "Citizen") {
+    //debugger
     // Get application type flags from Redux state
     const isDischargeApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.discharge", false);
     const isWaterApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.water", false);
@@ -813,7 +814,8 @@ else{
     if (isDischargeApplication && !isWaterApplication && !isSewerageApplication) {
       // For discharge-only apps, check if discharge fee is entered
       let dischargeFee = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.dischargeFee", null);
-      validate = dischargeFee && dischargeFee > 0;
+       //validate = dischargeFee && dischargeFee > 0;
+      validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
     } else {
       // For water/sewerage applications, use standard validation
       validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);

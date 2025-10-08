@@ -175,7 +175,7 @@ class CheckboxLabels extends React.Component {
     const { approveCheck } = this.props;
     
     if (dischargeInfo.hasDischarge && approveCheck) {
-      approveCheck('applyScreen.additionalDetails', {});
+      //approveCheck('applyScreen.additionalDetails', {});
       approveCheck('applyScreen.additionalDetails.dischargeFee', dischargeInfo.fee);
       approveCheck('applyScreen.additionalDetails.dischargeConnection', dischargeInfo.type);
       
@@ -226,7 +226,7 @@ class CheckboxLabels extends React.Component {
       
       // Ensure additionalDetails object exists before setting discharge connection details
       // This prevents null reference errors when accessing nested properties
-      approveCheck('applyScreen.additionalDetails', {});
+      //approveCheck('applyScreen.additionalDetails', {});
       
       // Set discharge connection type based on current selection combination
       // This logic is used later in commons.js parserFunction for API payload construction
@@ -251,7 +251,7 @@ class CheckboxLabels extends React.Component {
     this.setState({ [name]: event.target.value, interChange: true }, () => {    
        // Ensure additionalDetails object exists before setting dischargeFee
        // This prevents null reference errors in nested object access
-       approveCheck('applyScreen.additionalDetails', {});
+      // approveCheck('applyScreen.additionalDetails', {});
        // Store the discharge fee amount in Redux state for later use in API payload
        approveCheck('applyScreen.additionalDetails.dischargeFee', this.state.dischargeFee);
     });
