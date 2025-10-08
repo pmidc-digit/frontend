@@ -769,14 +769,6 @@ const screenConfig = {
             beforeSubmitHook: (data) => {
               data = data[0];
               set(data, 'propertyId', get(data, 'property.propertyId', null));
-              // **CHECK IF THIS IS A DISCONNECTION APPLICATION BEING APPROVED**
-              const applicationType = data.applicationType;
-              const isDisconnection = applicationType === "DISCONNECT_WATER_CONNECTION" || applicationType === "DISCONNECT_SEWERAGE_CONNECTION";
-              const isApproval = data.action === "APPROVE_CONNECTION" || data.action === "APPROVE";
-              // **SET STATUS TO "Inactive" FOR DISCONNECTION APPROVAL**
-              if (isDisconnection && isApproval) {
-                data.status = "Inactive";
-              }
               data.assignees = [];
               if (data.assignee) {
                 data.assignee.forEach(assigne => {
