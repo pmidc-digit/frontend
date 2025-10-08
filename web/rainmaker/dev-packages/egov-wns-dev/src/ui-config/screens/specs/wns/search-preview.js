@@ -768,6 +768,9 @@ const screenConfig = {
             editredirect: editredirect,
             beforeSubmitHook: (data) => {
               data = data[0];
+              // ✅ ADD THIS 1 LINE - Remove empty URL params
+              if (data.dischargeConnection === "") delete data.dischargeConnection;
+              if (data.dischargeFee === "") delete data.dischargeFee;
               set(data, 'propertyId', get(data, 'property.propertyId', null));
               data.assignees = [];
               if (data.assignee) {
