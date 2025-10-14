@@ -859,6 +859,23 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       }
       payload.WaterConnection[0].additionalDetails.waterSubUsageType = payload.WaterConnection[0].additionalDetails.waterSubUsageType ? payload.WaterConnection[0].additionalDetails.waterSubUsageType : "NA";
       // payload.WaterConnection[0].additionalDetails.waterSubUsageType="dsbdds";
+      
+      // ✅ CRITICAL FIX: Clean discharge params BEFORE dispatching to Redux
+      // This prevents WorkflowContainer from seeing empty strings on initial load
+      // Fixes issue where wrong dialog (Assignee) appears before refresh
+      if (payload.WaterConnection[0].additionalDetails.dischargeConnection === "" || 
+          payload.WaterConnection[0].additionalDetails.dischargeConnection === null ||
+          payload.WaterConnection[0].additionalDetails.dischargeConnection === undefined) {
+        delete payload.WaterConnection[0].additionalDetails.dischargeConnection;
+      }
+      
+      if (payload.WaterConnection[0].additionalDetails.dischargeFee === "" || 
+          payload.WaterConnection[0].additionalDetails.dischargeFee === null ||
+          payload.WaterConnection[0].additionalDetails.dischargeFee === undefined ||
+          payload.WaterConnection[0].additionalDetails.dischargeFee === "0") {
+        delete payload.WaterConnection[0].additionalDetails.dischargeFee;
+      }
+      
       dispatch(prepareFinalObject("WaterConnection[0]", payload.WaterConnection[0]));
       dispatch(prepareFinalObject("WaterConnection[0].roadCuttingInfos", roadCuttingInfos));
       
