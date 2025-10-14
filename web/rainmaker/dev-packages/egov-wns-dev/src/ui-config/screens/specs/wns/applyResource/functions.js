@@ -98,43 +98,43 @@ export const propertySearchApiCall = async (state, dispatch) => {
 
           // Check if property type is commercial and show EODB dialog
           const propertyType = get(propertyData, "usageCategory", null);
-          if (propertyType === "NONRESIDENTIAL.INSTITUTIONAL" || propertyType === "NONRESIDENTIAL.INDUSTRIAL") {
-            let isModifyModee = getQueryArg(window.location.href, "mode") === "MODIFY";
-            if (isModifyModee) {
-              dispatch(
-                prepareFinalObject("eodbDialog", {
-                  open: false
-                })
-              );
+          // if (propertyType === "NONRESIDENTIAL.INSTITUTIONAL" || propertyType === "NONRESIDENTIAL.INDUSTRIAL") {
+          //   let isModifyModee = getQueryArg(window.location.href, "mode") === "MODIFY";
+          //   if (isModifyModee) {
+          //     dispatch(
+          //       prepareFinalObject("eodbDialog", {
+          //         open: false
+          //       })
+          //     );
 
-              // Show the dialog by updating screen configuration
-              dispatch(
-                handleField(
-                  "apply",
-                  "components.eodbDialog",
-                  "props.open",
-                  false
-                )
-              );
-            }
-            else {
-              dispatch(
-                prepareFinalObject("eodbDialog", {
-                  open: true
-                })
-              );
+          //     // Show the dialog by updating screen configuration
+          //     dispatch(
+          //       handleField(
+          //         "apply",
+          //         "components.eodbDialog",
+          //         "props.open",
+          //         false
+          //       )
+          //     );
+          //   }
+          //   else {
+          //     dispatch(
+          //       prepareFinalObject("eodbDialog", {
+          //         open: true
+          //       })
+          //     );
 
-              // Show the dialog by updating screen configuration
-              dispatch(
-                handleField(
-                  "apply",
-                  "components.eodbDialog",
-                  "props.open",
-                  true
-                )
-              );
-            }
-          }
+          //     // Show the dialog by updating screen configuration
+          //     dispatch(
+          //       handleField(
+          //         "apply",
+          //         "components.eodbDialog",
+          //         "props.open",
+          //         true
+          //       )
+          //     );
+          //   }
+          // }
         }
       } else {
         showHideFields(dispatch, false);
@@ -147,24 +147,24 @@ export const propertySearchApiCall = async (state, dispatch) => {
   }
 }
 
-export const handleEodbDialogClose = (state, dispatch) => {
-  // Set dialog state to close in Redux store
-  dispatch(
-    prepareFinalObject("eodbDialog", {
-      open: false
-    })
-  );
+// export const handleEodbDialogClose = (state, dispatch) => {
+//   // Set dialog state to close in Redux store
+//   dispatch(
+//     prepareFinalObject("eodbDialog", {
+//       open: false
+//     })
+//   );
 
-  // Hide the dialog by updating screen configuration
-  dispatch(
-    handleField(
-      "apply",
-      "components.eodbDialog",
-      "props.open",
-      false
-    )
-  );
-};
+//   // Hide the dialog by updating screen configuration
+//   dispatch(
+//     handleField(
+//       "apply",
+//       "components.eodbDialog",
+//       "props.open",
+//       false
+//     )
+//   );
+// };
 
 export const clearSearchResults = (state, dispatch) => {
   // Clear the search screen data
