@@ -182,7 +182,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
         dispatch(prepareFinalObject("WaterConnection[0]", waterDetails[0]));
       }
 
-      if (applyScreenObject.service = serviceConst.SEWERAGE)
+      if (applyScreenObject.service === serviceConst.SEWERAGE)
         dispatch(prepareFinalObject("SewerageConnection[0]", parsedObject));
       let estimate;
       if (processInstanceAppStatus === "CONNECTION_ACTIVATED") {
@@ -768,9 +768,6 @@ const screenConfig = {
             editredirect: editredirect,
             beforeSubmitHook: (data) => {
               data = data[0];
-              // ✅ ADD THIS 1 LINE - Remove empty URL params
-              if (data.dischargeConnection === "") delete data.dischargeConnection;
-              if (data.dischargeFee === "") delete data.dischargeFee;
               set(data, 'propertyId', get(data, 'property.propertyId', null));
               data.assignees = [];
               if (data.assignee) {
@@ -825,7 +822,6 @@ const screenConfig = {
 
 
 const searchResults = async (action, state, dispatch, applicationNumber, processInstanceAppStatus) => {
-  debugger
   let appid;
   let iPin;
   let thirdPartyCode;
@@ -859,22 +855,6 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       }
       payload.WaterConnection[0].additionalDetails.waterSubUsageType = payload.WaterConnection[0].additionalDetails.waterSubUsageType ? payload.WaterConnection[0].additionalDetails.waterSubUsageType : "NA";
       // payload.WaterConnection[0].additionalDetails.waterSubUsageType="dsbdds";
-      
-      // ✅ CRITICAL FIX: Clean discharge params BEFORE dispatching to Redux
-      // This prevents WorkflowContainer from seeing empty strings on initial load
-      // Fixes issue where wrong dialog (Assignee) appears before refresh
-      if (payload.WaterConnection[0].additionalDetails.dischargeConnection === "" || 
-          payload.WaterConnection[0].additionalDetails.dischargeConnection === null ||
-          payload.WaterConnection[0].additionalDetails.dischargeConnection === undefined) {
-        delete payload.WaterConnection[0].additionalDetails.dischargeConnection;
-      }
-      
-      if (payload.WaterConnection[0].additionalDetails.dischargeFee === "" || 
-          payload.WaterConnection[0].additionalDetails.dischargeFee === null ||
-          payload.WaterConnection[0].additionalDetails.dischargeFee === undefined ||
-          payload.WaterConnection[0].additionalDetails.dischargeFee === "0") {
-        delete payload.WaterConnection[0].additionalDetails.dischargeFee;
-      }
       
       dispatch(prepareFinalObject("WaterConnection[0]", payload.WaterConnection[0]));
       dispatch(prepareFinalObject("WaterConnection[0].roadCuttingInfos", roadCuttingInfos));

@@ -634,7 +634,7 @@ setBusinessServiceDataToLocalStorage = async (
 
 
 prepareWorkflowContract = (data, moduleName) => {
-   const {
+  const {
     getRedirectUrl,
     getHeaderName,
     checkIfTerminatedState,
@@ -673,16 +673,49 @@ prepareWorkflowContract = (data, moduleName) => {
   let actions = orderBy(filteredActions, ["action"], ["desc"]);
 
   actions = actions.map(item => {
-    return {
-      buttonLabel: item.action,
-      moduleName: data[data.length - 1].businessService,
-      isLast: item.action === "PAY" ? true : false,
-      buttonUrl: getRedirectUrl(item.action, businessId, businessService),
-      dialogHeader: getHeaderName(item.action),
-      showEmployeeList: (businessService === "NewWS1" || businessService === "ModifyWSConnection" || businessService === "ModifySWConnection" || businessService === "NewSW1") ? !checkIfTerminatedState(item.nextState, businessService) && item.action !== "SEND_BACK_TO_CITIZEN" && item.action !== "APPROVE_CONNECTION" && item.action !== "APPROVE_FOR_CONNECTION" && item.action !== "RESUBMIT_APPLICATION" : !checkIfTerminatedState(item.nextState, businessService) && item.action !== "SENDBACKTOCITIZEN",
-      roles: getEmployeeRoles(item.nextState, item.currentState, businessService),
-      isDocRequired: checkIfDocumentRequired(item.nextState, businessService)
-    };
+    const isWaterSewerageService = (
+      businessService === "NewWS1" || 
+      businessService === "ModifyWSConnection" || 
+      businessService === "ModifySWConnection" || 
+      businessService === "NewSW1" ||
+      businessService === "DisconnectWSConnection" ||
+      businessService === "DisconnectSWConnection"
+    );
+    
+    if (isWaterSewerageService) {
+      const showEmployeeListResult = 
+        !checkIfTerminatedState(item.nextState, businessService) &&
+        item.action !== "SEND_BACK_TO_CITIZEN" &&
+        item.action !== "APPROVE_CONNECTION" &&
+        item.action !== "APPROVE_FOR_CONNECTION" &&
+        item.action !== "RESUBMIT_APPLICATION";
+      
+      return {
+        buttonLabel: item.action,
+        moduleName: data[data.length - 1].businessService,
+        isLast: item.action === "PAY" ? true : false,
+        buttonUrl: getRedirectUrl(item.action, businessId, businessService),
+        dialogHeader: getHeaderName(item.action),
+        showEmployeeList: showEmployeeListResult,
+        roles: getEmployeeRoles(item.nextState, item.currentState, businessService),
+        isDocRequired: checkIfDocumentRequired(item.nextState, businessService)
+      };
+    } else {
+      const showEmployeeListResult = 
+        !checkIfTerminatedState(item.nextState, businessService) &&
+        item.action !== "SENDBACKTOCITIZEN";
+      
+      return {
+        buttonLabel: item.action,
+        moduleName: data[data.length - 1].businessService,
+        isLast: item.action === "PAY" ? true : false,
+        buttonUrl: getRedirectUrl(item.action, businessId, businessService),
+        dialogHeader: getHeaderName(item.action),
+        showEmployeeList: showEmployeeListResult,
+        roles: getEmployeeRoles(item.nextState, item.currentState, businessService),
+        isDocRequired: checkIfDocumentRequired(item.nextState, businessService)
+      };
+    }
   });
   actions = actions.filter(item => item.buttonLabel !== 'INITIATE');
   let editAction = getActionIfEditable(
