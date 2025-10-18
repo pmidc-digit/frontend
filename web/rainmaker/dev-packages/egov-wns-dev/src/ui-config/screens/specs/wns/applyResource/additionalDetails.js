@@ -495,13 +495,13 @@ export const additionDetails = getCommonCard({
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE" },
           placeholder: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE_PLACEHOLDER" },
-          required: true,
+          required: false, // Will be dynamically set to true for water applications in footer.js
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
           sourceJsonPath: "applyScreenMdmsData.ws-services-masters.subUsageType",
         },
-        required: true,
+        required: false, // Will be dynamically set to true for water applications in footer.js
         gridDefination: {
           xs: 12,
           sm: 12,
