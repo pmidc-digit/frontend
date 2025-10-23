@@ -66,7 +66,7 @@ export const EMPLOYEE = {
 
 export const EMPLOYEE_ASSIGN = {
   GET: {
-    URL: "/egov-hrms/employees/_search",
+    URL: "/egov-hrms/employees/_searchV2",
     ACTION: "_search",
   },
 };

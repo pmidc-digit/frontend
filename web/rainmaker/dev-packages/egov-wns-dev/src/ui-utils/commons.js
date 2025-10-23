@@ -53,9 +53,10 @@ export const pushTheDocsUploadedToRedux = async (state, dispatch) => {
                 let applyScreenObj = findAndReplace(applyScreenObject, 0, null);
                 // applyScreenObj.additionalDetails.waterSubUsageType = applyScreenObj && applyScreenObj.additionalDetails && applyScreenObj.additionalDetails.waterSubUsageType ? applyScreenObj.additionalDetails.waterSubUsageType : null;
                 if (!(applyScreenObj && applyScreenObj.additionalDetails && applyScreenObj.additionalDetails.waterSubUsageType)) {
-                    applyScreenObj.additionalDetails = {
-                        waterSubUsageType: null
-                    }
+                    // applyScreenObj.additionalDetails = {
+                    //     waterSubUsageType: null
+                    // }
+                    applyScreenObj.additionalDetails.waterSubUsageType = null;
                 }
                 dispatch(prepareFinalObject("applyScreen", applyScreenObj));
                 if (getQueryArg(window.location.href, "action") === "edit") {
@@ -168,7 +169,7 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
 
 
 export const getSearchResults = async (queryObject, filter = false) => {
-    //debugger;
+    //
     try {
         const response = await httpRequest(
             "post",
@@ -609,7 +610,7 @@ export const prepareDocumentsUploadData = (state, dispatch) => {
 };
 
 const parserFunction = (state) => {
-    debugger;
+    
     let queryObject = JSON.parse(JSON.stringify(get(state.screenConfiguration.preparedFinalObject, "applyScreen", {})));
     //console.log("Hello Test"+JSON.stringify(queryObject))
     let iPin = getIPin();
@@ -625,27 +626,27 @@ const parserFunction = (state) => {
 
     if (ckDischarge === true) {
         if (ckConnTypeWater === true && ckConnTypeSwerage === true) {
-            dischargeConnection = queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : waterDetails.additionalDetails.dischargeConnection;
-            dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : waterDetails.additionalDetails.dischargeFee;
+            dischargeConnection = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeConnection ? waterDetails.additionalDetails.dischargeConnection : null);
+            dischargeFee = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeFee ? waterDetails.additionalDetails.dischargeFee : null);
         } else if (ckConnTypeSwerage === true) {
-            dischargeConnection = queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : sewerageDetails.additionalDetails.dischargeConnection;
-            dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : sewerageDetails.additionalDetails.dischargeFee;
+            dischargeConnection = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : (sewerageDetails && sewerageDetails.additionalDetails && sewerageDetails.additionalDetails.dischargeConnection ? sewerageDetails.additionalDetails.dischargeConnection : null);
+            dischargeFee = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : (sewerageDetails && sewerageDetails.additionalDetails && sewerageDetails.additionalDetails.dischargeFee ? sewerageDetails.additionalDetails.dischargeFee : null);
         } else {
-            dischargeConnection = queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : waterDetails.additionalDetails.dischargeConnection;
-            dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : waterDetails.additionalDetails.dischargeFee;
+            dischargeConnection = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeConnection ? waterDetails.additionalDetails.dischargeConnection : null);
+            dischargeFee = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeFee ? waterDetails.additionalDetails.dischargeFee : null);
         }
     }
     let parsedObject = {
-        roadCuttingArea: parseInt(queryObject.roadCuttingArea),
+        roadCuttingArea: queryObject.roadCuttingArea ? parseInt(queryObject.roadCuttingArea) : null,
         meterInstallationDate: convertDateToEpoch(queryObject.meterInstallationDate),
         connectionExecutionDate: convertDateToEpoch(queryObject.connectionExecutionDate),
         dateEffectiveFrom: convertDateToEpoch(queryObject.dateEffectiveFrom),
-        proposedWaterClosets: parseInt(queryObject.proposedWaterClosets),
-        proposedToilets: parseInt(queryObject.proposedToilets),
-        noOfTaps: parseInt(queryObject.noOfTaps),
-        noOfWaterClosets: parseInt(queryObject.noOfWaterClosets),
-        noOfToilets: parseInt(queryObject.noOfToilets),
-        proposedTaps: parseInt(queryObject.proposedTaps),
+        proposedWaterClosets: queryObject.proposedWaterClosets ? parseInt(queryObject.proposedWaterClosets) : null,
+        proposedToilets: queryObject.proposedToilets ? parseInt(queryObject.proposedToilets) : null,
+        noOfTaps: queryObject.noOfTaps ? parseInt(queryObject.noOfTaps) : null,
+        noOfWaterClosets: queryObject.noOfWaterClosets ? parseInt(queryObject.noOfWaterClosets) : null,
+        noOfToilets: queryObject.noOfToilets ? parseInt(queryObject.noOfToilets) : null,
+        proposedTaps: queryObject.proposedTaps ? parseInt(queryObject.proposedTaps) : null,
         propertyId: (queryObject.property) ? queryObject.property.propertyId : null,
         additionalDetails: {
             initialMeterReading: (
@@ -658,9 +659,9 @@ const parserFunction = (state) => {
                 queryObject.additionalDetails.detailsProvidedBy !== null
             ) ? queryObject.additionalDetails.detailsProvidedBy : "",
             isexempted: false,
-            iPin: queryObject.additionalDetails.iPin ? queryObject.additionalDetails.iPin : iPin,
-            appid: queryObject.additionalDetails.appid ? queryObject.additionalDetails.appid : appid,
-            thirdPartyCode: queryObject.additionalDetails.thirdPartyCode ? queryObject.additionalDetails.thirdPartyCode : thirdPartyCode,
+            iPin: queryObject.additionalDetails && queryObject.additionalDetails.iPin ? queryObject.additionalDetails.iPin : iPin,
+            appid: queryObject.additionalDetails && queryObject.additionalDetails.appid ? queryObject.additionalDetails.appid : appid,
+            thirdPartyCode: queryObject.additionalDetails && queryObject.additionalDetails.thirdPartyCode ? queryObject.additionalDetails.thirdPartyCode : thirdPartyCode,
             dischargeConnection: dischargeConnection ? dischargeConnection : 'false',
             dischargeFee: dischargeFee ? dischargeFee : null,
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
@@ -702,6 +703,28 @@ const parserFunction = (state) => {
             }
         })
     }
+
+    /**
+     * DISCHARGE APPLICATION BUSINESS LOGIC
+     * 
+     * Implementation based on senior consultation requirements:
+     * 
+     * Scenario 1: Discharge-only applications (discharge: true, water: false, sewerage: false)
+     * Scenario 2: Combination applications (discharge: true + water/sewerage: true)
+     * Scenario 3: Regular applications (discharge: false)
+     */
+    if (queryObject.discharge === true) {
+        if (queryObject.water === false && queryObject.sewerage === false) {
+            // Discharge-only application: treat as water service with "Only Motor"
+            queryObject.water = true;
+            queryObject.service = "Water";
+            parsedObject.additionalDetails.dischargeConnection = "Only Motor";
+        } else {
+            // Combo application with discharge: set dischargeConnection to "true"
+            parsedObject.additionalDetails.dischargeConnection = "true";
+        }
+    }
+
     queryObject = { ...queryObject, ...parsedObject }
     return queryObject;
 }
@@ -1128,7 +1151,7 @@ export const applyForSewerage = async (state, dispatch) => {
         //queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
         queryObject.tenantId = parsedTenantId;
         if (method === "UPDATE") {
-            debugger;
+            
             queryObject.additionalDetails.appCreatedDate = get(
                 state.screenConfiguration.preparedFinalObject,
                 "SewerageConnection[0].additionalDetails.appCreatedDate"
@@ -1316,7 +1339,7 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             if (typeof queryObject.additionalDetails !== 'object') {
                 queryObject.additionalDetails = {};
             }
-            //debugger;
+            //
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
             set(queryObject, "processInstance.action", "INITIATE");
             queryObject = findAndReplace(queryObject, "NA", null);
@@ -2049,6 +2072,7 @@ export const downloadBill = async (receiptQueryString, mode) => {
 }
 
 export const findAndReplace = (obj, oldValue, newValue) => {
+    if (!obj || typeof obj !== "object") return obj;
     Object.keys(obj).forEach(key => {
         if ((obj[key] instanceof Object) || (obj[key] instanceof Array)) findAndReplace(obj[key], oldValue, newValue)
         obj[key] = obj[key] === oldValue ? newValue : obj[key]
