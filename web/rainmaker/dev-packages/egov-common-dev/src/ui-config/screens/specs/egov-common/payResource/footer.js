@@ -1419,8 +1419,8 @@ export const footer = getCommonApplyFooter({
     },
     children: {
       submitButtonLabel: getLabel({
-        labelName: "MAKE PAYMENTgg",
-        labelKey: "COMMON_MAKE_PAYMENTgg"
+        labelName: "MAKE PAYMENT",
+        labelKey: "COMMON_MAKE_PAYMENT"
       }),
       submitButtonIcon: {
         uiFramework: "custom-atoms",
