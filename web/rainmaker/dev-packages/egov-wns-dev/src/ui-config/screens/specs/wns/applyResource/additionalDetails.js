@@ -340,11 +340,12 @@ export const additionDetails = getCommonCard({
           // pattern: /^[0-9]*$/i,
           errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG"
         }),
+        
         afterFieldChange: async (action, state, dispatch) => {
           let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.connectionCategory");
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
 
-          if (ConectionCategory == "REGULARIZED") {
+          if (ConectionCategory === "REGULARIZED" && ConectionCategory === 'DISCHARGE_CONNECTION') {
             dispatch(
               handleField(
                 "apply",
