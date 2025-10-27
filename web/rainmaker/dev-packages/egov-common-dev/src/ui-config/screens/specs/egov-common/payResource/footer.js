@@ -44,6 +44,41 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
 
 export const callPGService = async (state, dispatch) => {
   const BusinessService = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
+  const payerMobileNumber = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].payerMobileNumber");
+
+  if ((BusinessService || "").toUpperCase() === "PT") {
+
+    if (payerMobileNumber == "9999999999") {
+
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Transaction numbers don't match !",
+            labelKey: "Please correct the payer mobile number. Payment cannot be processed due to an invalid payer mobile number."
+          },
+          "error"
+        )
+      );
+      return;
+    }
+
+    else {
+
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Transaction numbers don't match !",
+            labelKey: "Please correct the payer mobile number. Proceeding may not send the receipt by SMS."
+          },
+          "warning"
+        )
+      );
+
+    }
+  }
+
   var diffDays;
   var fireNocConsumerNumber;
   var fireNOCDetailslength;
@@ -1384,8 +1419,8 @@ export const footer = getCommonApplyFooter({
     },
     children: {
       submitButtonLabel: getLabel({
-        labelName: "MAKE PAYMENT",
-        labelKey: "COMMON_MAKE_PAYMENT"
+        labelName: "MAKE PAYMENTgg",
+        labelKey: "COMMON_MAKE_PAYMENTgg"
       }),
       submitButtonIcon: {
         uiFramework: "custom-atoms",
