@@ -16,6 +16,7 @@ import {
   prepareFinalObject
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import get from "lodash/get";
+import { getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import {
   furnishNocResponse,
@@ -23,6 +24,9 @@ import {
 } from "../../../../../ui-utils/commons";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 import "./index.css";
+const userType = getUserInfo() && JSON.parse(getUserInfo()).type;
+
+
 const loadProvisionalNocData = async (state, dispatch) => {
   let fireNOCNumber = get(
     state,
@@ -71,7 +75,7 @@ const loadProvisionalNocData = async (state, dispatch) => {
     []
   );
 
-
+  
   response = furnishNocResponse(response);
 
   let provisionFireNOCNumber = get(
@@ -171,6 +175,11 @@ debugger;
     }
   }
   if (response.FireNOCs.length > 0) {
+      response.FireNOCs = response.FireNOCs.sort((a,b)=>{
+    return b.fireNOCDetails.issuedDate - a.fireNOCDetails.issuedDate
+  })
+  //console.log("sortresponse",response);
+
     // Validate usage type against MDMS data
     const oldNocUsageType = get(
       response,
@@ -194,9 +203,13 @@ debugger;
       alert("The usage type from the old NOC is not valid in the current system. Please go on punjab invest portal.");
 
       setTimeout(() => {
-        window.location.href = "/employee/fire-noc/search";
-      }, 3000);
-      return;
+        if(userType === 'CITIZEN'){
+          window.location.href = "/citizen/fire-noc/search";
+        }else{
+          window.location.href = "/employee/fire-noc/search";
+        }
+       }, 3000);
+       return;
     } else {
       alert("Data has been successfully Searched.");
       // Disable the old fire NOC number input field

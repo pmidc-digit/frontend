@@ -4,7 +4,8 @@ import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getPropertyResults, isActiveProperty, showHideFieldsFirstStep } from "../../../../../ui-utils/commons";
 import { getUserInfo, getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
-import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
+import { Eodb } from "../EODB/index";
+
 export const propertySearchApiCall = async (state, dispatch) => {
   showHideFields(dispatch, false);
   let tenantId = getTenantIdCommon();
@@ -97,7 +98,42 @@ export const propertySearchApiCall = async (state, dispatch) => {
 
 
           const propertyType = get(propertyData, "usageCategory", null);
+          if (propertyType === "NONRESIDENTIAL.INSTITUTIONAL" || propertyType === "NONRESIDENTIAL.INDUSTRIAL") {
+            if (isModifyMode()) {
+              dispatch(
+                prepareFinalObject("eodbDialog", {
+                  open: false
+                })
+              );
 
+              // Show the dialog by updating screen configuration
+              dispatch(
+                handleField(
+                  "apply",
+                  "components.eodbDialog",
+                  "props.open",
+                  false
+                )
+              );
+            }
+            else {
+              dispatch(
+                prepareFinalObject("eodbDialog", {
+                  open: true
+                })
+              );
+
+              // Show the dialog by updating screen configuration
+              dispatch(
+                handleField(
+                  "apply",
+                  "components.eodbDialog",
+                  "props.open",
+                  true
+                )
+              );
+            }
+          }
         }
       } else {
         showHideFields(dispatch, false);
@@ -110,7 +146,24 @@ export const propertySearchApiCall = async (state, dispatch) => {
   }
 }
 
+export const handleEodbDialogClose = (state, dispatch) => {
+  // Set dialog state to close in Redux store
+  dispatch(
+    prepareFinalObject("eodbDialog", {
+      open: false
+    })
+  );
 
+  // Hide the dialog by updating screen configuration
+  dispatch(
+    handleField(
+      "apply",
+      "components.eodbDialog",
+      "props.open",
+      false
+    )
+  );
+};
 
 export const clearSearchResults = (state, dispatch) => {
   // Clear the search screen data
