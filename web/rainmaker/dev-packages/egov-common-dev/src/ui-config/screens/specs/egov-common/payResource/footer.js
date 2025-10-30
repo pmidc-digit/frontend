@@ -46,38 +46,38 @@ export const callPGService = async (state, dispatch) => {
   const BusinessService = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
   const payerMobileNumber = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].payerMobileNumber");
 
-  if ((BusinessService || "").toUpperCase() === "PT") {
+  //if ((BusinessService || "").toUpperCase() === "PT") {
 
-    if (payerMobileNumber == "9999999999") {
+  if (payerMobileNumber == "9999999999" || payerMobileNumber == "7777777777" || payerMobileNumber == "8888888888" || payerMobileNumber == "0000000000" || payerMobileNumber == "1234567890" || payerMobileNumber == "0123456789" || payerMobileNumber == "6666666666") {
 
-      dispatch(
-        toggleSnackbar(
-          true,
-          {
-            labelName: "Transaction numbers don't match !",
-            labelKey: "Please correct the payer mobile number. Payment cannot be processed due to an invalid payer mobile number."
-          },
-          "error"
-        )
-      );
-      return;
-    }
-
-    else {
-
-      dispatch(
-        toggleSnackbar(
-          true,
-          {
-            labelName: "Transaction numbers don't match !",
-            labelKey: "Please correct the payer mobile number. Proceeding may not send the receipt by SMS."
-          },
-          "warning"
-        )
-      );
-
-    }
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Transaction numbers don't match !",
+          labelKey: "Please correct the payer mobile number. Payment cannot be processed due to an invalid payer mobile number."
+        },
+        "error"
+      )
+    );
+    return;
   }
+
+  else {
+
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Transaction numbers don't match !",
+          labelKey: "Please correct the payer mobile number. Proceeding may not send the receipt by SMS."
+        },
+        "warning"
+      )
+    );
+
+  }
+  // }
 
   var diffDays;
   var fireNocConsumerNumber;
