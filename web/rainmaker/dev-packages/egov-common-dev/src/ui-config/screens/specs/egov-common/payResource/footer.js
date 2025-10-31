@@ -44,6 +44,41 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
 
 export const callPGService = async (state, dispatch) => {
   const BusinessService = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
+  const payerMobileNumber = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].payerMobileNumber");
+
+  //if ((BusinessService || "").toUpperCase() === "PT") {
+
+  if (payerMobileNumber == "9999999999" || payerMobileNumber == "7777777777" || payerMobileNumber == "8888888888" || payerMobileNumber == "0000000000" || payerMobileNumber == "1234567890" || payerMobileNumber == "0123456789" || payerMobileNumber == "6666666666") {
+
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Transaction numbers don't match !",
+          labelKey: "Please correct the payer mobile number. Payment cannot be processed due to an invalid payer mobile number."
+        },
+        "error"
+      )
+    );
+    return;
+  }
+
+  else {
+
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Transaction numbers don't match !",
+          labelKey: "Please correct the payer mobile number. Proceeding may not send the receipt by SMS."
+        },
+        "warning"
+      )
+    );
+
+  }
+  // }
+
   var diffDays;
   var fireNocConsumerNumber;
   var fireNOCDetailslength;
@@ -259,12 +294,12 @@ export const callPGService = async (state, dispatch) => {
           //   else{
           //   window.location = redirectionUrl;
           //   }
-          //if ((get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS") || (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "SW")) {
-          /*  if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && (businessService.toUpperCase() == "WS" ||  businessService.toUpperCase() == "SW")) {
-              window.location = redirectionUrl;
-            }
-  */
-          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
+          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS" || businessService.toUpperCase() == "SW") {
+
+            window.location = redirectionUrl;
+          }
+
+          else if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
             window.location = redirectionUrl;
           }
           else {
@@ -272,6 +307,8 @@ export const callPGService = async (state, dispatch) => {
             displayRazorpay(goToPaymentGateway);
 
           }
+
+
         }
       } catch (e) {
         dispatch(handleField("pay", buttonJsonpath, "props.disabled", false));
@@ -797,7 +834,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].additionalDetails = details;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].fromPeriod = from;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].toPeriod = to;
-      payloadReceiptDetails.Payments[0].validityYears = response.FireNOCs[0].fireNOCDetails.additionalDetail  ? response.FireNOCs[0].fireNOCDetails.additionalDetail.validityYears : 1;
+      payloadReceiptDetails.Payments[0].validityYears = response.FireNOCs[0].fireNOCDetails.additionalDetail ? response.FireNOCs[0].fireNOCDetails.additionalDetail.validityYears : 1;
 
     }
     const queryStr = [
