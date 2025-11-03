@@ -715,10 +715,10 @@ const parserFunction = (state) => {
      */
     if (queryObject.discharge === true) {
         if (queryObject.water === false && queryObject.sewerage === false) {
-            // Discharge-only application: treat as water service with "Only Motor"
+            // Discharge-only application: treat as water service with "OnlyDischarge"
             queryObject.water = true;
             queryObject.service = "Water";
-            parsedObject.additionalDetails.dischargeConnection = "Only Motor";
+            parsedObject.additionalDetails.dischargeConnection = "OnlyDischarge";
         } else {
             // Combo application with discharge: set dischargeConnection to "true"
             parsedObject.additionalDetails.dischargeConnection = "true";

@@ -869,7 +869,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       
       // Check if this connection has discharge information
       const hasDischargeConnection = payload.WaterConnection[0].additionalDetails && 
-                                   (payload.WaterConnection[0].additionalDetails.dischargeConnection === "Only Motor" ||
+                                   (payload.WaterConnection[0].additionalDetails.dischargeConnection === "OnlyDischarge" ||
                                     payload.WaterConnection[0].additionalDetails.dischargeConnection === "true" ||
                                     payload.WaterConnection[0].additionalDetails.dischargeConnection === "both");
       
@@ -994,7 +994,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       
       // Check if this sewerage connection has discharge information
       const hasDischargeConnection = payload.SewerageConnections[0].additionalDetails && 
-                                   (payload.SewerageConnections[0].additionalDetails.dischargeConnection === "Only Motor" ||
+                                   (payload.SewerageConnections[0].additionalDetails.dischargeConnection === "OnlyDischarge" ||
                                     payload.SewerageConnections[0].additionalDetails.dischargeConnection === "true" ||
                                     payload.SewerageConnections[0].additionalDetails.dischargeConnection === "both");
       
@@ -1021,7 +1021,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
          * For discharge-only applications that come through sewerage connection,
          * we need to restore the original user selection.
          */
-        if (payload.SewerageConnections[0].additionalDetails.dischargeConnection === "Only Motor") {
+        if (payload.SewerageConnections[0].additionalDetails.dischargeConnection === "OnlyDischarge") {
           // This is a discharge-only application, restore the original selection
           dispatch(prepareFinalObject("applyScreen.water", false));
           dispatch(prepareFinalObject("applyScreen.sewerage", false));

@@ -88,7 +88,7 @@ class CheckboxLabels extends React.Component {
         const decodedDischargeConnection = decodeURIComponent(urlDischargeConnection);
         const decodedDischargeFee = urlDischargeFee ? parseInt(urlDischargeFee) : 0;
         
-        if (decodedDischargeConnection === "Only Motor") {
+        if (decodedDischargeConnection === "OnlyDischarge") {
           // Set service flags  
           approveCheck('applyScreen.water', true);      // Backend requirement
           approveCheck('applyScreen.sewerage', false);
@@ -153,7 +153,7 @@ class CheckboxLabels extends React.Component {
         hasDischarge: true,
         type: decoded,
         fee: parseInt(fee),
-        isOnlyDischarge: decoded === "Only Motor"
+        isOnlyDischarge: decoded === "OnlyDischarge"
       };
     }
     
@@ -166,7 +166,7 @@ class CheckboxLabels extends React.Component {
       hasDischarge: details.dischargeConnection && details.dischargeConnection !== "null",
       type: details.dischargeConnection || "",
       fee: details.dischargeFee || 0,
-      isOnlyDischarge: details.dischargeConnection === "Only Motor"
+      isOnlyDischarge: details.dischargeConnection === "OnlyDischarge"
     };
   }
 
@@ -232,8 +232,8 @@ class CheckboxLabels extends React.Component {
       // This logic is used later in commons.js parserFunction for API payload construction
       if(this.state.checkedDischarge === true){
           if(this.state.checkedWater !== true && this.state.checkedSewerage !== true){
-            // Discharge-only application: will be processed as "Only Motor" in backend
-            approveCheck('applyScreen.additionalDetails.dischargeConnection', 'OnlyMotor');
+            // Discharge-only application: will be processed as "OnlyDischarge" in backend
+            approveCheck('applyScreen.additionalDetails.dischargeConnection', 'OnlyDischarge');
           }else if(this.state.checkedWater === true && this.state.checkedSewerage === true){
               // Discharge + Water + Sewerage combination
               approveCheck('applyScreen.additionalDetails.dischargeConnection','both');

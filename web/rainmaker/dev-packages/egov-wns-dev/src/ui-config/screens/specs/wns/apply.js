@@ -1205,14 +1205,14 @@ const screenConfig = {
                 dischargeFee
               )
             );
-          } else if (dischargeConnection === "OnlyMotor") {
+          } else if (dischargeConnection === "OnlyDischarge") {
             dispatch(prepareFinalObject("applyScreen.water", false));
             dispatch(prepareFinalObject("applyScreen.sewerage", false));
             dispatch(prepareFinalObject("applyScreen.discharge", true));
             dispatch(
               prepareFinalObject(
                 "applyScreen.additionalDetails.dischargeConnection",
-                "OnlyMotor"
+                "OnlyDischarge"
               )
             );
             dispatch(
@@ -1274,14 +1274,14 @@ const screenConfig = {
                 dischargeFee
               )
             );
-          } else if (dischargeConnection === "OnlyMotor") {
+          } else if (dischargeConnection === "OnlyDischarge") {
             dispatch(prepareFinalObject("applyScreen.water", false));
             dispatch(prepareFinalObject("applyScreen.sewerage", false));
             dispatch(prepareFinalObject("applyScreen.discharge", true));
             dispatch(
               prepareFinalObject(
                 "applyScreen.additionalDetails.dischargeConnection",
-                "OnlyMotor"
+                "OnlyDischarge"
               )
             );
             dispatch(
@@ -1365,7 +1365,7 @@ const screenConfig = {
         dispatch(prepareFinalObject("applyScreen.sewerage", true));
         if (
           dischargeConnection === "true" ||
-          dischargeConnection === "OnlyMotor"
+          dischargeConnection === "OnlyDischarge"
         ) {
           dispatch(prepareFinalObject("applyScreen.discharge", true));
           dispatch(
@@ -1399,7 +1399,7 @@ const screenConfig = {
         dispatch(prepareFinalObject("applyScreen.sewerage", false));
         if (
           dischargeConnection === "true" ||
-          dischargeConnection === "OnlyMotor"
+          dischargeConnection === "OnlyDischarge"
         ) {
           dispatch(prepareFinalObject("applyScreen.discharge", true));
           dispatch(
