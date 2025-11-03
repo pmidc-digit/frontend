@@ -1064,7 +1064,7 @@ else{
   if (!isModifyMode()) {
     const waterVisible = applyFor.water ;
     const sewerageVisible = applyFor.sewerage;
-
+    const dischargeVisible = applyFor.discharge;
   dispatch(
     handleField(
       "apply",
@@ -1080,6 +1080,14 @@ else{
       "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
       "visible",
       sewerageVisible
+    )
+  );
+  dispatch(
+    handleField(
+      "apply",
+      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+      "visible",
+      dischargeVisible
     )
   );
 }else{
