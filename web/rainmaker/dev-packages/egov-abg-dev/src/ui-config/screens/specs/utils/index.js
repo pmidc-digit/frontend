@@ -139,7 +139,7 @@ export const downloadMultipleBill = async (
       latePaymentc: ''
     };
     if (businesService == "SW") {
-      addDetail.latePaymentc = (bills[0].tenantId == "pb.patiala" || bills[0].tenantId == "pb.nabha") ? 'testing 0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+      addDetail.latePaymentc = (bills[0].tenantId == "pb.patiala" || bills[0].tenantId == "pb.nabha") ? '0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
     }
     else if (businesService == "WS") {
       addDetail.latePaymentc = (bills[0].tenantId == "pb.patiala" || bills[0].tenantId == "pb.nabha") ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
