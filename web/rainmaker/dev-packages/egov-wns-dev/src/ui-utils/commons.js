@@ -1645,12 +1645,18 @@ export const getPastPaymentsForSewerage = async (dispatch) => {
     }
 }
 
-export const createMeterReading = async (dispatch, body) => {
+export const createMeterReading = async (dispatch, body, mode) => {
     dispatch(toggleSpinner());
+    let url
+    if(mode === 'edit'){
+        url = "/ws-calculator/meterConnection/_update"
+    }else{
+        url = "/ws-calculator/meterConnection/_create"
+    }
     try {
         const response = await httpRequest(
             "post",
-            "/ws-calculator/meterConnection/_create",
+            url,
             "", [], { meterReadings: body }
         );
         if (response && response !== undefined && response !== null) {
