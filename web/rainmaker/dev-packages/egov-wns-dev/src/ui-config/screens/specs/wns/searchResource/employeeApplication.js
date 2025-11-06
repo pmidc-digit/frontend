@@ -245,7 +245,7 @@ export const wnsApplication = getCommonCard({
       required: false,
       // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
       errorMessage: "ERR_INVALID_PROPERTY_ID",
-      jsonPath: "searchConnection.name",
+      jsonPath: "searchConnection.ownerName",
       disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
     }),
     //-------------------End Owner Name--------------------------------
