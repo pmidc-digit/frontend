@@ -85,12 +85,17 @@ const saveData = async (state, dispatch) => {
     data.connectionNo = getQueryArg(window.location.href, "connectionNos")
     data.lastReading = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.lastReading");
 
-    // Set last reading date
-    const lastReadingDate = get(state, "screenConfiguration.preparedFinalObject.consumptionDetails[0].lastReadingDate");
-    if (lastReadingDate) {
-        data.lastReadingDate = lastReadingDate;
+    // Set last reading date and ID based on mode (add vs edit)
+    if (mode === 'edit') {
+     
+        data.lastReadingDate = get(state, "screenConfiguration.preparedFinalObject.consumptionDetails[0].lastReadingDate");
     } else {
-        data.lastReadingDate = new Date().setMonth(new Date().getMonth() - 1);
+        const lastReadingDate = get(state, "screenConfiguration.preparedFinalObject.consumptionDetails[0].currentReadingDate");
+        if (lastReadingDate) {
+            data.lastReadingDate = lastReadingDate;
+        } else {
+            data.lastReadingDate = new Date().setMonth(new Date().getMonth() - 1);
+        }
     }
     
     if (data.meterStatus === 'Working') {
