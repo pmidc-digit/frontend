@@ -1233,7 +1233,7 @@ export const applyForSewerage = async (state, dispatch) => {
 }
 
 export const applyForBothWaterAndSewerage = async (state, dispatch) => {
-    debugger
+    
     let method;
 
     let queryObject = parserFunction(state);
