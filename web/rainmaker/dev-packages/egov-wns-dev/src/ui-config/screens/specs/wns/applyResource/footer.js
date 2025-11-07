@@ -1082,14 +1082,7 @@ else{
       sewerageVisible
     )
   );
-  dispatch(
-    handleField(
-      "apply",
-      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-      "visible",
-      dischargeVisible
-    )
-  );
+
 }else{
   dispatch(
     handleField(

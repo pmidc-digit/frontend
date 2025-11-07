@@ -29,7 +29,6 @@ export const encryptUserDetails = (user={}) =>
   return JSON.stringify(user);
 }
 export const decryptUserDetails = (user ={})=>{
-  debugger
   user = JSON.parse(user)
   if(!user) return null
   const mobileNumber = atob(user.mobileNumber);
