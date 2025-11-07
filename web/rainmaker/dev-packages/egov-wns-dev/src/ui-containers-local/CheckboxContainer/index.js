@@ -140,22 +140,31 @@ class CheckboxLabels extends React.Component {
   // Simple helper function to get discharge info
   getDischargeInfo = () => {
     const { preparedFinalObject } = this.props;
-    
+
     // Check if editing and URL has discharge info
     const isEdit = getQueryArg(window.location.href, "action") === "edit";
     const urlDischarge = getQueryArg(window.location.href, "dischargeConnection");
     
-    if (isEdit && urlDischarge) {
-      const decoded = decodeURIComponent(urlDischarge);
-      const fee = getQueryArg(window.location.href, "dischargeFee") || 0;
-      
-      return {
-        hasDischarge: true,
-        type: decoded,
-        fee: parseInt(fee),
-        isOnlyDischarge: decoded === "OnlyDischarge"
-      };
+    if(isEdit){
+        const decoded = decodeURIComponent(urlDischarge);
+        const fee = getQueryArg(window.location.href, "dischargeFee") || 0;
+        if (urlDischarge === 'true' || urlDischarge === 'OnlyDischarge') {
+        return {
+          hasDischarge: true,
+          type: decoded,
+          fee: parseInt(fee),
+          isOnlyDischarge: decoded === "OnlyDischarge"
+        };
+      }else{
+         return {
+          hasDischarge: false,
+          type: decoded,
+          fee: parseInt(fee),
+          isOnlyDischarge: decoded === "OnlyDischarge"
+        };
+      }
     }
+    
     
     // Check Redux store
     const waterConnectionDetails = preparedFinalObject && preparedFinalObject.WaterConnection && preparedFinalObject.WaterConnection[0] && preparedFinalObject.WaterConnection[0].additionalDetails;
@@ -164,7 +173,7 @@ class CheckboxLabels extends React.Component {
     
     return {
       hasDischarge: details.dischargeConnection && details.dischargeConnection !== "null",
-      type: details.dischargeConnection || "",
+      type: details.dischargeConnection || 'false',
       fee: details.dischargeFee || 0,
       isOnlyDischarge: details.dischargeConnection === "OnlyDischarge"
     };
