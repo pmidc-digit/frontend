@@ -715,10 +715,10 @@ const parserFunction = (state) => {
      */
     if (queryObject.discharge === true) {
         if (queryObject.water === false && queryObject.sewerage === false) {
-            // Discharge-only application: treat as water service with "Only Motor"
+            // Discharge-only application: treat as water service with "OnlyDischarge"
             queryObject.water = true;
             queryObject.service = "Water";
-            parsedObject.additionalDetails.dischargeConnection = "Only Motor";
+            parsedObject.additionalDetails.dischargeConnection = "OnlyDischarge";
         } else {
             // Combo application with discharge: set dischargeConnection to "true"
             parsedObject.additionalDetails.dischargeConnection = "true";
@@ -1233,7 +1233,9 @@ export const applyForSewerage = async (state, dispatch) => {
 }
 
 export const applyForBothWaterAndSewerage = async (state, dispatch) => {
+    
     let method;
+
     let queryObject = parserFunction(state);
     let userType = JSON.parse(getUserInfo()).type.toUpperCase();
     let thirdPartyCode = getThirdPartyName();
@@ -1310,7 +1312,7 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             // console.log("wsqueryObjectForUpdateSewerage"+JSON.stringify(queryObjectForUpdateWater));
 
             await httpRequest("post", "/ws-services/wc/_update", "", [], { WaterConnection: queryObjectForUpdateWater });
-
+            set(queryObjectForUpdateSewerage, "additionalDetails.dischargeConnection", 'false');
             set(queryObjectForUpdateSewerage, "additionalDetails.compositionFee", queryObjectForUpdateSewerage.additionalDetails.compositionFeesw);
             set(queryObjectForUpdateSewerage, "additionalDetails.userCharges", queryObjectForUpdateSewerage.additionalDetails.userChargessw);
             set(queryObjectForUpdateSewerage, "additionalDetails.othersFee", queryObjectForUpdateSewerage.additionalDetails.othersFeesw);
@@ -1344,6 +1346,7 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             set(queryObject, "processInstance.action", "INITIATE");
             queryObject = findAndReplace(queryObject, "NA", null);
             response = await httpRequest("post", "/ws-services/wc/_create", "_create", [], { WaterConnection: queryObject });
+            queryObject.additionalDetails.dischargeConnection = 'false';
             const sewerageResponse = await httpRequest("post", "/sw-services/swc/_create", "_create", [], { SewerageConnection: queryObject });
             dispatch(prepareFinalObject("WaterConnection", response.WaterConnection));
             dispatch(prepareFinalObject("SewerageConnection", sewerageResponse.SewerageConnections));
@@ -1645,12 +1648,18 @@ export const getPastPaymentsForSewerage = async (dispatch) => {
     }
 }
 
-export const createMeterReading = async (dispatch, body) => {
+export const createMeterReading = async (dispatch, body, mode) => {
     dispatch(toggleSpinner());
+    let url
+    if(mode === 'edit'){
+        url = "/ws-calculator/meterConnection/_update"
+    }else{
+        url = "/ws-calculator/meterConnection/_create"
+    }
     try {
         const response = await httpRequest(
             "post",
-            "/ws-calculator/meterConnection/_create",
+            url,
             "", [], { meterReadings: body }
         );
         if (response && response !== undefined && response !== null) {

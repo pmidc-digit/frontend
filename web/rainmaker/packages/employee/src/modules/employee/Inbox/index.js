@@ -93,9 +93,36 @@ class Inbox extends Component {
             <Label className="landingPageHeader flex-child" label={"CS_LANDING_PAGE_WELCOME_TEXT"} />
             <Label className="landingPageUser flex-child" label={name} />,
           </div>
-          <div className="quick-action-button">
-            <MenuButton data={buttonItems} />
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <button
+              onClick={() => window.open("https://genbidemo.aibott.org/", "_blank", "noopener,noreferrer")}
+              style={{
+                backgroundColor: "#FE7A51",
+                color: "#fff",
+                border: "none",
+                padding: "10px 24px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+                cursor: "pointer",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                transition: "background-color 0.3s ease",
+                height: "40px",
+                marginRight: "0px",
+                margin: "10px 15px 0px 5px"
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = "#E86A41"}
+              onMouseLeave={(e) => e.target.style.backgroundColor = "#FE7A51"}
+            >
+              GenBi
+            </button>
+            <div className="quick-action-button">
+              <MenuButton data={buttonItems} />
+            </div>
           </div>
+          {/* <div className="quick-action-button">
+            <MenuButton data={buttonItems} />
+          </div> */}
         </div>
         <div className={"inbox-service-list"}>
           <ServiceList history={history} />
