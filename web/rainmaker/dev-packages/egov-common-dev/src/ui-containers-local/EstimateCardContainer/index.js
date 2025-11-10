@@ -4,6 +4,7 @@ import { Dialog } from "components";
 import { connect } from "react-redux";
 import get from "lodash/get";
 import orderBy from "lodash/orderBy";
+import LabelContainer from "egov-ui-framework/ui-containers/LabelContainer"; // ADD
 
 class EstimateCardContainer extends Component {
   constructor(props) {
@@ -49,15 +50,36 @@ class EstimateCardContainer extends Component {
           className="pt-warning-popup"
           open={welcomePopupOpen}
           isClose={true}
-          // title={"NOC_FEE_ESTIMATE_HEADER_payer_mobile"}
+          title={
+            <div
+              style={{
+                // marginLeft: "110px",
+                // padding: "2%",
+                color: "rgb(72, 72, 72)",
+                fontSize: "16px",
+                lineHeight: "42px",
+                fontWeight: 600,
+                textAlign: "center",
+                background: "#f7f7f7",
+              }}
+            >
+              <LabelContainer
+                labelKey="CHECK_PAYMER_MOBILENO_MSSG"
+                labelName="Check the payer's mobile number."
+              />
+            </div>
+          }
           handleClose={this.closeWelcomePopup}
-          titleStyle={{ padding: "2%", backgroundColor: "white" }}
+          titleStyle={{ padding: 0, backgroundColor: "#f7f7f7" }}
           actionsContainerStyle={{ padding: "2%", backgroundColor: "white" }}
           bodyStyle={{ padding: "0% 2% 2% 2%", backgroundColor: "white" }}
         >
           <div style={{ padding: "10px", textAlign: "center" }}>
             <div style={{ color: "rgba(0, 0, 0, 0.87)", fontSize: "14px", marginBottom: "4px" }}>
-              <label title="{PAYMER_MOBILE_NO_MSG}"></label>
+              <LabelContainer
+                labelKey="PAYMER_MOBILE_NO_MSG"
+                labelName="Check your details before payment"
+              />
             </div>
           </div>
           <div className="pt-warning-button-container" style={{ textAlign: "center" }}>
