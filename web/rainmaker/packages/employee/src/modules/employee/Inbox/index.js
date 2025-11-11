@@ -93,7 +93,7 @@ class Inbox extends Component {
             <Label className="landingPageHeader flex-child" label={"CS_LANDING_PAGE_WELCOME_TEXT"} />
             <Label className="landingPageUser flex-child" label={name} />,
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {/* <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <button
               onClick={() => window.open("https://genbidemo.aibott.org/", "_blank", "noopener,noreferrer")}
               style={{
@@ -119,10 +119,10 @@ class Inbox extends Component {
             <div className="quick-action-button">
               <MenuButton data={buttonItems} />
             </div>
-          </div>
-          {/* <div className="quick-action-button">
-            <MenuButton data={buttonItems} />
           </div> */}
+          <div className="quick-action-button">
+            <MenuButton data={buttonItems} />
+          </div>
         </div>
         <div className={"inbox-service-list"}>
           <ServiceList history={history} />
