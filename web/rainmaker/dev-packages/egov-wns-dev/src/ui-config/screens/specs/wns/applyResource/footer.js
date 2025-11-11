@@ -1064,7 +1064,7 @@ else{
   if (!isModifyMode()) {
     const waterVisible = applyFor.water ;
     const sewerageVisible = applyFor.sewerage;
-
+    const dischargeVisible = applyFor.discharge;
   dispatch(
     handleField(
       "apply",
@@ -1082,6 +1082,7 @@ else{
       sewerageVisible
     )
   );
+
 }else{
   dispatch(
     handleField(

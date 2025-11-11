@@ -11,7 +11,7 @@ import get from "lodash/get";
 import { convertEpochToDate } from "../utils";
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { sortpayloadDataObj } from './connection-details'
-const addMeterReading = async (state, dispatch) => {
+export const addMeterReading = async (state, dispatch, mode) => {
     dispatch(toggleSpinner());
     const tenantId = getQueryArg(window.location.href, "tenantId");
     const connectionNos = getQueryArg(window.location.href, "connectionNos");
@@ -23,10 +23,10 @@ const addMeterReading = async (state, dispatch) => {
         const queryObj = [
             { key: "businessIds", value: applicationNos },
             { key: "tenantId", value: tenantId }
-        ];        
-        
+        ];
+
         let isApplicationApproved = await isWorkflowExists(queryObj);
-        if(!isApplicationApproved){
+        if (!isApplicationApproved) {
             dispatch(toggleSpinner());
             dispatch(
                 toggleSnackbar(
@@ -42,30 +42,47 @@ const addMeterReading = async (state, dispatch) => {
         } else {
             await getMdmsDataForAutopopulated(dispatch)
             await getMdmsDataForMeterStatus(dispatch)
-            await setAutopopulatedvalues(state, dispatch)
-            showHideCard(true, dispatch); 
+            await setAutopopulatedvalues(state, dispatch, mode)
+            showHideCard(true, dispatch);
         }
 
-    }  
+    }
     dispatch(toggleSpinner());
 };
 
-const setAutopopulatedvalues = async (state, dispatch) => {
+const setAutopopulatedvalues = async (state, dispatch, mode) => {
     let billingFrequency = get(state, "screenConfiguration.preparedFinalObject.billingCycle");
     let consumptionDetails = {};
     let date = new Date();
     let status = get(state, "screenConfiguration.preparedFinalObject.meterMdmsData.['ws-services-calculation'].MeterStatus[0].code");
     let checkBillingPeriod = await get(state, "screenConfiguration.preparedFinalObject.consumptionDetails");
+    let currentReadingDate
     try {
-        let lastReadingDate = convertEpochToDate(checkBillingPeriod[0].currentReadingDate);
-        let lastDF = new Date();
-        let endDate = ("0" + lastDF.getDate()).slice(-2) + '/' + ("0" + (lastDF.getMonth() + 1)).slice(-2) + '/' + lastDF.getFullYear()
-        consumptionDetails['billingPeriod'] = lastReadingDate + " - " + endDate
-        consumptionDetails['lastReading'] = checkBillingPeriod[0].currentReading
-        consumptionDetails['consumption'] = ''
-        consumptionDetails['lastReadingDate'] = lastReadingDate
-    }catch (e) { 
-        console.log(e);         
+        if (mode === 'edit') {
+            let lastReadingDate = convertEpochToDate(checkBillingPeriod[0].lastReadingDate);
+            let lastDF = new Date();
+            //let endDate = ("0" + lastDF.getDate()).slice(-2) + '/' + ("0" + (lastDF.getMonth() + 1)).slice(-2) + '/' + lastDF.getFullYear()
+            //consumptionDetails['billingPeriod'] = lastReadingDate + " - " + endDate
+            consumptionDetails['billingPeriod'] = checkBillingPeriod[0].billingPeriod
+            consumptionDetails['lastReading'] = checkBillingPeriod[0].lastReading
+            consumptionDetails['consumption'] = ''
+            consumptionDetails['lastReadingDate'] = lastReadingDate
+            consumptionDetails['mode']='edit'
+            currentReadingDate = convertEpochToDate(checkBillingPeriod[0].currentReadingDate);
+        } else {
+            let lastReadingDate = convertEpochToDate(checkBillingPeriod[0].currentReadingDate);
+            let lastDF = new Date();
+            let endDate = ("0" + lastDF.getDate()).slice(-2) + '/' + ("0" + (lastDF.getMonth() + 1)).slice(-2) + '/' + lastDF.getFullYear()
+            consumptionDetails['billingPeriod'] = lastReadingDate + " - " + endDate
+            consumptionDetails['lastReading'] = checkBillingPeriod[0].currentReading
+            consumptionDetails['consumption'] = ''
+            consumptionDetails['lastReadingDate'] = lastReadingDate
+            currentReadingDate = new Date()
+            consumptionDetails['mode']='add'
+        }
+
+    } catch (e) {
+        console.log(e);
         dispatch(
             toggleSnackbar(
                 true,
@@ -120,6 +137,7 @@ const setAutopopulatedvalues = async (state, dispatch) => {
         )
     );
     let todayDate = new Date()
+    //console.log("todayDate",todayDate)
     dispatch(
         handleField(
             "meter-reading",
@@ -244,15 +262,16 @@ const demo = getCommonCard({
 
 const getApplicationNo = (connectionsObj) => {
     let appNos = "";
-    if(connectionsObj.length > 1){
-      for(var i=0; i< connectionsObj.length; i++){
-        appNos += connectionsObj[i].applicationNo +",";
-      }
-      appNos = appNos.slice(0,-1);
-    }else{
-      appNos = connectionsObj[0].applicationNo;
+    if (connectionsObj.length > 1) {
+        for (var i = 0; i < connectionsObj.length; i++) {
+            appNos += connectionsObj[i].applicationNo + ",";
+        }
+        appNos = appNos.slice(0, -1);
+    } else {
+        appNos = connectionsObj[0].applicationNo;
     }
     return appNos;
 }
+
 
 export default screenConfig;

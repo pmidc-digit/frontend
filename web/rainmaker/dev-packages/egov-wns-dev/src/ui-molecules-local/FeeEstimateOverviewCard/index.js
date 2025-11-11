@@ -62,16 +62,7 @@ function FeesEstimateOverviewCard(props) {
     const { classes, estimate, isMigrated } = props;
     const totalHeadClassName = "tl-total-amount-value " + classes.bigheader;
     const isPaid = (estimate.fees.appStatus === 'CONNECTION_ACTIVATED' || estimate.fees.appStatus === 'PENDING_FOR_CONNECTION_ACTIVATION')?true:false;
-    
-    // if (estimate !== null && estimate !== undefined && estimate.fees !== undefined && estimate.fees !== null && estimate.fees.length > 0) {
-    //     if (estimate.fees[0].data !== null && estimate.fees[0].data !== undefined && estimate.fees[0].data.length > 0) {
-    //         totalAmount = estimate.fees[0].data[0].total;
-    //         dueDate = convertEpochToDate(estimate.fees[0].data[0].expiryDate);
-    //     }
-    //     if (estimate.fees[0].description !== null && estimate.fees[0].description !== undefined && estimate.fees[0].description.length > 0) {
-    //         sortedArray = estimate.fees[0].description;
-    //     }
-    // }
+    const isFromFetchBill = estimate.fees.isFromFetchBill || false;
 
     return (
         <Grid container >
@@ -100,6 +91,8 @@ function FeesEstimateOverviewCard(props) {
                     )
                 }
             </Grid>
+            {/* Only show breakdown if NOT from fetchBill */}
+            {!isFromFetchBill && (
             <Grid xs={12} sm={7}>
                 <div style={{ maxWidth: 600 }}>
                     <div>
@@ -174,6 +167,7 @@ function FeesEstimateOverviewCard(props) {
                     </Grid>
                 </div>
             </Grid >
+            )}
             <Grid xs={12}
                 sm={1} >
             </Grid>
