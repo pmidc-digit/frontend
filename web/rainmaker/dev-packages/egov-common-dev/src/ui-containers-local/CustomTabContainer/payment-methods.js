@@ -167,7 +167,7 @@ export const payeeDetails = getCommonContainer({
       labelKey: "NOC_PAYMENT_PAYER_MOB_PLACEHOLDER"
     },
     jsonPath: "ReceiptTemp[0].Bill[0].payerMobileNumber",
-    pattern: getPattern("MobileNo"),
+    pattern: /^(?!.*(\d)\1{9})([0]|(\+\d{1,2}-?))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
     errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
     iconObj: {
       position: "start",
