@@ -126,9 +126,9 @@ const saveData = async (state, dispatch) => {
             "meter-reading"
         );
         data.currentReading = data.lastReading;
-        if (!data.currentReading) {
-            return;
-        }
+         if (data.currentReading === null || data.currentReading === undefined || data.currentReading === '') {
+         return;
+    }
     } 
     else {
         const consumption = validateFields(
