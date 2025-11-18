@@ -36,6 +36,11 @@ class EstimateCardContainer extends Component {
       clearTimeout(this._welcomeTimer);
       this._welcomeTimer = null;
     }
+    // Hide the popup by adding display:none class
+    const popup = document.querySelector('.pt-warning-popup');
+    if (popup) {
+      popup.style.display = 'none';
+    }
     this.setState({ welcomePopupOpen: false });
   }
 
