@@ -768,6 +768,7 @@ export const prepareDocumentsUploadRedux = async (state, dispatch) => {
                     let oldDocCode = get(documentsUploadRedux, `[${index}].documentCode`);
                     if (oldDocType != docType.code || oldDocCode != card.name) {
                         documentsUploadRedux[index] = {
+                            ...documentsUploadRedux[index],
                             documentType: docType.code,
                             documentCode: card.name,
                             isDocumentRequired: card.required,

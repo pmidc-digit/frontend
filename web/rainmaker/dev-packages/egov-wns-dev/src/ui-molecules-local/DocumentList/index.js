@@ -169,6 +169,7 @@ class DocumentList extends Component {
               );
               if (oldDocType != docType.code || oldDocCode != card.name) {
                 documentsUploadRedux[index] = {
+                  ...documentsUploadRedux[index],
                   documentType: docType.code,
                   documentCode: card.name,
                   isDocumentRequired: card.required,
@@ -196,7 +197,8 @@ class DocumentList extends Component {
     prepareFinalObject("documentsUploadRedux", {
       ...documentsUploadRedux,
       [uploadedDocIndex]: {
-        ...documentsUploadRedux[uploadedDocIndex], documents: [{ fileName: file.name, fileStoreId, fileUrl: Object.values(fileUrl)[0] }]
+        ...documentsUploadRedux[uploadedDocIndex], 
+        documents: [{ fileName: file.name, fileStoreId, fileUrl: Object.values(fileUrl)[0] }]
       }
     });
   };

@@ -489,7 +489,7 @@ const callBackForNext = async (state, dispatch) => {
         );
       }
     }
-    prepareDocumentsUploadData(state, dispatch);
+    prepareDocumentsUploadData(state, dispatch);    
     if (isModifyMode()) {
       let propertyUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreen.property.usageCategory", "");
       let subUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreenMdmsData.ws-services-masters.subUsageType", []);
@@ -509,8 +509,6 @@ const callBackForNext = async (state, dispatch) => {
             }
           }
         })
-      } else {
-        console.log("Property Usage Type is empty/undefined");
       }
       dispatch(prepareFinalObject("applyScreenMdmsData.ws-services-masters.subUsageType", usageTypes));
     }
@@ -803,41 +801,51 @@ else{
     }
   }
   /* validations for Additional /Docuemnts details screen */
-  if (activeStep === 2 && process.env.REACT_APP_NAME !== "Citizen") {
-    
-    // Get application type flags from Redux state
+  if (activeStep === 2 && process.env.REACT_APP_NAME !== "Citizen"){    
     const isDischargeApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.discharge", false);
     const isWaterApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.water", false);
     const isSewerageApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage", false);   
     let validate = true;
-    // Special validation for discharge-only applications
-    if (isDischargeApplication && !isWaterApplication && !isSewerageApplication) {
-      // For discharge-only apps, check if discharge fee is entered
-      let dischargeFee = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.dischargeFee", null);
-       //validate = dischargeFee && dischargeFee > 0;
-      validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
+    
+    if (isModifyMode()) {
+      // Modification mode: Step 2 = Documents Upload
+      validate = moveToReview(state, dispatch);
+      
+      if (validate) {
+        await pushTheDocsUploadedToRedux(state, dispatch);
+        isFormValid = true;
+        hasFieldToaster = false;
+      } else {
+        isFormValid = false;
+        hasFieldToaster = true;
+        return;
+      }
     } else {
-      // For water/sewerage applications, use standard validation
-      validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
+      // New applications: Step 2 = Additional Details
+      if (isDischargeApplication && !isWaterApplication && !isSewerageApplication) {
+        validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
+      } else {
+        validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
+      }
+      
+      if (validate) {
+        isFormValid = true;
+        hasFieldToaster = false;
+      } else {
+        isFormValid = false;
+        hasFieldToaster = true;
+        let errorMessage = {
+          labelName: "Please fill all mandatory fields!",
+          labelKey: "WS_FILL_REQUIRED_FIELDS"
+        };
+        dispatch(toggleSnackbar(true, errorMessage, "warning"));
+        return
+      }
     }
     
-    if (validate) {
-      isFormValid = true;
-      hasFieldToaster = false;
-    } else {
-      isFormValid = false;
-      hasFieldToaster = true;
-      let errorMessage = {
-        labelName: "Please fill all mandatory fields!",
-        labelKey: "WS_FILL_REQUIRED_FIELDS"
-      };
-      dispatch(toggleSnackbar(true, errorMessage, "warning"));
-      return
-    }
-    //if (isModifyMode()) {
-    if (!validate) {
-      // if (moveToReview(state, dispatch)) {
-      //   await pushTheDocsUploadedToRedux(state, dispatch);
+    // Additional validations for new applications only
+    if (!isModifyMode()) {
+      if (!validate) {
       //   isFormValid = false; hasFieldToaster = true;
       //   let errorMessage = {
       //     labelName: "Please fill all mandatory fields!",
@@ -998,9 +1006,9 @@ else{
     if (isActiveProperty(applyScreenObj.property)) {
       dispatch(handleField("apply", "components.div.children.formwizardFourthStep.children.snackbarWarningMessage", "visible", false));
     }
-
-
+    }
   }
+  
   if (activeStep === 3) {
     let waterId
     let sewerId

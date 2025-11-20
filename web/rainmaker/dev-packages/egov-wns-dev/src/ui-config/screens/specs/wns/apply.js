@@ -907,7 +907,7 @@ export const getData = async (action, state, dispatch) => {
         showHideFieldModifyConnection(action);
       }
       let docs = get(state, "screenConfiguration.preparedFinalObject");
-      console.log("sdsgd" + JSON.stringify(docs));
+      // console.log("sdsgd" + JSON.stringify(docs));
       await prefillDocuments(docs, "displayDocs", dispatch);
       showHideFiedsPendingForConnectionActivation(action, state, dispatch);
       let applicationStatus = get(
