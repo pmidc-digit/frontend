@@ -53,122 +53,149 @@ export const toggleSnackbarAndSetText = (open, message = {}, variant) => {
 //   return isPresent;
 // }
 
-export const fetchLocalizationLabel = (locale='en_IN', module, tenantId, isFromModule) => {
+export const fetchLocalizationLabel = (locale = "en_IN", module, tenantId, isFromModule) => {
   return async (dispatch) => {
-    let storedModuleList=[];
-    // const isLocalizationTriggered = localStorageGet("isLocalizationTriggered");
-    // if(isLocalizationTriggered === "true") {
-    //   return;
-    // }
-    if(getStoredModulesList()!==null){
-        storedModuleList =JSON.parse(getStoredModulesList());
+    let storedModuleList = [];
+
+    if (getStoredModulesList() !== null) {
+      storedModuleList = JSON.parse(getStoredModulesList());
+    }
+
+    const moduleName = getModule();
+    let localeModule;
+
+    if (moduleName === "rainmaker-common") {
+      localeModule = "rainmaker-common";
+    } else if (storedModuleList.includes("rainmaker-common")) {
+      localeModule = moduleName;
+    } else {
+      localeModule = moduleName ? `rainmaker-common,${moduleName}` : `rainmaker-common`;
+    }
+
+    try {
+      let resultArray = [],
+        tenantModule = "",
+        isCommonScreen;
+
+      if (module != null) {
+        tenantModule = `rainmaker-${module}`;
+      }
+
+      if (
+        window.location.href.includes("/language-selection") ||
+        window.location.href.includes("/user/login") ||
+        window.location.href.includes("/withoutAuth")
+      ) {
+        if ((moduleName && storedModuleList.includes(moduleName) === false) || moduleName == null) isCommonScreen = true;
+      }
+
+      if (window.location.href.includes("/inbox")) {
+        if (moduleName && storedModuleList.includes(`rainmaker-common`)) isFromModule = false;
+      }
+
+      // ------------------------------
+      // ✅ FIRST API CALL WITH TIMEOUT
+      // ------------------------------
+      if ((moduleName && storedModuleList.includes(moduleName) === false) || isFromModule || isCommonScreen) {
+        const payload1 = await withTimeout(
+          httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
+            { key: "module", value: localeModule },
+            { key: "locale", value: locale },
+            { key: "tenantId", value: commonConfig.tenantId },
+          ]),
+          8000 // 8 seconds timeout
+        );
+
+        resultArray = [...payload1.messages];
+      }
+
+      // -------------------------------
+      // ✅ SECOND API CALL WITH TIMEOUT
+      // -------------------------------
+      if (module && storedModuleList.includes(tenantModule) === false) {
+        storedModuleList.push(tenantModule);
+        const newList = JSON.stringify(storedModuleList);
+
+        const payload2 =
+          module &&
+          (await withTimeout(
+            httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
+              { key: "module", value: `rainmaker-${module}` },
+              { key: "locale", value: locale },
+              {
+                key: "tenantId",
+                value: tenantId ? tenantId : commonConfig.tenantId,
+              },
+            ]),
+            8000
+          ));
+
+        if (payload2 && payload2.messages) {
+          setStoredModulesList(newList);
+          resultArray = [...resultArray, ...payload2.messages];
+        }
+      }
+
+      let prevLocalisationLabels = [];
+      if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
+        prevLocalisationLabels = JSON.parse(getLocalizationLabels());
+      }
+
+      resultArray = [...prevLocalisationLabels, ...resultArray];
+      localStorage.removeItem(`localization_${getLocale()}`);
+
+      dispatch(setLocalizationLabels(locale, resultArray));
+    } catch (error) {
+      console.error("Localization Timeout/Error:", error.message);
+    }
+  };
+};
+
+export const fetchLocalizationLabelForOpenScreens = (locale = "en_IN", module, tenantId, isFromModule) => {
+  return async (dispatch) => {
+    let storedModuleList = [];
+    if (getStoredModulesList() !== null) {
+      storedModuleList = JSON.parse(getStoredModulesList());
     }
     const moduleName = getModule();
     let localeModule;
-    if(moduleName==='rainmaker-common'){
-        localeModule='rainmaker-common';
-    }
-    else if(storedModuleList.includes('rainmaker-common')){
-        localeModule=moduleName;
-    }
-    else{
-      localeModule=moduleName?`rainmaker-common,${moduleName}`:`rainmaker-common`;
+    if (moduleName === "rainmaker-common") {
+      localeModule = "rainmaker-common";
+    } else if (storedModuleList.includes("rainmaker-common")) {
+      localeModule = moduleName;
+    } else {
+      localeModule = moduleName ? `rainmaker-common,${moduleName}` : `rainmaker-common`;
     }
     try {
-      let resultArray = [], tenantModule = "", isCommonScreen;
-      if(module!=null){
-       tenantModule=`rainmaker-${module}`;
-      }
-      
-      if((window.location.href.includes("/language-selection") || window.location.href.includes("/user/login")|| window.location.href.includes("/withoutAuth"))) {
-         if((moduleName && storedModuleList.includes(moduleName) === false) || moduleName == null) isCommonScreen = true;
+      let resultArray = [],
+        tenantModule = "",
+        isCommonScreen;
+      if (module != null) {
+        tenantModule = `rainmaker-${module}`;
       }
 
-      if((window.location.href.includes("/inbox"))) {
-          if(moduleName && storedModuleList.includes(`rainmaker-common`)) isFromModule = false;
-      }
-
-      
-      if((moduleName && storedModuleList.includes(moduleName) === false) || isFromModule || isCommonScreen){
-        // localStorageSet("isLocalizationTriggered", "true");
-          const payload1 = await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
-          { key: "module", value: localeModule },
-          { key: "locale", value: locale },
-          { key: "tenantId", value: commonConfig.tenantId },
-        ]);
-        resultArray = [...payload1.messages];
-      }
-      
-      if((module && storedModuleList.includes(tenantModule)===false)){
+      if (module && storedModuleList.includes(tenantModule) === false) {
         storedModuleList.push(tenantModule);
-        var newList =JSON.stringify(storedModuleList);
-        // setStoredModulesList(newList);
         const payload2 = module
-        ? await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
-          { key: "module", value: `rainmaker-${module}` },
-          { key: "locale", value: locale },
-          { key: "tenantId", value: tenantId ? tenantId : commonConfig.tenantId },
-        ])
-        : [];
-      if (payload2 && payload2.messages) {
-        setStoredModulesList(newList);
-        resultArray = [...resultArray, ...payload2.messages];
-      }
-    }
-
-    let prevLocalisationLabels = [];
-    if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
-      prevLocalisationLabels = JSON.parse(getLocalizationLabels());
-    }
-    resultArray = [...prevLocalisationLabels, ...resultArray];
-    localStorage.removeItem(`localization_${getLocale()}`);
-    dispatch(setLocalizationLabels(locale, resultArray));
-  } catch (error) {
-  }
-};
-};
-
-export const fetchLocalizationLabelForOpenScreens= (locale = 'en_IN', module, tenantId, isFromModule) => {
-return async (dispatch) => {
-  let storedModuleList = [];
-  if (getStoredModulesList() !== null) {
-    storedModuleList = JSON.parse(getStoredModulesList());
-  }
-  const moduleName = getModule();
-  let localeModule;
-  if (moduleName === 'rainmaker-common') {
-    localeModule = 'rainmaker-common';
-  }
-  else if (storedModuleList.includes('rainmaker-common')) {
-    localeModule = moduleName;
-  }
-  else {
-    localeModule = moduleName ? `rainmaker-common,${moduleName}` : `rainmaker-common`;
-  }
-  try {
-    let resultArray = [], tenantModule = "", isCommonScreen;
-    if (module != null) {
-      tenantModule = `rainmaker-${module}`;
-    }
-
-    if ((module && storedModuleList.includes(tenantModule) === false)) {
-      storedModuleList.push(tenantModule);        const payload2 = module
-          ? await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
+          ? await withTimeout(
+            httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
               { key: "module", value: `rainmaker-${module}` },
               { key: "locale", value: locale },
               { key: "tenantId", value: tenantId ? tenantId : commonConfig.tenantId },
-            ])
+            ]),
+            8000
+          )
           : [];
-          if (payload2 && payload2.messages) {
-            resultArray = [...resultArray, ...payload2.messages];
-          }
+        if (payload2 && payload2.messages) {
+          resultArray = [...resultArray, ...payload2.messages];
+        }
       }
-      
-      let prevLocalisationLabels=[];  
-      if(getLocalizationLabels()!=null && !isCommonScreen && storedModuleList.length > 0){
-        prevLocalisationLabels=JSON.parse(getLocalizationLabels());
+
+      let prevLocalisationLabels = [];
+      if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
+        prevLocalisationLabels = JSON.parse(getLocalizationLabels());
       }
-      resultArray=[...prevLocalisationLabels, ...resultArray];
+      resultArray = [...prevLocalisationLabels, ...resultArray];
       localStorage.removeItem(`localization_${getLocale()}`);
       // localStorageSet("isLocalizationTriggered", "false");
       dispatch(setLocalizationLabels(locale, resultArray));
@@ -177,7 +204,6 @@ return async (dispatch) => {
     }
   };
 };
-
 
 const setActionItems = (payload) => {
   return {
@@ -337,4 +363,12 @@ export const getNotifications = (queryObject, requestBody) => {
       dispatch(setNotificationsError(error.message));
     }
   };
+};
+const withTimeout = (promise, ms = 8000, timeoutMessage = "Request timed out") => {
+  let timeoutId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(timeoutMessage)), ms);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
 };
