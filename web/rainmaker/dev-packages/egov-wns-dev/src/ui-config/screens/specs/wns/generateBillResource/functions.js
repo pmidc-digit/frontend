@@ -27,7 +27,7 @@ export const generateBillApiCall = async (state, dispatch) => {
     //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
     // }
     else {
-      debugger;
+      
       let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
       if (batchtypechk == "Locality") {
         // var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
@@ -171,7 +171,7 @@ export const generateBillApiCall = async (state, dispatch) => {
 
 export const searchBillApiCall = async (state, dispatch) => {
 
-  debugger;
+  
   var transactionType;
   // showHideApplicationTable(false, dispatch);
   // showHideConnectionTable(false, dispatch);
@@ -293,7 +293,7 @@ export const searchBillApiCall = async (state, dispatch) => {
       try {
         let tenant_Id = getTenantIdCommon();
         let response = null;
-        debugger;
+        
         let servicety;
         if (transactionType == "WS") {
           servicety = "Water";

@@ -449,7 +449,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
       // set(queryObject[0], "financialYear", currentFinancialYr);
       setBusinessServiceDataToLocalStorage(BSqueryObject, dispatch);
     }
-    debugger;
+    
     set(queryObject[0], "tenantId", tenantId);
     if (filterObject === "NEWTL.HAZ") {
       set(queryObject[0], "workflowCode", "NEWTL.HAZ");
@@ -874,7 +874,7 @@ export const checkValidOwnersForRenewal = (currentOwners = [], oldOwners = []) =
 }
 export const filterTradeUnitsFromObjects = (allTradeUnitsObj, someTradeUnitsObj) => {
   let result;
-  //debugger;
+  //
   for (let tunit of allTradeUnitsObj) {
     for(let mdmstunit of someTradeUnitsObj){
       if(tunit.code == mdmstunit.tradeType){

@@ -335,7 +335,7 @@ export const getMdmsData = async (dispatch) => {
 
       let payloadData = payload.MdmsRes["ws-services-masters"];
       // console.log("Hello PayloadDAta"+tenantId);
-      // ////debugger;
+      // ////
       let tenantId = getQueryArg(window.location.href, "tenantId");
       if (tenantId === "pb.patiala") {
         let groupsar = [];

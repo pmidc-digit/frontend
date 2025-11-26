@@ -49,10 +49,10 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-debugger;
+
 const getUserDataFromUuid = async (state, dispatch) => {
   
-  debugger;
+  
  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
   let request = { searchCriteria: { tenantId: tenantIdcode} };
   try {

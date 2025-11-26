@@ -80,7 +80,7 @@ class Footer extends React.Component {
           { key: "businessIds", value: applicationNos },
           { key: "tenantId", value: tenantId },
         ];
-        // ////debugger;
+        // ////
         let isApplicationApproved = await isWorkflowExists(queryObj);
         let connectionNumberFromURL = getQueryArg(
           window.location.href,
@@ -135,7 +135,7 @@ class Footer extends React.Component {
       label: "Cancel Demand",
       labelKey: "Cancel Demand",
       link: async (state, dispatch) => {
-        // ////debugger;
+        // ////
         let arr = [];
         //  arr = state.screenConfiguration.preparedFinalObject.billwns;
         console.log(arr);
@@ -149,7 +149,7 @@ class Footer extends React.Component {
           ];
 
           //  billing-service/demand/_search
-          // ////debugger;
+          // ////
           const responseSewerage = await httpRequest(
             "post",
             "/billing-service/demand/_search",
@@ -197,7 +197,7 @@ class Footer extends React.Component {
           ];
 
           //  billing-service/demand/_search
-          ////debugger;
+          ////
           const responseWater = await httpRequest(
             "post",
             "/billing-service/demand/_search",

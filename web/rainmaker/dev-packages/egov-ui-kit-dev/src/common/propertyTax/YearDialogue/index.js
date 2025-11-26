@@ -52,7 +52,7 @@ const mapStateToProps = (state) => {
 var tenantIdcode =getTenantId();
 var isLocMatch ;
 const getUserDataFromUuid = async (state, dispatch) => {
-  //debugger;
+  //
   let request = { searchCriteria: { tenantId: tenantIdcode} };
   try {
     const response = await httpRequest(

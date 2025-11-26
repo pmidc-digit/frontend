@@ -382,7 +382,7 @@ const getBuildings = data => {
   return retbuildings;
 };
 const getApplicationData = async (transformedData, ulbLogo, type) => {
-  debugger;
+  
 
   const ddi = transformedData.buildings[0].uoms;
   var NoBase = 0, NoHeight = 0;
