@@ -411,14 +411,11 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
           }
         } */
       } catch (e) {
-        toggleSnackbarAndSetText(
-          true,
-          {
-            labelName: "Locality Empty!",
-            labelKey: "Locality Empty!",
-          },
-          "error"
-        );
+        // FIX: Better error handling - only show error if it's a real issue, not just missing locality
+        console.log('Log => ** [Inbox] Locality fetch error (non-critical):', e.message);
+        // Don't show toast for every locality fetch failure - it's too noisy
+        // Only log to console for debugging
+        // If locality is genuinely required, the UI will show "NA" gracefully
       }
     }
     let localityDropdownList = [];

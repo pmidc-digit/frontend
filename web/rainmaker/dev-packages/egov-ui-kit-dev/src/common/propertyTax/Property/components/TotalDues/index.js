@@ -27,10 +27,22 @@ const mapStateToProps = (state, ownProps) => {
   const propertyId = ownProps.consumerCode;
   const selPropertyDetails = propertiesById[propertyId] || {};
   const propertyDetails = selPropertyDetails.propertyDetails || [];
-  localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
- editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
-;
-surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
+
+  // FIX: Add null safety checks to prevent "Cannot read properties of undefined" errors
+  const propertiesAudit = state?.screenConfiguration?.preparedFinalObject?.propertiesAudit;
+  const firstProperty = propertiesAudit && propertiesAudit.length > 0 ? propertiesAudit[0] : null;
+
+  if (firstProperty) {
+    localityCode = firstProperty.address?.locality?.code || null;
+    editlocalityCode = firstProperty.surveyId || null;
+    surveyIdcode = firstProperty.surveyId || null;
+  } else {
+    localityCode = null;
+    editlocalityCode = null;
+    surveyIdcode = null;
+    console.log('Log => ** [TotalDues] Warning: propertiesAudit is empty or undefined');
+  }
+
   return {
     propertyDetails,
     propertyId

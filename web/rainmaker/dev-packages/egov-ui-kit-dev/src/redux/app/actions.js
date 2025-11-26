@@ -6,7 +6,34 @@ import commonConfig from "config/common";
 import { debug } from "util";
 import { setLocale, localStorageSet, localStorageGet, getLocale } from "egov-ui-kit/utils/localStorageUtils";
 // import { getModuleName } from "../../utils/commons";
-import { getLocalization, getLocalizationLabels, getModule, getStoredModulesList, setStoredModulesList } from "../../utils/localStorageUtils";
+import { getLocalization, getLocalizationLabels, getModule, getStoredModulesList, setStoredModulesList, setLocalizationLabelsAsync } from "../../utils/localStorageUtils";
+
+// Helper function to deduplicate localization messages by 'code' field
+const deduplicateLocalizationMessages = (messages) => {
+  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    return [];
+  }
+
+  // Use Map to keep only the last occurrence of each code (newer data overwrites older)
+  const messageMap = new Map();
+  messages.forEach(message => {
+    if (message && message.code) {
+      messageMap.set(message.code, message);
+    }
+  });
+
+  const deduplicatedArray = Array.from(messageMap.values());
+  const duplicatesRemoved = messages.length - deduplicatedArray.length;
+
+  if (duplicatesRemoved > 0) {
+    console.log(`[Localization] Deduplication: Removed ${duplicatesRemoved} duplicate entries out of ${messages.length} total messages`);
+  }
+
+  return deduplicatedArray;
+};
+
+// Request tracking to prevent race conditions
+let localizationRequestInProgress = false;
 
 export const updateActiveRoute = (routePath, menuName) => {
   localStorageSet("menuPath", routePath);
@@ -27,8 +54,37 @@ export const setBottomNavigationIndex = (bottomNavigationIndex) => {
 };
 
 export const setLocalizationLabels = (locale, localizationLabels) => {
+  // SMART STORAGE STRATEGY:
+  // - rainmaker-common → localStorage (used everywhere, needs instant access)
+  // - Other modules → IndexedDB (page-specific, less frequent access)
+
+  // Separate rainmaker-common from other modules
+  const rainmakerCommon = localizationLabels.filter(item => item.module === 'rainmaker-common');
+  const otherModules = localizationLabels.filter(item => item.module !== 'rainmaker-common');
+
+  console.log(`Log => ** [Storage Strategy] Total: ${localizationLabels.length}, Common: ${rainmakerCommon.length}, Others: ${otherModules.length}`);
+
+  // ALWAYS keep rainmaker-common in localStorage for instant access
+  window.localStorage.setItem(`localization_${locale}_common`, JSON.stringify(rainmakerCommon));
+  console.log(`Log => ** [localStorage] Saved rainmaker-common: ${rainmakerCommon.length} entries (instant access)`);
+
+  // For backward compatibility, keep combined data in localStorage
   window.localStorage.setItem(`localization_${locale}`, JSON.stringify(localizationLabels));
   setLocale(locale);
+
+  // Save other modules to IndexedDB (async, non-blocking)
+  if (otherModules.length > 0) {
+    console.log(`Log => ** [IndexedDB] Saving ${otherModules.length} other module entries...`);
+    setLocalizationLabelsAsync(locale, otherModules, 'other_modules').catch(error => {
+      console.warn('Log => ** [IndexedDB] Failed to save other modules (non-critical):', error);
+    });
+  }
+
+  // Also save complete data to IndexedDB as backup
+  setLocalizationLabelsAsync(locale, localizationLabels, 'combined').catch(error => {
+    console.warn('Log => ** [IndexedDB] Failed to save combined data (non-critical):', error);
+  });
+
   return { type: actionTypes.ADD_LOCALIZATION, locale, localizationLabels };
 };
 
@@ -55,31 +111,41 @@ export const toggleSnackbarAndSetText = (open, message = {}, variant) => {
 
 export const fetchLocalizationLabel = (locale='en_IN', module, tenantId, isFromModule) => {
   return async (dispatch) => {
-    let storedModuleList=[];
-    // const isLocalizationTriggered = localStorageGet("isLocalizationTriggered");
-    // if(isLocalizationTriggered === "true") {
-    //   return;
-    // }
-    if(getStoredModulesList()!==null){
-        storedModuleList =JSON.parse(getStoredModulesList());
+    // Race condition prevention: Skip if request already in progress
+    if (localizationRequestInProgress) {
+      console.log('Log => ** [Localization] Request already in progress, skipping duplicate call');
+      return;
     }
-    const moduleName = getModule();
-    let localeModule;
-    if(moduleName==='rainmaker-common'){
-        localeModule='rainmaker-common';
-    }
-    else if(storedModuleList.includes('rainmaker-common')){
-        localeModule=moduleName;
-    }
-    else{
-      localeModule=moduleName?`rainmaker-common,${moduleName}`:`rainmaker-common`;
-    }
+
     try {
+      localizationRequestInProgress = true;
+      console.log(`Log => ** [Localization] Fetching for locale=${locale}, module=${module}, isFromModule=${isFromModule}`);
+
+      let storedModuleList=[];
+      // const isLocalizationTriggered = localStorageGet("isLocalizationTriggered");
+      // if(isLocalizationTriggered === "true") {
+      //   return;
+      // }
+      if(getStoredModulesList()!==null){
+          storedModuleList =JSON.parse(getStoredModulesList());
+      }
+      const moduleName = getModule();
+      let localeModule;
+      if(moduleName==='rainmaker-common'){
+          localeModule='rainmaker-common';
+      }
+      else if(storedModuleList.includes('rainmaker-common')){
+          localeModule=moduleName;
+      }
+      else{
+        localeModule=moduleName?`rainmaker-common,${moduleName}`:`rainmaker-common`;
+      }
+
       let resultArray = [], tenantModule = "", isCommonScreen;
       if(module!=null){
        tenantModule=`rainmaker-${module}`;
       }
-      
+
       if((window.location.href.includes("/language-selection") || window.location.href.includes("/user/login")|| window.location.href.includes("/withoutAuth"))) {
          if((moduleName && storedModuleList.includes(moduleName) === false) || moduleName == null) isCommonScreen = true;
       }
@@ -88,8 +154,9 @@ export const fetchLocalizationLabel = (locale='en_IN', module, tenantId, isFromM
           if(moduleName && storedModuleList.includes(`rainmaker-common`)) isFromModule = false;
       }
 
-      
+
       if((moduleName && storedModuleList.includes(moduleName) === false) || isFromModule || isCommonScreen){
+        console.log(`Log => ** [Localization] Fetching module data: ${localeModule} (not in cache: [${storedModuleList.join(', ')}])`);
         // localStorageSet("isLocalizationTriggered", "true");
           const payload1 = await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
           { key: "module", value: localeModule },
@@ -97,9 +164,19 @@ export const fetchLocalizationLabel = (locale='en_IN', module, tenantId, isFromM
           { key: "tenantId", value: commonConfig.tenantId },
         ]);
         resultArray = [...payload1.messages];
+        console.log(`Log => ** [Localization] Received ${payload1.messages?.length || 0} messages for ${localeModule}`);
+
+        // Mark module as loaded to prevent re-fetching
+        if (moduleName && !storedModuleList.includes(moduleName)) {
+          storedModuleList.push(moduleName);
+          setStoredModulesList(JSON.stringify(storedModuleList));
+        }
+      } else {
+        console.log(`Log => ** [Localization] Skipping fetch - ${moduleName} already in cache: [${storedModuleList.join(', ')}]`);
       }
-      
+
       if((module && storedModuleList.includes(tenantModule)===false)){
+        console.log(`Log => ** [Localization] Fetching tenant module: ${tenantModule}`);
         storedModuleList.push(tenantModule);
         var newList =JSON.stringify(storedModuleList);
         // setStoredModulesList(newList);
@@ -111,48 +188,69 @@ export const fetchLocalizationLabel = (locale='en_IN', module, tenantId, isFromM
         ])
         : [];
       if (payload2 && payload2.messages) {
+        console.log(`Log => ** [Localization] Received ${payload2.messages.length} messages for ${tenantModule}`);
         setStoredModulesList(newList);
         resultArray = [...resultArray, ...payload2.messages];
       }
+    } else if (module) {
+        console.log(`Log => ** [Localization] Skipping fetch - ${tenantModule} already in cache`);
     }
 
+    // Load previous localization labels
     let prevLocalisationLabels = [];
     if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
       prevLocalisationLabels = JSON.parse(getLocalizationLabels());
     }
-    resultArray = [...prevLocalisationLabels, ...resultArray];
+
+    // FIX: Deduplicate before saving to prevent duplicate entries
+    const combinedArray = [...prevLocalisationLabels, ...resultArray];
+    const deduplicatedArray = deduplicateLocalizationMessages(combinedArray);
+
+    console.log(`Log => ** [Localization] Final count: ${deduplicatedArray.length} entries (prev: ${prevLocalisationLabels.length}, new: ${resultArray.length})`);
+
     localStorage.removeItem(`localization_${getLocale()}`);
-    dispatch(setLocalizationLabels(locale, resultArray));
+    dispatch(setLocalizationLabels(locale, deduplicatedArray));
   } catch (error) {
+    // FIX: Add proper error handling instead of silent failure
+    console.error('[Localization] Failed to fetch localization labels:', error);
+    dispatch(toggleSnackbarAndSetText(true, {
+      labelName: "Failed to load translations. Please refresh the page.",
+      labelKey: "ERR_LOCALIZATION_FETCH_FAILED"
+    }, "error"));
+  } finally {
+    // Always reset the flag, even if error occurs
+    localizationRequestInProgress = false;
   }
 };
 };
 
 export const fetchLocalizationLabelForOpenScreens= (locale = 'en_IN', module, tenantId, isFromModule) => {
 return async (dispatch) => {
-  let storedModuleList = [];
-  if (getStoredModulesList() !== null) {
-    storedModuleList = JSON.parse(getStoredModulesList());
-  }
-  const moduleName = getModule();
-  let localeModule;
-  if (moduleName === 'rainmaker-common') {
-    localeModule = 'rainmaker-common';
-  }
-  else if (storedModuleList.includes('rainmaker-common')) {
-    localeModule = moduleName;
-  }
-  else {
-    localeModule = moduleName ? `rainmaker-common,${moduleName}` : `rainmaker-common`;
-  }
   try {
+    let storedModuleList = [];
+    if (getStoredModulesList() !== null) {
+      storedModuleList = JSON.parse(getStoredModulesList());
+    }
+    const moduleName = getModule();
+    let localeModule;
+    if (moduleName === 'rainmaker-common') {
+      localeModule = 'rainmaker-common';
+    }
+    else if (storedModuleList.includes('rainmaker-common')) {
+      localeModule = moduleName;
+    }
+    else {
+      localeModule = moduleName ? `rainmaker-common,${moduleName}` : `rainmaker-common`;
+    }
+
     let resultArray = [], tenantModule = "", isCommonScreen;
     if (module != null) {
       tenantModule = `rainmaker-${module}`;
     }
 
     if ((module && storedModuleList.includes(tenantModule) === false)) {
-      storedModuleList.push(tenantModule);        const payload2 = module
+      storedModuleList.push(tenantModule);
+      const payload2 = module
           ? await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
               { key: "module", value: `rainmaker-${module}` },
               { key: "locale", value: locale },
@@ -163,17 +261,27 @@ return async (dispatch) => {
             resultArray = [...resultArray, ...payload2.messages];
           }
       }
-      
-      let prevLocalisationLabels=[];  
+
+      // Load previous localization labels
+      let prevLocalisationLabels=[];
       if(getLocalizationLabels()!=null && !isCommonScreen && storedModuleList.length > 0){
         prevLocalisationLabels=JSON.parse(getLocalizationLabels());
       }
-      resultArray=[...prevLocalisationLabels, ...resultArray];
+
+      // FIX: Deduplicate before saving to prevent duplicate entries
+      const combinedArray = [...prevLocalisationLabels, ...resultArray];
+      const deduplicatedArray = deduplicateLocalizationMessages(combinedArray);
+
       localStorage.removeItem(`localization_${getLocale()}`);
       // localStorageSet("isLocalizationTriggered", "false");
-      dispatch(setLocalizationLabels(locale, resultArray));
+      dispatch(setLocalizationLabels(locale, deduplicatedArray));
     } catch (error) {
-      console.log(error);
+      // FIX: Add proper error handling instead of just logging
+      console.error('[Localization] Failed to fetch localization labels for open screens:', error);
+      dispatch(toggleSnackbarAndSetText(true, {
+        labelName: "Failed to load translations. Please refresh the page.",
+        labelKey: "ERR_LOCALIZATION_FETCH_FAILED"
+      }, "error"));
     }
   };
 };
@@ -254,7 +362,7 @@ export const fetchUiCommonConfig = () => {
       const UiCommonConfig = commonMasters["uiCommonConfig"];
       dispatch(setUiCommonConfig(UiCommonConfig[0]));
     } catch (error) {
-      console.log(error);
+      console.log('Log => ** [MDMS:UiCommonConfig]', error);
     }
   };
 };
@@ -284,7 +392,7 @@ export const fetchUiCommonConstants = () => {
       const UiCommonConstants = commonMasters["uiCommonConstants"];
       dispatch(setUiCommonConstants(UiCommonConstants[0]));
     } catch (error) {
-      console.log(error);
+      console.log('Log => ** [MDMS:UiCommonConstants]', error);
     }
   };
 };
@@ -302,7 +410,7 @@ export const getNotificationCount = (queryObject, requestBody) => {
       const payload = await httpRequest(EVENTSCOUNT.GET.URL, EVENTSCOUNT.GET.ACTION, queryObject, requestBody);
       dispatch(setNotificationCount(payload.unreadCount));
     } catch (error) {
-      console.log(error);
+      console.log('Log => ** [Notifications:Count]', error);
     }
   };
 };

@@ -147,3 +147,125 @@ export const lSRemoveItem = (key) => {
 export const getTenantIdCommon = () => {
     return process.env.REACT_APP_NAME === "Citizen"?JSON.parse(getUserInfo()).permanentCity:getTenantId();
 }
+
+
+// ============================================================================
+// IndexedDB Integration - Hybrid Storage Approach
+// ============================================================================
+
+import indexedDBManager from '../indexedDBUtils';
+
+// Re-export for other modules
+export { indexedDBManager };
+
+/**
+ * Get localization labels with hybrid storage (IndexedDB + localStorage fallback)
+ *
+ * @param {string} locale - Language locale (e.g., "en_IN")
+ * @returns {Promise<string|null>} JSON string of localization data or null
+ */
+export const getLocalizationLabelsAsync = async (locale) => {
+  const localeToUse = locale || getLocale() || 'en_IN';
+
+  try {
+    // Try IndexedDB first (primary storage)
+    const data = await indexedDBManager.getLocalization(localeToUse, 'all');
+    if (data && data.length > 0) {
+      console.log(`Log => ** [Hybrid Storage] Retrieved ${data.length} localization entries from IndexedDB`);
+      return JSON.stringify(data);
+    }
+  } catch (error) {
+    console.warn('Log => ** [Hybrid Storage] IndexedDB retrieval failed, falling back to localStorage:', error);
+  }
+
+  // Fallback to localStorage (secondary storage)
+  const localStorageData = localStorage.getItem(`localization_${localeToUse}`);
+  if (localStorageData) {
+    console.log('Log => ** [Hybrid Storage] Retrieved localization from localStorage fallback');
+  }
+  return localStorageData;
+};
+
+/**
+ * Set localization labels with smart hybrid storage
+ * STRATEGY:
+ * - rainmaker-common → localStorage (fast sync access, used everywhere)
+ * - Other modules → IndexedDB (large storage, page-specific)
+ *
+ * @param {string} locale - Language locale
+ * @param {array} data - Localization messages array
+ * @param {string} moduleKey - Module identifier ('common', 'other_modules', 'combined')
+ * @returns {Promise<void>}
+ */
+export const setLocalizationLabelsAsync = async (locale, data, moduleKey = 'combined') => {
+  const localeToUse = locale || getLocale() || 'en_IN';
+
+  // Save to IndexedDB based on module type
+  try {
+    await indexedDBManager.setLocalization(localeToUse, moduleKey, data);
+    console.log(`Log => ** [IndexedDB] Saved ${data?.length || 0} entries as '${moduleKey}'`);
+  } catch (error) {
+    console.warn(`Log => ** [IndexedDB] Failed to save '${moduleKey}' (non-critical):`, error);
+  }
+};
+
+/**
+ * Migrate existing localStorage localization data to IndexedDB
+ * This should be called once during app initialization
+ *
+ * @returns {Promise<boolean>} Success status
+ */
+export const migrateLocalizationToIndexedDB = async () => {
+  try {
+    const locale = getLocale() || 'en_IN';
+    const existingData = localStorage.getItem(`localization_${locale}`);
+
+    if (existingData) {
+      const parsedData = JSON.parse(existingData);
+      if (parsedData && parsedData.length > 0) {
+        await indexedDBManager.setLocalization(locale, 'combined', parsedData);
+        console.log(`Log => ** [Migration] Successfully migrated ${parsedData.length} entries to IndexedDB`);
+        return true;
+      }
+    }
+
+    console.log('Log => ** [Migration] No data to migrate');
+    return false;
+  } catch (error) {
+    console.error('Log => ** [Migration] Failed to migrate localization to IndexedDB:', error);
+    return false;
+  }
+};
+
+/**
+ * Get IndexedDB storage statistics
+ * Useful for debugging and monitoring storage usage
+ *
+ * @returns {Promise<object>} Storage statistics
+ */
+export const getLocalizationStorageStats = async () => {
+  try {
+    const stats = await indexedDBManager.getStorageStats();
+    return stats;
+  } catch (error) {
+    console.error('Log => ** [Storage Stats] Failed to get storage statistics:', error);
+    return { supported: false, error: error.message };
+  }
+};
+
+/**
+ * Clean up old localization data from IndexedDB
+ *
+ * @param {number} maxAgeInDays - Maximum age in days (default: 7)
+ * @returns {Promise<number>} Number of entries deleted
+ */
+export const cleanupOldLocalizations = async (maxAgeInDays = 7) => {
+  try {
+    const maxAge = maxAgeInDays * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+    const deletedCount = await indexedDBManager.cleanupOldData(maxAge);
+    return deletedCount;
+  } catch (error) {
+    console.error('Log => ** [Cleanup] Failed to cleanup old localizations:', error);
+    return 0;
+  }
+};
