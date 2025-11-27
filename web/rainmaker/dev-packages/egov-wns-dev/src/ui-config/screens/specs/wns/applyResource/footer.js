@@ -1022,6 +1022,10 @@ else{
      
     
     let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
+    // Normalize to array if null, 'NA', or non-array
+    if (!roadCuttingInfo || roadCuttingInfo === 'NA' || roadCuttingInfo === null || !Array.isArray(roadCuttingInfo)) {
+    roadCuttingInfo = [];
+  }
     // Check application types
     const isDischargeApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.discharge", false);
     const isWaterApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.water", false);
