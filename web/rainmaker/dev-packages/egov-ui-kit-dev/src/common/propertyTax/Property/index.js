@@ -104,9 +104,9 @@ class Property extends Component {
   };
 
   openUpdateMobileDialog = () => {
-    this.setState({ 
-      mobileValidationPopupOpen: false, 
-      updateMobileDialogOpen: true 
+    this.setState({
+      mobileValidationPopupOpen: false,
+      updateMobileDialogOpen: true
     });
   };
 
@@ -182,7 +182,7 @@ class Property extends Component {
       this.openMobileValidationPopup();
       return;
     }
-    
+
     const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
     if (selPropertyDetails.status != "ACTIVE") {
@@ -208,10 +208,11 @@ class Property extends Component {
       this.openMobileValidationPopup();
       return;
     }
-    
+
     const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
-    if (selPropertyDetails.status != "ACTIVE") {
+    debugger;
+    if (selPropertyDetails.status != "ACTIVE" && selPropertyDetails.status != "PENDINGWS") {
       this.props.toggleSnackbarAndSetText(
         true,
         { labelName: "Property in Workflow", labelKey: "ERROR_PROPERTY_IN_WORKFLOW" },
@@ -226,15 +227,15 @@ class Property extends Component {
     }
   };
 
-  onStatusChangePropertyClick = async() => {
+  onStatusChangePropertyClick = async () => {
     const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
-    try{
-    if (selPropertyDetails.status == "ACTIVE") {
-      selPropertyDetails.status="INACTIVE";
-      selPropertyDetails.additionalDetails.propertytobestatus="INACTIVE"
-      selPropertyDetails.isactive= false;
-      selPropertyDetails.isinactive= true;
+    try {
+      if (selPropertyDetails.status == "ACTIVE") {
+        selPropertyDetails.status = "INACTIVE";
+        selPropertyDetails.additionalDetails.propertytobestatus = "INACTIVE"
+        selPropertyDetails.isactive = false;
+        selPropertyDetails.isinactive = true;
         let payload = null;
         let queryObject = [
           {
@@ -246,7 +247,7 @@ class Property extends Component {
             value: propertyId
           }
         ];
-        selPropertyDetails.creationReason="STATUS";
+        selPropertyDetails.creationReason = "STATUS";
         const workflow = {
           "businessService": "PT.CREATE",
           "action": "OPEN",
@@ -259,38 +260,39 @@ class Property extends Component {
           "_update",
           queryObject,
           { Property: selPropertyDetails }
-    
+
         );
-    if(payload.Properties.length >0) {
-    alert("Property is now in INWORKFLOW state. Please approve it!");
-    }
-    else {
-    alert("Some error occured!! please try again.")
-    }
-  }
+        if (payload.Properties.length > 0) {
+          alert("Property is now in INWORKFLOW state. Please approve it!");
+        }
+        else {
+          alert("Some error occured!! please try again.")
+        }
+      }
 
-else {
-  alert("This operation is not allowed as Property is not ACTIVE.");
-  }
-}
-catch (e) { console.log(e);
-  this.props.toggleSnackbarAndSetText(
-    true,
-    { labelName: "Clear Pending dues before De-Enumerating the property", labelKey: "Clear Pending dues before De-Enumerating the property" },
-    "error"
-  );
- 
-}
-};
+      else {
+        alert("This operation is not allowed as Property is not ACTIVE.");
+      }
+    }
+    catch (e) {
+      console.log(e);
+      this.props.toggleSnackbarAndSetText(
+        true,
+        { labelName: "Clear Pending dues before De-Enumerating the property", labelKey: "Clear Pending dues before De-Enumerating the property" },
+        "error"
+      );
 
-onStatusChangePropertyClickToActive = async() => {
-  const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
-  const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
-  if (selPropertyDetails.status == "INACTIVE") {
-    selPropertyDetails.status="ACTIVE";
-    selPropertyDetails.additionalDetails.propertytobestatus="ACTIVE";
-    selPropertyDetails.isactive= true;
-    selPropertyDetails.isinactive= false;
+    }
+  };
+
+  onStatusChangePropertyClickToActive = async () => {
+    const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
+    const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
+    if (selPropertyDetails.status == "INACTIVE") {
+      selPropertyDetails.status = "ACTIVE";
+      selPropertyDetails.additionalDetails.propertytobestatus = "ACTIVE";
+      selPropertyDetails.isactive = true;
+      selPropertyDetails.isinactive = false;
       let payload = null;
       let queryObject = [
         {
@@ -302,7 +304,7 @@ onStatusChangePropertyClickToActive = async() => {
           value: propertyId
         }
       ];
-      selPropertyDetails.creationReason="STATUS";
+      selPropertyDetails.creationReason = "STATUS";
       const workflow = {
         "businessService": "PT.CREATE",
         "action": "OPEN",
@@ -315,18 +317,18 @@ onStatusChangePropertyClickToActive = async() => {
         "_update",
         queryObject,
         { Property: selPropertyDetails }
-  
-      );
-  if(payload.Properties.length >0) 
-  alert("Property is now in INWORKFLOW state. Please approve it!");
-  else 
-  alert("Some error occured!! please try again.")
-}
 
-else {
-alert("This operation is not allowed as Property is not already active.");
-}
-};
+      );
+      if (payload.Properties.length > 0)
+        alert("Property is now in INWORKFLOW state. Please approve it!");
+      else
+        alert("Some error occured!! please try again.")
+    }
+
+    else {
+      alert("This operation is not allowed as Property is not already active.");
+    }
+  };
   getAssessmentHistory = (selPropertyDetails, receiptsByYr = []) => {
     let assessmentList = [];
     const { propertyDetails = [] } = selPropertyDetails;
@@ -433,19 +435,19 @@ alert("This operation is not allowed as Property is not already active.");
     const propertyId = decodeURIComponent(this.props.match.params.propertyId);
     //console.log("sdhsjdbsjd usgs dsuds "+JSON.stringify(this.props))
     const { totalBillAmountDue, Assessments, latestPropertyDetails } = this.props;
-    
+
     // Check mobile validation when property data is loaded for the first time
     if (latestPropertyDetails && latestPropertyDetails !== prevProps.latestPropertyDetails && latestPropertyDetails.owners && !this.state.mobileValidationPopupOpen) {
       if (!this.checkMobileValidation()) {
         this.openMobileValidationPopup();
       }
     }
-    
+
     if (Assessments && Assessments.length > 0 && Assessments[0].propertyId == propertyId && !this.state.billFetched) {
-     this.setState({ billFetched: true })
-     this.props.fetchTotalBillAmount([
+      this.setState({ billFetched: true })
+      this.props.fetchTotalBillAmount([
         { key: "consumerCode", value: propertyId },
-       { key: "tenantId", value: this.props.match.params.tenantId },
+        { key: "tenantId", value: this.props.match.params.tenantId },
         { key: "businessService", value: 'PT' }
       ]);
     }
@@ -515,72 +517,70 @@ alert("This operation is not allowed as Property is not already active.");
         }
         <div id="tax-wizard-buttons" className="wizard-footer col-sm-16" style={{ textAlign: "right" }}>
           <div className="button-container col-5 property-info-access-btn" style={{ float: "right" }}>
-          <Button
-               label={
-                 <Label buttonLabel={true}
-                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
+            <Button
+              label={
+                <Label buttonLabel={true}
+                  //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
                   label={'Make Property Active'} fontSize="11px"
-                   color="#fe7a51" />
-               }
-               onClick={() => 
-                { 
-                  if (process.env.REACT_APP_NAME == "Citizen") {
-                    alert("Action to activate property is not allowed for citizen");
-                  }
-                  else{
-                    if(window.confirm("Are you sure you want to make property active?")){
-                      // Validate mobile number before allowing action
-                      if (!this.checkMobileValidation()) {
-                        this.openMobileValidationPopup();
-                        return;
-                      }
-                      this.onStatusChangePropertyClickToActive();
+                  color="#fe7a51" />
+              }
+              onClick={() => {
+                if (process.env.REACT_APP_NAME == "Citizen") {
+                  alert("Action to activate property is not allowed for citizen");
+                }
+                else {
+                  if (window.confirm("Are you sure you want to make property active?")) {
+                    // Validate mobile number before allowing action
+                    if (!this.checkMobileValidation()) {
+                      this.openMobileValidationPopup();
+                      return;
                     }
+                    this.onStatusChangePropertyClickToActive();
                   }
-                }}
+                }
+              }}
               labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
               buttonStyle={{ border: "0.5px solid #fe7a51" }}
               style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
             />
             <Button
-               label={
-                 <Label buttonLabel={true}
-                //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
+              label={
+                <Label buttonLabel={true}
+                  //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
                   label={'Make Property Inactive'} fontSize="11px"
-                   color="#fe7a51" />
-               }
-               onClick={() => 
-                { 
-                  if (process.env.REACT_APP_NAME == "Citizen") {
-                    alert("Action to inactivate property is not allowed for citizen");
-                  }
-                  else{
-                    if(window.confirm("Are you sure you want to make property Inactive?")){
-                      // Validate mobile number before allowing action
-                      if (!this.checkMobileValidation()) {
-                        this.openMobileValidationPopup();
-                        return;
-                      }
-                      this.onStatusChangePropertyClick();
+                  color="#fe7a51" />
+              }
+              onClick={() => {
+                if (process.env.REACT_APP_NAME == "Citizen") {
+                  alert("Action to inactivate property is not allowed for citizen");
+                }
+                else {
+                  if (window.confirm("Are you sure you want to make property Inactive?")) {
+                    // Validate mobile number before allowing action
+                    if (!this.checkMobileValidation()) {
+                      this.openMobileValidationPopup();
+                      return;
                     }
+                    this.onStatusChangePropertyClick();
                   }
-                }}
+                }
+              }}
               labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
               buttonStyle={{ border: "0.5px solid #fe7a51" }}
               style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
             />
             <Button
-               label={
-                 <Label buttonLabel={true}
-                   label={formWizardConstants[PROPERTY_FORM_PURPOSE.UPDATE].parentButton} fontSize="11px"
-                   color="#fe7a51" />
-               }
+              label={
+                <Label buttonLabel={true}
+                  label={formWizardConstants[PROPERTY_FORM_PURPOSE.UPDATE].parentButton} fontSize="11px"
+                  color="#fe7a51" />
+              }
               onClick={() => this.onEditPropertyClick()}
               labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
               buttonStyle={{ border: "0.5px solid #fe7a51" }}
               style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
             />
-             {/* <Button
+            {/* <Button
                label={
                  <Label buttonLabel={true}
                 //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
@@ -630,18 +630,18 @@ alert("This operation is not allowed as Property is not already active.");
             }}
           >
             <div style={{ padding: '10px' }}>
-              <Label 
+              <Label
                 label="Your mobile number is invalid. Please update it through the mobile number edit option to continue with property actions.
                 ✅ Valid Examples: 9876543210 7894561230 
-                ❌ Invalid Example: 1111111111 (repeated digits)." 
+                ❌ Invalid Example: 1111111111 (repeated digits)."
                 labelStyle={{ color: 'rgba(0, 0, 0, 0.873302)', fontSize: "14px" }}
               />
             </div>
             <div className="pt-warning-button-container" style={{ textAlign: 'center' }}>
-              <button 
-                type="button" 
-                style={{ width: '100%', marginTop: '10px' }} 
-                className={"button-verify-link"} 
+              <button
+                type="button"
+                style={{ width: '100%', marginTop: '10px' }}
+                className={"button-verify-link"}
                 onClick={this.openUpdateMobileDialog}
               >
                 <Label label="Update Mobile Number" />
@@ -650,7 +650,7 @@ alert("This operation is not allowed as Property is not already active.");
           </Dialog>
         )}
         {this.state.updateMobileDialogOpen && (
-          <UpdateMobileDialog 
+          <UpdateMobileDialog
             open={this.state.updateMobileDialogOpen}
             closeDialog={this.closeUpdateMobileDialog}
             property={selPropertyDetails}
@@ -662,7 +662,7 @@ alert("This operation is not allowed as Property is not already active.");
             documents={[
               {
                 code: "DULY_SIGNED_REQUEST_FORM",
-                documentType: "DULY_SIGNED_REQUEST_FORM", 
+                documentType: "DULY_SIGNED_REQUEST_FORM",
                 inputProps: { accept: ".jpg,.png,.pdf" },
                 maxFileSize: 5000,
                 fileName: null,
@@ -952,8 +952,8 @@ const getOwnerInfo = (latestPropertyDetails, generalMDMSDataById) => {
                 }
                 : {
                   key: getTranslatedLabel("PT_OWNERSHIP_PERCENTAGE", localizationLabelsData),
-                  value: ""+(owner.ownerShipPercentage || "NA"),
-                } 
+                  value: "" + (owner.ownerShipPercentage || "NA"),
+                }
 
             ],
           };
@@ -970,7 +970,7 @@ const mapStateToProps = (state, ownProps) => {
   const { urls, localizationLabels } = app;
   const { cities } = common;
   const { generalMDMSDataById } = state.common || {};
-  let { propertiesById, propertiesByIdnew ,singleAssessmentByStatus = [], loading, receiptsByYr, totalBillAmountDue = 0, Assessments = [] } = state.properties || {};
+  let { propertiesById, propertiesByIdnew, singleAssessmentByStatus = [], loading, receiptsByYr, totalBillAmountDue = 0, Assessments = [] } = state.properties || {};
   const tenantId = ownProps.match.params.tenantId;
   const propertyId = decodeURIComponent(ownProps.match.params.propertyId);
   // const selPropertyDetails = propertiesById[propertyId] || {};
@@ -1003,7 +1003,7 @@ const mapStateToProps = (state, ownProps) => {
   const propertyItems = [...addressInfo, ...assessmentInfo, ...ownerInfo];
   const customTitle = selPropertyDetails && selPropertyDetails.address && getCommaSeperatedAddress(selPropertyDetails.address, cities);
   const completedAssessments = getCompletedTransformedItems(pendingAssessments, cities, localizationLabels, propertyId);
- // const completedAssessments = getCompletedTransformedItems(singleAssessmentByStatus, cities, localizationLabels);
+  // const completedAssessments = getCompletedTransformedItems(singleAssessmentByStatus, cities, localizationLabels);
   const sortedAssessments = completedAssessments && orderby(completedAssessments, ["epocDate"], ["desc"]);
   if (Assessments.length == 0) {
     totalBillAmountDue = 0
