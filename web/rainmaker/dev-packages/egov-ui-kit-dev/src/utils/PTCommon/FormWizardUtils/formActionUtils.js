@@ -62,7 +62,7 @@ export const assessProperty = async (action, props) => {
         assessment.additionalDetails.adhocExemptionReason = adhocExemptionPenalty.adhocExemptionReason == 'Others' ? adhocExemptionPenalty.adhocOtherExemptionReason : adhocExemptionPenalty.adhocExemptionReason;
     }
     try {
-        debugger
+        
         let assessPropertyResponse = await httpRequest(
             `property-services/assessment/${propertyMethodAction}`,
             `${propertyMethodAction}`,

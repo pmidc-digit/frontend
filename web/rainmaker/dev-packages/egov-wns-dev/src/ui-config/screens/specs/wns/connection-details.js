@@ -115,7 +115,7 @@ const getActiveConnectionObj = (connectionsObj) => {
 };
 
 const searchResults = async (action, state, dispatch, connectionNumber) => {
-    debugger
+    
  
   /**
    * This methods holds the api calls and the responses of fetch bill and search connection for both water and sewerage service

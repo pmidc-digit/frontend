@@ -55,7 +55,7 @@ class Footer extends React.Component {
           applicationNo && applicationNo.includes("WS")
             ? "WS_DUE_AMOUNT_SHOULD_BE_ZERO"
             : "SW_DUE_AMOUNT_SHOULD_BE_ZERO";
-        //////debugger
+        
         //Remove condition while amount is greater than 0 also able to modify connection
         if (due && parseInt(due) > 0 && legacy === "false") {
           // remove the condition if dues available prevent to modify connection
@@ -282,7 +282,7 @@ class Footer extends React.Component {
         }
         // else if(this.props.bill.Demands[0].businessService == "WS"){
         else if (swservice == "WATER") {
-          // ////debugger
+          
           try {
             //console.log("shdshfdsh-1")
             const payload = await httpRequest(

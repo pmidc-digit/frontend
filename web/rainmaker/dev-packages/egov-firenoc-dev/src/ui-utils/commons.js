@@ -60,7 +60,7 @@ export const download = async (receiptQueryString, mode = "download" ,configKey 
     },
   };
 
-  //debugger
+  
   let consumerCode = getQueryArg(window.location.href, "consumerCode");
   let tenantId = getQueryArg(window.location.href, "tenantId");
   let applicationNumber = getQueryArg(window.location.href, "applicationNumber");

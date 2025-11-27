@@ -57,7 +57,7 @@ export const getMessageFromLocalization = code => {
 };
 
 export const loadUlbLogo = utenantId => {
-  //debugger
+  
   var img = new Image();
   img.crossOrigin = "Anonymous";
   img.onload = function() {

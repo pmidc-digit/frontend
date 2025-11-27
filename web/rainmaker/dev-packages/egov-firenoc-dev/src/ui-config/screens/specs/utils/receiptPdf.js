@@ -1601,7 +1601,7 @@ const getApplicationData = async (transformedData, ulbLogo, type) => {
 };
 
 const newgetApplicationData = async (transformedData, ulbLogo, type) => {
-  //debugger
+  
   const ddi = transformedData.buildings[0].uoms;
   let buildingString = "";
   if (transformedData.buildings.length > 1) {
@@ -1792,7 +1792,7 @@ const newgetApplicationData = async (transformedData, ulbLogo, type) => {
   ]);
   // -----------------
   if (transformedData.buildings.length > 1) {
-    //debugger
+    
     for (let mybuldingdata of transformedData.buildings) {
 
       buildAreaData.push([

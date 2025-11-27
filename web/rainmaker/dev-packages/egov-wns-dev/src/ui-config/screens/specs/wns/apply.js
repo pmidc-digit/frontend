@@ -528,7 +528,7 @@ const showHideFiedsPendingForConnectionActivation = (
 };
 
 export const getData = async (action, state, dispatch) => {
-  //debugger
+  
   let applicationNo = getQueryArg(window.location.href, "applicationNumber");
   const connectionNo = getQueryArg(window.location.href, "connectionNumber");
   const tenantId = getQueryArg(window.location.href, "tenantId");
@@ -1109,7 +1109,7 @@ const screenConfig = {
   name: "apply",
   // hasBeforeInitAsync:true,
   beforeInitScreen: (action, state, dispatch) => {
-    debugger
+    
     // dispatch(prepareFinalObject("applyScreen.water", true));
     // dispatch(prepareFinalObject("applyScreen.sewerage", false));
     const propertyId = getQueryArg(window.location.href, "propertyId");

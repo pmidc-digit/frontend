@@ -57,7 +57,7 @@ export const wnsApplication = getCommonCard({
       required: true,
        beforeFieldChange: async (action, state, dispatch) => {
         //Below only runs for citizen - not required here in employee
-          debugger
+          
         try {
           let payload = await httpRequest(
             "post",
