@@ -148,7 +148,7 @@ class App extends Component {
 
   // SMART STORAGE STRATEGY: Load localizations from hybrid storage
   // - rainmaker-common → Check localStorage first (instant access)
-  // - Other modules → Load from IndexedDB on demand
+  // - Other modules → Load from IndexedDB on demand (NOT written to localStorage to prevent overflow)
   loadLocalizationsFromIndexedDB = (db, callback) => {
     try {
       const locale = getLocale() || 'en_IN';
@@ -187,10 +187,28 @@ class App extends Component {
             console.log(`Log => ** [App] ✅ Saved rainmaker-common to localStorage: ${rainmakerCommon.length} entries`);
           }
 
-          // Also save combined data for backward compatibility
-          const lsKey = `localization_${locale}`;
-          localStorage.setItem(lsKey, JSON.stringify(result.data));
-          console.log(`Log => ** [App] ✅ Loaded ${result.data.length} total entries from IndexedDB`);
+          // FIX: DO NOT save combined data to localStorage - this causes quota exceeded errors
+          // Previously: localStorage.setItem(lsKey, JSON.stringify(result.data));
+          // The combined data is already in IndexedDB and will be loaded from there when needed
+          // Only rainmaker-common needs instant sync access from localStorage
+
+          // Check if small enough for backward compatibility (< 3MB)
+          const dataSize = JSON.stringify(result.data).length;
+          const sizeLimit = 3 * 1024 * 1024; // 3MB limit
+
+          if (dataSize < sizeLimit) {
+            try {
+              const lsKey = `localization_${locale}`;
+              localStorage.setItem(lsKey, JSON.stringify(result.data));
+              console.log(`Log => ** [App] ✅ Saved combined data to localStorage: ${(dataSize / 1024).toFixed(2)} KB (under limit)`);
+            } catch (e) {
+              console.warn(`Log => ** [App] Failed to save combined data to localStorage (quota exceeded), using IndexedDB only`);
+              // This is fine - IndexedDB has the data
+            }
+          } else {
+            console.log(`Log => ** [App] Skipping combined localStorage save: ${(dataSize / 1024).toFixed(2)} KB exceeds ${(sizeLimit / 1024).toFixed(0)} KB limit`);
+            console.log(`Log => ** [App] ✅ Data remains in IndexedDB - will be loaded from there when needed`);
+          }
 
           // Notify caller that we have data
           if (callback) callback(true);
@@ -327,7 +345,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchLocalizationLabel: (locale) => dispatch(fetchLocalizationLabel(locale)),
+    // FIX: Pass all 4 parameters to fetchLocalizationLabel action
+    fetchLocalizationLabel: (locale, module, tenantId, isFromModule) => dispatch(fetchLocalizationLabel(locale, module, tenantId, isFromModule)),
     toggleSnackbarAndSetText: (open, message, error) => dispatch(toggleSnackbarAndSetText(open, message, error)),
     handleFieldChange: (formKey, fieldKey, value) => dispatch(handleFieldChange(formKey, fieldKey, value)),
     fetchMDMSData: (criteria) => dispatch(fetchMDMSData(criteria)),

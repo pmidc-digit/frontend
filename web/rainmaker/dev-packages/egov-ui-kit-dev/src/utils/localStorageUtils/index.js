@@ -52,8 +52,41 @@ export const getTenantId = () => {
 export const getLocalization = (key) => {
   return localStorage.getItem(key);
 };
+/**
+ * Validate if a locale is valid
+ * Valid formats: "en_IN", "hi_IN", "pa_IN", etc.
+ * @param {string} locale - Locale to validate
+ * @returns {boolean} - True if valid, false otherwise
+ */
+export const isValidLocale = (locale) => {
+  if (!locale || typeof locale !== 'string') {
+    return false;
+  }
+
+  // Check if empty string, null, undefined, "null", "undefined"
+  if (locale === '' || locale === 'null' || locale === 'undefined') {
+    return false;
+  }
+
+  // Valid locale format: language_COUNTRY (e.g., en_IN, hi_IN)
+  const localePattern = /^[a-z]{2}_[A-Z]{2}$/;
+  return localePattern.test(locale);
+};
+
+/**
+ * Get locale with fallback to en_IN if invalid
+ * @returns {string} - Valid locale string (defaults to en_IN)
+ */
 export const getLocale = () => {
-  return localStorage.getItem("locale");
+  const locale = localStorage.getItem("locale");
+
+  // If locale is invalid, return default
+  if (!isValidLocale(locale)) {
+    console.log(`[getLocale] Invalid locale detected: "${locale}", falling back to en_IN`);
+    return 'en_IN';
+  }
+
+  return locale;
 };
 export const getModule = () => {
   return localStorage.getItem("module");
@@ -93,8 +126,20 @@ export const setRefreshToken = (refreshToken) => {
 export const setTenantId = (tenantId) => {
   localStorageSet("tenant-id", tenantId, null);
 };
+/**
+ * Set locale with validation - falls back to en_IN if invalid
+ * @param {string} locale - Locale to set
+ */
 export const setLocale = (locale) => {
+  // Validate locale before setting
+  if (!isValidLocale(locale)) {
+    console.warn(`[setLocale] Invalid locale provided: "${locale}", setting to en_IN instead`);
+    localStorageSet("locale", 'en_IN');
+    return;
+  }
+
   localStorageSet("locale", locale);
+  console.log(`[setLocale] Locale set to: ${locale}`);
 };
 export const setModule = (moduleName) => {
   localStorageSet("module", moduleName);

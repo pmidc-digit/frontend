@@ -1062,8 +1062,9 @@ export const getModuleName = () => {
   if (pathName.indexOf("inbox") > -1) { return "rainmaker-common"; }
   else if (pathName.indexOf("dss") > -1) { return "rainmaker-dss"; }
   else if (pathName.indexOf("receipts") > -1) { return "rainmaker-receipts"; }
+  // FIX: Check for specific PT screens BEFORE the generic "property-tax" check to prevent false matches
+  else if (pathName.indexOf("pt-common-screens") > -1 || pathName.indexOf("pt-mutation/public-search") > -1 || pathName.indexOf("pt-mutation/propertySearch") > -1) { return "rainmaker-pt"; }
   else if (pathName.indexOf("property-tax") > -1 || pathName.indexOf("rainmaker-pt") > -1 || pathName.indexOf("pt-mutation") > -1) { return "rainmaker-pt,rainmaker-pgr"; }
-  else if (pathName.indexOf("pt-common-screens") > -1 || pathName.indexOf("pt-mutation/public-search") > -1) { return "rainmaker-pt"; }
   // FIX: Check for pgr-home BEFORE the generic "pgr" check to prevent false matches
   else if (pathName.indexOf("pgr-home") > -1 || pathName.indexOf("rainmaker-pgr") > -1) { return "rainmaker-pgr"; }
   else if (pathName.indexOf("complaint") > -1 || pathName.indexOf("pgr") > -1 || pathName.indexOf("resolve-success") > -1 || pathName.indexOf("employee-directory") > -1 || pathName.indexOf("reopen-acknowledgement") > -1 || pathName.indexOf("feedback") > -1 || pathName.indexOf("request-reassign") > -1 || pathName.indexOf("reassign-success") > -1) { return "rainmaker-pgr"; }

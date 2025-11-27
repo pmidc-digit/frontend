@@ -281,7 +281,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchLocalizationLabel: (locale) => dispatch(fetchLocalizationLabel(locale)),
+    // FIX: Pass all 4 parameters to fetchLocalizationLabel action
+    fetchLocalizationLabel: (locale, module, tenantId, isFromModule) => dispatch(fetchLocalizationLabel(locale, module, tenantId, isFromModule)),
     toggleSnackbarAndSetText: (open, message, error) => dispatch(toggleSnackbarAndSetText(open, message, error)),
     fetchMDMSData: (criteria) => dispatch(fetchMDMSData(criteria)),
     fetchCurrentLocation: () => dispatch(fetchCurrentLocation()),
