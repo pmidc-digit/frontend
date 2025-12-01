@@ -1223,10 +1223,10 @@ export const downloadBill = async (consumerCode, tenantId, configKey = "consolid
 
 			billResponse.Bills[0].additionalDetails = addDetail;
 			if (businesService == "SW") {
-				billResponse.Bills[0].additionalDetails.latePaymentc = billResponse.Bills[0].tenantId == "pb.patiala" ? '0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.nabha") ? '0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
 			}
 			else if (businesService == "WS") {
-				billResponse.Bills[0].additionalDetails.latePaymentc = billResponse.Bills[0].tenantId == "pb.patiala" ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.nabha") ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
 			}
 			const queryStr = [
 				{ key: "key", value: configKey },

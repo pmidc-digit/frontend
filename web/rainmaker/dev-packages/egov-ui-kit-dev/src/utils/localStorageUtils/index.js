@@ -43,8 +43,8 @@ export const getAccessToken = () => {
   return localStorageGet(`token`);
 };
 export const getUserInfo = () => {
-  return decryptUserDetails(localStorageGet("user-info"));
-
+  //return decryptUserDetails(localStorageGet("user-info"));
+  return localStorageGet("user-info");
 };
 export const getTenantId = () => {
   return localStorageGet("tenant-id");
@@ -81,7 +81,7 @@ export const getIPin =()=>{
 }
 //SET methods
 export const setUserInfo = (userInfo) => {
-  userInfo = encryptUserDetails(userInfo)
+  //userInfo = encryptUserDetails(userInfo)
   localStorageSet("user-info", userInfo, null);
 };
 export const setAccessToken = (token) => {
