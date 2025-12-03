@@ -6,7 +6,7 @@ import { toggleSnackbarAndSetText } from "egov-ui-kit/redux/app/actions";
 import { setFieldProperty } from "egov-ui-kit/redux/form/actions";
 import { httpRequest } from "egov-ui-kit/utils/api";
 import { TENANT } from "egov-ui-kit/utils/endPoints";
-import { getAccessToken, getTenantId, getUserInfo, localStorageGet, localStorageSet } from "egov-ui-kit/utils/localStorageUtils";
+import { getSessionId, getTenantId, getUserInfo, localStorageGet, localStorageSet, hasValidSession } from "egov-ui-kit/utils/localStorageUtils";
 import Label from "egov-ui-kit/utils/translationNode";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -732,10 +732,23 @@ export const trimObj = (obj) => {
   return obj;
 };
 
+// Deprecated: Use hasSessionExpired instead
 export const hasTokenExpired = (status, data) => {
+  return hasSessionExpired(status, data);
+};
+
+// Check if session has expired based on API response
+export const hasSessionExpired = (status, data) => {
+  // 401 Unauthorized indicates session expiry
   if (status === 401) {
-    if (data && data.Errors && Array.isArray(data.Errors) && data.Errors.length > 0 && data.Errors[0].code === "InvalidAccessTokenException")
-      return true;
+    // Check for specific error codes that indicate session/token expiry
+    if (data && data.Errors && Array.isArray(data.Errors) && data.Errors.length > 0) {
+      const errorCode = data.Errors[0].code;
+      return errorCode === "InvalidAccessTokenException" ||
+             errorCode === "SessionExpiredException" ||
+             errorCode === "InvalidSessionException";
+    }
+    return true; // 401 without specific error still means unauthorized
   }
   return false;
 };

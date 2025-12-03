@@ -6,10 +6,8 @@ import { prepareFormData } from "egov-ui-kit/utils/commons";
 import get from "lodash/get";
 import {
   setTenantId,
-  getAccessToken,
+  getSessionId,
   setUserInfo,
-  setAccessToken,
-  setRefreshToken,
   localStorageSet,
   localStorageGet,
   clearUserDetails,
@@ -59,22 +57,21 @@ export const authenticating = () => {
   return { type: authType.AUTHENTICATING };
 };
 
+// Session-based authentication - tokens are no longer stored client-side
+// Session is managed via HttpOnly cookies set by the server
 export const authenticated = (payload = {}) => {
   const userInfo = fixUserDob(payload["UserRequest"]);
-  const accessToken = payload.access_token;
-  const refreshToken = payload.refresh_token;
-  const expiresIn = payload.expires_in;
   const lastLoginTime = new Date().getTime();
 
+  // Store user info (not tokens - session managed via cookies)
   setUserInfo(JSON.stringify(userInfo));
-  setAccessToken(accessToken);
-  setRefreshToken(refreshToken);
   setTenantId(userInfo.tenantId);
-  localStorageSet("expires-in", expiresIn);
   localStorageSet("last-login-time", lastLoginTime);
-  localStorageSet("CITIZEN.CITY",userInfo.permanentCity);
+  localStorageSet("CITIZEN.CITY", userInfo.permanentCity);
 
-  return { type: authType.AUTHENTICATED, userInfo, accessToken };
+  // Note: access_token and refresh_token are no longer stored
+  // Session is managed via HttpOnly cookies set by the server
+  return { type: authType.AUTHENTICATED, userInfo, authenticated: true };
 };
 
 export const authenticationFailed = () => {
@@ -104,20 +101,14 @@ export const searchUser = () => {
   };
 };
 
+// Deprecated: Session refresh is now handled by the server via cookies
+// This function is kept for backward compatibility but will trigger logout on session expiry
 export const refreshTokenRequest = () => {
   return async (dispatch) => {
-    const refreshToken = localStorageGet("refresh-token");
-    const grantType = "refresh_token";
-    const userType = process.env.REACT_APP_NAME === "Citizen" ? "CITIZEN" : "EMPLOYEE";
-    try {
-      const response = await loginRequest(null, null, refreshToken, grantType, "", userType);
-      delete response.ResponseInfo;
-      dispatch(authenticated(response));
-      // only option for the time being!
-      window.location.reload();
-    } catch (error) {
-      dispatch(logout());
-    }
+    // With session-based auth, session refresh is handled by the server
+    // If session expires, user must re-authenticate
+    console.warn('refreshTokenRequest is deprecated. Session is managed via server cookies.');
+    dispatch(logout());
   };
 };
 
@@ -136,28 +127,28 @@ export const sendOTP = (intent) => {
   };
 };
 
+// Session-based logout - clears local data and calls server logout endpoint
 export const logout = () => {
   return async () => {
     try {
-      const authToken = getAccessToken();
-      if (authToken) {
-        const response = await httpRequest(AUTH.LOGOUT.URL, AUTH.LOGOUT.ACTION, [{ key: "access_token", value: authToken }]);
-      } else {
-        clearUserDetails();
-        process.env.REACT_APP_NAME === "Citizen"
-          ? window.location.replace(`${window.basename}/user/register`)
-          : window.location.replace(`${window.basename}/user/login`);
-        return;
+      const sessionId = getSessionId();
+      if (sessionId) {
+        // Call server logout endpoint to invalidate session
+        // Server will clear the session cookie
+        await httpRequest(AUTH.LOGOUT.URL, AUTH.LOGOUT.ACTION, []);
       }
     } catch (error) {
-      console.log(error);
-      clearUserDetails();
+      console.log('Logout request error:', error);
+      // Continue with local cleanup even if server request fails
     }
-    // whatever happens the client should clear the user details
-    // let userInfo=getUserInfo();
-    // let userRole=get(userInfo,"roles[0].code");
+
+    // Clear all local user data and cookies
     clearUserDetails();
-    // window.location.replace(`${window.basename}/user/login`)
-    window.location.replace(`${window.basename}/user/login`);
+
+    // Redirect to appropriate login page
+    const redirectUrl = process.env.REACT_APP_NAME === "Citizen"
+      ? `${window.basename}/user/register`
+      : `${window.basename}/user/login`;
+    window.location.replace(redirectUrl);
   };
 };

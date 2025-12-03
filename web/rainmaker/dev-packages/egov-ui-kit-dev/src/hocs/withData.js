@@ -6,24 +6,25 @@ import { fetchpgrConstants } from "egov-ui-kit/redux/common/actions";
 import { fetchUiCommonConfig, fetchUiCommonConstants } from "egov-ui-kit/redux/app/actions";
 import commonConfig from "config/common";
 import { fetchGeneralMDMSData } from "egov-ui-kit/redux/common/actions";
-import { getAccessToken } from "egov-ui-kit/utils/localStorageUtils";
+import { hasValidSession } from "egov-ui-kit/utils/localStorageUtils";
 import { generalMDMSDataRequestObj, getGeneralMDMSDataDropdownName } from "egov-ui-kit/utils/commons";
 
 const withData = (Component) => {
   class Wrapper extends React.Component {
     componentDidMount() {
       const { searchUser, fetchComplaintCategories, authenticated, fetchpgrConstants, fetchUiCommonConfig, fetchUiCommonConstants, fetchGeneralMDMSData } = this.props;
-      if (getAccessToken()) {
-        
+      // Check for valid session instead of access token
+      if (hasValidSession()) {
+
         searchUser();
         fetchUiCommonConstants();
         fetchComplaintCategories();
 /*         fetchpgrConstants();
         fetchUiCommonConfig();
-        
-       fetchGeneralMDMSData(); 
+
+       fetchGeneralMDMSData();
         */
-       
+
       }
     }
 

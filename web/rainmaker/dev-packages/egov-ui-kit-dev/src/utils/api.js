@@ -1,8 +1,8 @@
 import axios from "axios";
 import commonConfig from "egov-ui-kit/config/common.js";
-import { getAccessToken, getLocale, getTenantId, localStorageGet, localStorageSet, setLocale, setTenantId } from "egov-ui-kit/utils/localStorageUtils";
+import { getSessionId, getLocale, getTenantId, localStorageGet, localStorageSet, setLocale, setTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import some from "lodash/some";
-import { addQueryArg, hasTokenExpired, prepareForm } from "./commons";
+import { addQueryArg, hasSessionExpired, prepareForm } from "./commons";
 import store from "ui-redux/store";
 import { hideSpinner,showSpinner } from "egov-ui-kit/redux/common/actions";
 
@@ -19,17 +19,36 @@ axios.interceptors.response.use(
   }
 );
 
-const instance = axios.create({
-  baseURL: window.location.origin,
-  headers: {
+// Get session-based headers for API requests
+const getSessionHeaders = () => {
+  const sessionId = getSessionId();
+  const headers = {
     "Content-Type": "application/json",
     'X-Frame-Options': 'sameorigin'
-  },
+  };
+  if (sessionId) {
+    headers['Session-Id'] = sessionId;
+  }
+  return headers;
+};
+
+const instance = axios.create({
+  baseURL: window.location.origin,
+  headers: getSessionHeaders(),
+  withCredentials: true, // Enable cookies to be sent with requests
+});
+
+// Update headers before each request to include latest session ID
+instance.interceptors.request.use((config) => {
+  const sessionId = getSessionId();
+  if (sessionId) {
+    config.headers['Session-Id'] = sessionId;
+  }
+  return config;
 });
 
 const wrapRequestBody = (requestBody, action, customRequestInfo) => {
-  const authToken = getAccessToken();
-
+  // Session ID is now passed in headers, not in request body
   let RequestInfo = {
     apiId: "Rainmaker",
     ver: ".01",
@@ -39,7 +58,7 @@ const wrapRequestBody = (requestBody, action, customRequestInfo) => {
     key: "",
     msgId: `20170310130900|${getLocale()}`,
     // requesterId: "",
-    authToken,
+    // authToken removed - session is managed via cookies/headers
   };
   RequestInfo = { ...RequestInfo, ...customRequestInfo };
   return Object.assign(
@@ -81,8 +100,8 @@ export const multiHttpRequest = async (
 
   } catch (error) {
     const { data, status } = error.response[0];
-    if (hasTokenExpired(status, data)) {
-      apiError = "INVALID_TOKEN";
+    if (hasSessionExpired(status, data)) {
+      apiError = "SESSION_EXPIRED";
     } else {
       apiError =
         (data.hasOwnProperty("Errors") && data.Errors && data.Errors.length && data.Errors[0].message) ||
@@ -140,8 +159,8 @@ export const httpRequestForAssessmentCancellation = async (
 
   } catch (error) {
     const { data, status } = error.response;
-    if (hasTokenExpired(status, data)) {
-      apiError = "INVALID_TOKEN";
+    if (hasSessionExpired(status, data)) {
+      apiError = "SESSION_EXPIRED";
     } else {
       apiError =
         (data.hasOwnProperty("Errors") && data.Errors && data.Errors.length && data.Errors[0].message) ||
@@ -201,8 +220,8 @@ export const httpRequest = async (
 
   } catch (error) {
     const { data, status } = error.response;
-    if (hasTokenExpired(status, data)) {
-      apiError = "INVALID_TOKEN";
+    if (hasSessionExpired(status, data)) {
+      apiError = "SESSION_EXPIRED";
     } else {
       apiError =
         (data.hasOwnProperty("Errors") && data.Errors && data.Errors.length && data.Errors[0].message) ||
@@ -218,11 +237,17 @@ export const httpRequest = async (
 export const uploadFile = async (endPoint, module, file, ulbLevel) => {
   // Bad idea to fetch from local storage, change as feasible
   const tenantId = getTenantId() ? (ulbLevel ? getTenantId() : getTenantId().split(".")[0]) : "";
+  const sessionId = getSessionId();
+  const uploadHeaders = {
+    "Content-Type": "multipart/form-data",
+  };
+  if (sessionId) {
+    uploadHeaders['Session-Id'] = sessionId;
+  }
   const uploadInstance = axios.create({
     baseURL: window.location.origin,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    headers: uploadHeaders,
+    withCredentials: true,
   });
 
   const requestParams = {
@@ -248,6 +273,7 @@ export const uploadFile = async (endPoint, module, file, ulbLevel) => {
   }
 };
 
+// Session-based login - server sets session cookie on successful login
 export const loginRequest = async (username = null, password = null, refreshToken = "", grantType = "password", tenantId = "", userType) => {
   tenantId = tenantId ? tenantId : commonConfig.tenantId;
   const loginInstance = axios.create({
@@ -256,12 +282,14 @@ export const loginRequest = async (username = null, password = null, refreshToke
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization: "Basic ZWdvdi11c2VyLWNsaWVudDplZ292LXVzZXItc2VjcmV0",
     },
+    withCredentials: true, // Enable cookies to be received and stored
   });
 
   let apiError = "Api Error";
   var params = new URLSearchParams();
   username && params.append("username", username);
   password && params.append("password", password);
+  // refreshToken is deprecated for session-based auth but kept for backward compatibility
   refreshToken && params.append("refresh_token", refreshToken);
   params.append("grant_type", grantType);
   params.append("scope", "read");
@@ -272,6 +300,8 @@ export const loginRequest = async (username = null, password = null, refreshToke
     const response = await loginInstance.post("/user/oauth/token", params);
     const responseStatus = parseInt(response.status, 10);
     if (responseStatus === 200 || responseStatus === 201) {
+      // Session cookie is automatically set by the server
+      // Return user data (tokens are no longer stored client-side)
       return response.data;
     }
   } catch (error) {
@@ -290,21 +320,12 @@ export const commonApiPost = (
   doNotOverride = false,
   isTimeLong = true,
   noPageSize = false,
-  authToken = "",
+  authToken = "", // Deprecated - kept for backward compatibility
   userInfo = "",
   isStateLevel = false,
   offset = 0
 ) => {
-  // const RequestInfo = {
-  //   apiId: "Rainmaker",
-  //   ver: ".01",
-  //   ts: "",
-  //   did: "1",
-  //   key: "",
-  //   msgId: "20170310130900|en_IN",
-  //   requesterId: "",
-  //   authToken,
-  // };
+  // Session-based auth - authToken removed from RequestInfo
   const RequestInfo = {
     apiId: "emp",
     ver: "1.0",
@@ -314,7 +335,7 @@ export const commonApiPost = (
     key: "abcdkey",
     msgId: "20170310130900",
     requesterId: "",
-    authToken,
+    // authToken removed - session is managed via cookies/headers
   };
   var url = context;
   if (url && url[url.length - 1] === "/") url = url.substring(0, url.length - 1);
@@ -341,13 +362,9 @@ export const commonApiPost = (
 
   url += "&offset=" + offset;
 
-  RequestInfo.authToken = getAccessToken();
+  // Session ID is passed in headers via axios interceptor, not in RequestInfo
   if (isTimeLong) {
     RequestInfo.ts = new Date().getTime();
-  }
-
-  if (authToken) {
-    RequestInfo["authToken"] = authToken;
   }
 
   body["RequestInfo"] = RequestInfo;
