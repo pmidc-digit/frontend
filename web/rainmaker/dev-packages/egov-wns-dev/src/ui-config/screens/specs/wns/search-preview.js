@@ -1206,16 +1206,16 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     (payload.WaterConnection && payload.WaterConnection[0] ? payload.WaterConnection[0].applicationType : null) :
     (payload.SewerageConnections && payload.SewerageConnections[0] ? payload.SewerageConnections[0].applicationType : null);
 
-  if (applicationType && (
-      applicationType === "DISCONNECT_WATER_CONNECTION" || 
-      applicationType === "DISCONNECT_SEWERAGE_CONNECTION"
-    )) {
-    set(
-      action.screenConfig,
-      "components.div.children.taskDetails.children.cardContent.children.estimate.visible",
-      false
-    );
-  }
+  // if (applicationType && (
+  //     applicationType === "DISCONNECT_WATER_CONNECTION" || 
+  //     applicationType === "DISCONNECT_SEWERAGE_CONNECTION"
+  //   )) {
+  //   set(
+  //     action.screenConfig,
+  //     "components.div.children.taskDetails.children.cardContent.children.estimate.visible",
+  //     false
+  //   );
+  // }
 };
 
 const parserFunction = (obj) => {
