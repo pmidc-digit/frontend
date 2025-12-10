@@ -52,7 +52,7 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, data) => {
-            ////debugger;
+            ////
 
             if (
               data.rowData[5] !== undefined &&
@@ -147,7 +147,7 @@ export const searchResults = {
 };
 
 const getConnectionDetails = (data) => {
-  // debugger;
+  // 
   console.log("data++", data);
   let legacy;
   if (data.rowData[11] === true) {

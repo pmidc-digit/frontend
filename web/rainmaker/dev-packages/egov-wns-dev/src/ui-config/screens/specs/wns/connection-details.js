@@ -99,7 +99,7 @@ export const sortpayloadDataObj = (connectionObj) => {
 };
 
 const getActiveConnectionObj = (connectionsObj) => {
-  debugger;
+  
   let getActiveConnectionObj = "";
   for (var i = 0; i < connectionsObj.length; i++) {
     if (
@@ -115,7 +115,7 @@ const getActiveConnectionObj = (connectionsObj) => {
 };
 
 const searchResults = async (action, state, dispatch, connectionNumber) => {
-    debugger
+    
  
   /**
    * This methods holds the api calls and the responses of fetch bill and search connection for both water and sewerage service
@@ -534,7 +534,7 @@ export const getDCBDetail = async (queryObject , dispatch) => {
     let dcbtotalArray = [];
     let dcbRow=null;
     let dcbtotalRow=null;
-    debugger;
+    
     let installment,advance,taxAmount,taxCollected,taxBalance,interestAmount,interestCollected,interestBalance,penaltyBalance,penaltyCollected,penaltyAmount;
     response.Demands.map((element,index) => {
       taxAmount=0;taxCollected=0;taxBalance=0;interestAmount=0;
@@ -611,7 +611,7 @@ response.Demands[length-1].demandDetails.map((dd)=>{
   const totalBalance = parseInt(totalTaxBalance) + parseInt(totalInterestBalance) + parseInt(totalPenaltyBalance)+parseInt(totalAdvance);  
 
 
-debugger;
+
 
   dcbtotalRow={
              

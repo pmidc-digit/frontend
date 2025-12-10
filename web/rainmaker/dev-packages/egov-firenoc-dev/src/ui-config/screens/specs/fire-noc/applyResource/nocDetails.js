@@ -128,13 +128,13 @@ const loadProvisionalNocData = async (state, dispatch) => {
 };
 
 export const loadProvisionalNocData2 = async (state, dispatch) => {
-  debugger;
+  
   // let fireDate = get(
   //   state,
   //   "screenConfiguration.preparedFinalObject.FireNOCs[0].oldFireNOCNumber",
   //   ""
   // );
-  // debugger;
+  // 
   // const cd= fireDate.split("PB-FN-");
   // const appActualDate=cd[1].slice(0,10);
   // console.log(appActualDate);
@@ -154,7 +154,7 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
     ""
   );
  // }
-debugger;
+
   let response = await getSearchResults([
     { key: "FireNOCNumber", value: oldfireNOCNumber }
   ]);
@@ -263,7 +263,7 @@ debugger;
     []
   );
   // my date
-  debugger;
+  
   let diffDays ;
   let firenoclength = response.FireNOCs.length - 1;
   let fireDate = response.FireNOCs[firenoclength].fireNOCDetails.issuedDate;

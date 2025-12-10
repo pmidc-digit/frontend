@@ -7,7 +7,7 @@ let nnname;
 let demo="(above)";
 
 export const selfdata =async (state, dispatch) =>{
-  debugger
+  
   nnname= state.screenConfiguration.preparedFinalObject.Licenses[0].businessService;
   
 }

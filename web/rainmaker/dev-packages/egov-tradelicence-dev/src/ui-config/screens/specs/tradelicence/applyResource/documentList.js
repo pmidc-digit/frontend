@@ -1,4 +1,4 @@
-debugger;
+
 export const documentList = {
   
   uiFramework: "custom-containers-local",
