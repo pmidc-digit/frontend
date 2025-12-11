@@ -3,3 +3,4 @@ export const SCREEN_INTERFACE =
   "/egov-ui-framework/:path?/:screenKey?/:hasRemoteConfig?";
 export const PLAYGROUND = "/ui-framework/playground";
 export const REDIRECT = "/egov-ui-framework/abg/billSearch";
+export const PROPERTYREDIRECT = "/egov-ui-framework/abg/billSearchproperty";
