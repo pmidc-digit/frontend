@@ -3,7 +3,7 @@ import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import { httpRequest } from "../../../../ui-utils";
-import { billSearchCard } from "./billSearchResources/billSearchCard";
+import { billSearchCardProperty } from "./billSearchResources/billSearchCardProperty";
 import { searchResults } from "./billSearchResources/searchResults";
 import "./index.css";
 let result = [];
@@ -84,11 +84,11 @@ const billSearchAndResult = {
     const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     if (tenantId) {
       dispatch(prepareFinalObject("searchScreen", { tenantId: tenantId }));
-      const ulbComponentJsonPath = "components.div.children.billSearchCard.children.cardContent.children.searchContainer.children.ulb";
+      const ulbComponentJsonPath = "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.ulb";
       const disableUlb = process.env.REACT_APP_NAME === "Citizen" ? false : true;
       dispatch(
         handleField(
-          "billSearch",
+          "billSearchproperty",
           ulbComponentJsonPath,
           "props.value",
           tenantId
@@ -162,7 +162,7 @@ const billSearchAndResult = {
             }
           }
         },
-        billSearchCard,
+        billSearchCardProperty,
         breakAfterSearch: getBreak(),
         searchResults
       }
