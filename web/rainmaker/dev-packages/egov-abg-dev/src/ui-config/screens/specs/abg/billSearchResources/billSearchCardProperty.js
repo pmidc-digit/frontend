@@ -9,7 +9,7 @@ const resetFields = (state, dispatch) => {
   const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
   dispatch(
     handleField(
-      "billSearch",
+      "billSearchproperty",
       "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.ulb",
       "props.value",
       tenantId
@@ -17,7 +17,7 @@ const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "billSearch",
+      "billSearchproperty",
       "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.consumerCode",
       "props.value",
       ""
@@ -25,15 +25,15 @@ const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "billSearch",
-      "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.billNumber",
+      "billSearchproperty",
+      "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.VasikaCode",
       "props.value",
       ""
     )
   );
   dispatch(
     handleField(
-      "billSearch",
+      "billSearchproperty",
       "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.mobileNo",
       "props.value",
       ""
@@ -41,7 +41,7 @@ const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "billSearch",
+      "billSearchproperty",
       "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.serviceCategory",
       "props.value",
       ""
@@ -49,7 +49,7 @@ const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "billSearch",
+      "billSearchproperty",
       "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.serviceCategory",
       "props.error",
       false
@@ -57,23 +57,70 @@ const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "billSearch",
+      "billSearchproperty",
       "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children.serviceCategory",
       "props.helperText",
       ""
     )
   );
-  dispatch(prepareFinalObject("searchScreen", { tenantId: tenantId ,businesService:""}));
+  // Hide statistics and table on reset
+  dispatch(
+    handleField(
+      "billSearchproperty",
+      "components.div.children.searchStatistics",
+      "visible",
+      false
+    )
+  );
+  
+  // Clear table data before hiding
+  dispatch(
+    handleField(
+      "billSearchproperty",
+      "components.div.children.billSearchpropertyResult",
+      "props.data",
+      []
+    )
+  );
+  
+  // Reset pagination state
+  dispatch(
+    handleField(
+      "billSearchproperty",
+      "components.div.children.billSearchpropertyResult",
+      "props.options.page",
+      0
+    )
+  );
+  
+  dispatch(
+    handleField(
+      "billSearchproperty",
+      "components.div.children.billSearchpropertyResult",
+      "props.options.count",
+      0
+    )
+  );
+  
+  dispatch(
+    handleField(
+      "billSearchproperty",
+      "components.div.children.billSearchpropertyResult",
+      "visible",
+      false
+    )
+  );
+  dispatch(prepareFinalObject("searchScreen", { tenantId: tenantId ,businesService:"PT"}));
 };
 
 export const billSearchCardProperty = getCommonCard({
   header: getCommonHeader({
-    labelName: "Search Bill",
-    labelKey: "ABG_SEARCH_BILL_COMMON_HEADER"
+    labelName: "Search Property Records",
+    labelKey: "ABG_SEARCH_PROPERTY_RECORDS_COMMON_HEADER"
   }),
   subheader: getCommonSubHeader({
-    labelName: "Provide at least one parameter to search for an application",
-    labelKey: "ABG_SEARCH_BILL_COMMON_SUB_HEADER"
+    labelName: "Provide at least one parameter to search for property records",
+    labelKey: "ABG_SEARCH_PROPERTY_RECORDS_COMMON_SUB_HEADER"
   }),
   searchContainer: getCommonContainer({
     ulb: {
@@ -201,45 +248,45 @@ export const billSearchCardProperty = getCommonCard({
         sm: 4
       }
     }),
-    billNumber: getTextField({
-      label: {
-        labelName: "Bill No.",
-        labelKey: "ABG_BILL_NUMBER_LABEL"
-      },
-      placeholder: {
-        labelName: "Enter Bill No.",
-        labelKey: "ABG_BILL_NUMBER_PLACEHOLDER"
-      },
-      required: false,
-      visible: true,
-      jsonPath: "searchScreen.billNo",
-      gridDefination: {
-        xs: 12,
-        sm: 4
-      }
-    }),
-    mobileNo: getTextField({
-      label: {
-        labelName: "Mobile No.",
-        labelKey: "ABG_MOBILE_NO_LABEL"
-      },
-      placeholder: {
-        labelName: "Enter Mobile No.",
-        labelKey: "ABG_MOBILE_NO_PLACEHOLDER"
-      },
-      gridDefination: {
-        xs: 12,
-        sm: 4
-      },
-      iconObj: {
-        label: "+91 |",
-        position: "start"
-      },
-      required: false,
-      pattern: getPattern("MobileNo"),
-      errorMessage: "Invalid Mobile No..",
-      jsonPath: "searchScreen.mobileNumber"
-    })
+    // billNumber: getTextField({
+    //   label: {
+    //     labelName: "Bill No.",
+    //     labelKey: "ABG_BILL_NUMBER_LABEL"
+    //   },
+    //   placeholder: {
+    //     labelName: "Enter Bill No.",
+    //     labelKey: "ABG_BILL_NUMBER_PLACEHOLDER"
+    //   },
+    //   required: false,
+    //   visible: true,
+    //   jsonPath: "searchScreen.billNo",
+    //   gridDefination: {
+    //     xs: 12,
+    //     sm: 4
+    //   }
+    // }),
+    // mobileNo: getTextField({
+    //   label: {
+    //     labelName: "Mobile No.",
+    //     labelKey: "ABG_MOBILE_NO_LABEL"
+    //   },
+    //   placeholder: {
+    //     labelName: "Enter Mobile No.",
+    //     labelKey: "ABG_MOBILE_NO_PLACEHOLDER"
+    //   },
+    //   gridDefination: {
+    //     xs: 12,
+    //     sm: 4
+    //   },
+    //   iconObj: {
+    //     label: "+91 |",
+    //     position: "start"
+    //   },
+    //   required: false,
+    //   pattern: getPattern("MobileNo"),
+    //   errorMessage: "Invalid Mobile No..",
+    //   jsonPath: "searchScreen.mobileNumber"
+    // })
   }),
 
   buttonContainer: getCommonContainer({

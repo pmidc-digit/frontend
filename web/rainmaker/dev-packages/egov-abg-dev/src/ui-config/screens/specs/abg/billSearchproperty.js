@@ -5,6 +5,8 @@ import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import { httpRequest } from "../../../../ui-utils";
 import { billSearchCardProperty } from "./billSearchResources/billSearchCardProperty";
 import { searchResults } from "./billSearchResources/searchResults";
+import { billSearchpropertyResult } from "./billSearchResources/billSearchpropertyResult";
+import { searchStatistics } from "./billSearchResources/searchStatistics";
 import "./index.css";
 let result = [];
 debugger
@@ -12,7 +14,7 @@ debugger
 const values = result.includes("ESEWAEMP");
 const header = getCommonHeader({
   labelName: "Universal Bill",
-  labelKey: "ABG_UNIVERSAL_BILL_COMMON_HEADER"
+  labelKey: "ABG_UNIVERSAL_REVENUE_COMMON_HEADER"
 });
 const hasButton = getQueryArg(window.location.href, "hasButton");
 let enableButton = true;
@@ -127,44 +129,46 @@ const billSearchAndResult = {
               },
               ...header
             },
-            groupBillButton: {
-              componentPath: "Button",
-              gridDefination: {
-                xs: 12,
-                sm: 6,
-                align: "right"
-              },
-              visible: enableGroupBillButton,
-              props: {
-                variant: "contained",
-                color: "primary",
-                style: {
-                  color: "white",
-                  borderRadius: "2px",
-                  width: "250px",
-                  height: "48px"
-                }
-              },
-              children: {
-                ButtonLabel: getLabel({
-                  labelName: "Group Bills",
-                  labelKey: "ABG_COMMON_HEADER"
-                })
-              },
-              onClickDefination: {
-                action: "page_change",
-                path:
-                  process.env.REACT_APP_SELF_RUNNING === "true"
-                    ? `/egov-ui-framework/abg/groupBills`
-                    : `/abg/groupBills`
-              },
-              visible: (process.env.REACT_APP_NAME === "Citizen" || enableGroupBillButton == false) ? false : true
-            }
+            // groupBillButton: {
+            //   componentPath: "Button",
+            //   gridDefination: {
+            //     xs: 12,
+            //     sm: 6,
+            //     align: "right"
+            //   },
+            //   visible: enableGroupBillButton,
+            //   props: {
+            //     variant: "contained",
+            //     color: "primary",
+            //     style: {
+            //       color: "white",
+            //       borderRadius: "2px",
+            //       width: "250px",
+            //       height: "48px"
+            //     }
+            //   },
+            //   children: {
+            //     ButtonLabel: getLabel({
+            //       labelName: "Group Bills",
+            //       labelKey: "ABG_COMMON_HEADER"
+            //     })
+            //   },
+            //   onClickDefination: {
+            //     action: "page_change",
+            //     path:
+            //       process.env.REACT_APP_SELF_RUNNING === "true"
+            //         ? `/egov-ui-framework/abg/groupBills`
+            //         : `/abg/groupBills`
+            //   },
+            //   visible: (process.env.REACT_APP_NAME === "Citizen" || enableGroupBillButton == false) ? false : true
+            // }
           }
         },
         billSearchCardProperty,
         breakAfterSearch: getBreak(),
-        searchResults
+        searchStatistics,
+        billSearchpropertyResult,
+        // searchResults
       }
     }
   }

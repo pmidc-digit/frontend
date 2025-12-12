@@ -39,13 +39,13 @@ const getPercentageCount = async (state, searchCriteria) => {
   );
 };
 
-const getPropertySearch = async (state, searchCriteria) => {
+const getPropertySearch = async (state, searchCriteria, limit = 10, offset = 0) => {
   const requestBody = {
     // RequestInfo: getRequestInfo(state),
     searchCriteria: {
       ...searchCriteria,
-      limit: 10,
-      offset: 0,
+      limit: limit,
+      offset: offset,
       url: "/egov-searcher/saski-property-search/saskipropertysearch/_get"
     }
   };
@@ -53,6 +53,23 @@ const getPropertySearch = async (state, searchCriteria) => {
   return await httpRequest(
     "post",
     "/egov-searcher/saski-property-search/saskipropertysearch/_get",
+    "",
+    [],
+    requestBody
+  );
+};
+const getPropertySearchWithVasika = async (state, searchCriteria) => {
+  const requestBody = {
+    // RequestInfo: getRequestInfo(state),
+    searchCriteria: {
+      ...searchCriteria,
+      url: "/egov-searcher/saski-property-search/saskipropertyvasikacount/_get"
+    }
+  };
+  
+  return await httpRequest(
+    "post",
+    "/egov-searcher/saski-property-search/saskipropertyvasikacount/_get",
     "",
     [],
     requestBody
@@ -80,58 +97,16 @@ const getPropertyCount = async (state, searchCriteria) => {
 };
 
 
-export const searchApiCall = async (state, dispatch) => {
+export const searchApiCall = async (state, dispatch, limit = 10, offset = 0) => {
+  // Hide table and statistics while loading
   showHideTable(false, dispatch);
+  showHideStatistics(false, dispatch);
   
   let searchScreenObject = get(
     state.screenConfiguration.preparedFinalObject,
     "searchScreen",
     {}
   );
-
-  // Validation
-  const isSearchBoxFirstRowValid = validateFields(
-    "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children",
-    state,
-    dispatch,
-    "billSearch"
-  );
-  const isSearchBoxSecondRowValid = validateFields(
-    "components.div.children.billSearchCardProperty.children.cardContent.children.searchContainer.children",
-    state,
-    dispatch,
-    "billSearch"
-  );
-  if (!isSearchBoxFirstRowValid || !isSearchBoxSecondRowValid) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill at least one field to start search",
-          labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
-        },
-        "warning"
-      )
-    );
-    return;
-  }
-  
-  if (
-    Object.keys(searchScreenObject).length == 0 ||
-    Object.values(searchScreenObject).every(x => x === "")
-  ) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill at least one field to start search",
-          labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
-        },
-        "warning"
-      )
-    );
-    return;
-  }
 
   try {
     // Build search criteria
@@ -147,6 +122,9 @@ export const searchApiCall = async (state, dispatch) => {
     if (searchScreenObject.consumerCode) {
       searchCriteria.propertyId = searchScreenObject.consumerCode;
     }
+    if (searchScreenObject.consumerCode) {
+      searchCriteria.propertyId = searchScreenObject.consumerCode;
+    }
     if (searchScreenObject.billNo) {
       searchCriteria.allotmentNo = searchScreenObject.billNo;
     }
@@ -155,21 +133,70 @@ export const searchApiCall = async (state, dispatch) => {
     }
 
     // Call all three APIs in parallel
-    const [percentageResponse, propertyResponse, countResponse] = await Promise.all([
+    const [percentageResponse, propertyResponse, countResponse, propertyWithVasikaResponse] = await Promise.all([
       getPercentageCount(state, searchCriteria),
-      getPropertySearch(state, searchCriteria),
-      getPropertyCount(state, searchCriteria)
+      getPropertySearch(state, searchCriteria, limit, offset),
+      getPropertyCount(state, searchCriteria),
+      getPropertySearchWithVasika(state, searchCriteria)
     ]);
 
     // Extract data from responses
     const percentage = get(percentageResponse, "Property", "0");
     const properties = get(propertyResponse, "Property", []);
-    const totalCount = get(countResponse, "Property", "0");
+    const totalCount = get(countResponse, "Property", "0");           
+    const totalCountwithVasika = get(propertyWithVasikaResponse, "Property", "0");           
 
     // Store raw responses in Redux
     dispatch(prepareFinalObject("searchScreenMdmsData.percentageCount", percentage));
     dispatch(prepareFinalObject("searchScreenMdmsData.propertySearchResponse", properties));
     dispatch(prepareFinalObject("searchScreenMdmsData.totalCount", totalCount));
+    dispatch(prepareFinalObject("searchScreenMdmsData.totalCountwithVasika", totalCountwithVasika));
+
+    // Get ULB name from tenantId or use a default
+    const tenantId = searchCriteria.tenantId || "N/A";
+    const ulbName = tenantId.includes('.') 
+      ? tenantId.split('.')[1].charAt(0).toUpperCase() + tenantId.split('.')[1].slice(1)
+      : tenantId;
+
+    // Update ULB Name
+    dispatch(
+      handleField(
+        "billSearchproperty",
+        "components.div.children.searchStatistics.children.ulbNameContainer.children.ulbNameText.props",
+        "dangerouslySetInnerHTML",
+        { __html: `ULB Name: <strong>${ulbName}</strong>` }
+      )
+    );
+
+    // Update Box 1 - Total Properties in ULB
+    dispatch(
+      handleField(
+        "billSearchproperty",
+        "components.div.children.searchStatistics.children.statisticsBoxes.children.box1.children.box1Value.props",
+        "dangerouslySetInnerHTML",
+        { __html: totalCount }
+      )
+    );
+
+    // Update Box 2 - Total Properties Registered with Vasika (for now showing total count)
+    dispatch(
+      handleField(
+        "billSearchproperty",
+        "components.div.children.searchStatistics.children.statisticsBoxes.children.box2.children.box2Value.props",
+        "dangerouslySetInnerHTML",
+        { __html: totalCountwithVasika }
+      )
+    );
+
+    // Update Box 3 - Total Percentage
+    dispatch(
+      handleField(
+        "billSearchproperty",
+        "components.div.children.searchStatistics.children.statisticsBoxes.children.box3.children.box3Value.props",
+        "dangerouslySetInnerHTML",
+        { __html: `${percentage}%` }
+      )
+    );
 
     // Transform data for table display
     const propertyTableData = properties.map(item => ({
@@ -178,62 +205,81 @@ export const searchApiCall = async (state, dispatch) => {
       vasikaNo: get(item, "vasikaNo", "-"),
       vasikaDate: get(item, "vasikaDate") ? convertEpochToDate(new Date(get(item, "vasikaDate")).getTime()) : "-",
       allotmentNo: get(item, "allotmentNo", "-"),
-      allotmentDate: get(item, "allotmentDate") ? convertEpochToDate(new Date(get(item, "allotmentDate")).getTime()) : "-",
-      createdTime: get(item, "createdTime") ? convertEpochToDate(get(item, "createdTime")) : "-"
+      allotmentDate: get(item, "allotmentDate") ? convertEpochToDate(new Date(get(item, "allotmentDate")).getTime()) : "-"
     }));
 
-    // Prepare data for UI table
+    // Prepare data for UI table - using object format
     let data = propertyTableData.map(item => ({
-      ABG_PROPERTY_ID: item.propertyId,
-      ABG_TENANT_ID: item.tenantId,
-      ABG_VASIKA_NO: item.vasikaNo,
-      ABG_VASIKA_DATE: item.vasikaDate,
-      ABG_ALLOTMENT_NO: item.allotmentNo,
-      ABG_ALLOTMENT_DATE: item.allotmentDate,
-      ABG_CREATED_TIME: item.createdTime
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[0].labelKey", "ABG_PROPERTY_ID")]: item.propertyId,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[1].labelKey", "ABG_TENANT_ID")]: item.tenantId,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[2].labelKey", "ABG_VASIKA_NO")]: item.vasikaNo,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[3].labelKey", "ABG_VASIKA_DATE")]: item.vasikaDate,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[4].labelKey", "ABG_ALLOTMENT_NO")]: item.allotmentNo,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[5].labelKey", "ABG_ALLOTMENT_DATE")]: item.allotmentDate,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[6].labelKey", "ABG_ACTION")]: ""
     }));
+    // Calculate current page
+    const currentPage = Math.floor(offset / limit);
 
-    // Update table data
+    // Store data in prepareFinalObject first
+    dispatch(prepareFinalObject("searchScreenMdmsData.billSearchPropertyTableData", data));
+
+    // Get the original columns configuration
+    const originalColumns = get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns", []);
+
+    // Update the entire table component at once with all props
     dispatch(
       handleField(
-        "billSearch",
-        "components.div.children.searchResults",
-        "props.data",
-        data
-      )
-    );
-    
-    dispatch(
-      handleField(
-        "billSearch",
-        "components.div.children.searchResults",
-        "props.tableData",
-        propertyTableData
-      )
-    );
-    
-    dispatch(
-      handleField(
-        "billSearch",
-        "components.div.children.searchResults",
-        "props.rows",
-        propertyTableData.length
+        "billSearchproperty",
+        "components.div.children.billSearchpropertyResult",
+        "props",
+        {
+          data: data,
+          columns: originalColumns,
+          title: {
+            labelName: "Property Search Results",
+            labelKey: "ABG_PROPERTY_SEARCH_RESULTS_TABLE_HEADING"
+          },
+          options: {
+            filter: false,
+            download: true,
+            print: false,
+            responsive: "stacked",
+            selectableRows: false,
+            hover: true,
+            rowsPerPageOptions: [10, 15, 20],
+            serverSide: true,
+            count: parseInt(totalCountwithVasika) || 0,
+            page: currentPage,
+            rowsPerPage: limit,
+            onTableChange: (action, tableState) => {
+              
+              if (action === "changePage" || action === "changeRowsPerPage") {
+                const newLimit = tableState.rowsPerPage;
+                const newOffset = tableState.page * newLimit;
+                searchApiCall(state, dispatch, newLimit, newOffset);
+              }
+            }
+          }
+        }
       )
     );
 
-    // Show success message with statistics
+    // Show success message
     dispatch(
       toggleSnackbar(
         true,
         {
-          labelName: `Found ${totalCount} properties. Percentage: ${percentage}%`,
+          labelName: `Found ${totalCountwithVasika} properties. Showing page ${currentPage + 1}`,
           labelKey: "ABG_SEARCH_SUCCESS"
         },
         "success"
       )
     );
 
+    // Show table and statistics
     showHideTable(true, dispatch);
+    showHideStatistics(true, dispatch);
     
   } catch (error) {
     dispatch(
@@ -253,21 +299,32 @@ export const searchApiCall = async (state, dispatch) => {
 const showHideTable = (booleanHideOrShow, dispatch) => {
   dispatch(
     handleField(
-      "billSearch",
-      "components.div.children.searchResults",
+      "billSearchproperty",
+      "components.div.children.billSearchpropertyResult",
       "visible",
       booleanHideOrShow
     )
   );
 };
 
-const getActionItem = (status) => {
-  switch (status) {
-    case "ACTIVE": return "PAY";
-    case "CANCELLED":
-    case "EXPIRED": return "GENERATE NEW BILL";
-    case "PAID": return "DOWNLOAD RECEIPT";
-    case "PARTIALLY_PAID": return "PARTIALLY PAID";
-    default: return "-";
-  }
+const showHideStatistics = (booleanHideOrShow, dispatch) => {
+  dispatch(
+    handleField(
+      "billSearchproperty",
+      "components.div.children.searchStatistics",
+      "visible",
+      booleanHideOrShow
+    )
+  );
 };
+
+// const getActionItem = (status) => {
+//   switch (status) {
+//     case "ACTIVE": return "PAY";
+//     case "CANCELLED":
+//     case "EXPIRED": return "GENERATE NEW BILL";
+//     case "PAID": return "DOWNLOAD RECEIPT";
+//     case "PARTIALLY_PAID": return "PARTIALLY PAID";
+//     default: return "-";
+//   }
+// };
