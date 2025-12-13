@@ -18,11 +18,11 @@ export const billSearchpropertyResult = {
             const tenantId = tableMeta.rowData[1]; // ABG_TENANT_ID (hidden column)
             return (
               <a
-                href={`/property-tax/property/${propertyId}/${tenantId}`}
+                href={`employee/property-tax/property/${propertyId}/${tenantId}`}
                 style={{ color: "#fe7a51", cursor: "pointer", textDecoration: "underline" }}
                 onClick={(e) => {
                   e.preventDefault();
-                  window.location.href = `/property-tax/property/${propertyId}/${tenantId}`;
+                  window.location.href = `employee/property-tax/property/${propertyId}/${tenantId}`;
                 }}
               >
                 {value}
