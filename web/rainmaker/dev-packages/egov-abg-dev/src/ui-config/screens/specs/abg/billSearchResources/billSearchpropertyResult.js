@@ -16,13 +16,14 @@ export const billSearchpropertyResult = {
           customBodyRender: (value, tableMeta) => {
             const propertyId = tableMeta.rowData[0]; // ABG_PROPERTY_ID
             const tenantId = tableMeta.rowData[1]; // ABG_TENANT_ID (hidden column)
+            const targetUrl = `/employee/property-tax/property/${propertyId}/${tenantId}`;
             return (
               <a
-                href={`/employee/property-tax/property/${propertyId}/${tenantId}`}
+                href={targetUrl}
                 style={{ color: "#fe7a51", cursor: "pointer", textDecoration: "underline" }}
                 onClick={(e) => {
                   e.preventDefault();
-                  window.location.href = `/employee/property-tax/property/${propertyId}/${tenantId}`;
+                  window.location.href = `${window.location.origin}${targetUrl}`;
                 }}
               >
                 {value}
