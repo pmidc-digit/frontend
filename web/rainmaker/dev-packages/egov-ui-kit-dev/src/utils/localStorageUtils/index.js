@@ -17,25 +17,24 @@ export const removeFields = (user = {}, fields = []) => {
   return updatedUser;
 };
 //Encryption and decryption 
-export const encryptUserDetails = (user={}) =>
-{
+export const encryptUserDetails = (user = {}) => {
   user = JSON.parse(user)
   if (!user) return null
   const mobilenumber = btoa(user.mobileNumber);
   const name = btoa(user.name);
   const emailId = btoa(user.emailId);
-  const dob= btoa(user.dob);
-  user = {...user, mobileNumber : mobilenumber, emailId : emailId, name : name, dob : dob}
+  const dob = btoa(user.dob);
+  user = { ...user, mobileNumber: mobilenumber, emailId: emailId, name: name, dob: dob }
   return JSON.stringify(user);
 }
-export const decryptUserDetails = (user ={})=>{
+export const decryptUserDetails = (user = {}) => {
   user = JSON.parse(user)
-  if(!user) return null
+  if (!user) return null
   const mobileNumber = atob(user.mobileNumber);
   const name = atob(user.name);
   const emailId = atob(user.emailId);
-  const dob= atob(user.dob)
-  user = {...user, mobileNumber : mobileNumber, emailId : emailId, name : name, dob : dob}
+  const dob = atob(user.dob)
+  user = { ...user, mobileNumber: mobileNumber, emailId: emailId, name: name, dob: dob }
   return JSON.stringify(user);
 }
 //GET methods
@@ -91,25 +90,25 @@ export const getLocale = () => {
 export const getModule = () => {
   return localStorage.getItem("module");
 };
-export const getLocalizationLabels = () =>{
+export const getLocalizationLabels = () => {
   return localStorage.getItem(`localization_${getLocale()}`);
 };
-export const getStoredModulesList = () =>{
+export const getStoredModulesList = () => {
   return localStorage.getItem("storedModulesList");
 };
-export const getThirdPartyName =()=>{
+export const getThirdPartyName = () => {
   return localStorage.getItem("thirdPartyCode");
 }
-export const getThirdPartyURL =()=>{
+export const getThirdPartyURL = () => {
   return localStorage.getItem("thirdPartyReturnUrl");
 }
-export const getServiceName =()=>{
+export const getServiceName = () => {
   return localStorage.getItem("serviceName");
 }
-export const getAppid =()=>{
+export const getAppid = () => {
   return localStorage.getItem("appid");
 }
-export const getIPin =()=>{
+export const getIPin = () => {
   return localStorage.getItem("iPin");
 }
 //SET methods
@@ -147,13 +146,13 @@ export const setModule = (moduleName) => {
 export const setReturnUrl = (url) => {
   localStorageSet("returnUrl", url);
 };
-export const setStoredModulesList =(storedModuleList) =>{
+export const setStoredModulesList = (storedModuleList) => {
   localStorage.setItem("storedModulesList", storedModuleList);
 };
 //Remove Items (LOGOUT)
 export const clearUserDetails = () => {
   Object.keys(localStorage).forEach((key) => {
-      window.localStorage.removeItem(key);
+    window.localStorage.removeItem(key);
   });
 };
 //Role specific get-set Methods
@@ -190,7 +189,7 @@ export const lSRemoveItem = (key) => {
 
 // get tenantId for Employee/Citizen
 export const getTenantIdCommon = () => {
-    return process.env.REACT_APP_NAME === "Citizen"?JSON.parse(getUserInfo()).permanentCity:getTenantId();
+  return process.env.REACT_APP_NAME === "Citizen" ? JSON.parse(getUserInfo()).permanentCity : getTenantId();
 }
 
 
@@ -216,19 +215,48 @@ export const getLocalizationLabelsAsync = async (locale) => {
     // Try IndexedDB first (primary storage)
     const data = await indexedDBManager.getLocalization(localeToUse, 'all');
     if (data && data.length > 0) {
-      console.log(`Log => ** [Hybrid Storage] Retrieved ${data.length} localization entries from IndexedDB`);
-      return JSON.stringify(data);
+      // OPTIMIZATION: Return object directly to avoid JSON.stringify/parse overhead
+      return data;
     }
   } catch (error) {
-    console.warn('Log => ** [Hybrid Storage] IndexedDB retrieval failed, falling back to localStorage:', error);
+    console.warn('[Hybrid Storage] IndexedDB retrieval failed, falling back to localStorage:', error);
   }
 
   // Fallback to localStorage (secondary storage)
-  const localStorageData = localStorage.getItem(`localization_${localeToUse}`);
-  if (localStorageData) {
-    console.log('Log => ** [Hybrid Storage] Retrieved localization from localStorage fallback');
+  return localStorage.getItem(`localization_${localeToUse}`);
+};
+
+/**
+ * Get the cache manifest for a specific locale
+ * @param {string} locale
+ * @returns {object} Manifest object { moduleName: { ts, version } }
+ */
+export const getLocalizationManifest = (locale) => {
+  try {
+    const manifestString = localStorage.getItem(`localization_manifest_${locale}`);
+    return manifestString ? JSON.parse(manifestString) : {};
+  } catch (e) {
+    return {};
   }
-  return localStorageData;
+};
+
+/**
+ * Update the cache manifest for a specific locale
+ * @param {string} locale
+ * @param {string} module
+ * @param {string} version
+ */
+export const updateLocalizationManifest = (locale, module, version = 'v1') => {
+  try {
+    const manifest = getLocalizationManifest(locale);
+    manifest[module] = {
+      ts: Date.now(),
+      version: version
+    };
+    localStorage.setItem(`localization_manifest_${locale}`, JSON.stringify(manifest));
+  } catch (e) {
+    console.warn('Failed to update localization manifest', e);
+  }
 };
 
 /**

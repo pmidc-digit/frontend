@@ -11,7 +11,7 @@ class LanguageSelection extends Component {
     value: getLocale() || 'en_IN', // getLocale() now has fallback built-in
   };
 
-  componentDidMount=()=>{
+  componentDidMount = () => {
     // Ensure valid locale, fallback to en_IN
     const locale = this.state.value || 'en_IN';
     this.props.fetchLocalizationLabel(locale);

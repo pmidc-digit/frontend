@@ -4,9 +4,11 @@ import { httpRequest } from "egov-ui-kit/utils/api";
 import { getCurrentAddress, getTransformedNotifications } from "egov-ui-kit/utils/commons";
 import commonConfig from "config/common";
 import { debug } from "util";
-import { setLocale, localStorageSet, localStorageGet, getLocale, isValidLocale } from "egov-ui-kit/utils/localStorageUtils";
+import { setLocale, localStorageSet, localStorageGet, getLocale, isValidLocale, getLocalizationManifest, updateLocalizationManifest } from "egov-ui-kit/utils/localStorageUtils";
 // import { getModuleName } from "../../utils/commons";
-import { getLocalization, getLocalizationLabels, getModule, getStoredModulesList, setStoredModulesList, setLocalizationLabelsAsync } from "../../utils/localStorageUtils";
+import { getLocalization, getLocalizationLabels, getModule, getStoredModulesList, setStoredModulesList, setLocalizationLabelsAsync, getLocalizationLabelsAsync } from "../../utils/localStorageUtils";
+
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 1 Day
 
 // Helper function to deduplicate localization messages by 'code' field
 const deduplicateLocalizationMessages = (messages) => {
@@ -54,7 +56,7 @@ export const setBottomNavigationIndex = (bottomNavigationIndex) => {
   return { type: actionTypes.CHANGE_BOTTOM_NAVIGATION_INDEX, bottomNavigationIndex };
 };
 
-export const setLocalizationLabels = (locale, localizationLabels) => {
+export const setLocalizationLabels = (locale, localizationLabels, saveToStorage = true) => {
   // SMART STORAGE STRATEGY TO PREVENT LOCALSTORAGE OVERFLOW:
   // - rainmaker-common → localStorage ONLY (used everywhere, needs instant sync access)
   // - ALL data → IndexedDB (unlimited storage capacity)
@@ -73,24 +75,27 @@ export const setLocalizationLabels = (locale, localizationLabels) => {
     console.warn(`[setLocalizationLabels] WARNING: Received empty array. This might be valid (tenant with no translations) or an error.`);
   }
 
+  // If we are just hydrating from cache, SKIP all storage writes to prevent heavy I/O and race conditions
+  if (!saveToStorage) {
+    setLocale(locale);
+    return { type: actionTypes.ADD_LOCALIZATION, locale, localizationLabels };
+  }
+
   // Separate rainmaker-common from other modules
   const rainmakerCommon = localizationLabels.filter(item => item && item.module === 'rainmaker-common');
   const otherModules = localizationLabels.filter(item => item && item.module !== 'rainmaker-common');
-
-  console.log(`Log => ** [Storage Strategy] Total: ${localizationLabels.length}, Common: ${rainmakerCommon.length}, Others: ${otherModules.length}`);
 
   // CRITICAL FIX: Only update rainmaker-common if we have valid data
   // Never overwrite existing common data with empty array!
   if (rainmakerCommon.length > 0) {
     try {
       window.localStorage.setItem(`localization_${locale}_common`, JSON.stringify(rainmakerCommon));
-      console.log(`Log => ** [localStorage] Saved rainmaker-common: ${rainmakerCommon.length} entries (instant access)`);
+      // Update Manifest for common
+      updateLocalizationManifest(locale, 'rainmaker-common');
     } catch (e) {
       console.error(`Log => ** [localStorage] CRITICAL: Failed to save rainmaker-common:`, e);
       // Don't delete existing data on error!
     }
-  } else {
-    console.warn(`Log => ** [localStorage] WARNING: Skipping rainmaker-common save - no common data in payload (${rainmakerCommon.length} entries). Preserving existing data.`);
   }
 
   // FIX: REMOVED combined data write to localStorage to prevent quota exceeded
@@ -104,23 +109,26 @@ export const setLocalizationLabels = (locale, localizationLabels) => {
   if (dataSize < sizeLimit) {
     try {
       window.localStorage.setItem(`localization_${locale}`, JSON.stringify(localizationLabels));
-      console.log(`Log => ** [localStorage] Saved combined data: ${(dataSize / 1024).toFixed(2)} KB (under limit)`);
     } catch (e) {
       console.warn(`Log => ** [localStorage] Failed to save combined data (quota exceeded), using IndexedDB only`);
       // Clean up old combined data if it exists
       window.localStorage.removeItem(`localization_${locale}`);
     }
   } else {
-    console.log(`Log => ** [localStorage] Skipping combined data save: ${(dataSize / 1024).toFixed(2)} KB exceeds ${(sizeLimit / 1024).toFixed(0)} KB limit, using IndexedDB only`);
     // Remove old combined data to free up space
     window.localStorage.removeItem(`localization_${locale}`);
   }
 
   setLocale(locale);
 
+  // Identify unique modules in otherModules to update Manifest
+  const uniqueModules = new Set(otherModules.map(item => item.module));
+  uniqueModules.forEach(mod => {
+    if (mod) updateLocalizationManifest(locale, mod);
+  });
+
   // Save other modules to IndexedDB (async, non-blocking)
   if (otherModules.length > 0) {
-    console.log(`Log => ** [IndexedDB] Saving ${otherModules.length} other module entries...`);
     setLocalizationLabelsAsync(locale, otherModules, 'other_modules').catch(error => {
       console.warn('Log => ** [IndexedDB] Failed to save other modules (non-critical):', error);
     });
@@ -143,265 +151,193 @@ export const toggleSnackbarAndSetText = (open, message = {}, variant) => {
   };
 };
 
-// export const checkModuleLocalisationPresent=(locale='en_IN')=>{
-//   const moduleToLoad=getModuleName();
-//   let isPresent=false;
-//   let localizationLabels=JSON.parse(getLocalization(`localization_${locale}`))||[];
-//   if(localizationLabels.length==0){
-//     return true;
-//   }else if(!localizationLabels.find(localizationLabel=>localizationLabel.module==moduleToLoad.split(",")[0])){
-//     return true;
-//   }
-//   return isPresent;
-// }
-
-export const fetchLocalizationLabel = (locale='en_IN', module, tenantId, isFromModule) => {
+export const fetchLocalizationLabel = (locale = 'en_IN', module, tenantId, isFromModule) => {
   return async (dispatch) => {
-    // FIX: Validate locale before processing, fallback to en_IN if invalid
     if (!isValidLocale(locale)) {
       console.warn(`[fetchLocalizationLabel] Invalid locale provided: "${locale}", falling back to en_IN`);
       locale = 'en_IN';
     }
 
     try {
-      console.log(`Log => ** [Localization] Fetching for locale=${locale}, module=${module}, isFromModule=${isFromModule}`);
+      // 1. Identify what modules code needs
+      const moduleName = getModule(); // existing module from localStorage
+      const requestedModule = module; // passed arg
 
-      let storedModuleList=[];
-      // const isLocalizationTriggered = localStorageGet("isLocalizationTriggered");
-      // if(isLocalizationTriggered === "true") {
-      //   return;
-      // }
-      if(getStoredModulesList()!==null){
-          storedModuleList =JSON.parse(getStoredModulesList());
-      }
-      const moduleName = getModule();
-      let localeModule;
-      if(moduleName==='rainmaker-common'){
-          localeModule='rainmaker-common';
-      }
-      else if(storedModuleList.includes('rainmaker-common')){
-          localeModule=moduleName;
-      }
-      else{
-        localeModule=moduleName?`rainmaker-common,${moduleName}`:`rainmaker-common`;
+      // 2. Normalize module names (handle rainmaker- prefix)
+      //    We want to check: requestedName (e.g. pgr), prefixedName (e.g. rainmaker-pgr)
+      const currentModule = moduleName;
+      const currentModulePrefixed = currentModule && !currentModule.startsWith('rainmaker-') ? `rainmaker-${currentModule}` : currentModule;
+
+      let tenantModule = "";
+      let tenantModulePrefixed = "";
+      if (requestedModule) {
+        tenantModule = `rainmaker-${requestedModule}`;
+        if (!tenantModule.startsWith('rainmaker-')) {
+          tenantModulePrefixed = `rainmaker-${requestedModule}`;
+        } else {
+          tenantModulePrefixed = tenantModule;
+        }
       }
 
-      let resultArray = [], tenantModule = "", isCommonScreen;
-      if(module!=null){
-       tenantModule=`rainmaker-${module}`;
+      // 3. Check Manifest FIRST (The "Simple" Check)
+      const manifest = getLocalizationManifest(locale);
+      console.log(`Log => [Localization] Checking Cache for Request: locale=${locale}, module=${module}, current=${currentModulePrefixed}`);
+      console.log(`Log => [Localization] Manifest State:`, manifest);
+
+      const isCached = (mod) => {
+        if (!mod) return true; // Empty module is "cached" (nothing to fetch)
+        const m = manifest[mod];
+        if (!m) return false;
+        if (Date.now() - m.ts > CACHE_TTL) return false;
+        return true;
+      };
+
+      // We check if "rainmaker-common", "currentModule", and "tenantModule" are cached.
+      // We check BOTH bare and prefixed versions. If EITHER is valid, we consider it valid.
+
+      const commonValid = isCached('rainmaker-common');
+
+      const currentModuleValid = !currentModule || isCached(currentModule) || isCached(currentModulePrefixed);
+
+      // If we have a tenant module request (optional), check it too
+      const tenantModuleValid = !requestedModule || isCached(tenantModule) || (requestedModule && isCached(requestedModule));
+
+      console.log(`Log => [Localization] Cache Status: Common=${commonValid}, Current=${currentModuleValid} (${currentModulePrefixed}), Tenant=${tenantModuleValid} (${tenantModule})`);
+
+      // 4. Decision: Do we need to fetch?
+      const needsFetchCommon = !commonValid;
+      const needsFetchCurrent = !currentModuleValid;
+      const needsFetchTenant = !tenantModuleValid;
+
+      console.log(`Log => [Localization] Needs Fetch: Common=${needsFetchCommon}, Current=${needsFetchCurrent}, Tenant=${needsFetchTenant}`);
+
+      // If everything is valid, LOAD FROM DB AND RETURN.
+      if (!needsFetchCommon && !needsFetchCurrent && !needsFetchTenant) {
+        console.log(`Log => [Localization] FAST PATH: All modules valid. Loading from DB (Skip API)...`);
+        // FAST PATH: Read DB, Dispatch, Stop.
+        try {
+          // Load ALL data (common + modules)
+          const indexedDBData = await getLocalizationLabelsAsync(locale);
+          let prevLocalisationLabels = [];
+
+          // OPTIMIZATION: Check if Array (from IndexedDB) to avoid JSON.parse
+          if (Array.isArray(indexedDBData)) {
+            prevLocalisationLabels = indexedDBData;
+          } else if (indexedDBData) {
+            prevLocalisationLabels = JSON.parse(indexedDBData);
+          } else {
+            // Fallback to LS
+            const lsData = getLocalizationLabels();
+            if (lsData) prevLocalisationLabels = JSON.parse(lsData);
+          }
+
+          // Also load common from LS if missing in IDB (legacy)
+          const commonLS = localStorage.getItem(`localization_${locale}_common`);
+          if (commonLS) {
+            const commonData = JSON.parse(commonLS);
+            // Simple merge
+            prevLocalisationLabels = [...prevLocalisationLabels, ...commonData];
+          }
+
+          const deduplicated = deduplicateLocalizationMessages(prevLocalisationLabels);
+
+          // Dispatch with saveToStorage=false to prevent redundant writes
+          dispatch(setLocalizationLabels(locale, deduplicated, false));
+          return;
+        } catch (e) {
+          console.warn('[Localization] Fast path failed, falling back to fetch', e);
+        }
       }
 
-      if((window.location.href.includes("/language-selection") || window.location.href.includes("/user/login")|| window.location.href.includes("/withoutAuth"))) {
-         if((moduleName && storedModuleList.includes(moduleName) === false) || moduleName == null) isCommonScreen = true;
+      console.log(`Log => [Localization] SLOW PATH: Fetching API...`);
+
+      // 5. SLOW PATH: We need to fetch something.
+      //    Load existing data first so we can append to it.
+      let prevLocalisationLabels = [];
+      let storedModuleList = [];
+      try {
+        const indexedDBData = await getLocalizationLabelsAsync(locale);
+
+        // OPTIMIZATION: Check for Array
+        if (Array.isArray(indexedDBData)) {
+          prevLocalisationLabels = indexedDBData;
+        } else if (indexedDBData) {
+          prevLocalisationLabels = JSON.parse(indexedDBData);
+        } else {
+          const lsData = getLocalizationLabels();
+          if (lsData) prevLocalisationLabels = JSON.parse(lsData);
+        }
+
+        // Load common from LS
+        const commonLS = localStorage.getItem(`localization_${locale}_common`);
+        if (commonLS) {
+          const commonData = JSON.parse(commonLS);
+          prevLocalisationLabels = [...prevLocalisationLabels, ...commonData];
+        }
+      } catch (error) {
+        console.warn('Error loading storage:', error);
       }
 
-      if((window.location.href.includes("/inbox"))) {
-          if(moduleName && storedModuleList.includes(`rainmaker-common`)) isFromModule = false;
-      }
+      // Update storedModuleList based on what we just loaded
+      const modulesInStorage = new Set(prevLocalisationLabels.map(item => item.module));
+      storedModuleList = [...modulesInStorage];
 
+      let resultArray = [];
+      let hasNewData = false;
 
-      // FIX: Check if ALL modules in localeModule are already cached
-      // localeModule can be "rainmaker-common" or "rainmaker-common,rainmaker-pgr"
-      const modulesToFetch = localeModule ? localeModule.split(',').map(m => m.trim()) : [];
-      const allModulesCached = modulesToFetch.every(mod => storedModuleList.includes(mod));
+      // Fetch Common + Current Module if needed
+      if (needsFetchCommon || needsFetchCurrent) {
+        // Construct module string for API
+        // We prefer proper prefixed names for API
+        let fetchModules = [];
+        fetchModules.push('rainmaker-common');
+        if (currentModule) fetchModules.push(currentModulePrefixed || currentModule); // Use prefixed if calculated, else raw
 
-      // CRITICAL FIX: Only fetch if modules are NOT cached
-      // isCommonScreen should NOT bypass cache check - if data is cached, use it!
-      // This prevents redundant API calls when rainmaker-common is already in localStorage
-      if(moduleName && !allModulesCached){
-        console.log(`Log => ** [Localization] Fetching module data: ${localeModule} (not in cache: [${storedModuleList.join(', ')}])`);
-        // localStorageSet("isLocalizationTriggered", "true");
-          const payload1 = await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
+        const localeModule = fetchModules.join(',');
+
+        const payload1 = await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
           { key: "module", value: localeModule },
           { key: "locale", value: locale },
           { key: "tenantId", value: commonConfig.tenantId },
         ]);
-        resultArray = [...payload1.messages];
-        console.log(`Log => ** [Localization] Received ${(payload1.messages && payload1.messages.length) || 0} messages for ${localeModule}`);
 
-        // Mark all fetched modules as loaded to prevent re-fetching
-        modulesToFetch.forEach(mod => {
-          if (!storedModuleList.includes(mod)) {
-            storedModuleList.push(mod);
-          }
-        });
-        setStoredModulesList(JSON.stringify(storedModuleList));
-      } else {
-        console.log(`Log => ** [Localization] ✅ Skipping fetch - all modules already cached: ${localeModule} in [${storedModuleList.join(', ')}]`);
+        if (payload1.messages && payload1.messages.length > 0) {
+          resultArray = [...resultArray, ...payload1.messages];
+          hasNewData = true;
+
+          // Update Manifest for fetched modules
+          fetchModules.forEach(m => updateLocalizationManifest(locale, m));
+        }
       }
 
-      if((module && storedModuleList.includes(tenantModule)===false)){
-        console.log(`Log => ** [Localization] Fetching tenant module: ${tenantModule}`);
-        storedModuleList.push(tenantModule);
-        var newList =JSON.stringify(storedModuleList);
+      // Fetch Tenant Module if needed
+      if (needsFetchTenant && requestedModule) {
+        // Use the prefixed tenant module for API
+        const moduleToFetch = `rainmaker-${requestedModule}`;
 
-        const payload2 = module
-        ? await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
-          { key: "module", value: `rainmaker-${module}` },
+        const payload2 = await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
+          { key: "module", value: moduleToFetch },
           { key: "locale", value: locale },
           { key: "tenantId", value: tenantId ? tenantId : commonConfig.tenantId },
-        ])
-        : [];
+        ]);
 
-      // FIX: Always save tenant module to cache, even if it returns empty messages
-      // This prevents infinite re-fetching of tenant modules with no custom translations
-      setStoredModulesList(newList);
-
-      if (payload2 && payload2.messages && payload2.messages.length > 0) {
-        console.log(`Log => ** [Localization] Received ${payload2.messages.length} messages for ${tenantModule}`);
-        resultArray = [...resultArray, ...payload2.messages];
-      } else {
-        console.log(`Log => ** [Localization] Tenant module ${tenantModule} has no custom translations (empty response)`);
-      }
-    } else if (module) {
-        console.log(`Log => ** [Localization] Skipping fetch - ${tenantModule} already in cache`);
-    }
-
-    // CRITICAL FIX: Always load from storage and dispatch to Redux
-    // When modules are cached (no API fetch), we MUST load ALL cached modules from IndexedDB
-    // to ensure components have access to ALL localization data (not just rainmaker-common)
-    let prevLocalisationLabels = [];
-
-    try {
-      // First, try to get from IndexedDB (async) - has complete data
-      const { getLocalizationLabelsAsync } = require('../../utils/localStorageUtils');
-      const indexedDBData = await getLocalizationLabelsAsync(locale);
-
-      if (indexedDBData) {
-        prevLocalisationLabels = JSON.parse(indexedDBData);
-        console.log(`Log => ** [Localization] Loaded ${prevLocalisationLabels.length} previous entries from IndexedDB (hybrid storage)`);
-
-        // CRITICAL: Log what modules we have to debug missing module data
-        const modulesInData = [...new Set(prevLocalisationLabels.map(item => item.module))];
-        console.log(`Log => ** [Localization] Modules in IndexedDB: [${modulesInData.join(', ')}]`);
-      } else {
-        // Fallback to localStorage if IndexedDB is empty
-        if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
-          prevLocalisationLabels = JSON.parse(getLocalizationLabels());
-          console.log(`Log => ** [Localization] Loaded ${prevLocalisationLabels.length} previous entries from localStorage (fallback)`);
-        } else {
-          console.warn(`Log => ** [Localization] WARNING: No data in IndexedDB or localStorage! This will cause missing labels.`);
-        }
-      }
-    } catch (error) {
-      console.warn('Log => ** [Localization] Error loading from IndexedDB, using localStorage fallback:', error);
-      // Final fallback to localStorage on error
-      if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
-        prevLocalisationLabels = JSON.parse(getLocalizationLabels());
-      }
-    }
-
-    // FIX: Combine and deduplicate (even if resultArray is empty from cache hit)
-    const combinedArray = [...prevLocalisationLabels, ...resultArray];
-    const deduplicatedArray = deduplicateLocalizationMessages(combinedArray);
-
-    console.log(`Log => ** [Localization] Final count: ${deduplicatedArray.length} entries (prev: ${prevLocalisationLabels.length}, new: ${resultArray.length})`);
-
-    // FIX: Always dispatch to Redux to ensure components have access to data
-    // Even if resultArray is empty (cache hit), we need to populate Redux from storage
-    if (deduplicatedArray.length === 0) {
-      console.warn(`[Localization] WARNING: No localization data available (not in storage, not fetched). This may cause display issues.`);
-    }
-
-    // REMOVED: localStorage.removeItem() - This was deleting data before save, causing navigation breaks!
-    // The setLocalizationLabels function now handles cleanup internally based on size
-    dispatch(setLocalizationLabels(locale, deduplicatedArray));
-  } catch (error) {
-    // FIX: Add proper error handling instead of silent failure
-    console.error('[Localization] Failed to fetch localization labels:', error);
-    dispatch(toggleSnackbarAndSetText(true, {
-      labelName: "Failed to load translations. Please refresh the page.",
-      labelKey: "ERR_LOCALIZATION_FETCH_FAILED"
-    }, "error"));
-  }
-};
-};
-
-export const fetchLocalizationLabelForOpenScreens= (locale = 'en_IN', module, tenantId, isFromModule) => {
-return async (dispatch) => {
-  // FIX: Validate locale before processing, fallback to en_IN if invalid
-  if (!isValidLocale(locale)) {
-    console.warn(`[fetchLocalizationLabelForOpenScreens] Invalid locale provided: "${locale}", falling back to en_IN`);
-    locale = 'en_IN';
-  }
-
-  try {
-    let storedModuleList = [];
-    if (getStoredModulesList() !== null) {
-      storedModuleList = JSON.parse(getStoredModulesList());
-    }
-    const moduleName = getModule();
-    let localeModule;
-    if (moduleName === 'rainmaker-common') {
-      localeModule = 'rainmaker-common';
-    }
-    else if (storedModuleList.includes('rainmaker-common')) {
-      localeModule = moduleName;
-    }
-    else {
-      localeModule = moduleName ? `rainmaker-common,${moduleName}` : `rainmaker-common`;
-    }
-
-    let resultArray = [], tenantModule = "", isCommonScreen;
-    if (module != null) {
-      tenantModule = `rainmaker-${module}`;
-    }
-
-    if ((module && storedModuleList.includes(tenantModule) === false)) {
-      console.log(`Log => ** [Localization:OpenScreens] Fetching tenant module: ${tenantModule}`);
-      storedModuleList.push(tenantModule);
-      setStoredModulesList(JSON.stringify(storedModuleList));
-
-      const payload2 = module
-          ? await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
-              { key: "module", value: `rainmaker-${module}` },
-              { key: "locale", value: locale },
-              { key: "tenantId", value: tenantId ? tenantId : commonConfig.tenantId },
-            ])
-          : [];
-
-      if (payload2 && payload2.messages && payload2.messages.length > 0) {
-        console.log(`Log => ** [Localization:OpenScreens] Received ${payload2.messages.length} messages for ${tenantModule}`);
-        resultArray = [...resultArray, ...payload2.messages];
-      } else {
-        console.log(`Log => ** [Localization:OpenScreens] Tenant module ${tenantModule} has no custom translations (empty response)`);
-      }
-    }
-
-      // FIX: Load previous localization labels with HYBRID STORAGE support
-      // Try IndexedDB first (has all modules), fallback to localStorage
-      let prevLocalisationLabels = [];
-
-      try {
-        // First, try to get from IndexedDB (async) - has complete data
-        const { getLocalizationLabelsAsync } = require('../../utils/localStorageUtils');
-        const indexedDBData = await getLocalizationLabelsAsync(locale);
-
-        if (indexedDBData) {
-          prevLocalisationLabels = JSON.parse(indexedDBData);
-          console.log(`Log => ** [Localization:OpenScreens] Loaded ${prevLocalisationLabels.length} previous entries from IndexedDB`);
-        } else if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
-          prevLocalisationLabels = JSON.parse(getLocalizationLabels());
-          console.log(`Log => ** [Localization:OpenScreens] Loaded ${prevLocalisationLabels.length} previous entries from localStorage (fallback)`);
-        }
-      } catch (error) {
-        console.warn('Log => ** [Localization:OpenScreens] Error loading from IndexedDB, using localStorage:', error);
-        if (getLocalizationLabels() != null && !isCommonScreen && storedModuleList.length > 0) {
-          prevLocalisationLabels = JSON.parse(getLocalizationLabels());
+        if (payload2.messages && payload2.messages.length > 0) {
+          resultArray = [...resultArray, ...payload2.messages];
+          hasNewData = true;
+          updateLocalizationManifest(locale, moduleToFetch);
         }
       }
 
-      // FIX: Deduplicate before saving to prevent duplicate entries
       const combinedArray = [...prevLocalisationLabels, ...resultArray];
       const deduplicatedArray = deduplicateLocalizationMessages(combinedArray);
 
-      // REMOVED: localStorage.removeItem() - This was deleting data before save, causing navigation breaks!
-      // The setLocalizationLabels function now handles cleanup internally based on size
-      // localStorageSet("isLocalizationTriggered", "false");
-      dispatch(setLocalizationLabels(locale, deduplicatedArray));
+      // Only write if new data fetched or cache was empty
+      const shouldSaveToStorage = hasNewData || prevLocalisationLabels.length === 0;
+
+      dispatch(setLocalizationLabels(locale, deduplicatedArray, shouldSaveToStorage));
+
     } catch (error) {
-      // FIX: Add proper error handling instead of just logging
-      console.error('[Localization] Failed to fetch localization labels for open screens:', error);
+      console.error('[Localization] Failed to fetch localization labels:', error);
       dispatch(toggleSnackbarAndSetText(true, {
         labelName: "Failed to load translations. Please refresh the page.",
         labelKey: "ERR_LOCALIZATION_FETCH_FAILED"
@@ -410,6 +346,67 @@ return async (dispatch) => {
   };
 };
 
+export const fetchLocalizationLabelForOpenScreens = (locale = 'en_IN', module, tenantId, isFromModule) => {
+  return async (dispatch) => {
+    if (!isValidLocale(locale)) {
+      locale = 'en_IN';
+    }
+
+    // Simplified Open Screen Logic using Manifest
+    try {
+      const manifest = getLocalizationManifest(locale);
+      const tenantModule = `rainmaker-${module}`;
+
+      const isCached = (mod) => {
+        const m = manifest[mod];
+        if (!m) return false;
+        if (Date.now() - m.ts > CACHE_TTL) return false;
+        return true;
+      };
+
+      // If cached, do nothing (assuming main fetch handles loading)
+      // Check if we need to fetch specifically for this module
+      if (module && !isCached(tenantModule)) {
+        // Needs fetch
+        const payload2 = await httpRequest(LOCALATION.GET.URL, LOCALATION.GET.ACTION, [
+          { key: "module", value: tenantModule },
+          { key: "locale", value: locale },
+          { key: "tenantId", value: tenantId ? tenantId : commonConfig.tenantId },
+        ]);
+
+        if (payload2 && payload2.messages && payload2.messages.length > 0) {
+          // We need to merge this into existing cache. 
+          // This is "slow path" essentially.
+          const indexedDBData = await getLocalizationLabelsAsync(locale);
+
+          let prevLocalisationLabels = [];
+          if (Array.isArray(indexedDBData)) {
+            prevLocalisationLabels = indexedDBData;
+          } else if (indexedDBData) {
+            prevLocalisationLabels = JSON.parse(indexedDBData);
+          }
+
+          const combined = [...prevLocalisationLabels, ...payload2.messages];
+          const dedup = deduplicateLocalizationMessages(combined);
+
+          updateLocalizationManifest(locale, tenantModule);
+          dispatch(setLocalizationLabels(locale, dedup, true));
+        }
+      } else {
+        // If already cached, just ensure Redux is loaded (idempotent)
+        const indexedDBData = await getLocalizationLabelsAsync(locale);
+        if (indexedDBData) {
+          const prevLocalisationLabels = Array.isArray(indexedDBData) ? indexedDBData : JSON.parse(indexedDBData);
+          const dedup = deduplicateLocalizationMessages(prevLocalisationLabels);
+          dispatch(setLocalizationLabels(locale, dedup, false));
+        }
+      }
+
+    } catch (error) {
+      console.error('[Localization] Error in fetchLocalizationLabelForOpenScreens:', error);
+    }
+  };
+};
 
 const setActionItems = (payload) => {
   return {
