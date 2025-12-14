@@ -9,7 +9,6 @@ import { billSearchpropertyResult } from "./billSearchResources/billSearchproper
 import { searchStatistics } from "./billSearchResources/searchStatistics";
 import "./index.css";
 let result = [];
-debugger
 (JSON.parse(localStorage.getItem("user-info"))).roles.filter((item) => { result.push(item.code); });
 const values = result.includes("ESEWAEMP");
 const header = getCommonHeader({

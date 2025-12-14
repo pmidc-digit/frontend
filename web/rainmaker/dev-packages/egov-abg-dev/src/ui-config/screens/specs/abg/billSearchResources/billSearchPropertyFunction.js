@@ -205,6 +205,8 @@ export const searchApiCall = async (state, dispatch, limit = 10, offset = 0) => 
       vasikaNo: get(item, "vasikaNo", "-"),
       vasikaDate: get(item, "vasikaDate") ? convertEpochToDate(new Date(get(item, "vasikaDate")).getTime()) : "-",
       allotmentNo: get(item, "allotmentNo", "-"),
+      obpassApplicantName: get(item, "obpassApplicantName", "-"),
+      obpassFileNo: get(item, "obpassFileNo", "-"),
       allotmentDate: get(item, "allotmentDate") ? convertEpochToDate(new Date(get(item, "allotmentDate")).getTime()) : "-"
     }));
 
@@ -216,7 +218,9 @@ export const searchApiCall = async (state, dispatch, limit = 10, offset = 0) => 
       [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[3].labelKey", "ABG_VASIKA_DATE")]: item.vasikaDate,
       [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[4].labelKey", "ABG_ALLOTMENT_NO")]: item.allotmentNo,
       [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[5].labelKey", "ABG_ALLOTMENT_DATE")]: item.allotmentDate,
-      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[6].labelKey", "ABG_ACTION")]: ""
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[6].labelKey", "ABG_OBPASS_APPLICANT_NAME")]: item.obpassApplicantName,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[7].labelKey", "ABG_OBPASS_FILE_NO")]: item.obpassFileNo,
+      [get(state, "screenConfiguration.screenConfig.billSearchproperty.components.div.children.billSearchpropertyResult.props.columns[8].labelKey", "ABG_ACTION")]: ""
     }));
     // Calculate current page
     const currentPage = Math.floor(offset / limit);
@@ -236,9 +240,11 @@ export const searchApiCall = async (state, dispatch, limit = 10, offset = 0) => 
         {
           data: data,
           columns: originalColumns,
+          rows: parseInt(totalCountwithVasika) || 0,
           title: {
             labelName: "Property Search Results",
-            labelKey: "ABG_PROPERTY_SEARCH_RESULTS_TABLE_HEADING"
+            labelKey: "ABG_PROPERTY_SEARCH_RESULTS_TABLE_HEADING",
+            value: null  // Set to null instead of removing
           },
           options: {
             filter: false,
