@@ -63,12 +63,12 @@ export const billSearchpropertyResult = {
         }
       },
       {
-        labelName: "Obpass File No",
-        labelKey: "ABG_OBPASS_FILE_NO"
-      },
-      {
         labelName: "Obpass Applicant Name",
         labelKey: "ABG_OBPASS_APPLICANT_NAME"
+      },
+      {
+        labelName: "Obpass File No",
+        labelKey: "ABG_OBPASS_FILE_NO"
       },
       {
         labelName: "Action",
