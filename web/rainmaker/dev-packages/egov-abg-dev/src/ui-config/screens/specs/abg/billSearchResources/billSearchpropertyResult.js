@@ -55,7 +55,20 @@ export const billSearchpropertyResult = {
       },
       {
         labelName: "Allotment Date",
-        labelKey: "ABG_ALLOTMENT_DATE"
+        labelKey: "ABG_ALLOTMENT_DATE",
+        options: {
+          display: false,
+          viewColumns: false,
+          filter: false
+        }
+      },
+      {
+        labelName: "Obpass Applicant Name",
+        labelKey: "ABG_OBPASS_APPLICANT_NAME"
+      },
+      {
+        labelName: "Obpass File No",
+        labelKey: "ABG_OBPASS_FILE_NO"
       },
       {
         labelName: "Action",
