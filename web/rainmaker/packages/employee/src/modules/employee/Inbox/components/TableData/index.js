@@ -132,8 +132,10 @@ class TableData extends Component {
     color: "rgb(53,152,219)",
     timeoutForTyping: false,
     loadLocalityForInitialData: false,
-    showLoadingTaskboard:false
+    showLoadingTaskboard: false
   };
+
+  localityCache = {};
 
   getUniqueList = (list = []) => {
     let newList = [];
@@ -158,8 +160,6 @@ class TableData extends Component {
       ) {
         return true;
       }
-
-
     }
     if (
       row[5].hiddenField[0].includes(value.toLowerCase()) ||
@@ -247,18 +247,15 @@ class TableData extends Component {
       })
     }
 
-
-
-    let { taskboardData, tabData , showLoadingTaskboard } = this.state;
-if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
-  
-  this.setState({showLoadingTaskboard:true})
-}
-    taskboardData[0].head = showLoadingTaskboard?totalRows.length: totalRowCount;
+    let { taskboardData, tabData, showLoadingTaskboard } = this.state;
+    if (totalRows.length == totalRowCount && showLoadingTaskboard == false) {
+      this.setState({ showLoadingTaskboard: true })
+    }
+    taskboardData[0].head = showLoadingTaskboard ? totalRows.length : totalRowCount;
     taskboardData[1].head = totalRows.length == totalRowCount || showLoadingTaskboard ? NEARING_SLA.length : 'LOADING';
     taskboardData[2].head = totalRows.length == totalRowCount || showLoadingTaskboard ? ESCALATED_SLA.length : 'LOADING';
     tabData[0].dynamicArray = [initialInboxData[0].rows.length];
-    tabData[1].dynamicArray = [showLoadingTaskboard?totalRows.length: totalRowCount];
+    tabData[1].dynamicArray = [showLoadingTaskboard ? totalRows.length : totalRowCount];
     this.hideLoading();
     return {
       inboxData: initialInboxData,
@@ -303,137 +300,76 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
       initialInboxData: tempObject
     });
   }
+
   prepareInboxDataRows = async (data, all, loadLocality = false) => {
     const { toggleSnackbarAndSetText } = this.props;
     const uuid = get(this.props, "userInfo.uuid");
-    if (isEmpty(data)) return{ allData: [], assignedToMe: [] };
+    if (isEmpty(data)) return { allData: [], assignedToMe: [] };
     let businessServices = [];
     let businessIds = [];
-    let ptApplicationNo = []
+
+    // Identify which IDs need fetching (not in cache)
     if (this.state.showLocality && loadLocality) {
-      businessIds = data.map((item) => {
-        businessServices.push(item.moduleName);
-        if (item.moduleName == 'PT') {
-          ptApplicationNo.push(item.businessId);
+      data.forEach((item) => {
+        if (!this.localityCache[item.businessId]) {
+          businessIds.push(item.businessId);
+          businessServices.push(item.moduleName);
         }
-        return item.businessId;
       });
     }
-    // const businessServiceData = this.getBussinessServiceData();
-    // const modules =this.state.showLocality&&
-    //   businessServiceData &&
-    //   businessServiceData.map((item, index) => {
-    //     return item.business;
-    //   })||[];
-    // const uniqueModules = uniq(modules)
+
     const uniqueModules = uniq(businessServices)
-    let localitymap = [];
-    if (this.state.showLocality && loadLocality) {
+
+    if (this.state.showLocality && loadLocality && businessIds.length > 0) {
       try {
         let requestBodies = []
         let endpoints = []
         let queries = []
         uniqueModules.map((uniqueModule, ind) => {
-          // if (uniqueModule == "PT") {
-          //   const acknowledgementIds = [...ptApplicationNo];
-          //   for (let i = 0; i <= ptApplicationNo.length + 50; i += 50) {
-          //     let acknowledgementId = acknowledgementIds.splice(0, 50);
-          //     if (acknowledgementId && acknowledgementId.length > 0) {
-          //       const query = [{ key: "tenantId", value: getTenantId() },
-          //       { key: "acknowledgementIds", value: acknowledgementId.join(',') }]
-          //       requestBodies.push(undefined)
-          //       queries.push(query)
-          //       endpoints.push("property-services/property/_search")
-          //     }
-          //   }
-          // } else if (uniqueModule == "pt-services" || uniqueModule == "pgr-services") {
-
-          // } else {
-            requestBodies.push({
-              searchCriteria: {
-                "referenceNumber": businessIds
-              }
-            })
-            queries.push([])
-            endpoints.push(`egov-searcher/locality/${uniqueModule}/_get`)
-          // }
-
-        })
-        const resp = await multiHttpRequest(endpoints, "search", queries, requestBodies)
-        resp && resp.map(res => {
-          if (res && res.Localities) {
-            let locality = res.Localities;
-            localitymap = [...localitymap, ...locality];
-          } else if (res && res.Properties) {
-            const localities = res.Properties.map(property => {
-              return {
-                "referencenumber": property.acknowldgementNumber,
-                "locality": property.address.locality.code
-              }
-            })
-            localitymap = [...localitymap, ...localities];
-          }
-        });
-        /* for (var i = 0; i < uniqueModules.length; i++) {
-          try {
-            if (uniqueModules[i] != 'PT') {
-              const requestBody = {
-                searchCriteria: {
-                  "referenceNumber": businessIds
-                }
-              }
-              const moduleWiseLocality = await httpRequest(`egov-searcher/locality/${uniqueModules[i]}/_get`, "search", [], requestBody);
-              localitymap = [...localitymap, ...moduleWiseLocality.Localities];
-          
-            
-            } else {
-            const acknowledgementIds = [...businessIds];
-              for (let i = 0; i <= businessIds.length + 200; i += 200) {
-                let acknowledgementId = acknowledgementIds.splice(0, 200);
-                if (acknowledgementId && acknowledgementId.length > 0) {
-                  const query = [{ key: "tenantId", value: getTenantId() },
-                  { key: "acknowledgementIds", value: acknowledgementId.join(',') }]
-                  const propertyResponse = await httpRequest("property-services/property/_search", "_search", query);
-  
-                  const localities = propertyResponse.Properties && propertyResponse.Properties.map(property => {
-                    return {
-                      "referencenumber": property.acknowldgementNumber,
-                      "locality": property.address.locality.code
-                    }
-                  })
-                  localitymap = [...localitymap, ...localities];
-                }
-              } 
+          requestBodies.push({
+            searchCriteria: {
+              "referenceNumber": businessIds
             }
-  
-          } catch (e) {
-            console.log("error");
-          }
-        } */
+          })
+          queries.push([])
+          endpoints.push(`egov-searcher/locality/${uniqueModule}/_get`)
+        })
+
+        if (endpoints.length > 0) {
+          const resp = await multiHttpRequest(endpoints, "search", queries, requestBodies)
+          resp && resp.map(res => {
+            if (res && res.Localities) {
+              res.Localities.forEach(loc => {
+                this.localityCache[loc.referencenumber] = loc;
+              });
+            } else if (res && res.Properties) {
+              res.Properties.forEach(property => {
+                this.localityCache[property.acknowldgementNumber] = {
+                  referencenumber: property.acknowldgementNumber,
+                  locality: property.address.locality.code
+                };
+              });
+            }
+          });
+        }
       } catch (e) {
-        toggleSnackbarAndSetText(
-          true,
-          {
-            labelName: "Locality Empty!",
-            labelKey: "Locality Empty!",
-          },
-          "error"
-        );
+        console.log('Log => ** [Inbox] Locality fetch error (non-critical):', e.message);
       }
     }
+
     let localityDropdownList = [];
     let moduleDropdownList = [];
     let statusDropdownList = [];
 
     let assignedToMe = [];
     const initialData = data.map((item) => {
-      const locality = this.state.showLocality && localitymap.find(locality => {
-        return locality.referencenumber === item.businessId;
-      })
+      // Retrieve from Cache
+      const locality = this.state.showLocality && this.localityCache[item.businessId];
+
       var sla = item.businesssServiceSla && item.businesssServiceSla / (1000 * 60 * 60 * 24);
       let row0 = { text: item.businessId, subtext: item.businessService, hiddenText: item.moduleName };
-      let localityString = locality && locality.locality ? `${item.tenantId.toUpperCase().replace(/[.]/g, "_")}_REVENUE_${locality.locality.replace("-","_")}` : "NA";
-      let row1 = {text: locality ? <Label label={localityString} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
+      let localityString = locality && locality.locality ? `${item.tenantId.toUpperCase().replace(/[.]/g, "_")}_REVENUE_${locality.locality.replace("-", "_")}` : "NA";
+      let row1 = { text: locality ? <Label label={localityString} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
       let row2 = {
         text: item.state ? (
           <Label
@@ -442,11 +378,11 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
             color="#000000"
           />
         ) : (
-            "NA"
-          ),
+          "NA"
+        ),
       };
 
-      let row3 = { text: item.assignes != null  ? <Label label={item.assignes[0].name} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
+      let row3 = { text: item.assignes != null ? <Label label={item.assignes[0].name} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
       let row4 = { text: Math.round(sla), badge: true };
       let row5 = { historyButton: true };
 
@@ -541,29 +477,29 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
       localStorageSet("businessServiceData", JSON.stringify(get(payload, "BusinessServices")));
       return get(payload, "BusinessServices");
     } catch (e) {
-     if(e&&e.message&&e.message.includes('setItem')){
+      if (e && e.message && e.message.includes('setItem')) {
 
-     }else{
-      toggleSnackbarAndSetText(
-        true,
-        {
-          labelName: "Not authorized to access Business Service!",
-          labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE",
-        },
-        "error"
-      );
-     }
-   
+      } else {
+        toggleSnackbarAndSetText(
+          true,
+          {
+            labelName: "Not authorized to access Business Service!",
+            labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE",
+          },
+          "error"
+        );
+      }
+
     }
   };
 
   componentDidMount = async () => {
     this.getMaxSLA();
-    
+
     // Start API call 
     setTimeout(() => {
       this.loadDataInBackground();
-    }, 10); 
+    }, 10);
   };
 
   loadDataInBackground = async () => {
@@ -584,20 +520,24 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
     try {
       this.showLoading();
       const requestBody1 = [{ key: "tenantId", value: tenantId }];
-      //let maxCount = await httpRequest("egov-workflow-v2/egov-wf/process/_count", "_search", requestBody1);
-      let maxCount = 5000 ;
-      let limit =100;
-      let offset =0;
-      const requestBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: 0 }, { key: "limit", value: maxCount > 100 ? limit: maxCount }];
+
+      let maxCount = 5000;
+      // OPTIMIZATION: Reduced from 100 to 25 to improve TTI
+      let limit = 25;
+      let offset = 0;
+
+      const requestBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: 0 }, { key: "limit", value: maxCount > 100 ? limit : maxCount }];
       const responseData = await httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", requestBody);
       const allData = orderBy(get(responseData, "ProcessInstances", []), ["businesssServiceSla"]);
+
       if (maxCount > 100) {
-        offset = limit+1;
-        limit=limit+100
+        offset = limit + 1;
+        limit = limit + 100
         this.loadRemainingData([{ key: "tenantId", value: tenantId }, { key: "offset", value: offset }, { key: "limit", value: limit }], responseData)
       } else {
         this.loadLocalityForAllData(allData);
       }
+
       const convertedData = await this.prepareInboxDataRows(allData, true, false)
       const allDataRows = convertedData.allData;
       const assignedDataRows = convertedData.assignedToMe;
@@ -827,25 +767,8 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
               );
             })}
           </Tabs>
-          <div style={{ position: 'relative', minHeight: '200px' }}>
-            <InboxData businessServiceSla={businessServiceSla} data={inboxData[value]} />
-            {this.state.dataLoading && (
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 10,
-                minHeight: '200px'
-              }}>
-                <CircularProgress size={40} color="primary" />
-              </div>
-            )}
+          <div className="inbox-component-container">
+            <InboxData data={inboxData[value]} />
           </div>
         </div>
       </div>
@@ -864,9 +787,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    prepareFinalObject: (jsonPath, value) => dispatch(prepareFinalObject(jsonPath, value)),
-    toggleSnackbarAndSetText: (open, message, error) => dispatch(toggleSnackbarAndSetText(open, message, error)),
+    prepareFinalObject: (jsonPath, value) =>
+      dispatch(prepareFinalObject(jsonPath, value)),
+    toggleSnackbarAndSetText: (open, message, error) =>
+      dispatch(toggleSnackbarAndSetText(open, message, error)),
   };
 };
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TableData));
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(TableData)
+);

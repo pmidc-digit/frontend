@@ -17,7 +17,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
-  //debugger
+  
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
