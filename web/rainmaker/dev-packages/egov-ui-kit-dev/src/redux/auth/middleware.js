@@ -1,6 +1,6 @@
-import { refreshTokenRequest } from "egov-ui-kit/redux/auth/actions";
+import { logout } from "egov-ui-kit/redux/auth/actions";
 import { USER_SEARCH_SUCCESS } from "./actionTypes";
-import { getAccessToken, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+import { getSessionId, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import { getNotificationCount, getNotifications } from "../app/actions";
 import get from "lodash/get"
 
@@ -18,6 +18,7 @@ const auth = (store) => (next) => (action) => {
           value: permanentCity ? permanentCity : getTenantId(),
         },
       ];
+      // Session ID is passed in headers, not in request body
       const requestBody = {
         RequestInfo: {
           apiId: "org.egov.pt",
@@ -28,7 +29,7 @@ const auth = (store) => (next) => (action) => {
           key: "xyz",
           msgId: "654654",
           requesterId: "61",
-          authToken: getAccessToken(),
+          // authToken removed - session is managed via cookies/headers
         },
       };
       if ((window.location.pathname === "/" || window.location.pathname === "/citizen/" || window.location.pathname === "/employee/inbox")) {
@@ -38,8 +39,9 @@ const auth = (store) => (next) => (action) => {
     }
   }
 
-  if (/(_ERROR|_FAILURE)$/.test(type) && action.error === "INVALID_TOKEN") {
-    store.dispatch(refreshTokenRequest());
+  // Handle session expiry - logout user when session expires
+  if (/(_ERROR|_FAILURE)$/.test(type) && (action.error === "SESSION_EXPIRED" || action.error === "INVALID_TOKEN")) {
+    store.dispatch(logout());
   } else {
     next(action);
   }

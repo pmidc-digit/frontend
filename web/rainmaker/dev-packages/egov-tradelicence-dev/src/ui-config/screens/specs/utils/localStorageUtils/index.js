@@ -1,11 +1,36 @@
-
-
 const appName = process.env.REACT_APP_NAME;
 
-//GET methods
-export const getAccessToken = () => {
-  return localStorageGet(`token`);
+// Cookie utility functions for session-based authentication
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
 };
+
+const deleteCookie = (name) => {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
+// Session-based authentication - Get session ID from cookie
+export const getSessionId = () => {
+  return getCookie('SESSION_ID') || getCookie('sessionId') || getCookie('JSESSIONID') || getCookie('session-id');
+};
+
+// Deprecated: kept for backward compatibility during migration
+// Returns session ID instead of access token (no token storage)
+export const getAccessToken = () => {
+  return getSessionId();
+};
+
+// Check if user has valid session
+export const hasValidSession = () => {
+  const userInfo = getUserInfo();
+  const sessionId = getSessionId();
+  return !!(userInfo && sessionId);
+};
+
+//GET methods
 export const getUserInfo = () => {
   return localStorageGet("user-info");
 };
@@ -32,12 +57,18 @@ export const getStoredModulesList = () =>{
 export const setUserInfo = (userInfo) => {
   localStorageSet("user-info", userInfo, null);
 };
+
+// Deprecated: No-op functions - tokens are no longer stored
+// Session is managed via HttpOnly cookies set by the server
 export const setAccessToken = (token) => {
-  localStorageSet("token", token, null);
+  // No-op: Session is managed via cookies, not localStorage
+  console.warn('setAccessToken is deprecated. Session is managed via cookies.');
 };
 export const setRefreshToken = (refreshToken) => {
-  localStorageSet("refresh-token", refreshToken, null);
+  // No-op: Refresh tokens are no longer used with session-based auth
+  console.warn('setRefreshToken is deprecated. Session is managed via cookies.');
 };
+
 export const setTenantId = (tenantId) => {
   localStorageSet("tenant-id", tenantId, null);
 };
@@ -56,9 +87,15 @@ export const setStoredModulesList =(storedModuleList) =>{
 
 //Remove Items (LOGOUT)
 export const clearUserDetails = () => {
+  // Clear localStorage items
   Object.keys(localStorage).forEach((key) => {
       window.localStorage.removeItem(key);
   });
+  // Clear session cookies
+  deleteCookie('SESSION_ID');
+  deleteCookie('sessionId');
+  deleteCookie('JSESSIONID');
+  deleteCookie('session-id');
 };
 //Role specific get-set Methods
 export const localStorageGet = (key, path) => {

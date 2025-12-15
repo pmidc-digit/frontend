@@ -1,17 +1,17 @@
 import * as actionTypes from "./actionTypes";
-import { getTenantId, getAccessToken, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
+import { getTenantId, getSessionId, getUserInfo, hasValidSession } from "egov-ui-kit/utils/localStorageUtils";
 
 const userInfo = JSON.parse(getUserInfo());
-const authenticated = userInfo ? true : false;
+// Session-based auth: check for valid session instead of token
+const authenticated = hasValidSession();
 const tenantId = getTenantId();
-const token = getAccessToken();
 
 const intialState = {
   authenticating: false,
   authenticated,
   authenticationFailed: !authenticated,
   userInfo,
-  token,
+  // token removed - session is managed via cookies
   tenantId,
 };
 
@@ -30,7 +30,7 @@ const auth = (state = intialState, action) => {
         authenticationFailed: false,
         authenticating: false,
         userInfo: action.userInfo,
-        token: action.accessToken,
+        // token removed - session is managed via cookies
       };
     case actionTypes.AUTHENTICATION_FAILED:
       return { ...state, authenticated: false, authenticationFailed: true, authenticating: false };
@@ -43,7 +43,7 @@ const auth = (state = intialState, action) => {
         authenticationFailed: false,
         authenticating: false,
         userInfo: {},
-        token: "",
+        // token removed - session is managed via cookies
       };
     case actionTypes.SEND_OTP_STARTED:
       return { ...state, authenticating: true };

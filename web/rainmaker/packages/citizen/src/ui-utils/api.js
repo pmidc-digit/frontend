@@ -1,16 +1,36 @@
 import axios from "axios";
 import { fetchFromLocalStorage, addQueryArg, getDateInEpoch } from "egov-ui-framework/ui-utils/commons";
-import { getAccessToken, getTenantId, getLocale } from "egov-ui-kit/utils/localStorageUtils";
+import { getSessionId, getTenantId, getLocale } from "egov-ui-kit/utils/localStorageUtils";
+
+// Get session-based headers for API requests
+const getSessionHeaders = () => {
+  const sessionId = getSessionId();
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  if (sessionId) {
+    headers['Session-Id'] = sessionId;
+  }
+  return headers;
+};
 
 const instance = axios.create({
   baseURL: window.location.origin,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: getSessionHeaders(),
+  withCredentials: true, // Enable cookies to be sent with requests
+});
+
+// Update headers before each request to include latest session ID
+instance.interceptors.request.use((config) => {
+  const sessionId = getSessionId();
+  if (sessionId) {
+    config.headers['Session-Id'] = sessionId;
+  }
+  return config;
 });
 
 const wrapRequestBody = (requestBody, action) => {
-  const authToken = getAccessToken();
+  // Session ID is now passed in headers, not in request body
   let RequestInfo = {
     apiId: "Rainmaker",
     ver: ".01",
@@ -20,7 +40,7 @@ const wrapRequestBody = (requestBody, action) => {
     key: "",
     msgId: `20170310130900|${getLocale()}`,
     requesterId: "",
-    authToken,
+    // authToken removed - session is managed via cookies/headers
   };
   return Object.assign(
     {},
