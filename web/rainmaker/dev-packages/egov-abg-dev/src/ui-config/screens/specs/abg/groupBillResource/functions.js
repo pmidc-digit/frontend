@@ -85,9 +85,15 @@ export const searchApiCall = async (state, dispatch) => {
       "searchScreenMdmsData.BillingService.BusinessService"
     ).filter(item => item.code === searchScreenObject.businesService);
 
-    if(batchtype == 'Batch'){
-      searchScreenObject.url = "/egov-searcher/bill-genie/batchbilling/_get";
-    }
+    // if(batchtype == 'Batch'){
+    //   searchScreenObject.url = "/egov-searcher/bill-genie/batchbilling/_get";
+    // }
+    if(batchtype == 'Batch' && searchScreenObject.businesService == 'WS'){
+       searchScreenObject.url = "/egov-searcher/bill-genie/wsbatchbilling/_get";
+     }  
+    else if(batchtype == 'Batch' && searchScreenObject.businesService == 'SW'){
+       searchScreenObject.url = "/egov-searcher/bill-genie/swbatchbilling/_get";
+     }  
     else if(batchtype == 'Group' && searchScreenObject.businesService == 'SW'){
        searchScreenObject.url = "/egov-searcher/bill-genie/groupbillssw/_get";
      }  
