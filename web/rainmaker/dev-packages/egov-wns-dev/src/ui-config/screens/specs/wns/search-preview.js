@@ -973,15 +973,65 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
 
     if (hasBillData) {
       const fetchedBillData = get(state, "screenConfiguration.preparedFinalObject.fetchedBillData.water", []);
+      const billAccountDetails = get(fetchedBillData[0], "billDetails[0].billAccountDetails", []);
+      
+      // Transform billAccountDetails to taxHeadEstimates format
+      const taxHeadEstimates = billAccountDetails.map((detail, index) => {
+        const taxHeadCode = detail.taxHeadCode;
+        let category = "TAX"; // Default category
+        
+        // Categorize based on taxHeadCode
+        if (taxHeadCode.includes("_FEE") || taxHeadCode.includes("_DEPOSIT")) {
+          category = "FEE";
+        } else if (taxHeadCode.includes("_CHARGE") || taxHeadCode.includes("_CUTTING")) {
+          category = "CHARGES";
+        } else if (taxHeadCode.includes("_TAX") || taxHeadCode.includes("_CESS")) {
+          category = "TAX";
+        }
+        
+        return {
+          taxHeadCode: taxHeadCode,
+          estimateAmount: detail.amount || 0,
+          category: category,
+          order: index + 1
+        };
+      });
+      
+      // Calculate totals by category
+      let feeTotal = 0, chargeTotal = 0, taxTotal = 0;
+      taxHeadEstimates.forEach(item => {
+        if (item.category === "FEE") feeTotal += item.estimateAmount;
+        else if (item.category === "CHARGES") chargeTotal += item.estimateAmount;
+        else if (item.category === "TAX") taxTotal += item.estimateAmount;
+      });
+      
+      // Create estimate-like structure for processBills
+      const estimateData = {
+        Calculation: [{
+          applicationNo: applicationNumber,
+          taxHeadEstimates: taxHeadEstimates,
+          totalAmount: fetchedBillData[0].totalAmount
+        }]
+      };
+      
+      let viewBillTooltip = [];
+      await processBills(estimateData, viewBillTooltip, dispatch);
+      
+      // Create billSlabData grouped by category
+      const billSlabData = _.groupBy(taxHeadEstimates, 'category');
+      
       const billCalculation = {
         totalAmount: fetchedBillData[0].totalAmount,
-        fee: 0,
-        charge: 0,
-        taxAmount: 0,
+        fee: feeTotal,
+        charge: chargeTotal,
+        taxAmount: taxTotal,
+        billSlabData: billSlabData,
+        taxHeadEstimates: taxHeadEstimates,
         isFromFetchBill: true,
         appStatus: processInstanceAppStatus
       };
       dispatch(prepareFinalObject("dataCalculation", billCalculation));
+      createEstimateData(taxHeadEstimates, "taxHeadEstimates", dispatch, {}, {});
     } else {
       estimate = await waterEstimateCalculation(queryObjectForEst, dispatch);
       if (estimate !== null && estimate !== undefined) {
@@ -1166,15 +1216,65 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
 
     if (hasSwBillData) {
       const fetchedBillData = get(state, "screenConfiguration.preparedFinalObject.fetchedBillData.sewerage", []);
+      const billAccountDetails = get(fetchedBillData[0], "billDetails[0].billAccountDetails", []);
+      
+      // Transform billAccountDetails to taxHeadEstimates format
+      const taxHeadEstimates = billAccountDetails.map((detail, index) => {
+        const taxHeadCode = detail.taxHeadCode;
+        let category = "TAX"; // Default category
+        
+        // Categorize based on taxHeadCode
+        if (taxHeadCode.includes("_FEE") || taxHeadCode.includes("_DEPOSIT")) {
+          category = "FEE";
+        } else if (taxHeadCode.includes("_CHARGE") || taxHeadCode.includes("_CUTTING")) {
+          category = "CHARGES";
+        } else if (taxHeadCode.includes("_TAX") || taxHeadCode.includes("_CESS")) {
+          category = "TAX";
+        }
+        
+        return {
+          taxHeadCode: taxHeadCode,
+          estimateAmount: detail.amount || 0,
+          category: category,
+          order: index + 1
+        };
+      });
+      
+      // Calculate totals by category
+      let feeTotal = 0, chargeTotal = 0, taxTotal = 0;
+      taxHeadEstimates.forEach(item => {
+        if (item.category === "FEE") feeTotal += item.estimateAmount;
+        else if (item.category === "CHARGES") chargeTotal += item.estimateAmount;
+        else if (item.category === "TAX") taxTotal += item.estimateAmount;
+      });
+      
+      // Create estimate-like structure for processBills
+      const estimateData = {
+        Calculation: [{
+          applicationNo: applicationNumber,
+          taxHeadEstimates: taxHeadEstimates,
+          totalAmount: fetchedBillData[0].totalAmount
+        }]
+      };
+      
+      let viewBillTooltip = [];
+      await processBills(estimateData, viewBillTooltip, dispatch);
+      
+      // Create billSlabData grouped by category
+      const billSlabData = _.groupBy(taxHeadEstimates, 'category');
+      
       const billCalculation = {
         totalAmount: fetchedBillData[0].totalAmount,
-        fee: 0,
-        charge: 0,
-        taxAmount: 0,
+        fee: feeTotal,
+        charge: chargeTotal,
+        taxAmount: taxTotal,
+        billSlabData: billSlabData,
+        taxHeadEstimates: taxHeadEstimates,
         isFromFetchBill: true,
         appStatus: processInstanceAppStatus
       };
       dispatch(prepareFinalObject("dataCalculation", billCalculation));
+      createEstimateData(taxHeadEstimates, "taxHeadEstimates", dispatch, {}, {});
     } else {
       const convPayload = findAndReplace(payload, "NA", null)
       let queryObjectForEst = [{
