@@ -41,7 +41,7 @@ export default function Header() {
                         </div>
                         <div className="col-sm-12 col-md-6">
                             <div className="rightharder">
-                                <a href="https://mseva.lgpunjab.gov.in/employee/language-selection" target="_blank">Employee Login </a> | <a href="https://mseva.lgpunjab.gov.in/digit-ui/citizen/language-selection" target="_blank">Citizen Login </a><img id="rightimg" src={rightImage} />
+                                <a href="https://mseva.lgpunjab.gov.in/employee/language-selection" target="_blank">Employee Login </a> | <a href="https://mseva.lgpunjab.gov.in/digit-ui/citizen" target="_blank">Citizen Login </a><img id="rightimg" src={rightImage} />
                             </div>
                         </div>
                     </div>
