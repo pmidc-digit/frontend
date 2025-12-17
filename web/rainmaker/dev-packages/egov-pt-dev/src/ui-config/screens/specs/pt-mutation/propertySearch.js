@@ -2,13 +2,14 @@ import commonConfig from "config/common.js";
 import { getBreak, getCommonHeader, getLabel } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getQueryArg, getRequiredDocData,showHideAdhocPopup } from "egov-ui-framework/ui-utils/commons";
-import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+import { getTenantId,getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import {getLocality} from "../utils/index"
 import "./index.css";
 import get from "lodash/get";
 import { resetFields } from "./mutation-methods";
 import propertySearchTabs from "./property-search-tabs";
 import { searchApplicationTable, searchPropertyTable } from "./searchResource/searchResults";
+import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
 const hasButton = getQueryArg(window.location.href, "hasButton");
 let enableButton = true;
 enableButton = hasButton && hasButton === "false" ? false : true;
@@ -133,7 +134,10 @@ const screenConfig = {
     resetFields(state, dispatch);
     
     getMDMSData(action, dispatch);
-    getLocalityData(action, dispatch,tenant)
+    getLocalityData(action, dispatch,tenant);
+    const tenantId = getTenantId();
+    const locale = getLocale() || "en_IN";
+    dispatch(fetchLocalizationLabel(locale, "pt", tenantId));
     return action;
   },
 

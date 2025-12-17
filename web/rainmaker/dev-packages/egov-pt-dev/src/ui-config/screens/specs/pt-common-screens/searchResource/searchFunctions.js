@@ -59,10 +59,12 @@ const searchApiCall = async (state, dispatch) => {
   }else{
     for (var key in searchScreenObject) {
       if (
-        searchScreenObject.hasOwnProperty(key) &&
-        searchScreenObject[key].trim() !== ""
+        searchScreenObject.hasOwnProperty(key)
       ) {
-        queryObject.push({ key: key, value: searchScreenObject[key].trim() });
+         const value = searchScreenObject[key];
+         if (value !== null && value !== undefined && String(value).trim() !== ""){
+            queryObject.push({ key: key, value: searchScreenObject[key].trim() });
+         }
       }
     }
     try {

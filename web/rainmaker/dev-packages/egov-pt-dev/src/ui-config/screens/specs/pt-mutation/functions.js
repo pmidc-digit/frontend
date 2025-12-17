@@ -5,6 +5,8 @@ import get from "lodash/get";
 import React from "react";
 import { getSearchResults } from "../../../../ui-utils/commons";
 import { validateFields } from "../utils/index";
+import { getTenantId,getLocale } from "egov-ui-kit/utils/localStorageUtils";
+import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
 
 export const propertySearch = async (state, dispatch) => {
   searchApiCall(state, dispatch, 0)
@@ -161,6 +163,11 @@ const getAddress = (item) => {
 }
 
 const searchApiCall = async (state, dispatch, index) => {
+  // Ensure PT localization is loaded for toast messages
+  const tenantId = getTenantId();
+  const locale = getLocale() || "en_IN";
+  dispatch(fetchLocalizationLabel(locale, "pt", tenantId));
+  
   showHideTable(false, dispatch, 0);
   showHideTable(false, dispatch, 1);
 
@@ -193,58 +200,170 @@ const searchApiCall = async (state, dispatch, index) => {
     return;
 
   }
- debugger;
   let query = { "tenantId": searchScreenObject.tenantId };
   if (index == 1 && process.env.REACT_APP_NAME == "Citizen") {
     query = {}
   }
 
+  // New combination-based validation logic
   let formValid = false;
   if (index == 0) {
-    if (searchScreenObject.ids != '' || searchScreenObject.mobileNumber != '' || searchScreenObject.oldpropertyids != '' || searchScreenObject.locality != '' || searchScreenObject.name != '' || searchScreenObject.surveyId != '') {
-      formValid = true;
-    }
-      // Additional validation: If only owner name is filled, require at least one other field
-    const hasOwnerName =
-      searchScreenObject.name && searchScreenObject.name.trim() !== "";
-    const hasOtherFields =
-      (searchScreenObject.ids && searchScreenObject.ids.trim() !== "") ||
-      (searchScreenObject.mobileNumber &&searchScreenObject.mobileNumber.trim() !== "") ||
-      (searchScreenObject.oldpropertyids &&searchScreenObject.oldpropertyids.trim() !== "") ||
-      (searchScreenObject.locality &&searchScreenObject.locality.trim() !== "") ||
-      (searchScreenObject.surveyId &&searchScreenObject.surveyId.trim() !== "");
+    // Check individual field values
+    const hasPropertyId = searchScreenObject.ids && searchScreenObject.ids.trim() !== "";
+    const hasSurveyId = searchScreenObject.surveyId && searchScreenObject.surveyId.trim() !== "";
+    const hasMobileNumber = searchScreenObject.mobileNumber && searchScreenObject.mobileNumber.trim() !== "";
+    const hasExistingId = searchScreenObject.oldpropertyids && searchScreenObject.oldpropertyids.trim() !== "";
+    const hasOwnerName = searchScreenObject.name && searchScreenObject.name.trim() !== "";
+    const hasLocality =   searchScreenObject.locality !== null && searchScreenObject.locality !== undefined && String(searchScreenObject.locality).trim() !== ""
 
-    if (hasOwnerName && !hasOtherFields) {
+    // Check for mixed fields from different combinations
+    const combination1FieldsUsed = hasPropertyId || hasSurveyId || hasMobileNumber;
+    const combination2FieldsUsed = hasOwnerName || hasLocality || hasExistingId;
+    
+    const combinationsWithFields = [combination1FieldsUsed, combination2FieldsUsed].filter(Boolean).length;
+    
+    if (combinationsWithFields > 1) {
       dispatch(
         toggleSnackbar(
           true,
           {
-            labelName:
-              "Please provide at least one additional field (Property ID, Mobile Number, Existing Property ID, Locality, or Survey ID)",
-            labelKey: "ERR_PT_OWNER_NAME_REQUIRES_ADDITIONAL_FIELD",
+            labelName: "Please select fields from only one combination. You cannot mix fields from different combinations.",
+            labelKey: "ERR_PT_MIXED_COMBINATIONS"
           },
           "error"
         )
       );
       return;
     }
+
+    // Define the three valid combinations
+    const combination1 = hasPropertyId || hasSurveyId || hasMobileNumber; // Property ID OR Survey ID OR Mobile Number (any one)
+    const combination2 = hasExistingId || hasLocality || hasOwnerName; // Existing ID,Locality, or Owner Name
+    // Check if any valid combination is selected
+    const validCombinations = [combination1, combination2];
+    const selectedCombinationsCount = validCombinations.filter(combo => combo).length;
+
+    if (selectedCombinationsCount === 0) {
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Please select one of the valid combinations: 1) Property ID or Survey ID or Mobile Number 2) Existing Property ID, Locality, or Owner Name ",
+            labelKey: "ERR_PT_SELECT_VALID_COMBINATION"
+          },
+          "error"
+        )
+      );
+      return;
+    }
+
+    if (selectedCombinationsCount > 1) {
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Please select fields from only one combination. You cannot mix fields from different combinations.",
+            labelKey: "ERR_PT_MULTIPLE_COMBINATIONS_SELECTED"
+          },
+          "error"
+        )
+      );
+      return;
+    }
+
+    // Validate specific combination requirements
+    if (combination1) {
+      // Combination 1: Either Property ID OR Survey ID or Mobile Number (not all required)
+      if (!hasPropertyId && !hasSurveyId && !hasMobileNumber) {
+        dispatch(
+          toggleSnackbar(
+            true,
+            {
+              labelName: "For Combination 1, either Property Tax Unique ID or Survey ID or Mobile Number is required",
+              labelKey: "ERR_PT_COMBINATION1_INCOMPLETE"
+            },
+            "error"
+          )
+        );
+        return;
+      }
+      // Check if any other fields from different combinations are filled
+      if (hasExistingId && hasOwnerName && hasLocality) {
+        dispatch(
+          toggleSnackbar(
+            true,
+            {
+              labelName: "Please use only Property Tax Unique ID or Survey ID or Mobile Number for this combination",
+              labelKey: "ERR_PT_COMBINATION1_MIXED_FIELDS"
+            },
+            "error"
+          )
+        );
+        return;
+      }
+    } else if (combination2) {
+      // Special validation: if Owner Name is filled, Locality must also be filled
+      if (hasOwnerName && !hasLocality) {
+        dispatch(
+          toggleSnackbar(
+            true,
+            {
+              labelName: "When Owner Name is selected, Locality is mandatory",
+              labelKey: "ERR_PT_OWNER_NAME_REQUIRES_LOCALITY"
+            },
+            "error"
+          )
+        );
+        return;
+      }
+       if (hasLocality && !hasOwnerName) {
+        dispatch(
+          toggleSnackbar(
+            true,
+            {
+              labelName: "When Locality is selected, Owner Name is mandatory",
+              labelKey: "ERR_PT_OLOCALITY_REQUIRES_OWNER_NAME"
+            },
+            "error"
+          )
+        );
+        return;
+      }
+      // Check if any other fields from different combinations are filled
+      if (hasPropertyId || hasSurveyId || hasMobileNumber) {
+        dispatch(
+          toggleSnackbar(
+            true,
+            {
+              labelName: "Please only use Existing Property ID, Locality, or Owner Name + Locality for this combination",
+              labelKey: "ERR_PT_COMBINATION3_MIXED_FIELDS"
+            },
+            "error"
+          )
+        );
+        return;
+      }
+    }
+
+    formValid = true;
   } else {
+    // For application search (index == 1), keep existing logic
     if (searchScreenObject.ids != '' || searchScreenObject.mobileNumber != '' || searchScreenObject.acknowledgementIds != '' || searchScreenObject.locality != '' || searchScreenObject.name != '' || searchScreenObject.surveyId != '') {
       formValid = true;
     }
-  }
-  if (!formValid) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill valid fields to search",
-          labelKey: "ERR_PT_FILL_VALID_FIELDS"
-        },
-        "error"
-      )
-    );
-    return;
+    if (!formValid) {
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Please fill valid fields to search",
+            labelKey: "ERR_PT_FILL_VALID_FIELDS"
+          },
+          "error"
+        )
+      );
+      return;
+    }
   }
   let form1 = validateFields("components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[0].tabContent.searchPropertyDetails", state, dispatch, "propertySearch");
   let form2 = validateFields("components.div.children.propertySearchTabs.children.cardContent.children.tabSection.props.tabs[1].tabContent.searchApplicationDetails", state, dispatch, "propertySearch");
@@ -370,18 +489,22 @@ const searchApiCall = async (state, dispatch, index) => {
     removeValidation(state, dispatch, index);
     for (var key in searchScreenObject) {
       if (
-        searchScreenObject.hasOwnProperty(key) &&
-        searchScreenObject[key].trim() !== ""
+        searchScreenObject.hasOwnProperty(key)
       ) {
-        if (key === "tenantId") {
+        const value = searchScreenObject[key];
 
+        if (value !== null && value !== undefined && String(value).trim() !== "") {
+          if (key === "tenantId") {
+
+          }
+          else if (key === "ids") {
+            query["propertyIds"] = searchScreenObject[key].trim();
+          }
+          else {
+            query[key] = searchScreenObject[key].trim();
+          }
         }
-        else if (key === "ids") {
-          query["propertyIds"] = searchScreenObject[key].trim();
-        }
-        else {
-          query[key] = searchScreenObject[key].trim();
-        }
+
       }
     }
     let queryObject = [];

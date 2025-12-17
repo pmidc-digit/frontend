@@ -78,29 +78,33 @@ export const searchApiCall = async (state, dispatch) => {
     //  showHideProgress(true, dispatch);
     for (var key in searchScreenObject) {
       if (
-        searchScreenObject.hasOwnProperty(key) &&
-        searchScreenObject[key].trim() !== ""
+        searchScreenObject.hasOwnProperty(key)
       ) {
-        if (key === "fromDate") {
-          queryObject.push({
-            key: key,
-            value: convertDateToEpoch(searchScreenObject[key], "daystart")
-          });
-        } else if (key === "toDate") {
-          queryObject.push({
-            key: key,
-            value: convertDateToEpoch(searchScreenObject[key], "dayend")
-          });
+        const value = searchScreenObject[key];
+
+        if (value !== null && value !== undefined && String(value).trim() !== "") {
+          if (key === "fromDate") {
+            queryObject.push({
+              key: key,
+              value: convertDateToEpoch(value, "daystart")
+            });
+          } else if (key === "toDate") {
+            queryObject.push({
+              key: key,
+              value: convertDateToEpoch(value, "dayend")
+            });
+          }
+          // else if (key === "status") {
+          //   queryObject.push({
+          //     key: "action",
+          //     value: value.trim()
+          //   });
+          // }
+          else {
+            queryObject.push({ key: key, value: value.trim() });
+          }
         }
-        // else if (key === "status") {
-        //   queryObject.push({
-        //     key: "action",
-        //     value: searchScreenObject[key].trim()
-        //   });
-        // }
-        else {
-          queryObject.push({ key: key, value: searchScreenObject[key].trim() });
-        }
+
       }
     }
     try {
