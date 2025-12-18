@@ -109,19 +109,35 @@ export const searchApiCall = async (state, dispatch) => {
 
     //integratedbills
     if (batchtype == 'Integrated Bill') {
-
       debugger;
-      const merged = [];
-      if (responseFromAPI && Array.isArray(responseFromAPI.Bills)) {
-        responseFromAPI.Bills.forEach((propObj) => {
-          if (Array.isArray(propObj.bills)) {
-            propObj.bills.forEach((bill) => merged.push(bill));
+      // For Integrated Bill response flatten groups into a single bills array keyed by propertyId
+
+      const groups = responseFromAPI.Bills || [];
+      const aggregated = {};
+
+      groups.forEach(group => {
+        const groupBills = group.Bills || group.bills || [];
+        groupBills.forEach(b => {
+          const key = b.propertyId || b.consumerCode || (b.consumer && b.consumer.propertyId) || b.payerId;
+          if (!key) return;
+          if (!aggregated[key]) {
+            aggregated[key] = { ...b, totalAmount: Number(b.totalAmount) || 0, billNumber: b.billNumber || "" };
+          } else {
+            aggregated[key].totalAmount = (Number(aggregated[key].totalAmount) || 0) + (Number(b.totalAmount) || 0);
+            aggregated[key].billNumber = [aggregated[key].billNumber, b.billNumber].filter(Boolean).join(",");
+            if (b.billDate && (!aggregated[key].billDate || b.billDate < aggregated[key].billDate)) {
+              aggregated[key].billDate = b.billDate;
+            }
           }
         });
-      }
-      // mutate existing bills array to contain merged bills
+      });
+
+      // Replace original bills array contents with aggregated results
+      const flattened = Object.values(aggregated);
       bills.length = 0;
-      merged.forEach((b) => bills.push(b));
+      flattened.forEach(item => bills.push(item));
+
+
     }
     //integratedbills
     dispatch(
