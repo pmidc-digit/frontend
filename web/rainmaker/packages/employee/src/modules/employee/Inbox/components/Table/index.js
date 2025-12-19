@@ -64,13 +64,13 @@ class TablePaginationActions extends React.Component {
     return (
       <div className={classes.root}>
         <Hidden only={["xs"]}>
-        <IconButton
-          onClick={this.handleFirstPageButtonClick}
-          disabled={page === 0}
-          aria-label="First Page"
-        >
-          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-        </IconButton>
+          <IconButton
+            onClick={this.handleFirstPageButtonClick}
+            disabled={page === 0}
+            aria-label="First Page"
+          >
+            {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+          </IconButton>
         </Hidden>
         <IconButton
           onClick={this.handleBackButtonClick}
@@ -87,13 +87,13 @@ class TablePaginationActions extends React.Component {
           {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
         </IconButton>
         <Hidden only={["xs"]}>
-        <IconButton
-          onClick={this.handleLastPageButtonClick}
-          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="Last Page"
-        >
-          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-        </IconButton>
+          <IconButton
+            onClick={this.handleLastPageButtonClick}
+            disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+            aria-label="Last Page"
+          >
+            {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+          </IconButton>
         </Hidden>
       </div>
     );
@@ -168,8 +168,8 @@ class InboxData extends React.Component {
       if (payload) {
         this.setState({
           wfSlaConfig: get(payload.MdmsRes, "common-masters.wfSlaConfig"),
-          rowsPerPage: get(payload.MdmsRes, "common-masters.TablePaginationOptions[0].defaultValue",100),
-          rowsPerPageOptions: get(payload.MdmsRes, "common-masters.TablePaginationOptions[0].rowsPerPageOptions",[25,50,100])
+          rowsPerPage: get(payload.MdmsRes, "common-masters.TablePaginationOptions[0].defaultValue", 100),
+          rowsPerPageOptions: get(payload.MdmsRes, "common-masters.TablePaginationOptions[0].rowsPerPageOptions", [25, 50, 100])
         })
       }
     } catch (e) {
@@ -243,6 +243,16 @@ class InboxData extends React.Component {
   getSlaColor = (sla, businessService) => {
     const { businessServiceSla } = this.props;
     const { wfSlaConfig } = this.state;
+
+    // Explicit null checks to prevent crashes
+    if (!businessServiceSla) {
+      return "";
+    }
+
+    if (!businessServiceSla[businessService]) {
+      return "";
+    }
+
     const MAX_SLA = businessServiceSla[businessService];
     if (wfSlaConfig) {
       if ((MAX_SLA - (MAX_SLA * eval(wfSlaConfig[0].slotPercentage)) <= sla) && sla <= MAX_SLA) {
@@ -262,7 +272,7 @@ class InboxData extends React.Component {
         sortOrder: order,
         isSorting: true,
       });
-      this.props.data.rows=this.props.data.rows.reverse();
+      this.props.data.rows = this.props.data.rows.reverse();
     }
   };
   handleChangePage = (event, page) => {
@@ -274,11 +284,11 @@ class InboxData extends React.Component {
   };
 
   render() {
-    const { data={rows:[],headers:[]}, ProcessInstances, classes } = this.props;
+    const { data = { rows: [], headers: [] }, ProcessInstances, classes } = this.props;
     const { onHistoryClick, onDialogClose, getModuleLink } = this;
     const { isSorting, sortOrder } = this.state;
     const { rows, rowsPerPage, page, rowsPerPageOptions } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data&&data.rows&&data.rows.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data && data.rows && data.rows.length - page * rowsPerPage);
 
     if (isSorting) {
       // data.rows.reverse();
@@ -289,10 +299,10 @@ class InboxData extends React.Component {
           <Table>
             <TableHead style={{ backgroundColor: "white", borderBottom: "1px solid rgb(211, 211, 211)" }}>
               <TableRow>
-                {data&&data.headers&&data.headers.map((item, index) => {
+                {data && data.headers && data.headers.map((item, index) => {
                   let classNames = `inbox-data-table-headcell inbox-data-table-headcell-${index}`;
                   return (
-                    <TableCell className={classNames}>
+                    <TableCell key={index} className={classNames}>
                       {index === 4 ? (
                         <div className="rainmaker-displayInline">
                           {sortOrder === "desc" && (
@@ -309,8 +319,8 @@ class InboxData extends React.Component {
                           )}
                         </div>
                       ) : (
-                          <Label label={item} labelStyle={{ fontWeight: "500" }} color="#000000" />
-                        )}
+                        <Label label={item} labelStyle={{ fontWeight: "500" }} color="#000000" />
+                      )}
                     </TableCell>
                   );
                 })}
@@ -322,57 +332,51 @@ class InboxData extends React.Component {
                 <Label labelClassName="" label="COMMON_INBOX_NO_DATA" />
               </TableBody>
             ) : (
-                <TableBody>
-                  {data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
-                    return (
-                      <TableRow key={i} className="inbox-data-table-bodyrow">
-                        {row.map((item, index) => {
-                          let classNames = `inbox-data-table-bodycell inbox-data-table-bodycell-${index}`;
-                          if (item.subtext) {
-                            return (
-                              <TableCell className={classNames}>
-                                <div onClick={() => getModuleLink(item, row, index)} className="inbox-cell-text">
-                                  {<a style={{ color: "#FE7A51" }}>{item.text} </a>}
-                                </div>
-                                <div className="inbox-cell-subtext">
-                                  {<Label label={`CS_COMMON_INBOX_${item.subtext.toUpperCase()}`} color="#000000" />}
-                                </div>
-                              </TableCell>
-                            );
-                          } else if (item.badge) {
-                            return (
-                              <TableCell className={classNames}>
-                                <span class={"inbox-cell-badge-primary"} style={{ backgroundColor: this.getSlaColor(item.text, row[2].text.props.label.split("_")[1]) }}>{item.text}</span>
-                              </TableCell>
-                            );
-                          } else if (item.historyButton) {
-                            return (
-                              <TableCell className={classNames}>
-                                <div onClick={() => onHistoryClick(row[0])} style={{ cursor: "pointer" }}>
-                                  <i class="material-icons">history</i>
-                                </div>
-                              </TableCell>
-                            );
-                          } else {
-                            return (
-                              <TableCell className={classNames}>
-                                <div>{item.text}</div>
-                              </TableCell>
-                            );
-                          }
-                        })}
-                      </TableRow>
-                    );
-                  })}
-                  <TaskDialog open={this.state.dialogOpen} onClose={onDialogClose} history={ProcessInstances} />
-                </TableBody>
-
-              )}
-            {/* {emptyRows > 0 && (
-                <TableRow style={{ height: 48 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )} */}
+              <TableBody>
+                {data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
+                  return (
+                    <TableRow key={i} className="inbox-data-table-bodyrow">
+                      {row.map((item, index) => {
+                        let classNames = `inbox-data-table-bodycell inbox-data-table-bodycell-${index}`;
+                        if (item.subtext) {
+                          return (
+                            <TableCell key={index} className={classNames}>
+                              <div onClick={() => getModuleLink(item, row, index)} className="inbox-cell-text">
+                                {<a style={{ color: "#FE7A51" }}>{item.text} </a>}
+                              </div>
+                              <div className="inbox-cell-subtext">
+                                {<Label label={`CS_COMMON_INBOX_${item.subtext.toUpperCase()}`} color="#000000" />}
+                              </div>
+                            </TableCell>
+                          );
+                        } else if (item.badge) {
+                          return (
+                            <TableCell key={index} className={classNames}>
+                              <span class={"inbox-cell-badge-primary"} style={{ backgroundColor: this.getSlaColor(item.text, row[2].text.props.label.split("_")[1]) }}>{item.text}</span>
+                            </TableCell>
+                          );
+                        } else if (item.historyButton) {
+                          return (
+                            <TableCell key={index} className={classNames}>
+                              <div onClick={() => onHistoryClick(row[0])} style={{ cursor: "pointer" }}>
+                                <i class="material-icons">history</i>
+                              </div>
+                            </TableCell>
+                          );
+                        } else {
+                          return (
+                            <TableCell key={index} className={classNames}>
+                              <div>{item.text}</div>
+                            </TableCell>
+                          );
+                        }
+                      })}
+                    </TableRow>
+                  );
+                })}
+                <TaskDialog open={this.state.dialogOpen} onClose={onDialogClose} history={ProcessInstances} />
+              </TableBody>
+            )}
             <TableFooter>
               <TablePagination
                 rowsPerPageOptions={rowsPerPageOptions}
@@ -386,7 +390,7 @@ class InboxData extends React.Component {
               />
             </TableFooter>
           </Table>
-        </Hidden>
+        </Hidden >
         <Hidden only={["sm", "md", "lg", "xl"]} implementation="css">
           <div class="sort-icon-flex">
             {sortOrder === "asc" && (
@@ -405,70 +409,70 @@ class InboxData extends React.Component {
           {data.rows.length === 0 ? (
             <Card textChildren={<Label labelClassName="" label="COMMON_INBOX_NO_DATA" />} />
           ) : (
-              <div>
-                {data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  return (
-                    <Card
-                      key={index}
-                      textChildren={
-                        <div>
-                          <div className="head" onClick={() => getModuleLink(row[0], row, 0)}>
-                            <a style={{ color: "#FE7A51" }}>{row[0].text}</a>
-                          </div>
-                          <div className="head">
-                            <Label label={`CS_COMMON_INBOX_${row[0].subtext.toUpperCase()}`} color="#000000" />
-                          </div>
-
-                          <div className="card-div-style">
-                            <Label label={data.headers[1]} labelStyle={{ fontWeight: "500" }} />
-                          </div>
-                          <div className="card-div-style">{row[1].text}</div>
-
-                          <div className="card-div-style">
-                            <Label label={data.headers[2]} labelStyle={{ fontWeight: "500" }} />
-                          </div>
-                          <div className="card-div-style">{row[2].text}</div>
-
-                          <div className="card-div-style">
-                            <Label label={data.headers[3]} labelStyle={{ fontWeight: "500" }} />
-                          </div>
-                          <div className="card-div-style">{row[3].text}</div>
-
-                          <div className="card-div-style">
-                            <Label label={data.headers[4]} labelStyle={{ fontWeight: "500" }} />
-                          </div>
-                          <div className="card-sladiv-style">
-                            <span class={"inbox-cell-badge-primary"} style={{ backgroundColor: this.getSlaColor(row[4].text, row[2].text.props.label.split("_")[1]) }}>{row[4].text}</span>
-                          </div>
-
-                          <div className="card-viewHistory-icon" onClick={() => onHistoryClick(row[0])}>
-                            <i class="material-icons">history</i>
-                          </div>
+            <div>
+              {data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                return (
+                  <Card
+                    key={index}
+                    textChildren={
+                      <div>
+                        <div className="head" onClick={() => getModuleLink(row[0], row, 0)}>
+                          <a style={{ color: "#FE7A51" }}>{row[0].text}</a>
                         </div>
-                      }
-                    />
-                  );
-                })}
-                <TaskDialog open={this.state.dialogOpen} onClose={onDialogClose} history={ProcessInstances} />
-                <TableFooter>
-                  <div className={'inbox-table-pagination-sm'}>
-                    <TablePagination
-                      colSpan={6}
-                      rowsPerPageOptions={rowsPerPageOptions}
-                      count={data.rows.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      labelRowsPerPage={<Label labelClassName="" label="COMMON_INBOX_ROWS_LABEL" />}
-                      onChangePage={this.handleChangePage}
-                      onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                      ActionsComponent={TablePaginationActionsWrapped}
-                    />
-                  </div>
-                </TableFooter>
-              </div>
-            )}
+                        <div className="head">
+                          <Label label={`CS_COMMON_INBOX_${row[0].subtext.toUpperCase()}`} color="#000000" />
+                        </div>
+
+                        <div className="card-div-style">
+                          <Label label={data.headers[1]} labelStyle={{ fontWeight: "500" }} />
+                        </div>
+                        <div className="card-div-style">{row[1].text}</div>
+
+                        <div className="card-div-style">
+                          <Label label={data.headers[2]} labelStyle={{ fontWeight: "500" }} />
+                        </div>
+                        <div className="card-div-style">{row[2].text}</div>
+
+                        <div className="card-div-style">
+                          <Label label={data.headers[3]} labelStyle={{ fontWeight: "500" }} />
+                        </div>
+                        <div className="card-div-style">{row[3].text}</div>
+
+                        <div className="card-div-style">
+                          <Label label={data.headers[4]} labelStyle={{ fontWeight: "500" }} />
+                        </div>
+                        <div className="card-sladiv-style">
+                          <span class={"inbox-cell-badge-primary"} style={{ backgroundColor: this.getSlaColor(row[4].text, row[2].text.props.label.split("_")[1]) }}>{row[4].text}</span>
+                        </div>
+
+                        <div className="card-viewHistory-icon" onClick={() => onHistoryClick(row[0])}>
+                          <i class="material-icons">history</i>
+                        </div>
+                      </div>
+                    }
+                  />
+                );
+              })}
+              <TaskDialog open={this.state.dialogOpen} onClose={onDialogClose} history={ProcessInstances} />
+              <TableFooter>
+                <div className={'inbox-table-pagination-sm'}>
+                  <TablePagination
+                    colSpan={6}
+                    rowsPerPageOptions={rowsPerPageOptions}
+                    count={data.rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    labelRowsPerPage={<Label labelClassName="" label="COMMON_INBOX_ROWS_LABEL" />}
+                    onChangePage={this.handleChangePage}
+                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActionsWrapped}
+                  />
+                </div>
+              </TableFooter>
+            </div>
+          )}
         </Hidden>
-      </div>
+      </div >
     );
   }
 }
@@ -490,7 +494,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 
-export const Taskboard = ({ data=[] }) => {
+export const Taskboard = ({ data = [] }) => {
   return (
     <div>
       {data.map((item, i) => (

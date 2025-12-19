@@ -530,10 +530,8 @@ class TableData extends Component {
       const responseData = await httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", requestBody);
       const allData = orderBy(get(responseData, "ProcessInstances", []), ["businesssServiceSla"]);
 
-      if (maxCount > 100) {
-        offset = limit + 1;
-        limit = limit + 100
-        this.loadRemainingData([{ key: "tenantId", value: tenantId }, { key: "offset", value: offset }, { key: "limit", value: limit }], responseData)
+      if (maxCount > 25) {
+        this.loadRemainingData(null, responseData);
       } else {
         this.loadLocalityForAllData(allData);
       }
@@ -578,13 +576,32 @@ class TableData extends Component {
     prepareFinalObject("InboxData", [...inboxData]);
     this.getMaxSLA();
   }
-  loadRemainingData = async (requestBody = [], response) => {
+  loadRemainingData = async (_, initialResponse) => {
     const { toggleSnackbarAndSetText, prepareFinalObject } = this.props;
+    const tenantId = getTenantId();
     let { taskboardData, tabData } = this.state;
     const inboxData = [{ headers: [], rows: [] }];
     try {
-      const responseData = await httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", requestBody);
-      set(responseData, "ProcessInstances", [...responseData.ProcessInstances, ...response.ProcessInstances]);
+      // Data Optimization: Fetching up to 300 records in parallel chunks
+      const limitPerRequest = 100;
+      const totalTarget = 300;
+      const currentCount = 25; // Already fetched
+
+      const requests = [];
+      for (let offset = currentCount; offset < totalTarget; offset += limitPerRequest) {
+        const limit = Math.min(limitPerRequest, totalTarget - offset);
+        const reqBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: offset }, { key: "limit", value: limit }];
+        requests.push(httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", reqBody));
+      }
+
+      const responses = await Promise.all(requests);
+
+      let allProcessInstances = [...get(initialResponse, "ProcessInstances", [])];
+      responses.forEach(res => {
+        allProcessInstances = [...allProcessInstances, ...get(res, "ProcessInstances", [])];
+      });
+
+      const responseData = { ProcessInstances: allProcessInstances };
 
       const allData = orderBy(get(responseData, "ProcessInstances", []), ["businesssServiceSla"]);
       this.loadLocalityForAllData(allData);
@@ -768,7 +785,8 @@ class TableData extends Component {
             })}
           </Tabs>
           <div className="inbox-component-container">
-            <InboxData data={inboxData[value]} />
+            {/* {console.log("DEBUG: TableData rendering InboxData. State SLA:", businessServiceSla)} */}
+            <InboxData data={inboxData[value]} businessServiceSla={businessServiceSla} />
           </div>
         </div>
       </div>
