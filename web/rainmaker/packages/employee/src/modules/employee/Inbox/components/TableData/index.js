@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import CircularProgress from "@material-ui/core/CircularProgress";
+
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getLocaleLabels, transformById } from "egov-ui-framework/ui-utils/commons";
@@ -508,7 +509,6 @@ class TableData extends Component {
       await this.loadInitialData();
     } catch (error) {
       console.error("Background data loading failed:", error);
-    } finally {
       this.setState({ dataLoading: false });
     }
   };
@@ -534,6 +534,7 @@ class TableData extends Component {
         this.loadRemainingData(null, responseData);
       } else {
         this.loadLocalityForAllData(allData);
+        this.setState({ dataLoading: false });
       }
 
       const convertedData = await this.prepareInboxDataRows(allData, true, false)
@@ -571,6 +572,7 @@ class TableData extends Component {
       this.hideLoading()
     } catch (e) {
       this.hideLoading();
+      this.setState({ dataLoading: false });
       toggleSnackbarAndSetText(true, { labelName: "Workflow search error !", labelKey: "ERR_SEARCH_ERROR" }, "error");
     }
     prepareFinalObject("InboxData", [...inboxData]);
@@ -579,8 +581,6 @@ class TableData extends Component {
   loadRemainingData = async (_, initialResponse) => {
     const { toggleSnackbarAndSetText, prepareFinalObject } = this.props;
     const tenantId = getTenantId();
-    let { taskboardData, tabData } = this.state;
-    const inboxData = [{ headers: [], rows: [] }];
     try {
       // Data Optimization: Fetching up to 300 records in parallel chunks
       const limitPerRequest = 100;
@@ -604,45 +604,18 @@ class TableData extends Component {
       const responseData = { ProcessInstances: allProcessInstances };
 
       const allData = orderBy(get(responseData, "ProcessInstances", []), ["businesssServiceSla"]);
-      this.loadLocalityForAllData(allData);
 
-      const convertedData = await this.prepareInboxDataRows(allData, true, false)
-      const allDataRows = convertedData.allData;
-      const assignedDataRows = convertedData.assignedToMe;
+      // Delegate processing and locality fetch to the dedicated function
+      // This avoids double processing/rendering which causes freezing
+      await this.loadLocalityForAllData(allData);
+      this.setState({ dataLoading: false });
 
-      let headersList = [
-        "WF_INBOX_HEADER_APPLICATION_NO",
-        "WF_INBOX_HEADER_LOCALITY",
-        "WF_INBOX_HEADER_STATUS",
-        "WF_INBOX_HEADER_CURRENT_OWNER",
-        "WF_INBOX_HEADER_SLA_DAYS_REMAINING",
-      ];
-      inboxData[0].headers = headersList;
-      inboxData[0].rows = assignedDataRows;
-
-      tabData[0].dynamicArray = [assignedDataRows.length];
-      tabData[1].dynamicArray = [allDataRows.length];
-      inboxData.push({
-        headers: headersList,
-        rows: allDataRows,
-      });
-      let NEARING_SLA = [];
-      let ESCALATED_SLA = [];
-      const taskCount = allDataRows.length;
-      taskboardData[0].head = taskCount;
-      taskboardData[1].head = NEARING_SLA.length;
-      taskboardData[2].head = ESCALATED_SLA.length;
-
-      this.setState({
-        loaded: true,
-        inboxData, taskboardData, tabData, initialInboxData: cloneDeep(inboxData)
-      });
     } catch (e) {
+      console.error("Error in loadRemainingData:", e);
       this.hideLoading();
+      this.setState({ dataLoading: false });
       toggleSnackbarAndSetText(true, { labelName: "Workflow search error !", labelKey: "ERR_SEARCH_ERROR" }, "error");
     }
-    prepareFinalObject("InboxData", [...inboxData]);
-    this.getMaxSLA();
   }
   loadLocalityForAllData = async (allData) => {
     const { toggleSnackbarAndSetText, prepareFinalObject } = this.props;
@@ -770,6 +743,7 @@ class TableData extends Component {
         </div>
         <Taskboard data={taskboardData} onSlaClick={this.onTaskBoardClick} color={this.state.color} />
         <div className="backgroundWhite" style={{ position: 'relative' }}>
+
           <Tabs
             value={value}
             onChange={this.handleChange}
@@ -786,7 +760,7 @@ class TableData extends Component {
           </Tabs>
           <div className="inbox-component-container">
             {/* {console.log("DEBUG: TableData rendering InboxData. State SLA:", businessServiceSla)} */}
-            <InboxData data={inboxData[value]} businessServiceSla={businessServiceSla} />
+            <InboxData data={inboxData[value]} businessServiceSla={businessServiceSla} loading={dataLoading} />
           </div>
         </div>
       </div>

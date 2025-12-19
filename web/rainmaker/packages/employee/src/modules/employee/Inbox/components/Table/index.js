@@ -6,6 +6,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableFooter from '@material-ui/core/TableFooter';
 import TableHead from "@material-ui/core/TableHead";
+import SyncIcon from "@material-ui/icons/Sync";
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from "@material-ui/core/TableRow";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
@@ -284,7 +285,7 @@ class InboxData extends React.Component {
   };
 
   render() {
-    const { data = { rows: [], headers: [] }, ProcessInstances, classes } = this.props;
+    const { data = { rows: [], headers: [] }, ProcessInstances, classes, loading } = this.props;
     const { onHistoryClick, onDialogClose, getModuleLink } = this;
     const { isSorting, sortOrder } = this.state;
     const { rows, rowsPerPage, page, rowsPerPageOptions } = this.state;
@@ -297,6 +298,7 @@ class InboxData extends React.Component {
       <div>
         <Hidden only={["xs"]}>
           <Table>
+            {loading && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}><style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style><SyncIcon style={{ animation: "spin 2s linear infinite", color: "#FE7A51", marginRight: 8 }} /><span style={{ color: "#767676", fontSize: "14px", fontWeight: 500 }}>Syncing data...</span></div>}
             <TableHead style={{ backgroundColor: "white", borderBottom: "1px solid rgb(211, 211, 211)" }}>
               <TableRow>
                 {data && data.headers && data.headers.map((item, index) => {
@@ -406,6 +408,7 @@ class InboxData extends React.Component {
               </div>
             )}
           </div>
+          {loading && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}><style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style><SyncIcon style={{ animation: "spin 2s linear infinite", color: "#FE7A51", marginRight: 8 }} /><span style={{ color: "#767676", fontSize: "14px", fontWeight: 500 }}>Syncing data...</span></div>}
           {data.rows.length === 0 ? (
             <Card textChildren={<Label labelClassName="" label="COMMON_INBOX_NO_DATA" />} />
           ) : (
