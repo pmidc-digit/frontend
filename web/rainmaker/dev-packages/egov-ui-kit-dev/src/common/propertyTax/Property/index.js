@@ -114,6 +114,17 @@ class Property extends Component {
     this.setState({ updateMobileDialogOpen: false });
   };
 
+  // Check if user has SASKI role
+  checkSaskiRole = () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("user-info") || "{}");
+      const userRole = get(userInfo, "roles[0].code", null);
+      return userRole === "SASKI";
+    } catch (error) {
+      return false;
+    }
+  };
+
   validateMobileBeforeAction = (actionCallback) => {
     if (!this.checkMobileValidation()) {
       this.openMobileValidationPopup();
@@ -515,6 +526,8 @@ alert("This operation is not allowed as Property is not already active.");
         }
         <div id="tax-wizard-buttons" className="wizard-footer col-sm-16" style={{ textAlign: "right" }}>
           <div className="button-container col-5 property-info-access-btn" style={{ float: "right" }}>
+          {!this.checkSaskiRole() && (
+            <React.Fragment>
           <Button
                label={
                  <Label buttonLabel={true}
@@ -606,6 +619,8 @@ alert("This operation is not allowed as Property is not already active.");
               primary={true}
               style={{ lineHeight: "auto", minWidth: "20%" }}
             />
+            </React.Fragment>
+          )}
           </div>
         </div>
         {dialogueOpen && <YearDialogue open={dialogueOpen} history={history} urlToAppend={urlToAppend} closeDialogue={closeYearRangeDialogue} />}
