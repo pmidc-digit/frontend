@@ -3,6 +3,16 @@ import { withStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import MenuButton from "egov-ui-framework/ui-molecules/MenuButton";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from "@material-ui/core/Button";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
@@ -133,10 +143,74 @@ class TableData extends Component {
     color: "rgb(53,152,219)",
     timeoutForTyping: false,
     loadLocalityForInitialData: false,
-    showLoadingTaskboard: false
+    showLoadingTaskboard: false,
+    autoSyncWarningOpen: false,
+    autoSyncEnabled: localStorage.getItem("wf_inbox_auto_sync") === "true"
   };
 
+  INBOX_CACHE_KEY = "wf_inbox_data_cache";
+  AUTO_SYNC_KEY = "wf_inbox_auto_sync";
+  CACHE_EXPIRY_MS = 60 * 60 * 1000; // 1 Hour
+  DB_NAME = "mSevaInboxDB";
+  DB_VERSION = 1;
+  STORE_NAME = "inboxStore";
+
   localityCache = {};
+
+  async initDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+
+      request.onerror = (event) => {
+        console.error("IndexedDB error:", event.target.error);
+        reject("IndexedDB open failed");
+      };
+
+      request.onsuccess = (event) => {
+        resolve(event.target.result);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(this.STORE_NAME)) {
+          db.createObjectStore(this.STORE_NAME);
+        }
+      };
+    });
+  }
+
+  async saveToIndexedDB(key, data) {
+    try {
+      const db = await this.initDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([this.STORE_NAME], "readwrite");
+        const store = transaction.objectStore(this.STORE_NAME);
+        const request = store.put(data, key);
+
+        request.onsuccess = () => resolve();
+        request.onerror = (e) => reject(e);
+      });
+    } catch (e) {
+      console.error("Error saving to IndexedDB:", e);
+    }
+  }
+
+  async getFromIndexedDB(key) {
+    try {
+      const db = await this.initDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([this.STORE_NAME], "readonly");
+        const store = transaction.objectStore(this.STORE_NAME);
+        const request = store.get(key);
+
+        request.onsuccess = (event) => resolve(event.target.result);
+        request.onerror = (e) => reject(e);
+      });
+    } catch (e) {
+      console.error("Error reading from IndexedDB:", e);
+      return null;
+    }
+  }
 
   getUniqueList = (list = []) => {
     let newList = [];
@@ -497,10 +571,90 @@ class TableData extends Component {
   componentDidMount = async () => {
     this.getMaxSLA();
 
-    // Start API call 
-    setTimeout(() => {
-      this.loadDataInBackground();
-    }, 10);
+    // Check Sync Mode
+    const autoSync = localStorage.getItem(this.AUTO_SYNC_KEY) === "true";
+
+    if (autoSync) {
+      // Auto Sync ON: Always fetch fresh data
+      setTimeout(() => {
+        this.loadDataInBackground();
+      }, 10);
+    } else {
+      // Auto Sync OFF: Check Cache
+      const cachedData = await this.getCachedData();
+      if (cachedData) {
+        console.log("Log => [Inbox] Loading from IndexedDB Cache");
+        this.loadDataFromCache(cachedData);
+      } else {
+        console.log("Log => [Inbox] Cache miss or expired, fetching data");
+        setTimeout(() => {
+          this.loadDataInBackground();
+        }, 10);
+      }
+    }
+  };
+
+  getCachedData = async () => {
+    try {
+      const cache = await this.getFromIndexedDB(this.INBOX_CACHE_KEY);
+      if (!cache) return null;
+
+      const now = Date.now();
+      if (now - cache.timestamp < this.CACHE_EXPIRY_MS) {
+        return cache.data;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  loadDataFromCache = async (data) => {
+    this.showLoading();
+    try {
+      // We have the raw ProcessInstances in cache
+      // We need to run prepareInboxDataRows to format them (and fetch locality if needed/not cached)
+      // Note: localityCache is separate. prepareInboxDataRows handles it.
+      // If we cached the *raw* data, we can just pass it.
+
+      const allData = data; // Assuming data is the array of process instances
+
+      // We treat it as if we have all data
+      await this.loadLocalityForAllData(allData, false); // false to skip saving to cache again (optional, but safe to save)
+      this.setState({ dataLoading: false });
+    } catch (e) {
+      console.error("Error loading specific cache data", e);
+      this.loadDataInBackground(); // Fallback
+    }
+  };
+
+  handleSyncOption = (key) => {
+    switch (key) {
+      case "SYNC_NOW":
+        this.loadDataInBackground();
+        break;
+      case "AUTO_SYNC":
+        this.setState({ autoSyncWarningOpen: true });
+        break;
+      case "OFF_SYNC":
+        localStorage.setItem(this.AUTO_SYNC_KEY, "false");
+        this.setState({ autoSyncEnabled: false });
+        this.props.toggleSnackbarAndSetText(true, { labelName: "Auto Sync Disabled", labelKey: "INBOX_AUTO_SYNC_DISABLED" }, "info");
+        break;
+      default:
+        break;
+    }
+  };
+
+  handleAutoSyncConfirm = () => {
+    localStorage.setItem(this.AUTO_SYNC_KEY, "true");
+    this.setState({ autoSyncEnabled: true, autoSyncWarningOpen: false });
+    this.loadDataInBackground(); // Fetch immediately when enabled
+    this.props.toggleSnackbarAndSetText(true, { labelName: "Auto Sync Enabled", labelKey: "INBOX_AUTO_SYNC_ENABLED" }, "success");
+  };
+
+  handleAutoSyncCancel = () => {
+    this.setState({ autoSyncWarningOpen: false });
   };
 
   loadDataInBackground = async () => {
@@ -617,7 +771,7 @@ class TableData extends Component {
       toggleSnackbarAndSetText(true, { labelName: "Workflow search error !", labelKey: "ERR_SEARCH_ERROR" }, "error");
     }
   }
-  loadLocalityForAllData = async (allData) => {
+  loadLocalityForAllData = async (allData, saveToCache = true) => {
     const { toggleSnackbarAndSetText, prepareFinalObject } = this.props;
     let { taskboardData, tabData } = this.state;
     const inboxData = [{ headers: [], rows: [] }];
@@ -653,6 +807,18 @@ class TableData extends Component {
         loaded: true,
         inboxData, taskboardData, tabData, initialInboxData: cloneDeep(inboxData)
       });
+
+      if (saveToCache) {
+        try {
+          const cachePayload = {
+            timestamp: Date.now(),
+            data: allData
+          };
+          await this.saveToIndexedDB(this.INBOX_CACHE_KEY, cachePayload);
+        } catch (e) {
+          console.warn("Failed to save Inbox cache", e);
+        }
+      }
     } catch (e) {
       this.hideLoading();
       toggleSnackbarAndSetText(true, { labelName: "Workflow search error !", labelKey: "ERR_SEARCH_ERROR" }, "error");
@@ -744,25 +910,81 @@ class TableData extends Component {
         <Taskboard data={taskboardData} onSlaClick={this.onTaskBoardClick} color={this.state.color} />
         <div className="backgroundWhite" style={{ position: 'relative' }}>
 
-          <Tabs
-            value={value}
-            onChange={this.handleChange}
-            className={`inbox-tabs-container ${classes.textColorPrimary}`}
-            indicatorColor="primary"
-            textColor="primary"
-            style={{ borderBottom: "1px solid rgb(211, 211, 211)", textColor: "red", backgroundColor: "white", }}
-          >
-            {tabData.map((item) => {
-              return (
-                <Tab className={`inbox-tab ${classes.textColorPrimary}`} label={<Label label={item.label} dynamicArray={item.dynamicArray} />} />
-              );
-            })}
-          </Tabs>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgb(211, 211, 211)", backgroundColor: "white" }}>
+            <Tabs
+              value={value}
+              onChange={this.handleChange}
+              className={`inbox-tabs-container ${classes.textColorPrimary}`}
+              indicatorColor="primary"
+              textColor="primary"
+              style={{ borderBottom: "none", textColor: "red", backgroundColor: "white", flex: 1 }}
+            >
+              {tabData.map((item) => {
+                return (
+                  <Tab className={`inbox-tab ${classes.textColorPrimary}`} label={<Label label={item.label} dynamicArray={item.dynamicArray} />} />
+                );
+              })}
+            </Tabs>
+            <div style={{ display: "flex", alignItems: "center", paddingRight: "10px" }}>
+              <div
+                onClick={() => this.handleSyncOption("SYNC_NOW")}
+                style={{ cursor: "pointer", display: "flex", alignItems: "center", marginRight: "15px" }}
+                title="Sync Now"
+              >
+                <AutorenewIcon style={{
+                  color: "#FE7A51",
+                  animation: this.state.dataLoading ? "spin 1.5s linear infinite" : "none"
+                }} />
+              </div>
+              <style>{
+                `@keyframes spin { 
+                    0% { transform: rotate(0deg); } 
+                    100% { transform: rotate(360deg); } 
+                }`
+              }</style>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Switch
+                  checked={this.state.autoSyncEnabled}
+                  onChange={(e) => this.handleSyncOption(e.target.checked ? "AUTO_SYNC" : "OFF_SYNC")}
+                  color="primary"
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+                <span style={{
+                  color: "rgba(0, 0, 0, 0.6)",
+                  fontSize: "14px",
+                  fontWeight: 500
+                }}>
+                  <Label label="INBOX_AUTO_SYNC" />
+                </span>
+              </div>
+            </div>
+          </div>
           <div className="inbox-component-container">
             {/* {console.log("DEBUG: TableData rendering InboxData. State SLA:", businessServiceSla)} */}
             <InboxData data={inboxData[value]} businessServiceSla={businessServiceSla} loading={dataLoading} />
           </div>
         </div>
+        <Dialog
+          open={this.state.autoSyncWarningOpen}
+          onClose={this.handleAutoSyncCancel}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Enable Auto Sync?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Enabling Auto Sync will fetch fresh data every time you visit this page. This may take some time to load all modules. Are you sure?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleAutoSyncCancel} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleAutoSyncConfirm} color="primary" autoFocus>
+              Enable
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
