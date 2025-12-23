@@ -383,7 +383,15 @@ const getBillingRate = (id, responseArr) => {
 
 export const getCalculationScreenData = async (billingSlabs, tenantId, self) => {
   const { prepareFormData } = self.props;
-  const unitsArray = get(prepareFormData, "Properties[0].propertyDetails[0].units");
+  const financialYearFromQuery = getFinancialYearFromQuery();
+  let unitsArray = []
+  if(financialYearFromQuery  === '2013-14'){
+       unitsArray = []
+       billingSlabs = []
+  }else{
+    unitsArray = get(prepareFormData, "Properties[0].propertyDetails[0].units");
+  }
+ 
   const filteredUnitsArray = unitsArray && unitsArray.filter((item) => item !== null);
   const mapIdWithIndex = billingSlabs.reduce(
     (res, curr) => {
