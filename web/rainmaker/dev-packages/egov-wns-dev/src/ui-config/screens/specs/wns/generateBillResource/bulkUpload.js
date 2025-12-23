@@ -18,7 +18,7 @@ import UploadFile from "egov-ui-framework/ui-atoms/UploadFile"
 
 
 import "./index.css";
-debugger
+
 export const bulkUpload = getCommonCard({
 
    wnsGenerateBill: getCommonContainer({
