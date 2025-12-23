@@ -11,6 +11,8 @@ import get from "lodash/get";
 import set from "lodash/set";
 
 import { findAndReplace, getDescriptionFromMDMS, getSearchResults, getSearchResultsForSewerage, getWaterSource, getWorkFlowData, isModifyMode, serviceConst, swEstimateCalculation, waterEstimateCalculation, fetchBill } from "../../../../ui-utils/commons";
+import { getPaymentSearchAPI } from "egov-ui-kit/utils/commons";
+import { toggleSpinner } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import {
   convertDateToEpoch, createEstimateData,
   getDialogButton, getFeesEstimateOverviewCard,
@@ -55,7 +57,46 @@ const resetData = () => {
 
 }
 
-
+/**
+ * INLINE FUNCTION: Get Payment for Application
+ * Fetches payment details for a specific application number
+ * Used as fallback between fetchBill and estimate calculation
+ * Only called when status is PENDING_FOR_CONNECTION_ACTIVATION
+ */
+const getPaymentForApplication = async (applicationNumber, businessService, tenantId, dispatch) => {
+  dispatch(toggleSpinner());
+  
+  // Build query params array - send parameters in URL, not POST body
+  const queryObject = [
+    { key: "applicationNo", value: applicationNumber },
+    { key: "tenantId", value: tenantId },
+    { key: "businessService", value: businessService }  // Use passed businessService (WS.ONE_TIME_FEE or SW.ONE_TIME_FEE)
+  ];
+  
+  try {
+    const response = await httpRequest(
+      "post",
+      getPaymentSearchAPI(businessService ),
+      "_search",
+      queryObject,     // Pass parameters as URL query params
+      {}               // Empty body (gateway adds RequestInfo)
+    );
+    dispatch(toggleSpinner());
+    
+    if (response && response.Payments && response.Payments.length > 0) {
+      // Sort by transaction date to get the latest payment
+      const sortedPayments = response.Payments.sort((a, b) => 
+        b.transactionDate - a.transactionDate
+      );
+      return sortedPayments; // Return all payments, we'll use the first (latest) one
+    }
+    return null;
+  } catch (error) {
+    dispatch(toggleSpinner());
+    console.error("Error fetching payment for application:", error.message);
+    return null;
+  }
+};
 
 const headerrow = getCommonContainer({
   header: getCommonHeader({
@@ -107,7 +148,7 @@ export const getMdmsData = async dispatch => {
   } catch (e) { console.log(e); }
 }
 const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
-  //debugger
+  // 
   // dispatch(handleField("apply",
   // "components",
   // "div", {}));
@@ -158,7 +199,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
 }
       let parsedObject = parserFunction(findAndReplace(applyScreenObject, "NA", null));
       // console.log("parsedObject"+JSON.stringify(parsedObject))
-      // debugger
+      //  
       const equals = (a, b) =>
         Object.keys(a).length === Object.keys(b).length
         && Object.keys(a).every(p => a[p] === b[p]);
@@ -262,7 +303,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
     }
     let subUsageType = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.waterSubUsageType");
     let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
-    //debugger
+    // 
     if (subUsageType) {
       subUsageTypes.forEach(items => {
         if (items.code === subUsageType) {
@@ -946,7 +987,9 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     const billEligibleStatuses = ["PENDING_FOR_PAYMENT"];
     let hasBillData = false;
     
-    if (payload.WaterConnection && payload.WaterConnection[0] && consumerCode && billEligibleStatuses.includes(appStatus)) {
+    if (payload.WaterConnection && payload.WaterConnection[0] && consumerCode 
+      && billEligibleStatuses.includes(appStatus)
+    ) {
       try {
         const fetchBillQueryObj = [
           { key: "tenantId", value: tenantId },
@@ -1033,17 +1076,108 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       dispatch(prepareFinalObject("dataCalculation", billCalculation));
       createEstimateData(taxHeadEstimates, "taxHeadEstimates", dispatch, {}, {});
     } else {
-      estimate = await waterEstimateCalculation(queryObjectForEst, dispatch);
-      if (estimate !== null && estimate !== undefined) {
-        if (estimate.Calculation.length > 0) {
-          await processBills(estimate, viewBillTooltip, dispatch);
-
-          // viewBreakUp 
-          estimate.Calculation[0].billSlabData = _.groupBy(estimate.Calculation[0].taxHeadEstimates, 'category')
-          estimate.Calculation[0].appStatus = processInstanceAppStatus;
-          estimate.Calculation[0].isFromFetchBill = false;
+      // NEW CODE: Try Payment Search API only if status is PENDING_FOR_CONNECTION_ACTIVATION
+      let hasPaymentData = false;
+      
+      if (processInstanceAppStatus === "PENDING_FOR_CONNECTION_ACTIVATION" 
+        || processInstanceAppStatus === "CONNECTION_ACTIVATED"
+      ) {
+        try {
+          const paymentResponse = await getPaymentForApplication(
+            applicationNumber, 
+            "WS.ONE_TIME_FEE",
+            tenantId,
+            dispatch
+          );
           
-          dispatch(prepareFinalObject("dataCalculation", estimate.Calculation[0]));
+          if (paymentResponse && paymentResponse.length > 0) {
+            const latestPayment = paymentResponse[0];
+            const billAccountDetails = get(
+              latestPayment, 
+              "paymentDetails[0].bill.billDetails[0].billAccountDetails", 
+              []
+            );
+            
+            if (billAccountDetails.length > 0) {
+              hasPaymentData = true;
+              
+              const taxHeadEstimates = billAccountDetails.map((detail, index) => {
+                const taxHeadCode = detail.taxHeadCode;
+                let category = "TAX";
+                
+                if (taxHeadCode.includes("_FEE") || taxHeadCode.includes("_DEPOSIT")) {
+                  category = "FEE";
+                } else if (taxHeadCode.includes("_CHARGE") || taxHeadCode.includes("_CUTTING")) {
+                  category = "CHARGES";
+                } else if (taxHeadCode.includes("_TAX") || taxHeadCode.includes("_CESS")) {
+                  category = "TAX";
+                }
+                
+                return {
+                  taxHeadCode: taxHeadCode,
+                  estimateAmount: detail.amount || detail.adjustedAmount || 0,
+                  category: category,
+                  order: detail.order || index + 1
+                };
+              });
+              
+              let feeTotal = 0, chargeTotal = 0, taxTotal = 0;
+              taxHeadEstimates.forEach(item => {
+                if (item.category === "FEE") feeTotal += item.estimateAmount;
+                else if (item.category === "CHARGES") chargeTotal += item.estimateAmount;
+                else if (item.category === "TAX") taxTotal += item.estimateAmount;
+              });
+              
+              const totalAmount = latestPayment.totalAmountPaid || 0;
+              
+              const estimateData = {
+                Calculation: [{
+                  applicationNo: applicationNumber,
+                  taxHeadEstimates: taxHeadEstimates,
+                  totalAmount: totalAmount
+                }]
+              };
+              
+              let viewBillTooltip = [];
+              await processBills(estimateData, viewBillTooltip, dispatch);
+              
+              const billSlabData = _.groupBy(taxHeadEstimates, 'category');
+              
+              const billCalculation = {
+                totalAmount: totalAmount,
+                fee: feeTotal,
+                charge: chargeTotal,
+                taxAmount: taxTotal,
+                billSlabData: billSlabData,
+                taxHeadEstimates: taxHeadEstimates,
+                isFromFetchBill: false,
+                isFromPaymentSearch: true,
+                appStatus: processInstanceAppStatus
+              };
+              
+              dispatch(prepareFinalObject("dataCalculation", billCalculation));
+              createEstimateData(taxHeadEstimates, "taxHeadEstimates", dispatch, {}, {});
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching payment data for water:", error.message);
+        }
+      }
+      
+      // If no payment data, fall back to estimate calculation
+      if (!hasPaymentData) {
+        estimate = await waterEstimateCalculation(queryObjectForEst, dispatch);
+        if (estimate !== null && estimate !== undefined) {
+          if (estimate.Calculation.length > 0) {
+            await processBills(estimate, viewBillTooltip, dispatch);
+
+            // viewBreakUp 
+            estimate.Calculation[0].billSlabData = _.groupBy(estimate.Calculation[0].taxHeadEstimates, 'category')
+            estimate.Calculation[0].appStatus = processInstanceAppStatus;
+            estimate.Calculation[0].isFromFetchBill = false;
+            
+            dispatch(prepareFinalObject("dataCalculation", estimate.Calculation[0]));
+          }
         }
       }
     }
@@ -1189,7 +1323,9 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     const billEligibleStatuses = ["PENDING_FOR_PAYMENT"];
     let hasSwBillData = false;
     
-    if (payload.SewerageConnections && payload.SewerageConnections[0] && swConsumerCode && billEligibleStatuses.includes(swAppStatus)) {
+    if (payload.SewerageConnections && payload.SewerageConnections[0] && swConsumerCode 
+      && billEligibleStatuses.includes(swAppStatus)
+    ) {
       try {
         const fetchBillQueryObj = [
           { key: "tenantId", value: tenantId },
@@ -1276,23 +1412,112 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       dispatch(prepareFinalObject("dataCalculation", billCalculation));
       createEstimateData(taxHeadEstimates, "taxHeadEstimates", dispatch, {}, {});
     } else {
-      const convPayload = findAndReplace(payload, "NA", null)
-      let queryObjectForEst = [{
-        applicationNo: applicationNumber,
-        tenantId: tenantId,
-        sewerageConnection: convPayload.SewerageConnections[0]
-      }]
-      estimate = await swEstimateCalculation(queryObjectForEst, dispatch);
-      let viewBillTooltip = []
-      if (estimate !== null && estimate !== undefined) {
-        if (estimate.Calculation !== undefined && estimate.Calculation.length > 0) {
-          await processBills(estimate, viewBillTooltip, dispatch);
-          // viewBreakUp 
-          estimate.Calculation[0].billSlabData = _.groupBy(estimate.Calculation[0].taxHeadEstimates, 'category')
-          estimate.Calculation[0].appStatus = processInstanceAppStatus;
-          estimate.Calculation[0].isFromFetchBill = false;
+      // NEW CODE: Try Payment Search API only if status is PENDING_FOR_CONNECTION_ACTIVATION
+      let hasSwPaymentData = false;
+      
+      if (processInstanceAppStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
+        try {
+          const paymentResponse = await getPaymentForApplication(
+            applicationNumber, 
+            "SW.ONE_TIME_FEE",
+            tenantId,
+            dispatch
+          );
           
-          dispatch(prepareFinalObject("dataCalculation", estimate.Calculation[0]));
+          if (paymentResponse && paymentResponse.length > 0) {
+            const latestPayment = paymentResponse[0];
+            const billAccountDetails = get(
+              latestPayment, 
+              "paymentDetails[0].bill.billDetails[0].billAccountDetails", 
+              []
+            );
+            
+            if (billAccountDetails.length > 0) {
+              hasSwPaymentData = true;
+              
+              const taxHeadEstimates = billAccountDetails.map((detail, index) => {
+                const taxHeadCode = detail.taxHeadCode;
+                let category = "TAX";
+                
+                if (taxHeadCode.includes("_FEE") || taxHeadCode.includes("_DEPOSIT")) {
+                  category = "FEE";
+                } else if (taxHeadCode.includes("_CHARGE") || taxHeadCode.includes("_CUTTING")) {
+                  category = "CHARGES";
+                } else if (taxHeadCode.includes("_TAX") || taxHeadCode.includes("_CESS")) {
+                  category = "TAX";
+                }
+                
+                return {
+                  taxHeadCode: taxHeadCode,
+                  estimateAmount: detail.amount || detail.adjustedAmount || 0,
+                  category: category,
+                  order: detail.order || index + 1
+                };
+              });
+              
+              let feeTotal = 0, chargeTotal = 0, taxTotal = 0;
+              taxHeadEstimates.forEach(item => {
+                if (item.category === "FEE") feeTotal += item.estimateAmount;
+                else if (item.category === "CHARGES") chargeTotal += item.estimateAmount;
+                else if (item.category === "TAX") taxTotal += item.estimateAmount;
+              });
+              
+              const totalAmount = latestPayment.totalAmountPaid || 0;
+              
+              const estimateData = {
+                Calculation: [{
+                  applicationNo: applicationNumber,
+                  taxHeadEstimates: taxHeadEstimates,
+                  totalAmount: totalAmount
+                }]
+              };
+              
+              let viewBillTooltip = [];
+              await processBills(estimateData, viewBillTooltip, dispatch);
+              
+              const billSlabData = _.groupBy(taxHeadEstimates, 'category');
+              
+              const billCalculation = {
+                totalAmount: totalAmount,
+                fee: feeTotal,
+                charge: chargeTotal,
+                taxAmount: taxTotal,
+                billSlabData: billSlabData,
+                taxHeadEstimates: taxHeadEstimates,
+                isFromFetchBill: false,
+                isFromPaymentSearch: true,
+                appStatus: processInstanceAppStatus
+              };
+              
+              dispatch(prepareFinalObject("dataCalculation", billCalculation));
+              createEstimateData(taxHeadEstimates, "taxHeadEstimates", dispatch, {}, {});
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching payment data for sewerage:", error.message);
+        }
+      }
+      
+      // If no payment data, fall back to estimate calculation
+      if (!hasSwPaymentData) {
+        const convPayload = findAndReplace(payload, "NA", null)
+        let queryObjectForEst = [{
+          applicationNo: applicationNumber,
+          tenantId: tenantId,
+          sewerageConnection: convPayload.SewerageConnections[0]
+        }]
+        estimate = await swEstimateCalculation(queryObjectForEst, dispatch);
+        let viewBillTooltip = []
+        if (estimate !== null && estimate !== undefined) {
+          if (estimate.Calculation !== undefined && estimate.Calculation.length > 0) {
+            await processBills(estimate, viewBillTooltip, dispatch);
+            // viewBreakUp 
+            estimate.Calculation[0].billSlabData = _.groupBy(estimate.Calculation[0].taxHeadEstimates, 'category')
+            estimate.Calculation[0].appStatus = processInstanceAppStatus;
+            estimate.Calculation[0].isFromFetchBill = false;
+            
+            dispatch(prepareFinalObject("dataCalculation", estimate.Calculation[0]));
+          }
         }
       }
     }
