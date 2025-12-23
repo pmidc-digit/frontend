@@ -283,11 +283,17 @@ const formConfig = {
     try {
       let state = store.getState();
       const OwnerTypes = get(state, `common.generalMDMSDataById.OwnerType`);
-      // let financialYearFromQuery = window.location.search.split("FY=")[1];
-      // financialYearFromQuery = financialYearFromQuery.split("&")[0];
-      // const dropdownData = getOwnerCategoryByYear(Object.values(OwnerTypes), financialYearFromQuery);
       const dropdownData = getOwnerCategory(Object.values(OwnerTypes));
       set(action, "form.fields.ownerCategory.dropDownData", dropdownData);
+      let savedOwnerType = 
+        get(state, "form.ownerInfo.fields.ownerCategory.value") ||
+        get(state, "screenConfiguration.preparedFinalObject.Properties[0].propertyDetails[0].owners[0].ownerType") ||
+        get(state, "Properties[0].propertyDetails[0].owners[0].ownerType");
+      
+      if (savedOwnerType && savedOwnerType !== "NONE") {
+        set(action, "form.fields.ownerCategory.value", savedOwnerType);
+      }
+      
       const ownerShipType = get(state, "form.ownershipType.fields.typeOfOwnership.value", "");
       if (ownerShipType === "SINGLEOWNER") {
         set(action, "form.fields.ownerGender.value", get(state, "form.ownerInfo.fields.ownerGender.value", "Male"));
