@@ -85,8 +85,21 @@ export const searchApiCall = async (state, dispatch) => {
       "searchScreenMdmsData.BillingService.BusinessService"
     ).filter(item => item.code === searchScreenObject.businesService);
 
+    let batchlocality = get(
+      state.screenConfiguration.preparedFinalObject,
+      "applyScreenMdmsData.tenant.batchs");
+
     if (batchtype == 'Batch') {
-      searchScreenObject.url = "/egov-searcher/bill-genie/batchbilling/_get";
+      batchlocality = (batchlocality || []).find(item => item.code === "W-1");
+
+      const codes = batchlocality.children.map(item => item.code);
+      console.log("batchlocality", codes);
+      searchScreenObject.locality = codes;
+      if (searchScreenObject.businesService == 'WS') {
+        searchScreenObject.url = "/egov-searcher/bill-genie/wsbatchbilling/_get";
+      } else {
+        searchScreenObject.url = "/egov-searcher/bill-genie/swbatchbilling/_get";
+      }
     }
     else if (batchtype == 'Group' && searchScreenObject.businesService == 'SW') {
       searchScreenObject.url = "/egov-searcher/bill-genie/groupbillssw/_get";
@@ -100,7 +113,7 @@ export const searchApiCall = async (state, dispatch) => {
     else {
       searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     }
-
+    debugger;
     //console.log("serviceObject",serviceObject)
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
