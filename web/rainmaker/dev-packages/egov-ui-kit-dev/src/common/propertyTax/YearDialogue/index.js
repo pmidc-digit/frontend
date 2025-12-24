@@ -20,23 +20,39 @@ var constructionYear = null;
 var assessment = null;
 var propertiestenantId=null
 const mapStateToProps = (state) => {
-localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
-editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
-surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
-constructionYear = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails ? state.screenConfiguration.preparedFinalObject.propertiesAudit[0].additionalDetails.yearConstruction : "NA";
-assessment = state.properties.Assessments.filter((item)=> item.status === 'ACTIVE');
-propertiestenantId = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].tenantId;
+  // FIX: Add null safety checks to prevent "Cannot read properties of undefined" errors
+  const propertiesAudit = state && state.screenConfiguration && state.screenConfiguration.preparedFinalObject && state.screenConfiguration.preparedFinalObject.propertiesAudit;
+  const firstProperty = propertiesAudit && propertiesAudit.length > 0 ? propertiesAudit[0] : null;
+
+  if (firstProperty) {
+    localityCode = (firstProperty.address && firstProperty.address.locality && firstProperty.address.locality.code) || null;
+    editlocalityCode = firstProperty.surveyId || null;
+    surveyIdcode = firstProperty.surveyId || null;
+    constructionYear = (firstProperty.additionalDetails && firstProperty.additionalDetails.yearConstruction) || "NA";
+    propertiestenantId = firstProperty.tenantId || null;
+  } else {
+    // Set defaults if no property data is available
+    localityCode = null;
+    editlocalityCode = null;
+    surveyIdcode = null;
+    constructionYear = "NA";
+    propertiestenantId = null;
+    console.log('Log => ** [YearDialogue] Warning: propertiesAudit is empty or undefined');
+  }
+
+  assessment = (state.properties && state.properties.Assessments && state.properties.Assessments.filter((item) => item.status === 'ACTIVE')) || [];
+
   const { common, form } = state;
   const { generalMDMSDataById } = common;
   const FinancialYear = generalMDMSDataById && generalMDMSDataById.FinancialYear;
-  const getYearList = FinancialYear?Object.keys(FinancialYear).sort().reverse():null;
+  const getYearList = FinancialYear ? Object.keys(FinancialYear).sort().reverse() : null;
   return { getYearList, form };
 };
 //let userType = JSON.parse(getUserInfo()).type;
 var tenantIdcode =getTenantId();
 var isLocMatch ;
 const getUserDataFromUuid = async (state, dispatch) => {
-  //debugger;
+  //
   let request = { searchCriteria: { tenantId: tenantIdcode} };
   try {
     const response = await httpRequest(

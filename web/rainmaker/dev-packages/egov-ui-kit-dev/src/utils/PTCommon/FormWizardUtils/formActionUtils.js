@@ -62,7 +62,7 @@ export const assessProperty = async (action, props) => {
         assessment.additionalDetails.adhocExemptionReason = adhocExemptionPenalty.adhocExemptionReason == 'Others' ? adhocExemptionPenalty.adhocOtherExemptionReason : adhocExemptionPenalty.adhocExemptionReason;
     }
     try {
-        debugger
+        
         let assessPropertyResponse = await httpRequest(
             `property-services/assessment/${propertyMethodAction}`,
             `${propertyMethodAction}`,
@@ -115,7 +115,7 @@ export const createProperty = async (Properties, action, props, isModify, prepar
         return;
     }
     const propertyPayload = createPropertyPayload(Properties, documentsUploadRedux);
-    debugger;
+    
     if(process.env.REACT_APP_NAME === "Citizen"){
         let propertyPayloadTenant = propertyPayload.address.city;
         let propertyPayloadTenantt = propertyPayloadTenant.toLowerCase(); 

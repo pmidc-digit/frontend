@@ -148,7 +148,7 @@ export const getMdmsData = async dispatch => {
   } catch (e) { console.log(e); }
 }
 const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
-  // 
+  
   // dispatch(handleField("apply",
   // "components",
   // "div", {}));
@@ -199,7 +199,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
 }
       let parsedObject = parserFunction(findAndReplace(applyScreenObject, "NA", null));
       // console.log("parsedObject"+JSON.stringify(parsedObject))
-      //  
+      
       const equals = (a, b) =>
         Object.keys(a).length === Object.keys(b).length
         && Object.keys(a).every(p => a[p] === b[p]);
@@ -303,7 +303,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
     }
     let subUsageType = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.waterSubUsageType");
     let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
-    // 
+    
     if (subUsageType) {
       subUsageTypes.forEach(items => {
         if (items.code === subUsageType) {

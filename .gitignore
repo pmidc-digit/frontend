@@ -8,3 +8,5 @@ web/rainmaker/yarn.lock
 *.css
 *.lock
 web/rainmaker/yarn.lock
+web/rainmaker/dev-packages/egov-ui-kit-dev/nul
+web/rainmaker/nul

@@ -444,7 +444,7 @@ const getHeaderCard = (applicationData, logo) => {
 
 }
 export const generatePDF = (logo, applicationData = {}, fileName, isCustomforBillamend=false) => {
-    debugger;
+    
     logo = logo || localStorage.getItem("UlbLogoForPdf");
     let data;
     let tableborder = {

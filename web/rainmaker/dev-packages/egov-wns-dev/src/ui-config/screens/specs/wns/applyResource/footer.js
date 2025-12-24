@@ -801,7 +801,9 @@ else{
     }
   }
   /* validations for Additional /Docuemnts details screen */
-  if (activeStep === 2 && process.env.REACT_APP_NAME !== "Citizen"){    
+  if (activeStep === 2 && process.env.REACT_APP_NAME !== "Citizen") {
+    
+    // Get application type flags from Redux state
     const isDischargeApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.discharge", false);
     const isWaterApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.water", false);
     const isSewerageApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage", false);   
@@ -862,7 +864,7 @@ else{
       // }
     }
     else {
-        //debugger
+        
       let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
       let roadCuttingInfosw = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
       if (roadCuttingInfo === 'NA') roadCuttingInfo =[]
