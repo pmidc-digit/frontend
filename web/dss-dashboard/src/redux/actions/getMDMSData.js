@@ -10,13 +10,13 @@ _.each(tenants,(v,k) => {
     }
     if(v.code === localStorage.getItem('tenant-id'))
         tenantName = v.name;
-    if(v.city.ddrName){     
+    if(v.city.districtName){     
         tenantId = v.code;
-        if(!_.isEmpty(tempDRRsObj,true) && typeof tempDRRsObj[v.city.ddrName] != 'undefined'){
-            tempDRRsObj[v.city.ddrName].push(tenantId);
+        if(!_.isEmpty(tempDRRsObj,true) && typeof tempDRRsObj[v.city.districtName] != 'undefined'){
+            tempDRRsObj[v.city.districtName].push(tenantId);
         }else{
-            tempDRRsObj[v.city.ddrName] = [tenantId]
-            tempDDRs.push(v.city.ddrName);
+            tempDRRsObj[v.city.districtName] = [tenantId]
+            tempDDRs.push(v.city.districtName);
         }
     }
 })
