@@ -344,7 +344,7 @@ export const additionDetails = getCommonCard({
         afterFieldChange: async (action, state, dispatch) => {
           let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.connectionCategory");
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
-          
+          debugger
           if (ConectionCategory === "REGULARIZED" || ConectionCategory === 'DISCHARGE_CONNECTION') {
             dispatch(
               handleField(

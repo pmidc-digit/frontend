@@ -841,7 +841,7 @@ export const downloadReceiptpt = (receiptQueryString) => {
     "roundoff":roundoffT,
     "total":element.amount
     };
-    
+    debugger;
   arrearArray.push(arrearRow);
   taxArray.push(taxRow);
   

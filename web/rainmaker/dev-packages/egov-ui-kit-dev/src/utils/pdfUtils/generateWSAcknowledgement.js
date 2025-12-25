@@ -10,7 +10,7 @@ import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 let ulbGrade;
 export const SrchUlbGrade = (state) => {
   
-   
+   debugger;
     let { stateInfoById } = state.common || [];
     let hasLocalisation = false;
     let defaultUrl = process.env.REACT_APP_NAME === "Citizen" ? "/user/register" : "/user/login";
@@ -26,7 +26,7 @@ export const SrchUlbGrade = (state) => {
   };
  
 export const generateWSAcknowledgement = (preparedFinalObject, fileName = "print", service, connType) => {
-    
+    debugger;
 
     propertyDetails.reviewPropertyType.localiseValue = true;
     propertyDetails.reviewPropertyType.localiseValue = true;

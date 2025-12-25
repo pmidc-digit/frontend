@@ -101,7 +101,7 @@ const screenConfig = {
   name: "propertySearch",
 
   beforeInitScreen: (action, state, dispatch) => {
-    
+    debugger;
     resetFields(state, dispatch);
     getMDMSData(dispatch);
     return action;

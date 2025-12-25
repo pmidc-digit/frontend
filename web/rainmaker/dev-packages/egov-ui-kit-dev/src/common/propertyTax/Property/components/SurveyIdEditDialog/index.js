@@ -60,7 +60,7 @@ export default class SurveyIdEditDialog extends Component {
         propertiesf.surveyId = SurveyIdNew;
         propertiesf.creationReason = "UPDATE"
         let queryObject = propertiesf;
-        
+        debugger;
         try {
             const payload = await httpRequest("property-services/property/_update", "_update", [], { Property: queryObject });
             if (!payload) {

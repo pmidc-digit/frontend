@@ -14,7 +14,7 @@ import { applyTradeLicense, checkValidOwners, getNextFinancialYearForRenewal } f
 import { createEstimateData, downloadCertificateForm, getButtonVisibility, getCommonApplyFooter, getDocList, setMultiOwnerForApply, setValidToFromVisibilityForApply, validateFields, getCurrentFinancialYear } from "../../utils";
 import "./index.css";
 let isDecL;
-
+debugger;
 const moveToSuccess = (LicenseData, dispatch) => {
   const applicationNo = get(LicenseData, "applicationNumber");
   const tenantId = get(LicenseData, "tenantId");
@@ -81,7 +81,7 @@ export const generatePdfFromDiv = (action, applicationNumber) => {
     }
   });
 };
-// 
+// debugger;
 // export const callisDecL = async (state, dispatch) => {
 //   isDecL=  get(state.screenConfiguration.preparedFinalObject.Licenses[0], "isDeclared");
 //   alert("demo  "+isDecL);
@@ -96,7 +96,7 @@ export const callBackForNext = async (state, dispatch) => {
   let isFormValid = true;
   let hasFieldToaster = true;
   if (activeStep === 0) {
-    
+    debugger;
     if (process.env.REACT_APP_NAME == "Citizen") {
       let urldatavalues = window.location.search;
       let feachdataurl = urldatavalues.split("https://mseva.lgpunjab.gov.in/citizen/tradelicense-citizen/apply?");
@@ -443,7 +443,7 @@ export const changeStep = (
   }
 
   const isPreviousButtonVisible = activeStep > 0 ? true : false;
-  
+  debugger;
   const isNextButtonVisible = activeStep < 3 ? true : false;
   const isPayButtonVisible = activeStep === 3 ? true : false;
   dispatch(prepareFinalObject("Licenses[0].isDeclared", 'false'));

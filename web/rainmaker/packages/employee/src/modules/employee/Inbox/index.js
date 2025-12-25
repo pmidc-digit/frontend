@@ -20,15 +20,9 @@ class Inbox extends Component {
   };
 
   componentDidMount = () => {
-    // FIX: Removed redundant localization fetch - App.js already handles this
-    // Old code was causing duplicate API calls (language-selection → inbox = 3 calls)
-    // Now App.js loads from IndexedDB on startup, so this call is unnecessary
-
-    // const { fetchLocalizationLabel } = this.props
-    // const tenantId = getTenantId();
-    // fetchLocalizationLabel(getLocale(), tenantId, tenantId);
-
-    console.log('Log => ** [Inbox] componentDidMount - Skipping localization fetch (handled by App.js)');
+    const { fetchLocalizationLabel } = this.props
+    const tenantId = getTenantId();
+    fetchLocalizationLabel(getLocale(), tenantId, tenantId);
   }
 
 

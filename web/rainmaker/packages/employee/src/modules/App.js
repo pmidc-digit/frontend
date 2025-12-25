@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { Toast } from "components";
-import { addBodyClass, getModuleName } from "egov-ui-kit/utils/commons";
+import { addBodyClass } from "egov-ui-kit/utils/commons";
 import { fetchCurrentLocation, fetchLocalizationLabel, toggleSnackbarAndSetText, setRoute } from "egov-ui-kit/redux/app/actions";
 import { fetchMDMSData } from "egov-ui-kit/redux/common/actions";
 import Router from "./Router";
 import commonConfig from "config/common";
 // import logoMseva from "egov-ui-kit/assets/images/logo-white.png";
 import routes from "./Routes";
-import { getLocale, getModule, setModule, getStoredModulesList, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import isEmpty from "lodash/isEmpty";
 import { LoadingIndicator, CommonShareContainer } from "components";
 
@@ -27,25 +27,8 @@ class App extends Component {
     addBodyClass(currentPath);
   }
 
-  componentDidMount = async () => {
+  componentDidMount() {
     const { fetchLocalizationLabel, fetchCurrentLocation, fetchMDMSData } = this.props;
-    const { pathname } = window.location;
-
-    // Initialize localization
-    // fetchLocalizationLabel now handles:
-    // 1. Checking IndexedDB cache
-    // 2. Hydrating Redux from cache
-    // 3. Fetching from API if cache is missing/incomplete
-    fetchLocalizationLabel(getLocale() || "en_IN");
-
-    // FIX (Comment #1): Update module on initial load
-    this.updateModuleOnRouteChange();
-
-    // FIX (Comment #1): Listen to route changes to update module filter
-    this.unlisten = this.props.history.listen((location) => {
-      this.updateModuleOnRouteChange();
-    });
-
     let requestBody = {
       MdmsCriteria: {
         tenantId: commonConfig.tenantId,
@@ -72,37 +55,12 @@ class App extends Component {
         ],
       },
     };
-    // Note: fetchLocalizationLabel is now called conditionally above based on IndexedDB data
+    // can be combined into one mdms call
+    fetchLocalizationLabel(getLocale() || "en_IN");
 
     // current location
     fetchCurrentLocation();
     fetchMDMSData(requestBody);
-  }
-
-  componentWillUnmount() {
-    // Cleanup: Remove route change listener
-    if (this.unlisten) {
-      this.unlisten();
-    }
-  }
-
-  // FIX (Comment #1): Update module on every route change
-  updateModuleOnRouteChange = () => {
-    const moduleName = getModuleName();
-    const currentModule = getModule();
-
-    if (moduleName !== currentModule) {
-      console.log(`Log => ** [Module Update] Route changed. New module: ${moduleName} (was: ${currentModule})`);
-      setModule(moduleName);
-
-      // Check if this module's localization is already loaded
-      const storedModulesList = getStoredModulesList();
-      const storedModules = storedModulesList ? JSON.parse(storedModulesList) : [];
-
-      if (!storedModules.includes(moduleName)) {
-        this.props.fetchLocalizationLabel(getLocale() || "en_IN", moduleName, getTenantId(), true);
-      }
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -164,8 +122,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // FIX: Pass all 4 parameters to fetchLocalizationLabel action
-    fetchLocalizationLabel: (locale, module, tenantId, isFromModule) => dispatch(fetchLocalizationLabel(locale, module, tenantId, isFromModule)),
+    fetchLocalizationLabel: (locale) => dispatch(fetchLocalizationLabel(locale)),
     toggleSnackbarAndSetText: (open, message, error) => dispatch(toggleSnackbarAndSetText(open, message, error)),
     fetchMDMSData: (criteria) => dispatch(fetchMDMSData(criteria)),
     fetchCurrentLocation: () => dispatch(fetchCurrentLocation()),

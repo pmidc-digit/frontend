@@ -106,6 +106,7 @@ export const submitForm = (
             query,
             queryObjectJsonPath
           );
+          console.log(screenConfigQueryData);
           //preparing body data
           screenConfigResponse = await httpRequest(
             method,
@@ -114,6 +115,7 @@ export const submitForm = (
             [],
             screenConfigBodyData
           );
+          console.log(screenConfigResponse);
         }
         dispatch(toggleSpinner());
         if (redirectionUrl) {

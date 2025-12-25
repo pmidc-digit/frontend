@@ -3,17 +3,6 @@ import { withStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import MenuButton from "egov-ui-framework/ui-molecules/MenuButton";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import AutorenewIcon from '@material-ui/icons/Autorenew';
-
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getLocaleLabels, transformById } from "egov-ui-framework/ui-utils/commons";
@@ -143,74 +132,8 @@ class TableData extends Component {
     color: "rgb(53,152,219)",
     timeoutForTyping: false,
     loadLocalityForInitialData: false,
-    showLoadingTaskboard: false,
-    autoSyncWarningOpen: false,
-    autoSyncEnabled: localStorage.getItem("wf_inbox_auto_sync") === "true"
+    showLoadingTaskboard:false
   };
-
-  INBOX_CACHE_KEY = "wf_inbox_data_cache";
-  AUTO_SYNC_KEY = "wf_inbox_auto_sync";
-  CACHE_EXPIRY_MS = 60 * 60 * 1000; // 1 Hour
-  DB_NAME = "mSevaInboxDB";
-  DB_VERSION = 1;
-  STORE_NAME = "inboxStore";
-
-  localityCache = {};
-
-  async initDB() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-
-      request.onerror = (event) => {
-        console.error("IndexedDB error:", event.target.error);
-        reject("IndexedDB open failed");
-      };
-
-      request.onsuccess = (event) => {
-        resolve(event.target.result);
-      };
-
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains(this.STORE_NAME)) {
-          db.createObjectStore(this.STORE_NAME);
-        }
-      };
-    });
-  }
-
-  async saveToIndexedDB(key, data) {
-    try {
-      const db = await this.initDB();
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction([this.STORE_NAME], "readwrite");
-        const store = transaction.objectStore(this.STORE_NAME);
-        const request = store.put(data, key);
-
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e);
-      });
-    } catch (e) {
-      console.error("Error saving to IndexedDB:", e);
-    }
-  }
-
-  async getFromIndexedDB(key) {
-    try {
-      const db = await this.initDB();
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction([this.STORE_NAME], "readonly");
-        const store = transaction.objectStore(this.STORE_NAME);
-        const request = store.get(key);
-
-        request.onsuccess = (event) => resolve(event.target.result);
-        request.onerror = (e) => reject(e);
-      });
-    } catch (e) {
-      console.error("Error reading from IndexedDB:", e);
-      return null;
-    }
-  }
 
   getUniqueList = (list = []) => {
     let newList = [];
@@ -235,6 +158,8 @@ class TableData extends Component {
       ) {
         return true;
       }
+
+
     }
     if (
       row[5].hiddenField[0].includes(value.toLowerCase()) ||
@@ -322,15 +247,18 @@ class TableData extends Component {
       })
     }
 
-    let { taskboardData, tabData, showLoadingTaskboard } = this.state;
-    if (totalRows.length == totalRowCount && showLoadingTaskboard == false) {
-      this.setState({ showLoadingTaskboard: true })
-    }
-    taskboardData[0].head = showLoadingTaskboard ? totalRows.length : totalRowCount;
+
+
+    let { taskboardData, tabData , showLoadingTaskboard } = this.state;
+if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
+  
+  this.setState({showLoadingTaskboard:true})
+}
+    taskboardData[0].head = showLoadingTaskboard?totalRows.length: totalRowCount;
     taskboardData[1].head = totalRows.length == totalRowCount || showLoadingTaskboard ? NEARING_SLA.length : 'LOADING';
     taskboardData[2].head = totalRows.length == totalRowCount || showLoadingTaskboard ? ESCALATED_SLA.length : 'LOADING';
     tabData[0].dynamicArray = [initialInboxData[0].rows.length];
-    tabData[1].dynamicArray = [showLoadingTaskboard ? totalRows.length : totalRowCount];
+    tabData[1].dynamicArray = [showLoadingTaskboard?totalRows.length: totalRowCount];
     this.hideLoading();
     return {
       inboxData: initialInboxData,
@@ -375,76 +303,137 @@ class TableData extends Component {
       initialInboxData: tempObject
     });
   }
-
   prepareInboxDataRows = async (data, all, loadLocality = false) => {
     const { toggleSnackbarAndSetText } = this.props;
     const uuid = get(this.props, "userInfo.uuid");
-    if (isEmpty(data)) return { allData: [], assignedToMe: [] };
+    if (isEmpty(data)) return{ allData: [], assignedToMe: [] };
     let businessServices = [];
     let businessIds = [];
-
-    // Identify which IDs need fetching (not in cache)
+    let ptApplicationNo = []
     if (this.state.showLocality && loadLocality) {
-      data.forEach((item) => {
-        if (!this.localityCache[item.businessId]) {
-          businessIds.push(item.businessId);
-          businessServices.push(item.moduleName);
+      businessIds = data.map((item) => {
+        businessServices.push(item.moduleName);
+        if (item.moduleName == 'PT') {
+          ptApplicationNo.push(item.businessId);
         }
+        return item.businessId;
       });
     }
-
+    // const businessServiceData = this.getBussinessServiceData();
+    // const modules =this.state.showLocality&&
+    //   businessServiceData &&
+    //   businessServiceData.map((item, index) => {
+    //     return item.business;
+    //   })||[];
+    // const uniqueModules = uniq(modules)
     const uniqueModules = uniq(businessServices)
-
-    if (this.state.showLocality && loadLocality && businessIds.length > 0) {
+    let localitymap = [];
+    if (this.state.showLocality && loadLocality) {
       try {
         let requestBodies = []
         let endpoints = []
         let queries = []
         uniqueModules.map((uniqueModule, ind) => {
-          requestBodies.push({
-            searchCriteria: {
-              "referenceNumber": businessIds
-            }
-          })
-          queries.push([])
-          endpoints.push(`egov-searcher/locality/${uniqueModule}/_get`)
-        })
+          // if (uniqueModule == "PT") {
+          //   const acknowledgementIds = [...ptApplicationNo];
+          //   for (let i = 0; i <= ptApplicationNo.length + 50; i += 50) {
+          //     let acknowledgementId = acknowledgementIds.splice(0, 50);
+          //     if (acknowledgementId && acknowledgementId.length > 0) {
+          //       const query = [{ key: "tenantId", value: getTenantId() },
+          //       { key: "acknowledgementIds", value: acknowledgementId.join(',') }]
+          //       requestBodies.push(undefined)
+          //       queries.push(query)
+          //       endpoints.push("property-services/property/_search")
+          //     }
+          //   }
+          // } else if (uniqueModule == "pt-services" || uniqueModule == "pgr-services") {
 
-        if (endpoints.length > 0) {
-          const resp = await multiHttpRequest(endpoints, "search", queries, requestBodies)
-          resp && resp.map(res => {
-            if (res && res.Localities) {
-              res.Localities.forEach(loc => {
-                this.localityCache[loc.referencenumber] = loc;
-              });
-            } else if (res && res.Properties) {
-              res.Properties.forEach(property => {
-                this.localityCache[property.acknowldgementNumber] = {
-                  referencenumber: property.acknowldgementNumber,
-                  locality: property.address.locality.code
-                };
-              });
+          // } else {
+            requestBodies.push({
+              searchCriteria: {
+                "referenceNumber": businessIds
+              }
+            })
+            queries.push([])
+            endpoints.push(`egov-searcher/locality/${uniqueModule}/_get`)
+          // }
+
+        })
+        const resp = await multiHttpRequest(endpoints, "search", queries, requestBodies)
+        resp && resp.map(res => {
+          if (res && res.Localities) {
+            let locality = res.Localities;
+            localitymap = [...localitymap, ...locality];
+          } else if (res && res.Properties) {
+            const localities = res.Properties.map(property => {
+              return {
+                "referencenumber": property.acknowldgementNumber,
+                "locality": property.address.locality.code
+              }
+            })
+            localitymap = [...localitymap, ...localities];
+          }
+        });
+        /* for (var i = 0; i < uniqueModules.length; i++) {
+          try {
+            if (uniqueModules[i] != 'PT') {
+              const requestBody = {
+                searchCriteria: {
+                  "referenceNumber": businessIds
+                }
+              }
+              const moduleWiseLocality = await httpRequest(`egov-searcher/locality/${uniqueModules[i]}/_get`, "search", [], requestBody);
+              localitymap = [...localitymap, ...moduleWiseLocality.Localities];
+          
+            
+            } else {
+            const acknowledgementIds = [...businessIds];
+              for (let i = 0; i <= businessIds.length + 200; i += 200) {
+                let acknowledgementId = acknowledgementIds.splice(0, 200);
+                if (acknowledgementId && acknowledgementId.length > 0) {
+                  const query = [{ key: "tenantId", value: getTenantId() },
+                  { key: "acknowledgementIds", value: acknowledgementId.join(',') }]
+                  const propertyResponse = await httpRequest("property-services/property/_search", "_search", query);
+  
+                  const localities = propertyResponse.Properties && propertyResponse.Properties.map(property => {
+                    return {
+                      "referencenumber": property.acknowldgementNumber,
+                      "locality": property.address.locality.code
+                    }
+                  })
+                  localitymap = [...localitymap, ...localities];
+                }
+              } 
             }
-          });
-        }
+  
+          } catch (e) {
+            console.log("error");
+          }
+        } */
       } catch (e) {
-        console.log('Log => ** [Inbox] Locality fetch error (non-critical):', e.message);
+        toggleSnackbarAndSetText(
+          true,
+          {
+            labelName: "Locality Empty!",
+            labelKey: "Locality Empty!",
+          },
+          "error"
+        );
       }
     }
-
     let localityDropdownList = [];
     let moduleDropdownList = [];
     let statusDropdownList = [];
 
     let assignedToMe = [];
     const initialData = data.map((item) => {
-      // Retrieve from Cache
-      const locality = this.state.showLocality && this.localityCache[item.businessId];
-
+      const locality = this.state.showLocality && localitymap.find(locality => {
+        return locality.referencenumber === item.businessId;
+      })
       var sla = item.businesssServiceSla && item.businesssServiceSla / (1000 * 60 * 60 * 24);
       let row0 = { text: item.businessId, subtext: item.businessService, hiddenText: item.moduleName };
-      let localityString = locality && locality.locality ? `${item.tenantId.toUpperCase().replace(/[.]/g, "_")}_REVENUE_${locality.locality.replace("-", "_")}` : "NA";
-      let row1 = { text: locality ? <Label label={localityString} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
+      let localityString = locality && locality.locality ? `${item.tenantId.toUpperCase().replace(/[.]/g, "_")}_REVENUE_${locality.locality.replace("-","_")}` : "NA";
+      let row1 = {text: locality ? <Label label={localityString} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
       let row2 = {
         text: item.state ? (
           <Label
@@ -453,11 +442,11 @@ class TableData extends Component {
             color="#000000"
           />
         ) : (
-          "NA"
-        ),
+            "NA"
+          ),
       };
 
-      let row3 = { text: item.assignes != null ? <Label label={item.assignes[0].name} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
+      let row3 = { text: item.assignes != null  ? <Label label={item.assignes[0].name} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
       let row4 = { text: Math.round(sla), badge: true };
       let row5 = { historyButton: true };
 
@@ -552,109 +541,29 @@ class TableData extends Component {
       localStorageSet("businessServiceData", JSON.stringify(get(payload, "BusinessServices")));
       return get(payload, "BusinessServices");
     } catch (e) {
-      if (e && e.message && e.message.includes('setItem')) {
+     if(e&&e.message&&e.message.includes('setItem')){
 
-      } else {
-        toggleSnackbarAndSetText(
-          true,
-          {
-            labelName: "Not authorized to access Business Service!",
-            labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE",
-          },
-          "error"
-        );
-      }
-
+     }else{
+      toggleSnackbarAndSetText(
+        true,
+        {
+          labelName: "Not authorized to access Business Service!",
+          labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE",
+        },
+        "error"
+      );
+     }
+   
     }
   };
 
   componentDidMount = async () => {
     this.getMaxSLA();
-
-    // Check Sync Mode
-    const autoSync = localStorage.getItem(this.AUTO_SYNC_KEY) === "true";
-
-    if (autoSync) {
-      // Auto Sync ON: Always fetch fresh data
-      setTimeout(() => {
-        this.loadDataInBackground();
-      }, 10);
-    } else {
-      // Auto Sync OFF: Check Cache
-      const cachedData = await this.getCachedData();
-      if (cachedData) {
-        console.log("Log => [Inbox] Loading from IndexedDB Cache");
-        this.loadDataFromCache(cachedData);
-      } else {
-        console.log("Log => [Inbox] Cache miss or expired, fetching data");
-        setTimeout(() => {
-          this.loadDataInBackground();
-        }, 10);
-      }
-    }
-  };
-
-  getCachedData = async () => {
-    try {
-      const cache = await this.getFromIndexedDB(this.INBOX_CACHE_KEY);
-      if (!cache) return null;
-
-      const now = Date.now();
-      if (now - cache.timestamp < this.CACHE_EXPIRY_MS) {
-        return cache.data;
-      }
-      return null;
-    } catch (e) {
-      return null;
-    }
-  };
-
-  loadDataFromCache = async (data) => {
-    this.showLoading();
-    try {
-      // We have the raw ProcessInstances in cache
-      // We need to run prepareInboxDataRows to format them (and fetch locality if needed/not cached)
-      // Note: localityCache is separate. prepareInboxDataRows handles it.
-      // If we cached the *raw* data, we can just pass it.
-
-      const allData = data; // Assuming data is the array of process instances
-
-      // We treat it as if we have all data
-      await this.loadLocalityForAllData(allData, false); // false to skip saving to cache again (optional, but safe to save)
-      this.setState({ dataLoading: false });
-    } catch (e) {
-      console.error("Error loading specific cache data", e);
-      this.loadDataInBackground(); // Fallback
-    }
-  };
-
-  handleSyncOption = (key) => {
-    switch (key) {
-      case "SYNC_NOW":
-        this.loadDataInBackground();
-        break;
-      case "AUTO_SYNC":
-        this.setState({ autoSyncWarningOpen: true });
-        break;
-      case "OFF_SYNC":
-        localStorage.setItem(this.AUTO_SYNC_KEY, "false");
-        this.setState({ autoSyncEnabled: false });
-        this.props.toggleSnackbarAndSetText(true, { labelName: "Auto Sync Disabled", labelKey: "INBOX_AUTO_SYNC_DISABLED" }, "info");
-        break;
-      default:
-        break;
-    }
-  };
-
-  handleAutoSyncConfirm = () => {
-    localStorage.setItem(this.AUTO_SYNC_KEY, "true");
-    this.setState({ autoSyncEnabled: true, autoSyncWarningOpen: false });
-    this.loadDataInBackground(); // Fetch immediately when enabled
-    this.props.toggleSnackbarAndSetText(true, { labelName: "Auto Sync Enabled", labelKey: "INBOX_AUTO_SYNC_ENABLED" }, "success");
-  };
-
-  handleAutoSyncCancel = () => {
-    this.setState({ autoSyncWarningOpen: false });
+    
+    // Start API call 
+    setTimeout(() => {
+      this.loadDataInBackground();
+    }, 10); 
   };
 
   loadDataInBackground = async () => {
@@ -663,6 +572,7 @@ class TableData extends Component {
       await this.loadInitialData();
     } catch (error) {
       console.error("Background data loading failed:", error);
+    } finally {
       this.setState({ dataLoading: false });
     }
   };
@@ -674,23 +584,20 @@ class TableData extends Component {
     try {
       this.showLoading();
       const requestBody1 = [{ key: "tenantId", value: tenantId }];
-
-      let maxCount = 5000;
-      // OPTIMIZATION: Reduced from 100 to 25 to improve TTI
-      let limit = 25;
-      let offset = 0;
-
-      const requestBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: 0 }, { key: "limit", value: maxCount > 100 ? limit : maxCount }];
+      //let maxCount = await httpRequest("egov-workflow-v2/egov-wf/process/_count", "_search", requestBody1);
+      let maxCount = 5000 ;
+      let limit =100;
+      let offset =0;
+      const requestBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: 0 }, { key: "limit", value: maxCount > 100 ? limit: maxCount }];
       const responseData = await httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", requestBody);
       const allData = orderBy(get(responseData, "ProcessInstances", []), ["businesssServiceSla"]);
-
-      if (maxCount > 25) {
-        this.loadRemainingData(null, responseData);
+      if (maxCount > 100) {
+        offset = limit+1;
+        limit=limit+100
+        this.loadRemainingData([{ key: "tenantId", value: tenantId }, { key: "offset", value: offset }, { key: "limit", value: limit }], responseData)
       } else {
         this.loadLocalityForAllData(allData);
-        this.setState({ dataLoading: false });
       }
-
       const convertedData = await this.prepareInboxDataRows(allData, true, false)
       const allDataRows = convertedData.allData;
       const assignedDataRows = convertedData.assignedToMe;
@@ -726,52 +633,61 @@ class TableData extends Component {
       this.hideLoading()
     } catch (e) {
       this.hideLoading();
-      this.setState({ dataLoading: false });
       toggleSnackbarAndSetText(true, { labelName: "Workflow search error !", labelKey: "ERR_SEARCH_ERROR" }, "error");
     }
     prepareFinalObject("InboxData", [...inboxData]);
     this.getMaxSLA();
   }
-  loadRemainingData = async (_, initialResponse) => {
+  loadRemainingData = async (requestBody = [], response) => {
     const { toggleSnackbarAndSetText, prepareFinalObject } = this.props;
-    const tenantId = getTenantId();
+    let { taskboardData, tabData } = this.state;
+    const inboxData = [{ headers: [], rows: [] }];
     try {
-      // Data Optimization: Fetching up to 300 records in parallel chunks
-      const limitPerRequest = 100;
-      const totalTarget = 300;
-      const currentCount = 25; // Already fetched
-
-      const requests = [];
-      for (let offset = currentCount; offset < totalTarget; offset += limitPerRequest) {
-        const limit = Math.min(limitPerRequest, totalTarget - offset);
-        const reqBody = [{ key: "tenantId", value: tenantId }, { key: "offset", value: offset }, { key: "limit", value: limit }];
-        requests.push(httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", reqBody));
-      }
-
-      const responses = await Promise.all(requests);
-
-      let allProcessInstances = [...get(initialResponse, "ProcessInstances", [])];
-      responses.forEach(res => {
-        allProcessInstances = [...allProcessInstances, ...get(res, "ProcessInstances", [])];
-      });
-
-      const responseData = { ProcessInstances: allProcessInstances };
+      const responseData = await httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", requestBody);
+      set(responseData, "ProcessInstances", [...responseData.ProcessInstances, ...response.ProcessInstances]);
 
       const allData = orderBy(get(responseData, "ProcessInstances", []), ["businesssServiceSla"]);
+      this.loadLocalityForAllData(allData);
 
-      // Delegate processing and locality fetch to the dedicated function
-      // This avoids double processing/rendering which causes freezing
-      await this.loadLocalityForAllData(allData);
-      this.setState({ dataLoading: false });
+      const convertedData = await this.prepareInboxDataRows(allData, true, false)
+      const allDataRows = convertedData.allData;
+      const assignedDataRows = convertedData.assignedToMe;
 
+      let headersList = [
+        "WF_INBOX_HEADER_APPLICATION_NO",
+        "WF_INBOX_HEADER_LOCALITY",
+        "WF_INBOX_HEADER_STATUS",
+        "WF_INBOX_HEADER_CURRENT_OWNER",
+        "WF_INBOX_HEADER_SLA_DAYS_REMAINING",
+      ];
+      inboxData[0].headers = headersList;
+      inboxData[0].rows = assignedDataRows;
+
+      tabData[0].dynamicArray = [assignedDataRows.length];
+      tabData[1].dynamicArray = [allDataRows.length];
+      inboxData.push({
+        headers: headersList,
+        rows: allDataRows,
+      });
+      let NEARING_SLA = [];
+      let ESCALATED_SLA = [];
+      const taskCount = allDataRows.length;
+      taskboardData[0].head = taskCount;
+      taskboardData[1].head = NEARING_SLA.length;
+      taskboardData[2].head = ESCALATED_SLA.length;
+
+      this.setState({
+        loaded: true,
+        inboxData, taskboardData, tabData, initialInboxData: cloneDeep(inboxData)
+      });
     } catch (e) {
-      console.error("Error in loadRemainingData:", e);
       this.hideLoading();
-      this.setState({ dataLoading: false });
       toggleSnackbarAndSetText(true, { labelName: "Workflow search error !", labelKey: "ERR_SEARCH_ERROR" }, "error");
     }
+    prepareFinalObject("InboxData", [...inboxData]);
+    this.getMaxSLA();
   }
-  loadLocalityForAllData = async (allData, saveToCache = true) => {
+  loadLocalityForAllData = async (allData) => {
     const { toggleSnackbarAndSetText, prepareFinalObject } = this.props;
     let { taskboardData, tabData } = this.state;
     const inboxData = [{ headers: [], rows: [] }];
@@ -807,18 +723,6 @@ class TableData extends Component {
         loaded: true,
         inboxData, taskboardData, tabData, initialInboxData: cloneDeep(inboxData)
       });
-
-      if (saveToCache) {
-        try {
-          const cachePayload = {
-            timestamp: Date.now(),
-            data: allData
-          };
-          await this.saveToIndexedDB(this.INBOX_CACHE_KEY, cachePayload);
-        } catch (e) {
-          console.warn("Failed to save Inbox cache", e);
-        }
-      }
     } catch (e) {
       this.hideLoading();
       toggleSnackbarAndSetText(true, { labelName: "Workflow search error !", labelKey: "ERR_SEARCH_ERROR" }, "error");
@@ -909,82 +813,41 @@ class TableData extends Component {
         </div>
         <Taskboard data={taskboardData} onSlaClick={this.onTaskBoardClick} color={this.state.color} />
         <div className="backgroundWhite" style={{ position: 'relative' }}>
-
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgb(211, 211, 211)", backgroundColor: "white" }}>
-            <Tabs
-              value={value}
-              onChange={this.handleChange}
-              className={`inbox-tabs-container ${classes.textColorPrimary}`}
-              indicatorColor="primary"
-              textColor="primary"
-              style={{ borderBottom: "none", textColor: "red", backgroundColor: "white", flex: 1 }}
-            >
-              {tabData.map((item) => {
-                return (
-                  <Tab className={`inbox-tab ${classes.textColorPrimary}`} label={<Label label={item.label} dynamicArray={item.dynamicArray} />} />
-                );
-              })}
-            </Tabs>
-            <div style={{ display: "flex", alignItems: "center", paddingRight: "10px" }}>
-              <div
-                onClick={() => this.handleSyncOption("SYNC_NOW")}
-                style={{ cursor: "pointer", display: "flex", alignItems: "center", marginRight: "15px" }}
-                title="Sync Now"
-              >
-                <AutorenewIcon style={{
-                  color: "#FE7A51",
-                  animation: this.state.dataLoading ? "spin 1.5s linear infinite" : "none"
-                }} />
+          <Tabs
+            value={value}
+            onChange={this.handleChange}
+            className={`inbox-tabs-container ${classes.textColorPrimary}`}
+            indicatorColor="primary"
+            textColor="primary"
+            style={{ borderBottom: "1px solid rgb(211, 211, 211)", textColor: "red", backgroundColor: "white", }}
+          >
+            {tabData.map((item) => {
+              return (
+                <Tab className={`inbox-tab ${classes.textColorPrimary}`} label={<Label label={item.label} dynamicArray={item.dynamicArray} />} />
+              );
+            })}
+          </Tabs>
+          <div style={{ position: 'relative', minHeight: '200px' }}>
+            <InboxData businessServiceSla={businessServiceSla} data={inboxData[value]} />
+            {this.state.dataLoading && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 10,
+                minHeight: '200px'
+              }}>
+                <CircularProgress size={40} color="primary" />
               </div>
-              <style>{
-                `@keyframes spin { 
-                    0% { transform: rotate(0deg); } 
-                    100% { transform: rotate(360deg); } 
-                }`
-              }</style>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Switch
-                  checked={this.state.autoSyncEnabled}
-                  onChange={(e) => this.handleSyncOption(e.target.checked ? "AUTO_SYNC" : "OFF_SYNC")}
-                  color="primary"
-                  inputProps={{ 'aria-label': 'primary checkbox' }}
-                />
-                <span style={{
-                  color: "rgba(0, 0, 0, 0.6)",
-                  fontSize: "14px",
-                  fontWeight: 500
-                }}>
-                  <Label label="INBOX_AUTO_SYNC" />
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="inbox-component-container">
-            {/* {console.log("DEBUG: TableData rendering InboxData. State SLA:", businessServiceSla)} */}
-            <InboxData data={inboxData[value]} businessServiceSla={businessServiceSla} loading={dataLoading} />
+            )}
           </div>
         </div>
-        <Dialog
-          open={this.state.autoSyncWarningOpen}
-          onClose={this.handleAutoSyncCancel}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Enable Auto Sync?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Enabling Auto Sync will fetch fresh data every time you visit this page. This may take some time to load all modules. Are you sure?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleAutoSyncCancel} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleAutoSyncConfirm} color="primary" autoFocus>
-              Enable
-            </Button>
-          </DialogActions>
-        </Dialog>
       </div>
     );
   }
@@ -1001,16 +864,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    prepareFinalObject: (jsonPath, value) =>
-      dispatch(prepareFinalObject(jsonPath, value)),
-    toggleSnackbarAndSetText: (open, message, error) =>
-      dispatch(toggleSnackbarAndSetText(open, message, error)),
+    prepareFinalObject: (jsonPath, value) => dispatch(prepareFinalObject(jsonPath, value)),
+    toggleSnackbarAndSetText: (open, message, error) => dispatch(toggleSnackbarAndSetText(open, message, error)),
   };
 };
 
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TableData)
-);
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TableData));

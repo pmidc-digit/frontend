@@ -44,13 +44,6 @@ const withAuthorization = (options = {}) => (Component) => {
       }
     }
 
-    componentDidMount() {
-      // FIX: DON'T fetch locale here - App.js already handles initial load
-      // This component is wrapped by multiple HOCs and would cause duplicate API calls
-      // Only fetch on navigation via componentDidUpdate
-      console.log('[withAuthorization] componentDidMount - Skipping initial fetch (handled by App.js)');
-    }
-
     citizenTenantId = () => {
       const userInfo = JSON.parse(getUserInfo());
       return userInfo.permanentCity || userInfo.tenantId;
@@ -61,50 +54,19 @@ const withAuthorization = (options = {}) => (Component) => {
       if (getStoredModulesList() !== null) {
         storedModuleList = JSON.parse(getStoredModulesList());
       }
-
-      const currentModule = getModuleName();
-      console.log(`[fetchLocale] Current path: ${window.location.pathname}`);
-      console.log(`[fetchLocale] Current module: ${currentModule}`);
-      console.log(`[fetchLocale] Stored modules: [${storedModuleList.join(', ')}]`);
-
-      // FIX: Check if ANY of the comma-separated modules in currentModule are already loaded
-      // This prevents re-fetching when navigating between pages with different module combinations
-      const modulesToCheck = currentModule ? currentModule.split(',').map(m => m.trim()) : [];
-      const isModuleAlreadyLoaded = modulesToCheck.some(mod => {
-        const found = storedModuleList.some(storedMod => storedMod.includes(mod));
-        console.log(`[fetchLocale] Checking if "${mod}" is in stored modules: ${found}`);
-        return found;
-      });
-
-      console.log(`[fetchLocale] Module already loaded: ${isModuleAlreadyLoaded}`);
-
-      if (!isModuleAlreadyLoaded) {
-        console.log(`[fetchLocale] Fetching localizations for module: ${currentModule}`);
-        setModule(currentModule);
-        storedModuleList.push(currentModule);
+      if (storedModuleList.includes(getModuleName()) === false) {
+        setModule(getModuleName());
+        storedModuleList.push(getModuleName());
         var newList = JSON.stringify(storedModuleList);
         setStoredModulesList(newList);
         const tenantId = process.env.REACT_APP_NAME === "Citizen" ? this.citizenTenantId() : getTenantId();
-
-        // FIX: Correct parameter order - (locale, module, tenantId, isFromModule)
-        // Extract just the tenant ID part (after last dot) for tenant-specific localizations
-        // e.g., "pb.testing" from full tenantId, or null if no dots
-        const modulePart = tenantId && tenantId.includes('.') ? tenantId.split('.').slice(1).join('.') : null;
-
-        this.props.fetchLocalizationLabel(getLocale(), modulePart, tenantId, true);
+        this.props.fetchLocalizationLabel(getLocale(), tenantId, tenantId, true);
         this.setState({ localeFetched: true });
-      } else {
-        console.log(`[fetchLocale] ✅ Skipping fetch - module already cached`);
       }
     }
 
-    componentDidUpdate(prevProps) {
-      // FIX: Use componentDidUpdate instead of deprecated componentWillReceiveProps
-      // Only fetch locale if the route actually changed (not on every prop change)
-      if (this.props.location && prevProps.location &&
-          this.props.location.pathname !== prevProps.location.pathname) {
-        this.fetchLocale();
-      }
+    componentWillReceiveProps() {
+      this.fetchLocale();
     }
 
     roleFromUserInfo = (userInfo, role) => {

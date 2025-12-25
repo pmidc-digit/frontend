@@ -47,7 +47,7 @@ class PastPayments extends Component {
       if (from !== undefined && to !== 'NA') { return convertEpochToDate(from) + " - " + convertEpochToDate(to); }
       else { return "NA" }
     }
-    
+    debugger;
     for(const ele in pastPaymentsDetails){
       if(pastPaymentsDetails[ele].paymentDetails[0].businessService.toUpperCase() == "SW" || pastPaymentsDetails[ele].paymentDetails[0].businessService.toUpperCase() == "WS"){
       console.log("ddd",pastPaymentsDetails[ele].paymentDetails[0].businessService);

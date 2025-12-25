@@ -162,7 +162,7 @@ class PaymentHistory extends Component {
         }
 
         if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-          
+          debugger;
           let dcbRow = null, dcbArray = [];
           let installment, totalamount = 0;
           payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element, index) => {

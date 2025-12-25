@@ -276,7 +276,7 @@ const callBackForApply = async (state, dispatch) => {
     //   propertyPayload.owners[0].documents[0].documentType="NA"
     // }
     // let payload = null;
-    // 
+    // debugger;
     // payload = await httpRequest(
     //   "post",
     //   "/property-services/property/_update",

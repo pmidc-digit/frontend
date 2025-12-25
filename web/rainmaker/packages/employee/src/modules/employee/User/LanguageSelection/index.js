@@ -4,24 +4,16 @@ import { Banner } from "modules/common";
 import { LanguageSelectionForm } from "modules/common";
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
 import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
-import { LoadingIndicator } from "egov-ui-kit/components";
 import get from "lodash/get";
 
 class LanguageSelection extends Component {
   state = {
     value: getLocale(),
-    loading: false,
   };
 
-  onClick = async (value) => {
-    this.setState({ value, loading: true });
-    try {
-      await this.props.fetchLocalizationLabel(value);
-    } catch (error) {
-      console.error("Localization fetch failed", error);
-    } finally {
-      this.setState({ loading: false });
-    }
+  onClick = (value) => {
+    this.setState({ value });
+    this.props.fetchLocalizationLabel(value);
   };
 
   onLanguageSelect = () => {
@@ -29,13 +21,12 @@ class LanguageSelection extends Component {
   };
 
   render() {
-    const { value, loading } = this.state;
+    const { value } = this.state;
     const { onLanguageSelect, onClick } = this;
     const { bannerUrl, logoUrl, languages } = this.props;
 
     return (
       <Banner className="language-selection" bannerUrl={bannerUrl} logoUrl={logoUrl}>
-        {loading && <LoadingIndicator status="loading" />}
         <LanguageSelectionForm items={languages} value={value} onLanguageSelect={onLanguageSelect} onClick={onClick} />
       </Banner>
     );

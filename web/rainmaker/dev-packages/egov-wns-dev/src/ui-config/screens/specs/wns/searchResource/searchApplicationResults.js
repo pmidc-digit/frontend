@@ -37,7 +37,7 @@ export const searchApplicationResults = {
         options: {
           filter: false,
           customBodyRender: (value, data) => {
-            
+            debugger
             if (data.rowData[1] !== "NA" && data.rowData[1] !== null) {
               return (
                 <div className="linkStyle" onClick={() => getApplicationDetails(data)}>
@@ -139,7 +139,7 @@ export const searchApplicationResults = {
 };
 
 const getApplicationDetails = data => {
-    
+    debugger
   let connectionNo = `${data.rowData[0]}`;
   if(connectionNo && connectionNo !== 'NA' && data.rowData[2].includes('MODIFY')) {
     store.dispatch(

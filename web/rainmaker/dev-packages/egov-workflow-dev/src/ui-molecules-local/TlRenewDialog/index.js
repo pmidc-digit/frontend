@@ -69,7 +69,7 @@ class TlRenewDialog extends React.Component {
     return "Submit"
   };
   renewTradelicence = async (licenseData, tlValidity, isHAZ) => {
-    
+    debugger;
       //showSpinner();
       console.log("isHAZ"+isHAZ)
     let licences = [];

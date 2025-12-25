@@ -143,22 +143,10 @@ export const transformById = (payload, id) => {
 };
 
 export const getTransformedLocalStorgaeLabels = () => {
-  // FIX: Add proper error handling for localStorage access
-  try {
-    const localStorageData = getLocalization(`localization_${getLocale()}`);
-    if (localStorageData) {
-      const localeLabels = JSON.parse(localStorageData);
-      return transformById(localeLabels, "code");
-    } else {
-      // No localization data available - return empty object
-      console.warn('[getTransformedLocalStorgaeLabels] No localization data found in storage');
-      return {};
-    }
-  } catch (error) {
-    // Handle JSON parse errors or localStorage access errors
-    console.warn('[getTransformedLocalStorgaeLabels] Error loading localization from storage:', error);
-    return {};
-  }
+  const localeLabels = JSON.parse(
+    getLocalization(`localization_${getLocale()}`)
+  );
+  return transformById(localeLabels, "code");
 };
 
 export const getTranslatedLabel = (labelKey, localizationLabels) => {
@@ -190,29 +178,15 @@ export const epochToYmd = et => {
 };
 
 export const getLocaleLabels = (label, labelKey, localizationLabels) => {
-  // FIX: Add proper error handling for localStorage access
-  if (!localizationLabels) {
-    try {
-      const localStorageData = getLocalization(`localization_${getLocale()}`);
-      if (localStorageData) {
-        localizationLabels = transformById(JSON.parse(localStorageData), "code");
-      } else {
-        // No localization data available - return fallback immediately
-        localizationLabels = {};
-      }
-    } catch (error) {
-      // Handle JSON parse errors or localStorage access errors
-      console.warn('[getLocaleLabels] Error loading localization from storage:', error);
-      localizationLabels = {};
-    }
-  }
-
+  if (!localizationLabels)
+    localizationLabels = transformById(
+      JSON.parse(getLocalization(`localization_${getLocale()}`)),
+      "code"
+    );
   if (labelKey) {
     let translatedLabel = getTranslatedLabel(labelKey, localizationLabels);
-    // FIX: If translation not found (key equals translated), use labelName fallback
     if (!translatedLabel || labelKey === translatedLabel) {
-      // Return labelName fallback if provided, otherwise return key
-      return label || translatedLabel;
+      return translatedLabel;
     } else {
       return translatedLabel;
     }

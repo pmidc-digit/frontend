@@ -121,7 +121,7 @@ export const getMdmsTenantsData = async (dispatch) => {
   }
 };
 const getLocalityData = async (action, dispatch, tenantid) =>{
-    
+    debugger
       let payload = await getLocality(tenantid)
           //console.log("payload", payload)
           const mohallaData =

@@ -168,7 +168,7 @@ export default class UpdateMobile extends React.Component {
     render() {
         const { propertyId = "", tenantId = "", closeDue } = this.props;
         const { property = {}, propertyNumbers = {} } = this.state;
-        
+        debugger;
         return property && (property.status == "ACTIVE" || property.status == "PENDINGWS") && <div>
             {this.canShowEditOption() && VerifyButton(this.props.type, this.toggleDialog)}
             {this.state.open && <UpdateMobileDialog

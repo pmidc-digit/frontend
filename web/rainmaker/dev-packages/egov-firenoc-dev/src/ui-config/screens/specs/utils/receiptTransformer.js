@@ -28,7 +28,7 @@ const ifNotNull = value => {
 const nullToNa = value => {
   return ["", "NA", "null", null].includes(value) ? "NA" : value;
 };
-
+debugger;
 const createAddress = (doorNo, street, locality, city) => {
   let address = "";
   address += ifNotNull(doorNo) ? doorNo + ", " : "";
@@ -57,7 +57,7 @@ export const getMessageFromLocalization = code => {
 };
 
 export const loadUlbLogo = utenantId => {
-  
+  //debugger
   var img = new Image();
   img.crossOrigin = "Anonymous";
   img.onload = function() {

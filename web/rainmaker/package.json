@@ -101,7 +101,7 @@
     "glob": "7.2.3",
     "minimatch": "^3.1.2",
     "source-map": "0.6.0",
-    "jquery": "3.7.1",
+
     "tough-cookie": "^4.0.0",
     "figgy-pudding": "3.5.2",
     "mkdirp-promise": "5.0.1",

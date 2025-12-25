@@ -3,30 +3,21 @@ import { connect } from "react-redux";
 import { Banner } from "modules/common";
 import { LanguageSelectionForm } from "modules/common";
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
-import { getLocale, isValidLocale } from "egov-ui-kit/utils/localStorageUtils";
+import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import get from "lodash/get";
 
 class LanguageSelection extends Component {
   state = {
-    value: getLocale() || 'en_IN', // getLocale() now has fallback built-in
+    value: getLocale(),
   };
-
-  componentDidMount = () => {
-    // Ensure valid locale, fallback to en_IN
-    const locale = this.state.value || 'en_IN';
-    this.props.fetchLocalizationLabel(locale);
+  
+  componentDidMount=()=>{
+    this.props.fetchLocalizationLabel(this.state.value||'en_IN');
   }
 
   onClick = (value) => {
-    // Validate locale before setting, fallback to en_IN if invalid
-    const validLocale = isValidLocale(value) ? value : 'en_IN';
-
-    if (!isValidLocale(value)) {
-      console.warn(`[LanguageSelection] Invalid locale selected: "${value}", using en_IN instead`);
-    }
-
-    this.setState({ value: validLocale });
-    this.props.fetchLocalizationLabel(validLocale);
+    this.setState({ value });
+    this.props.fetchLocalizationLabel(value);
   };
 
   onLanguageSelect = () => {

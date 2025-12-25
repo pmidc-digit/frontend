@@ -49,7 +49,7 @@ export const callPGService = async (state, dispatch) => {
   var fireNOCDetailslength;
   if (BusinessService.toUpperCase() == "FIRENOC") {
     var getdate = get(state, "screenConfiguration.preparedFinalObject.FireNOCs[0].auditDetails.createdTime");
-    
+    debugger;
     var fireApplicationNo = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].consumerCode");
     var tenantId = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].tenantId");
     var queryObject = [
@@ -632,7 +632,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
     }
 
     if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-      
+      debugger;
       let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
 
 
