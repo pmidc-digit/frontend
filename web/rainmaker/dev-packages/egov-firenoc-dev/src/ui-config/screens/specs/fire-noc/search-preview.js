@@ -421,7 +421,7 @@ const setSearchResponse = async (
     "FireNOCs[0].fireNOCDetails.fireNOCType",
       ""
     )
-    debugger;
+    
     let diffDays ;
     const getdate=get(response, "FireNOCs[0].fireNOCDetails.auditDetails.lastModifiedTime");
     

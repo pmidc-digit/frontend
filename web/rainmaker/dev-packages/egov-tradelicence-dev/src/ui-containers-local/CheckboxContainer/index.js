@@ -19,7 +19,7 @@ const styles = {
   },
   checked: {},
 };
-debugger;
+
 class CheckboxLabels extends React.Component {
   state = {
     checkedG: false,

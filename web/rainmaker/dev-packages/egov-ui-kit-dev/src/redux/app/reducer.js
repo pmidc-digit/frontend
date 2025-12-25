@@ -5,6 +5,8 @@ import { transformById } from "egov-ui-kit/utils/commons";
 import { getLocale, localStorageSet } from "egov-ui-kit/utils/localStorageUtils";
 
 const locale = getLocale() || "en_IN";
+// SMART INITIALIZATION: Load from localStorage first (sync, instant)
+// App.js will then load from IndexedDB (async) and dispatch update to Redux
 const localizationLabels = initLocalizationLabels(locale);
 
 const initialState = {
