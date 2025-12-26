@@ -410,7 +410,7 @@ export const abgSearchCard = getCommonCard({
           jsonPath: "searchCriteria.locality",
           sourceJsonPath: "applyScreenMdmsData.tenant.mohaladata", //applyScreenMdmsData.tenant.mohaladata
           //sourceJsonPath: mohallaDataArray,
-          labelsFromLocalisation: true,
+          labelsFromLocalisation: false,
           required: false,
           isClearable:true,
         }
