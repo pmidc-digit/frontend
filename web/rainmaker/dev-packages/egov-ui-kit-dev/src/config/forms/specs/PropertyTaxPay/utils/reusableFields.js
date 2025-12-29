@@ -636,7 +636,7 @@ export const mohalla = {
     toolTip: true,
     localePrefix: true,
     toolTipMessage: "PT_MOHALLA_TOOLTIP_MESSAGE",
-    labelsFromLocalisation: true,
+    labelsFromLocalisation: false,
     //toolTipMessage: "Name of the area in which your property is located",
     boundary: true,
     numcols: 6,
