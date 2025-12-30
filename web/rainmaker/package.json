@@ -99,16 +99,11 @@
   },
   "resolutions": {
     "glob": "7.2.3",
-<<<<<<< HEAD
-    "minimatch": "^3.1.2"
-=======
     "minimatch": "^3.1.2",
     "source-map": "0.6.0",
-
     "tough-cookie": "^4.0.0",
     "figgy-pudding": "3.5.2",
     "mkdirp-promise": "5.0.1",
     "inflight": "1.0.6"
->>>>>>> punjab_DIGIT_V2.2
   }
 }
