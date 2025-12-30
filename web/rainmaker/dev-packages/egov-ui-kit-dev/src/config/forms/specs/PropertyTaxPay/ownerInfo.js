@@ -25,10 +25,12 @@ const formConfig = {
       floatingLabelText: "PT_FORM3_MOBILE_NO",
       hintText: "PT_FORM3_MOBILE_NO_PLACEHOLDER",
       required: true,
-      pattern: /^([0]|((\+\d{1,2}[-]{0,1})))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/i,
+      // pattern: /^([0]|((\+\d{1,2}[-]{0,1})))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/i,
+      pattern: /^(?!.*(\d)\1{9})([0]|(\+\d{1,2}-?))?\(?[6-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       errorMessage: "PT_MOBILE_NUMBER_ERROR_MESSAGE",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
     },
+
     ownerGuardian: {
       id: "ownerGuardian",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].fatherOrHusbandName",
@@ -57,10 +59,10 @@ const formConfig = {
       floatingLabelText: "PT_SEARCHPROPERTY_TABEL_OWNERSHIPPERCENTAGE",
       hintText: "PT_FORM3_OWNERPERCENTAGE_PLACEHOLDER",
       pattern: /^[1-9][0-9]?$|^100$/i,
-      required: false,
+      required: true,
       errorMessage: "PT_PERCENTAGE_ERROR_MESSAGE",
-      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 }
-      //,value:"100"
+      errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
+      //,value:"100",
 
     },
     ownerAddress: {
@@ -85,9 +87,14 @@ const formConfig = {
         xs: 12,
         sm: 6
       },
+<<<<<<< HEAD
       dropDownData: [{ label: "Father", value: "FATHER" }, { label: "Husband", value: "HUSBAND" }],
+=======
+      dropDownData: [{ label: "Father", value: "Father" }, { label: "Husband", value: "Husband" }, { label: "Mother", value: "Mother" } ],
+>>>>>>> punjab_DIGIT_V2.2
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-      formName: "ownerInfo"
+      formName: "ownerInfo",
+      required: true,
     },
     ownerCategory: {
       id: "ownerCategory",
@@ -95,7 +102,12 @@ const formConfig = {
       localePrefix: { moduleName: "PropertyTax", masterName: "OwnerType" },
       jsonPath: "Properties[0].propertyDetails[0].owners[0].ownerType",
       type: "AutocompleteDropdown",
+<<<<<<< HEAD
       defaultSort:false,
+=======
+      value: "NONE",
+      defaultSort: false, 
+>>>>>>> punjab_DIGIT_V2.2
       floatingLabelText: "PT_FORM3_SPECIAL_CATEGORY",
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       dropDownData: [],
@@ -105,7 +117,7 @@ const formConfig = {
       },
       fullWidth: true,
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
-      formName: "ownerInfo",
+      formName: "ownerInfo", 
       updateDependentFields: ({ formKey, field: sourceField, dispatch, state }) => {
         const { value } = sourceField;
         const dependentFields = ["ownerCategoryId", "ownerCategoryIdType"];
@@ -221,10 +233,12 @@ const formConfig = {
         }
       },
     },
+
     ownerGender: {
       id: "ownerGender",
       jsonPath: "Properties[0].propertyDetails[0].owners[0].gender",
     },
+    
     isSameAsPropertyAddress: {
       id: "rcpt",
       type: "checkbox",
@@ -284,7 +298,7 @@ const formConfig = {
       const formKey = get(action, "form.name", "");
       const state = store.getState();
       if (get(state, `form.${formKey}.fields.ownerRelationship.value`, "NONE") === "NONE") {
-        dispatch(handleFieldChange(formKey, "ownerRelationship", "FATHER"));
+        // dispatch(handleFieldChange(formKey, "ownerRelationship", "Father"));
       }
 
       if (get(state, `form.${formKey}.fields.ownerCategory.value`, "NONE") === "NONE") {

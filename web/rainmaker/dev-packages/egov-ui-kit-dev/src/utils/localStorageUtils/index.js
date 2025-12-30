@@ -1,12 +1,49 @@
+import { use } from "react";
 
 
 const appName = process.env.REACT_APP_NAME;
+//Fileter User Object
+export const removeFields = (user = {}, fields = []) => {
+  if (!user || typeof user !== "object") return user; // safety check
 
+  const updatedUser = { ...user };
+
+  fields.forEach((field) => {
+    if (field in updatedUser) {
+      delete updatedUser[field];
+    }
+  });
+
+  return updatedUser;
+};
+//Encryption and decryption 
+export const encryptUserDetails = (user={}) =>
+{
+  user = JSON.parse(user)
+  if (!user) return null
+  const mobilenumber = btoa(user.mobileNumber);
+  const name = btoa(user.name);
+  const emailId = btoa(user.emailId);
+  const dob= btoa(user.dob);
+  user = {...user, mobileNumber : mobilenumber, emailId : emailId, name : name, dob : dob}
+  return JSON.stringify(user);
+}
+export const decryptUserDetails = (user ={})=>{
+  user = JSON.parse(user)
+  if(!user) return null
+  const mobileNumber = atob(user.mobileNumber);
+  const name = atob(user.name);
+  const emailId = atob(user.emailId);
+  const dob= atob(user.dob)
+  user = {...user, mobileNumber : mobileNumber, emailId : emailId, name : name, dob : dob}
+  return JSON.stringify(user);
+}
 //GET methods
 export const getAccessToken = () => {
   return localStorageGet(`token`);
 };
 export const getUserInfo = () => {
+  //return decryptUserDetails(localStorageGet("user-info"));
   return localStorageGet("user-info");
 };
 export const getTenantId = () => {
@@ -30,6 +67,7 @@ export const getStoredModulesList = () =>{
 
 //SET methods
 export const setUserInfo = (userInfo) => {
+  //userInfo = encryptUserDetails(userInfo)
   localStorageSet("user-info", userInfo, null);
 };
 export const setAccessToken = (token) => {

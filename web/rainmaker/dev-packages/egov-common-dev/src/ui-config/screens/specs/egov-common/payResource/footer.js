@@ -259,12 +259,12 @@ export const callPGService = async (state, dispatch) => {
           //   else{
           //   window.location = redirectionUrl;
           //   }
-          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS" || businessService.toUpperCase() == "SW") {
-
-            window.location = redirectionUrl;
-          }
-
-          else if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
+          //if ((get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS") || (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "SW")) {
+          /*  if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && (businessService.toUpperCase() == "WS" ||  businessService.toUpperCase() == "SW")) {
+              window.location = redirectionUrl;
+            }
+  */
+          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
             window.location = redirectionUrl;
           }
           else {
@@ -797,7 +797,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].additionalDetails = details;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].fromPeriod = from;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].toPeriod = to;
-
+      payloadReceiptDetails.Payments[0].validityYears = response.FireNOCs[0].fireNOCDetails.additionalDetail  ? response.FireNOCs[0].fireNOCDetails.additionalDetail.validityYears : 1;
 
     }
     const queryStr = [

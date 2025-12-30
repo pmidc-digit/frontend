@@ -42,7 +42,7 @@ import FloatingButton from "./FloatingButton";
 import Receipt from "./Receipt";
 import ShareButton from "./ShareButton";
 import Tooltip from "./Tooltip";
-
+import SurveyIdField from "egov-ui-kit/components/SurveyIdField";
 export {
   Label,
   Image,

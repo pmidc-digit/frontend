@@ -204,12 +204,33 @@ export const replaceStrInPath = (inputString, search, replacement) => {
 };
 
 export const getFileUrlFromAPI = async (fileStoreId, tenantId) => {
+<<<<<<< HEAD
   debugger;
   //tenantId = getQueryArg(window.location.href, "tenantId")
+=======
+  //let tenantIdd = getQueryArg(window.location.href, "tenantId")
+  //let service = getQueryArg(window.location.href, "service")
+>>>>>>> punjab_DIGIT_V2.2
   const queryObject = [
     { key: "tenantId", value: tenantId || commonConfig.tenantId },
     { key: "fileStoreIds", value: fileStoreId }
   ];
+<<<<<<< HEAD
+=======
+  // let queryObject;
+  // if (service == "WATER" || service == "SEWERAGE") {
+  //   queryObject = [
+  //     { key: "tenantId", value: tenantIdd },
+  //     { key: "fileStoreIds", value: fileStoreId }
+  //   ];
+  // } else {
+
+  //   queryObject = [
+  //     { key: "tenantId", value: tenantId || commonConfig.tenantId },
+  //     { key: "fileStoreIds", value: fileStoreId }
+  //   ];
+  // }
+>>>>>>> punjab_DIGIT_V2.2
   try {
     const fileUrl = await httpRequest(
       "get",

@@ -145,7 +145,7 @@ export default class UpdateMobileDialog extends React.Component {
       property.owners.map(owner => {
         if (owner.uuid == propertyNumbers.uuid) {
           owner.mobileNumber = mobileNumber.value;
-          //property.creationReason = "UPDATE";
+          property.creationReason = "UPDATE";
           let documents = this.state.documents.filter(document => document.uploaded) || [];
           if (property.documents) {
             let docuNames = documents.map(doc => doc.code);
@@ -329,11 +329,14 @@ export default class UpdateMobileDialog extends React.Component {
     }
   }
   setDocFileDetails = (ind, file, fileStoreId) => {
-    ind = this.state.clickedElement != "IDENTITYPROOF" ? 0 : 1;
+    // Find the correct index based on the clicked element
     const documents = this.state.documents;
-    documents[ind].fileName = file.name;
-    documents[ind].fileStoreId = fileStoreId;
-    documents[ind].uploaded = true;
+    const correctIndex = documents.findIndex(doc => doc.documentType === this.state.clickedElement);
+    const indexToUse = correctIndex !== -1 ? correctIndex : ind;
+    
+    documents[indexToUse].fileName = file.name;
+    documents[indexToUse].fileStoreId = fileStoreId;
+    documents[indexToUse].uploaded = true;
     this.setState({ documents: documents });
     this.hideLoading();
   }
@@ -405,7 +408,7 @@ export default class UpdateMobileDialog extends React.Component {
               onChange={(e) => this.handleChange(key, e.target.value)}></MobileNumberField>
             </span>
             {process.env.REACT_APP_NAME !== "Citizen" && <div style={{marginTop: '10px'}}>
-              {documents.map((document, ind) => {
+              {documents && documents.length > 0 && documents.map((document, ind) => {
                 return (<div>
                   <Label label={document.code} labelStyle={{ color: '#000000DF', fontSize: "16px" }} />
                   <Label label="PT_ATTACH_RESTRICTIONS_SIZE" />

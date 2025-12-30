@@ -329,6 +329,7 @@ const showHideFiedsPendingForConnectionActivation = (action, state, dispatch) =>
 
 
 export const getData = async (action, state, dispatch) => {
+  //debugger
   let applicationNo = getQueryArg(window.location.href, "applicationNumber");
   const connectionNo = getQueryArg(window.location.href, "connectionNumber");
   const tenantId = getQueryArg(window.location.href, "tenantId");
@@ -350,23 +351,79 @@ export const getData = async (action, state, dispatch) => {
       }
       let payloadWater, payloadSewerage;
       if (applicationNo.includes("SW")) {
+<<<<<<< HEAD
         try { payloadSewerage = await getSearchResultsForSewerage(queryObject, dispatch) } catch (error) { console.error(error); }
+=======
+
+        try {
+          payloadSewerage = await getSearchResultsForSewerage(
+            queryObject,
+            dispatch
+          );
+        } catch (error) {
+          console.error(error);
+        }
+>>>>>>> punjab_DIGIT_V2.2
         //console.log("payloadSewerage"+JSON.stringify(payloadSewerage));
         payloadSewerage.SewerageConnections[0].water = false;
         payloadSewerage.SewerageConnections[0].sewerage = true;
         payloadSewerage.SewerageConnections[0].service = "Sewerage";
+<<<<<<< HEAD
         dispatch(prepareFinalObject("SewerageConnection", payloadSewerage.SewerageConnections));
+=======
+        if (isModifyMode()) {
+          payloadSewerage.SewerageConnections[0].applicationType = "MODIFY_SEWERAGE_CONNECTION";
+        }
+        dispatch(
+          prepareFinalObject(
+            "SewerageConnection",
+            payloadSewerage.SewerageConnections
+          )
+        );
+>>>>>>> punjab_DIGIT_V2.2
       } else {
         try { payloadWater = await getSearchResults(queryObject) } catch (error) { console.error(error); };
         payloadWater.WaterConnection[0].water = true;
         payloadWater.WaterConnection[0].sewerage = false;
         payloadWater.WaterConnection[0].service = "Water";
+<<<<<<< HEAD
         dispatch(prepareFinalObject("WaterConnection", payloadWater.WaterConnection));
         if (get(payloadWater, "WaterConnection[0].waterSource", null) && get(payloadWater, "WaterConnection[0].waterSubSource", null)) {
           dispatch(prepareFinalObject("DynamicMdms.ws-services-masters.waterSource.selectedValues", [{
             waterSourceType: get(payloadWater, "WaterConnection[0].waterSource", null),
             waterSubSource: get(payloadWater, "WaterConnection[0].waterSourceSubSource", null)
           }]))
+=======
+          if (isModifyMode()) {
+          payloadWater.WaterConnection[0].applicationType = "MODIFY_WATER_CONNECTION";
+        }
+        dispatch(
+          prepareFinalObject("WaterConnection", payloadWater.WaterConnection)
+        );
+        if (
+          get(payloadWater, "WaterConnection[0].waterSource", null) &&
+          get(payloadWater, "WaterConnection[0].waterSubSource", null)
+        ) {
+          dispatch(
+            prepareFinalObject(
+              "DynamicMdms.ws-services-masters.waterSource.selectedValues",
+              [
+                {
+                  waterSourceType: get(
+                    payloadWater,
+                    "WaterConnection[0].waterSource",
+                    null
+                  ),
+                  waterSubSource: get(
+                    payloadWater,
+                    "WaterConnection[0].waterSourceSubSource",
+                    null
+                  ),
+                },
+              ]
+            )
+          );
+>>>>>>> punjab_DIGIT_V2.2
         } else if (get(payloadWater, "WaterConnection[0].waterSource", null)) {
           dispatch(prepareFinalObject("DynamicMdms.ws-services-masters.waterSource.selectedValues", [{
             waterSourceType: get(payloadWater, "WaterConnection[0].waterSource", null),
@@ -395,9 +452,11 @@ export const getData = async (action, state, dispatch) => {
         // this delete for initiate modify connection 
         if (!window.location.href.includes("mode=MODIFY&action=edit")) delete combinedArray[0].id; combinedArray[0].documents = [];
       }
-      if (isModifyMode() && isModifyModeAction()) {
+      if (isModifyMode() && !isModifyModeAction()) {
         // ModifyEdit should not call create.
-        dispatch(prepareFinalObject("modifyAppCreated", true));
+          if (!window.location.href.includes("mode=MODIFY&action=edit")){
+            dispatch(prepareFinalObject("modifyAppCreated", true));
+          }
       }
 
       dispatch(prepareFinalObject("applyScreen", findAndReplace(combinedArray[0], "null", "NA")));
@@ -733,12 +792,29 @@ const screenConfig = {
           )
         );
       });
+<<<<<<< HEAD
 
       dispatch(prepareFinalObject("applyScreen.water", true));
       dispatch(prepareFinalObject("applyScreen.sewerage", false));
       dispatch(prepareFinalObject("applyScreen.discharge", false));
       dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
       dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
+=======
+      if (userType.toUpperCase() === 'CITIZEN' && EODBservice === 'sewerage') {
+        dispatch(prepareFinalObject("applyScreen.water", false));
+        dispatch(prepareFinalObject("applyScreen.sewerage", true));
+        dispatch(prepareFinalObject("applyScreen.discharge", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
+      } else {
+        dispatch(prepareFinalObject("applyScreen.water", true));
+        dispatch(prepareFinalObject("applyScreen.sewerage", false));
+        dispatch(prepareFinalObject("applyScreen.discharge", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", false));
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", 0));
+      }
+
+>>>>>>> punjab_DIGIT_V2.2
 
       if (propertyId) {
         togglePropertyFeilds(action, true);
@@ -761,6 +837,7 @@ const screenConfig = {
             dispatch(prepareFinalObject("applyScreen.water", false));
             dispatch(prepareFinalObject("applyScreen.sewerage", true));
             dispatch(prepareFinalObject("applyScreen.discharge", true));
+<<<<<<< HEAD
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'true'));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
           } else if (dischargeConnection === 'OnlyMotor') {
@@ -770,6 +847,37 @@ const screenConfig = {
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'OnlyMotor'));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
           } else if (dischargeConnection === 'both') {
+=======
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeConnection",
+                "true"
+              )
+            );
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeFee",
+                dischargeFee
+              )
+            );
+          } else if (dischargeConnection === "OnlyDischarge") {
+            dispatch(prepareFinalObject("applyScreen.water", false));
+            dispatch(prepareFinalObject("applyScreen.sewerage", false));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeConnection",
+                "OnlyDischarge"
+              )
+            );
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeFee",
+                dischargeFee
+              )
+            );
+          } else if (dischargeConnection === "both") {
+>>>>>>> punjab_DIGIT_V2.2
             dispatch(prepareFinalObject("applyScreen.water", false));
             dispatch(prepareFinalObject("applyScreen.sewerage", true));
             dispatch(prepareFinalObject("applyScreen.discharge", true));
@@ -791,6 +899,7 @@ const screenConfig = {
             dispatch(prepareFinalObject("applyScreen.water", true));
             dispatch(prepareFinalObject("applyScreen.sewerage", false));
             dispatch(prepareFinalObject("applyScreen.discharge", true));
+<<<<<<< HEAD
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'true'));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
           } else if (dischargeConnection === 'OnlyMotor') {
@@ -800,6 +909,37 @@ const screenConfig = {
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 'OnlyMotor'));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
           } else if (dischargeConnection === 'both') {
+=======
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeConnection",
+                "true"
+              )
+            );
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeFee",
+                dischargeFee
+              )
+            );
+          } else if (dischargeConnection === "OnlyDischarge") {
+            dispatch(prepareFinalObject("applyScreen.water", false));
+            dispatch(prepareFinalObject("applyScreen.sewerage", false));
+            dispatch(prepareFinalObject("applyScreen.discharge", true));
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeConnection",
+                "OnlyDischarge"
+              )
+            );
+            dispatch(
+              prepareFinalObject(
+                "applyScreen.additionalDetails.dischargeFee",
+                dischargeFee
+              )
+            );
+          } else if (dischargeConnection === "both") {
+>>>>>>> punjab_DIGIT_V2.2
             dispatch(prepareFinalObject("applyScreen.water", true));
             dispatch(prepareFinalObject("applyScreen.sewerage", false));
             dispatch(prepareFinalObject("applyScreen.discharge", true));
@@ -835,7 +975,14 @@ const screenConfig = {
 
         dispatch(prepareFinalObject("applyScreen.water", false));
         dispatch(prepareFinalObject("applyScreen.sewerage", true));
+<<<<<<< HEAD
         if (dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor') {
+=======
+        if (
+          dischargeConnection === "true" ||
+          dischargeConnection === "OnlyDischarge"
+        ) {
+>>>>>>> punjab_DIGIT_V2.2
           dispatch(prepareFinalObject("applyScreen.discharge", true));
           dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", dischargeConnection));
           dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
@@ -850,7 +997,14 @@ const screenConfig = {
 
         dispatch(prepareFinalObject("applyScreen.water", true));
         dispatch(prepareFinalObject("applyScreen.sewerage", false));
+<<<<<<< HEAD
         if (dischargeConnection === 'true' || dischargeConnection === 'OnlyMotor') {
+=======
+        if (
+          dischargeConnection === "true" ||
+          dischargeConnection === "OnlyDischarge"
+        ) {
+>>>>>>> punjab_DIGIT_V2.2
           dispatch(prepareFinalObject("applyScreen.discharge", true));
           dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", dischargeConnection));
           dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
@@ -934,9 +1088,25 @@ const screenConfig = {
       uiFramework: "custom-containers-local",
       moduleName: "egov-wns",
       componentPath: "ViewBreakupContainer",
+<<<<<<< HEAD
       props: { open: false, maxWidth: "md", screenKey: "apply" }
     }
   }
+=======
+      props: { open: false, maxWidth: "md", screenKey: "apply" },
+    },
+    /* code start: Add EODB dialog component to screen configuration */
+    eodbDialog: {
+      uiFramework: "custom-containers-local",
+      moduleName: "egov-wns",
+      componentPath: "EodbDialogContainer",
+      props: { 
+        open: false
+      }
+    }
+    /* code end: Add EODB dialog component to screen configuration */
+  },
+>>>>>>> punjab_DIGIT_V2.2
 };
 
 export default screenConfig;

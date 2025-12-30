@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { Dialog, TextField, SurveyIdField } from "components";
 import Label from "egov-ui-kit/utils/translationNode";
 import { httpRequest } from "egov-ui-kit/utils/api";
+<<<<<<< HEAD
 import { toggleSnackbarAndSetText } from "egov-ui-kit/redux/app/actions";
+=======
+>>>>>>> punjab_DIGIT_V2.2
 let SurveyIdNew;
 let propertiesf;
 export default class SurveyIdEditDialog extends Component {
@@ -50,24 +53,35 @@ export default class SurveyIdEditDialog extends Component {
     }
 
     handleChange = (e) => {
+<<<<<<< HEAD
         console.log("SurveyId value:", e.target.value);
         SurveyIdNew = e.target.value;
         console.log("aaa", propertiesf);
 
+=======
+
+        SurveyIdNew = e.target.value;
+>>>>>>> punjab_DIGIT_V2.2
         this.setState({ surveyId: e.target.value, error: "" });
     };
 
     handleSave = async (e) => {
 
         const { surveyId } = this.state;
+<<<<<<< HEAD
         propertiesf.creationReason = "UPDATE"
 
         propertiesf.surveyId = SurveyIdNew;
+=======
+        propertiesf.surveyId = SurveyIdNew;
+        propertiesf.creationReason = "UPDATE"
+>>>>>>> punjab_DIGIT_V2.2
         let queryObject = propertiesf;
         debugger;
         try {
             const payload = await httpRequest("property-services/property/_update", "_update", [], { Property: queryObject });
             if (!payload) {
+<<<<<<< HEAD
                 // this.setMessage(result.Errors[0].code, "ERROR", false);
             } else {
                 alert("Survey Id/UID updated successfully");
@@ -76,6 +90,16 @@ export default class SurveyIdEditDialog extends Component {
                     window.location.reload();
                     handleClose = { onClose }
                 }, 1500);
+=======
+
+            } else {
+
+                alert("Survey Id/UID updated successfully");
+                setTimeout(() => {
+                    window.location.reload();
+                    // handleClose = { onClose }
+                }, 1000);
+>>>>>>> punjab_DIGIT_V2.2
             }
 
         } catch (e) {
@@ -84,6 +108,13 @@ export default class SurveyIdEditDialog extends Component {
 
         }
 
+<<<<<<< HEAD
     };
 
 }
+=======
+
+    };
+
+}
+>>>>>>> punjab_DIGIT_V2.2

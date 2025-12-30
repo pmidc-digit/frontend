@@ -12,9 +12,21 @@ import Faq from '../Faqs'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../myindex.css';
+
+function hidePopup(event) {
+    if (event) event.preventDefault();
+    document.querySelector('.popup-overlay').style.display = 'none';
+    document.querySelector('.mypop').style.display = 'none';
+}
+
 export default function Card() {
     return (
         <>
+            <div className="popup-overlay"></div>
+            <div className="mypop">
+                <button className="popup-close" onClick={hidePopup}>✕</button>
+                <img src="https://lgpunjab.gov.in/mf.png" alt="Punjab Plantation" />
+            </div>
             <div>
                 <div className="row">
                     <div className="col-sm-12 col-md-12">
@@ -48,7 +60,15 @@ export default function Card() {
                                             <h5 className="card-title">Water</h5></a>
 
                                     </div>
+<<<<<<< HEAD
                                 </div>  <div className="col-sm-12 col-md-3">
+=======
+                                </div>
+                            </div>
+
+                            <div className="row featuresthree">
+                                <div className="col-sm-12 col-md-4">
+>>>>>>> punjab_DIGIT_V2.2
                                     <div className="cardservice ">
                                         <a href='https://mseva.lgpunjab.gov.in/citizen' target="_new">
                                             <img src={Sewargeimg} className="propertyimgone" alt='Punjab Water' />

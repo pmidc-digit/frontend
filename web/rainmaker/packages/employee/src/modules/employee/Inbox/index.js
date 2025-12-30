@@ -84,12 +84,42 @@ class Inbox extends Component {
 
     return (
       <div>
-        <div className="rainmaker-topHeader" style={{ marginTop: 15, justifyContent: "space-between" }}>
+        {/* <marquee style={{ color: "red", fontStyle: "italic", fontSize: "20px", margin: "20px 0" }}>
+          Planned Downtime Notice: The mSeva Punjab application will be unavailable from 15th August 2025 to 18th August 2025 due to scheduled maintenance. We regret the inconvenience and appreciate your understanding.
+        </marquee> */}
+        <div className="rainmaker-topHeader" style={{ marginTop: "0px", justifyContent: "space-between" }}>
           {Loading && isLoading && <LoadingIndicator></LoadingIndicator>}
           <div className="rainmaker-topHeader flex">
             <Label className="landingPageHeader flex-child" label={"CS_LANDING_PAGE_WELCOME_TEXT"} />
             <Label className="landingPageUser flex-child" label={name} />,
           </div>
+          {/* <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <button
+              onClick={() => window.open("https://genbidemo.aibott.org/", "_blank", "noopener,noreferrer")}
+              style={{
+                backgroundColor: "#FE7A51",
+                color: "#fff",
+                border: "none",
+                padding: "10px 24px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+                cursor: "pointer",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                transition: "background-color 0.3s ease",
+                height: "40px",
+                marginRight: "0px",
+                margin: "10px 15px 0px 5px"
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = "#E86A41"}
+              onMouseLeave={(e) => e.target.style.backgroundColor = "#FE7A51"}
+            >
+              GenBi
+            </button>
+            <div className="quick-action-button">
+              <MenuButton data={buttonItems} />
+            </div>
+          </div> */}
           <div className="quick-action-button">
             <MenuButton data={buttonItems} />
           </div>

@@ -53,9 +53,10 @@ export const pushTheDocsUploadedToRedux = async (state, dispatch) => {
                 let applyScreenObj = findAndReplace(applyScreenObject, 0, null);
                 // applyScreenObj.additionalDetails.waterSubUsageType = applyScreenObj && applyScreenObj.additionalDetails && applyScreenObj.additionalDetails.waterSubUsageType ? applyScreenObj.additionalDetails.waterSubUsageType : null;
                 if (!(applyScreenObj && applyScreenObj.additionalDetails && applyScreenObj.additionalDetails.waterSubUsageType)) {
-                    applyScreenObj.additionalDetails = {
-                        waterSubUsageType: null
-                    }
+                    // applyScreenObj.additionalDetails = {
+                    //     waterSubUsageType: null
+                    // }
+                    applyScreenObj.additionalDetails.waterSubUsageType = null;
                 }
                 dispatch(prepareFinalObject("applyScreen", applyScreenObj));
                 if (getQueryArg(window.location.href, "action") === "edit") {
@@ -108,7 +109,13 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
                 let queryObject1 = [];
                 uuids = uuids.substring(0, uuids.length - 1);
                 if (process.env.REACT_APP_NAME === "Citizen") {
-                    queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
+                    if (window.location.pathname.includes('withoutAuth/wns/public-search')) {
+                        queryObject1 = [{ key: "propertyIds", value: uuids }];
+                    } else {
+                        queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
+                    }
+                    // queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
+                    //queryObject1 = [{ key: "propertyIds", value: uuids }];
                 } else {
                     queryObject1 = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "propertyIds", value: uuids }];
                 }
@@ -162,7 +169,7 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
 
 
 export const getSearchResults = async (queryObject, filter = false) => {
-    //debugger;
+    //
     try {
         const response = await httpRequest(
             "post",
@@ -603,6 +610,10 @@ export const prepareDocumentsUploadData = (state, dispatch) => {
 };
 
 const parserFunction = (state) => {
+<<<<<<< HEAD
+=======
+    
+>>>>>>> punjab_DIGIT_V2.2
     let queryObject = JSON.parse(JSON.stringify(get(state.screenConfiguration.preparedFinalObject, "applyScreen", {})));
     //console.log("Hello Test"+JSON.stringify(queryObject))
     let ckConnTypeWater = queryObject.water;
@@ -614,27 +625,27 @@ const parserFunction = (state) => {
     let dischargeFee;
     if (ckDischarge === true) {
         if (ckConnTypeWater === true && ckConnTypeSwerage === true) {
-            dischargeConnection = queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : waterDetails.additionalDetails.dischargeConnection;
-            dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : waterDetails.additionalDetails.dischargeFee;
+            dischargeConnection = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeConnection ? waterDetails.additionalDetails.dischargeConnection : null);
+            dischargeFee = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeFee ? waterDetails.additionalDetails.dischargeFee : null);
         } else if (ckConnTypeSwerage === true) {
-            dischargeConnection = queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : sewerageDetails.additionalDetails.dischargeConnection;
-            dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : sewerageDetails.additionalDetails.dischargeFee;
+            dischargeConnection = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : (sewerageDetails && sewerageDetails.additionalDetails && sewerageDetails.additionalDetails.dischargeConnection ? sewerageDetails.additionalDetails.dischargeConnection : null);
+            dischargeFee = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : (sewerageDetails && sewerageDetails.additionalDetails && sewerageDetails.additionalDetails.dischargeFee ? sewerageDetails.additionalDetails.dischargeFee : null);
         } else {
-            dischargeConnection = queryObject && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : waterDetails.additionalDetails.dischargeConnection;
-            dischargeFee = queryObject && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : waterDetails.additionalDetails.dischargeFee;
+            dischargeConnection = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeConnection ? waterDetails.additionalDetails.dischargeConnection : null);
+            dischargeFee = queryObject && queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : (waterDetails && waterDetails.additionalDetails && waterDetails.additionalDetails.dischargeFee ? waterDetails.additionalDetails.dischargeFee : null);
         }
     }
     let parsedObject = {
-        roadCuttingArea: parseInt(queryObject.roadCuttingArea),
+        roadCuttingArea: queryObject.roadCuttingArea ? parseInt(queryObject.roadCuttingArea) : null,
         meterInstallationDate: convertDateToEpoch(queryObject.meterInstallationDate),
         connectionExecutionDate: convertDateToEpoch(queryObject.connectionExecutionDate),
         dateEffectiveFrom: convertDateToEpoch(queryObject.dateEffectiveFrom),
-        proposedWaterClosets: parseInt(queryObject.proposedWaterClosets),
-        proposedToilets: parseInt(queryObject.proposedToilets),
-        noOfTaps: parseInt(queryObject.noOfTaps),
-        noOfWaterClosets: parseInt(queryObject.noOfWaterClosets),
-        noOfToilets: parseInt(queryObject.noOfToilets),
-        proposedTaps: parseInt(queryObject.proposedTaps),
+        proposedWaterClosets: queryObject.proposedWaterClosets ? parseInt(queryObject.proposedWaterClosets) : null,
+        proposedToilets: queryObject.proposedToilets ? parseInt(queryObject.proposedToilets) : null,
+        noOfTaps: queryObject.noOfTaps ? parseInt(queryObject.noOfTaps) : null,
+        noOfWaterClosets: queryObject.noOfWaterClosets ? parseInt(queryObject.noOfWaterClosets) : null,
+        noOfToilets: queryObject.noOfToilets ? parseInt(queryObject.noOfToilets) : null,
+        proposedTaps: queryObject.proposedTaps ? parseInt(queryObject.proposedTaps) : null,
         propertyId: (queryObject.property) ? queryObject.property.propertyId : null,
         additionalDetails: {
             initialMeterReading: (
@@ -647,7 +658,14 @@ const parserFunction = (state) => {
                 queryObject.additionalDetails.detailsProvidedBy !== null
             ) ? queryObject.additionalDetails.detailsProvidedBy : "",
             isexempted: false,
+<<<<<<< HEAD
             dischargeConnection: dischargeConnection ? dischargeConnection : null,
+=======
+            iPin: queryObject.additionalDetails && queryObject.additionalDetails.iPin ? queryObject.additionalDetails.iPin : iPin,
+            appid: queryObject.additionalDetails && queryObject.additionalDetails.appid ? queryObject.additionalDetails.appid : appid,
+            thirdPartyCode: queryObject.additionalDetails && queryObject.additionalDetails.thirdPartyCode ? queryObject.additionalDetails.thirdPartyCode : thirdPartyCode,
+            dischargeConnection: dischargeConnection ? dischargeConnection : 'false',
+>>>>>>> punjab_DIGIT_V2.2
             dischargeFee: dischargeFee ? dischargeFee : null,
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
             billingAmount: queryObject && queryObject.additionalDetails ? parseFloat(queryObject.additionalDetails.billingAmount) : null,
@@ -688,6 +706,28 @@ const parserFunction = (state) => {
             }
         })
     }
+
+    /**
+     * DISCHARGE APPLICATION BUSINESS LOGIC
+     * 
+     * Implementation based on senior consultation requirements:
+     * 
+     * Scenario 1: Discharge-only applications (discharge: true, water: false, sewerage: false)
+     * Scenario 2: Combination applications (discharge: true + water/sewerage: true)
+     * Scenario 3: Regular applications (discharge: false)
+     */
+    if (queryObject.discharge === true) {
+        if (queryObject.water === false && queryObject.sewerage === false) {
+            // Discharge-only application: treat as water service with "OnlyDischarge"
+            queryObject.water = true;
+            queryObject.service = "Water";
+            parsedObject.additionalDetails.dischargeConnection = "OnlyDischarge";
+        } else {
+            // Combo application with discharge: set dischargeConnection to "true"
+            parsedObject.additionalDetails.dischargeConnection = "true";
+        }
+    }
+
     queryObject = { ...queryObject, ...parsedObject }
     return queryObject;
 }
@@ -1058,6 +1098,26 @@ export const applyForWater = async (state, dispatch) => {
 }
 
 export const applyForSewerage = async (state, dispatch) => {
+    if (isModifyMode()) {
+
+        dispatch(
+            handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
+                "visible",
+                false
+            )
+        );
+        dispatch(
+            handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
+                "visible",
+                false
+            )
+        );
+
+    }
     let queryObject = parserFunction(state);
     let sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
     let method = sewerId ? "UPDATE" : "CREATE";
@@ -1067,6 +1127,10 @@ export const applyForSewerage = async (state, dispatch) => {
         set(queryObject, "tenantId", tenantId);
         queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
         if (method === "UPDATE") {
+<<<<<<< HEAD
+=======
+            
+>>>>>>> punjab_DIGIT_V2.2
             queryObject.additionalDetails.appCreatedDate = get(
                 state.screenConfiguration.preparedFinalObject,
                 "SewerageConnection[0].additionalDetails.appCreatedDate"
@@ -1140,7 +1204,9 @@ export const applyForSewerage = async (state, dispatch) => {
 }
 
 export const applyForBothWaterAndSewerage = async (state, dispatch) => {
+    
     let method;
+
     let queryObject = parserFunction(state);
     //console.log("dsgdsh"+JSON.stringify(queryObject))
     let waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
@@ -1204,10 +1270,17 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
            // console.log("wsqueryObjectForUpdateSewerage"+JSON.stringify(queryObjectForUpdateWater));
             
             await httpRequest("post", "/ws-services/wc/_update", "", [], { WaterConnection: queryObjectForUpdateWater });
+<<<<<<< HEAD
 
                 set(queryObjectForUpdateSewerage, "additionalDetails.compositionFee", queryObjectForUpdateSewerage.additionalDetails.compositionFeesw);
                 set(queryObjectForUpdateSewerage, "additionalDetails.userCharges", queryObjectForUpdateSewerage.additionalDetails.userChargessw);
                 set(queryObjectForUpdateSewerage, "additionalDetails.othersFee", queryObjectForUpdateSewerage.additionalDetails.othersFeesw);
+=======
+            set(queryObjectForUpdateSewerage, "additionalDetails.dischargeConnection", 'false');
+            set(queryObjectForUpdateSewerage, "additionalDetails.compositionFee", queryObjectForUpdateSewerage.additionalDetails.compositionFeesw);
+            set(queryObjectForUpdateSewerage, "additionalDetails.userCharges", queryObjectForUpdateSewerage.additionalDetails.userChargessw);
+            set(queryObjectForUpdateSewerage, "additionalDetails.othersFee", queryObjectForUpdateSewerage.additionalDetails.othersFeesw);
+>>>>>>> punjab_DIGIT_V2.2
             // console.log("swqueryObjectForUpdateSewerage"+JSON.stringify(queryObjectForUpdateSewerage));
             await httpRequest("post", "/sw-services/swc/_update", "", [], { SewerageConnection: queryObjectForUpdateSewerage });
             let searchQueryObjectWater = [
@@ -1230,11 +1303,12 @@ export const applyForBothWaterAndSewerage = async (state, dispatch) => {
             if (typeof queryObject.additionalDetails !== 'object') {
                 queryObject.additionalDetails = {};
             }
-            //debugger;
+            //
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
             set(queryObject, "processInstance.action", "INITIATE");
             queryObject = findAndReplace(queryObject, "NA", null);
             response = await httpRequest("post", "/ws-services/wc/_create", "_create", [], { WaterConnection: queryObject });
+            queryObject.additionalDetails.dischargeConnection = 'false';
             const sewerageResponse = await httpRequest("post", "/sw-services/swc/_create", "_create", [], { SewerageConnection: queryObject });
             dispatch(prepareFinalObject("WaterConnection", response.WaterConnection));
             dispatch(prepareFinalObject("SewerageConnection", sewerageResponse.SewerageConnections));
@@ -1536,12 +1610,18 @@ export const getPastPaymentsForSewerage = async (dispatch) => {
     }
 }
 
-export const createMeterReading = async (dispatch, body) => {
+export const createMeterReading = async (dispatch, body, mode) => {
     dispatch(toggleSpinner());
+    let url
+    if(mode === 'edit'){
+        url = "/ws-calculator/meterConnection/_update"
+    }else{
+        url = "/ws-calculator/meterConnection/_create"
+    }
     try {
         const response = await httpRequest(
             "post",
-            "/ws-calculator/meterConnection/_create",
+            url,
             "", [], { meterReadings: body }
         );
         if (response && response !== undefined && response !== null) {
@@ -1957,6 +2037,7 @@ export const downloadBill = async (receiptQueryString, mode) => {
 }
 
 export const findAndReplace = (obj, oldValue, newValue) => {
+    if (!obj || typeof obj !== "object") return obj;
     Object.keys(obj).forEach(key => {
         if ((obj[key] instanceof Object) || (obj[key] instanceof Array)) findAndReplace(obj[key], oldValue, newValue)
         obj[key] = obj[key] === oldValue ? newValue : obj[key]

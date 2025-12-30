@@ -38,6 +38,16 @@ export const nocSummaryDetail={
       jsonPath: "FireNOCs[0].oldFireNOCNumber",
       callBack: checkValueForNA
     }
+  ),
+  validityYears: getLabelWithValue(
+    {
+      labelName: "Validity Year",
+      // labelKey: "NOC_PROVISIONAL_FIRE_NOC_NO_LABEL"
+    },
+    {
+      jsonPath: "FireNOCs[0].fireNOCDetails.additionalDetail.validityYears",
+      callBack: checkValueForNA
+    }
   )
 }
 

@@ -1216,6 +1216,15 @@ export const downloadBill = async (consumerCode, tenantId, configKey = "consolid
 				"penaltyRate": rate
 			}
 			billResponse.Bills[0].additionalDetails = addDetail;
+<<<<<<< HEAD
+=======
+			if (businesService == "SW") {
+				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.nabha") ? '0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+			}
+			else if (businesService == "WS") {
+				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.nabha") ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+			}
+>>>>>>> punjab_DIGIT_V2.2
 			const queryStr = [
 				{ key: "key", value: configKey },
 				{ key: "tenantId", value: commonConfig.tenantId }

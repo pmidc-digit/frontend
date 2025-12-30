@@ -107,6 +107,8 @@ class WorkFlowContainer extends React.Component {
         return "purpose=apply&status=success";
       case "FORWARD":
       case "RESUBMIT":
+      case "FORWARD_FOR_APPROVAL":
+      case "FORWARD_FOR_FIELD_INSPECTION":
         return "purpose=forward&status=success";
       case "MARK":
         return "purpose=mark&status=success";
@@ -143,11 +145,14 @@ class WorkFlowContainer extends React.Component {
       case "ACTIVATE_CONNECTION":
         return "purpose=activate&status=success";
       case "REVOCATE":
-        return "purpose=application&status=revocated"
+        return "purpose=application&status=revocated";
       case "VOID":
-        return "purpose=application&status=voided"
+        return "purpose=application&status=voided";
       case "REOPEN":
         return "purpose=reopen&status=success";
+      // default:
+      //   console.error("Unknown workflow action:", action);
+      //   return "purpose=apply&status=success";
     }
   };
 
@@ -161,7 +166,7 @@ class WorkFlowContainer extends React.Component {
       redirectQueryString,
       beforeSubmitHook
     } = this.props;
-   // console.log("=========updateUrl",updateUrl);
+    
     const tenant = getQueryArg(window.location.href, "tenantId");
     let data = get(preparedFinalObject, dataPath, []);
     if (moduleName === "NewTL") {
@@ -285,7 +290,6 @@ class WorkFlowContainer extends React.Component {
           data[0].fireNOCDetails.status = "CITIZENACTIONREQUIRED";
           data[0].fireNOCDetails.assignee = [get(preparedFinalObject, "FireNOCs[0].fireNOCDetails.applicantDetails.owners[0].uuid", "")];
         }
-        debugger
         if (window.location.href.includes("wns/search-preview")) {
           if(data.roadCuttingInfo && data.roadCuttingInfo.length > 0) {
             
@@ -329,12 +333,28 @@ class WorkFlowContainer extends React.Component {
         else if (moduleName === "FIRENOC") path = "FireNOCs[0].fireNOCNumber";
         else path = "Licenses[0].licenseNumber";
         const licenseNumber = get(payload, path, "");
+        
+        const purposeString = this.getPurposeString(label);
+        
+        if (!purposeString || purposeString.includes('undefined')) {
+          toggleSnackbar(
+            true,
+            {
+              labelName: "Workflow action not supported. Please contact system administrator.",
+              labelKey: "ERR_WORKFLOW_ACTION_NOT_SUPPORTED"
+            },
+            "error"
+          );
+          return;
+        }
+        
+        let finalUrl = "";
         if (redirectQueryString) {
-          this.props.setRoute(`acknowledgement?${this.getPurposeString(label)}&${redirectQueryString}`);
+          finalUrl = `acknowledgement?${purposeString}&${redirectQueryString}`;
+          this.props.setRoute(finalUrl);
         } else {
-          this.props.setRoute(`acknowledgement?${this.getPurposeString(
-            label
-          )}&applicationNumber=${applicationNumber}&tenantId=${tenant}&secondNumber=${licenseNumber}&moduleName=${moduleName}`);
+          finalUrl = `acknowledgement?${purposeString}&applicationNumber=${applicationNumber}&tenantId=${tenant}&secondNumber=${licenseNumber}&moduleName=${moduleName}`;
+          this.props.setRoute(finalUrl);
         }
       }
     } catch (e) {
@@ -364,7 +384,6 @@ class WorkFlowContainer extends React.Component {
   createWorkFLow = async (label, isDocRequired) => {
     const { toggleSnackbar, dataPath, preparedFinalObject } = this.props;
     let data = {};
-      debugger
     if (dataPath == "BPA" || dataPath == "Assessment" || dataPath == "Property" || dataPath === "Noc") {
 
       data = get(preparedFinalObject, dataPath, {})
@@ -443,7 +462,6 @@ class WorkFlowContainer extends React.Component {
   //   }
   // };
    else {
-    debugger;
     const PTassigneeAction = get(preparedFinalObject,"Property.workflow.action", [])
     const FireNOCassigneeAction = get(preparedFinalObject,"FireNOCs[0].fireNOCDetails.action", [])
     const assigneeAction = get(preparedFinalObject,"Licenses[0].action", [])
@@ -455,7 +473,8 @@ class WorkFlowContainer extends React.Component {
     const PTStatus = get(preparedFinalObject,"Property.workflow.action", []);
     const WSassigneePresent = get(preparedFinalObject,"WaterConnection[0].assignee", []) ? get(preparedFinalObject,"WaterConnection[0].assignee", []).length > 0 : false;
     const WSassigneeAction = get(preparedFinalObject,"WaterConnection[0].action", "");
-      if(assigneePresent || FirenocassigneePresent ||window.location.pathname.includes("bill-amend")|| PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "APPROVE_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" || assigneeAction ===  "CANCEL"|| assigneeAction ===  "RESUBMIT" || assigneeAction === "SENDBACKTOCITIZEN" ||WSassigneeAction ==="SEND_BACK_TO_CITIZEN"|| WSassigneeAction === "RESUBMIT_APPLICATION" || WSassigneeAction === "REJECT" || FireNOCassigneeAction ==="RESUBMIT" || FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || FireNOCassigneeAction === "CANCEL" || PTassigneeAction === "REJECT" ||PTassigneeAction === "SENDBACKTOCITIZEN" || assigneeStatus === "INITIATED"){
+    
+      if(assigneePresent || FirenocassigneePresent ||window.location.pathname.includes("bill-amend")|| PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "APPROVE_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" || assigneeAction ===  "CANCEL"|| assigneeAction ===  "RESUBMIT" || assigneeAction === "SENDBACKTOCITIZEN" ||WSassigneeAction ==="SEND_BACK_TO_CITIZEN"|| WSassigneeAction === "RESUBMIT_APPLICATION" || WSassigneeAction === "REJECT" || FireNOCassigneeAction ==="RESUBMIT" || FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || FireNOCassigneeAction === "CANCEL" || PTassigneeAction === "REJECT" ||PTassigneeAction === "SENDBACKTOCITIZEN" || assigneeStatus === "INITIATED"){
         this.wfUpdate(label);
       }
       
@@ -466,7 +485,6 @@ class WorkFlowContainer extends React.Component {
   };
 
 getRedirectUrl = (action, businessId, moduleName) => {
-  //debugger;
   const isAlreadyEdited = getQueryArg(window.location.href, "edited");
   const tenant = getQueryArg(window.location.href, "tenantId");
   const { ProcessInstances, baseUrlTemp, bserviceTemp, preparedFinalObject } = this.props;
@@ -634,7 +652,7 @@ setBusinessServiceDataToLocalStorage = async (
 
 
 prepareWorkflowContract = (data, moduleName) => {
-   const {
+  const {
     getRedirectUrl,
     getHeaderName,
     checkIfTerminatedState,
@@ -673,16 +691,49 @@ prepareWorkflowContract = (data, moduleName) => {
   let actions = orderBy(filteredActions, ["action"], ["desc"]);
 
   actions = actions.map(item => {
-    return {
-      buttonLabel: item.action,
-      moduleName: data[data.length - 1].businessService,
-      isLast: item.action === "PAY" ? true : false,
-      buttonUrl: getRedirectUrl(item.action, businessId, businessService),
-      dialogHeader: getHeaderName(item.action),
-      showEmployeeList: (businessService === "NewWS1" || businessService === "ModifyWSConnection" || businessService === "ModifySWConnection" || businessService === "NewSW1") ? !checkIfTerminatedState(item.nextState, businessService) && item.action !== "SEND_BACK_TO_CITIZEN" && item.action !== "APPROVE_CONNECTION" && item.action !== "APPROVE_FOR_CONNECTION" && item.action !== "RESUBMIT_APPLICATION" : !checkIfTerminatedState(item.nextState, businessService) && item.action !== "SENDBACKTOCITIZEN",
-      roles: getEmployeeRoles(item.nextState, item.currentState, businessService),
-      isDocRequired: checkIfDocumentRequired(item.nextState, businessService)
-    };
+    const isWaterSewerageService = (
+      businessService === "NewWS1" || 
+      businessService === "ModifyWSConnection" || 
+      businessService === "ModifySWConnection" || 
+      businessService === "NewSW1" ||
+      businessService === "DisconnectWSConnection" ||
+      businessService === "DisconnectSWConnection"
+    );
+    
+    if (isWaterSewerageService) {
+      const showEmployeeListResult = 
+        !checkIfTerminatedState(item.nextState, businessService) &&
+        item.action !== "SEND_BACK_TO_CITIZEN" &&
+        item.action !== "APPROVE_CONNECTION" &&
+        item.action !== "APPROVE_FOR_CONNECTION" &&
+        item.action !== "RESUBMIT_APPLICATION";
+      
+      return {
+        buttonLabel: item.action,
+        moduleName: data[data.length - 1].businessService,
+        isLast: item.action === "PAY" ? true : false,
+        buttonUrl: getRedirectUrl(item.action, businessId, businessService),
+        dialogHeader: getHeaderName(item.action),
+        showEmployeeList: showEmployeeListResult,
+        roles: getEmployeeRoles(item.nextState, item.currentState, businessService),
+        isDocRequired: checkIfDocumentRequired(item.nextState, businessService)
+      };
+    } else {
+      const showEmployeeListResult = 
+        !checkIfTerminatedState(item.nextState, businessService) &&
+        item.action !== "SENDBACKTOCITIZEN";
+      
+      return {
+        buttonLabel: item.action,
+        moduleName: data[data.length - 1].businessService,
+        isLast: item.action === "PAY" ? true : false,
+        buttonUrl: getRedirectUrl(item.action, businessId, businessService),
+        dialogHeader: getHeaderName(item.action),
+        showEmployeeList: showEmployeeListResult,
+        roles: getEmployeeRoles(item.nextState, item.currentState, businessService),
+        isDocRequired: checkIfDocumentRequired(item.nextState, businessService)
+      };
+    }
   });
   actions = actions.filter(item => item.buttonLabel !== 'INITIATE');
   let editAction = getActionIfEditable(

@@ -29,9 +29,10 @@ export const generateBillApiCall = async (state, dispatch) => {
     else {
       let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
       if (batchtypechk == "Locality") {
-        var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
-          generateBillScreenObject["mohallaData"].lastIndexOf("(") + 1,
-          generateBillScreenObject["mohallaData"].lastIndexOf(")")).trim();
+        // var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
+        //   generateBillScreenObject["mohallaData"].lastIndexOf("(") + 1,
+        //   generateBillScreenObject["mohallaData"].lastIndexOf(")")).trim();
+        var mohallaDataCode = generateBillScreenObject["mohallaData"];
       }
       try {
         let transactionType = null;
@@ -226,7 +227,7 @@ export const searchBillApiCall = async (state, dispatch) => {
 
         let searchBillArray = [];
         let billRow = null;
-        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId;
+        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billformDate;
 
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
@@ -236,6 +237,7 @@ export const searchBillApiCall = async (state, dispatch) => {
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
           tenantId = element.tenantId;
+          billformDate = element.billingcycleStartdate;
           billRow = {
             "transactionType": transactionType,
             "locality": locality,
@@ -243,11 +245,13 @@ export const searchBillApiCall = async (state, dispatch) => {
             "billingcycleEnddate": billingcycleEnddate,
             "status": status,
             "tenantId": tenantId,
+            "billformDate" : billformDate
           };
           searchBillArray.push(billRow);
         });
         //dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
-        dispatch(prepareFinalObject("createBillResponse", searchBillArray));
+        const sortedSearchBillArray = searchBillArray.sort((a,b)=> b.billformDate - a.billformDate);
+        dispatch(prepareFinalObject("createBillResponse", sortedSearchBillArray));
         if (searchBillArray.length == 0) {
 
           dispatch(toggleSnackbar(true, { labelName: "No Data Found", label: "" }, "warning"));
@@ -306,12 +310,18 @@ export const searchBillApiCall = async (state, dispatch) => {
 
         let searchBillArray = [];
         let billRow = null;
+<<<<<<< HEAD
         let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId;
 
+=======
+        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billformDate;
+        let recourdcount = response.billScheduler.length;
+>>>>>>> punjab_DIGIT_V2.2
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
           locality = element.locality;
           billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
+          billformDate = element.billingcycleStartdate
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
           tenantId = element.tenantId;
@@ -322,11 +332,18 @@ export const searchBillApiCall = async (state, dispatch) => {
             "billingcycleEnddate": billingcycleEnddate,
             "status": status,
             "tenantId": tenantId,
+<<<<<<< HEAD
+=======
+            "recordcount": recourdcount,
+            "service": servicety,
+            "billformDate" : billformDate
+>>>>>>> punjab_DIGIT_V2.2
           };
           searchBillArray.push(billRow);
         });
         //dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
-        dispatch(prepareFinalObject("createBillResponse", searchBillArray));
+        const sortedSearchBillArray = searchBillArray.sort((a,b)=> b.billformDate - a.billformDate);
+        dispatch(prepareFinalObject("createBillResponse", sortedSearchBillArray));
         if (searchBillArray.length == 0) {
 
           dispatch(toggleSnackbar(true, { labelName: "No Data Found", label: "" }, "warning"));

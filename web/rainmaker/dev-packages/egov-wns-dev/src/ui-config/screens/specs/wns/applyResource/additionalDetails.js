@@ -340,11 +340,12 @@ export const additionDetails = getCommonCard({
           // pattern: /^[0-9]*$/i,
           errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG"
         }),
+        
         afterFieldChange: async (action, state, dispatch) => {
           let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.connectionCategory");
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
-
-          if (ConectionCategory == "REGULARIZED") {
+          debugger
+          if (ConectionCategory === "REGULARIZED" || ConectionCategory === 'DISCHARGE_CONNECTION') {
             dispatch(
               handleField(
                 "apply",
@@ -371,6 +372,26 @@ export const additionDetails = getCommonCard({
             );
 
           }
+          else if (ConectionCategory == "LEGACY") {
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
+                "visible",
+                false
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
+                "visible",
+                false
+              )
+            );
+
+          }
+
           else {
             dispatch(
               handleField(
@@ -392,6 +413,22 @@ export const additionDetails = getCommonCard({
               handleField(
                 "apply",
                 "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer",
+                "visible",
+                true
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
+                "visible",
+                true
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
                 "visible",
                 true
               )
@@ -459,13 +496,13 @@ export const additionDetails = getCommonCard({
           className: "hr-generic-selectfield autocomplete-dropdown",
           label: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE" },
           placeholder: { labelKey: "WS_SERV_DETAIL_SUB_USAGE_TYPE_PLACEHOLDER" },
-          required: true,
+          required: false, // Will be dynamically set to true for water applications in footer.js
           isClearable: true,
           labelsFromLocalisation: true,
           jsonPath: "applyScreen.additionalDetails.waterSubUsageType",
           sourceJsonPath: "applyScreenMdmsData.ws-services-masters.subUsageType",
         },
-        required: true,
+        required: false, // Will be dynamically set to true for water applications in footer.js
         gridDefination: {
           xs: 12,
           sm: 12,

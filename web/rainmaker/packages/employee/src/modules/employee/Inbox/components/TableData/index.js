@@ -2,6 +2,7 @@ import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getLocaleLabels, transformById } from "egov-ui-framework/ui-utils/commons";
@@ -125,7 +126,8 @@ class TableData extends Component {
     inboxData: [{ headers: [], rows: [] }],
     initialInboxData: [{ headers: [], rows: [] }],
     moduleName: "",
-    loaded: false,
+    loaded: true, // UI loads immediately
+    dataLoading: false, // API loading state for spinner
     showLocality: !Boolean(localStorage.getItem('disableLocality')),
     color: "rgb(53,152,219)",
     timeoutForTyping: false,
@@ -556,8 +558,23 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
   };
 
   componentDidMount = async () => {
-    this.loadInitialData();
     this.getMaxSLA();
+    
+    // Start API call 
+    setTimeout(() => {
+      this.loadDataInBackground();
+    }, 10); 
+  };
+
+  loadDataInBackground = async () => {
+    this.setState({ dataLoading: true });
+    try {
+      await this.loadInitialData();
+    } catch (error) {
+      console.error("Background data loading failed:", error);
+    } finally {
+      this.setState({ dataLoading: false });
+    }
   };
   loadInitialData = async () => {
     const { toggleSnackbarAndSetText, prepareFinalObject } = this.props;
@@ -746,15 +763,11 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
     });
   };
   showLoading() {
-    const { prepareFinalObject } = this.props;
-    prepareFinalObject('Loading.isLoading', true);
   }
   hideLoading() {
-    const { prepareFinalObject } = this.props;
-    prepareFinalObject('Loading.isLoading', false);
   }
   render() {
-    const { value, filter, searchFilter, businessServiceSla } = this.state;
+    const { value, filter, searchFilter, businessServiceSla, dataLoading } = this.state;
     const { classes } = this.props;
     const { handleChangeFilter, clearFilter, handleChangeSearch } = this;
     let { taskboardData, tabData, inboxData } = this.state;
@@ -799,7 +812,7 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
           </Hidden>
         </div>
         <Taskboard data={taskboardData} onSlaClick={this.onTaskBoardClick} color={this.state.color} />
-        <div className="backgroundWhite">
+        <div className="backgroundWhite" style={{ position: 'relative' }}>
           <Tabs
             value={value}
             onChange={this.handleChange}
@@ -814,7 +827,26 @@ if(totalRows.length == totalRowCount && showLoadingTaskboard==false){
               );
             })}
           </Tabs>
-          <InboxData businessServiceSla={businessServiceSla} data={inboxData[value]} />
+          <div style={{ position: 'relative', minHeight: '200px' }}>
+            <InboxData businessServiceSla={businessServiceSla} data={inboxData[value]} />
+            {this.state.dataLoading && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 10,
+                minHeight: '200px'
+              }}>
+                <CircularProgress size={40} color="primary" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

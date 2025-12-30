@@ -119,11 +119,19 @@ class Footer extends React.Component {
       // else{
       const { handleFieldChange, setRoute, dataPath, onDialogButtonClick } = this.props;
       let employeeList = [], empList = [];
+      
       if (item.buttonLabel === "ACTIVATE_CONNECTION") {
         if (item.moduleName === "NewWS1" || item.moduleName === "NewSW1") {
           item.showEmployeeList = false;
         }
       }
+      
+      if (item.buttonLabel === "APPROVE_CONNECTION") {
+        if (item.moduleName === "DisconnectWSConnection" || item.moduleName === "DisconnectSWConnection") {
+          item.showEmployeeList = false;
+        }
+      }
+      
       if (dataPath === "BPA") {
         handleFieldChange(`${dataPath}.comment`, "");
         handleFieldChange(`${dataPath}.assignees`, "");

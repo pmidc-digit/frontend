@@ -58,7 +58,51 @@ const renderSearchConnectionTable = async (state, dispatch) => {
         "warning"
       )
     );
+<<<<<<< HEAD
   }
+=======
+  } else if (searchScreenObject["mobileNumber"] === "9999999999") {
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Please fill From Date",
+          labelKey: "ERR_FILL_FROM_DATE_DEFAULT_NUMBER",
+        },
+        "warning"
+      )
+    );
+  } else if (
+   searchScreenObject["locality"] && searchScreenObject["locality"].trim() !== "" && 
+    (!searchScreenObject["ownerName"] || searchScreenObject["ownerName"].trim() === "")
+  ) {
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Please select a locality when searching by owner name.",
+          labelKey: "ERR_WS_OWNER_NAME_LOCALITY_REQUIRED",
+        },
+        "error"
+      )
+    );
+  } else if (
+   searchScreenObject["ownerName"] && 
+    searchScreenObject["ownerName"].trim() !== "" && 
+    (!searchScreenObject["locality"] || searchScreenObject["locality"].trim() === "")
+  ) {
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Please select a locality when searching by owner name.",
+          labelKey: "ERR_WS_OWNER_NAME_LOCALITY_REQUIRED",
+        },
+        "error"
+      )
+    );
+  } 
+>>>>>>> punjab_DIGIT_V2.2
   else {
     for (var key in searchScreenObject) {
       if (searchScreenObject.hasOwnProperty(key) && searchScreenObject[key].trim() !== "") {

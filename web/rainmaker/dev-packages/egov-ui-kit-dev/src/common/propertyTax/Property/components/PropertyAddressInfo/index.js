@@ -1,17 +1,27 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> punjab_DIGIT_V2.2
 import React, { useState } from "react";
 import { initLocalizationLabels } from "egov-ui-kit/redux/app/utils";
 import { getTranslatedLabel } from "egov-ui-kit/utils/commons";
 import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import PropertyInfoCard from "../PropertyInfoCard";
 import SurveyIdEditDialog from "../SurveyIdEditDialog";
+<<<<<<< HEAD
 
+=======
+>>>>>>> punjab_DIGIT_V2.2
 const locale = getLocale() || "en_IN";
 const localizationLabelsData = initLocalizationLabels(locale);
 
 
 
 export const getAddressItems = (properties, OldProperty) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> punjab_DIGIT_V2.2
   let oldTenantInfo = [], oldStateId = "", oldCityId = "", oldLocality = "";
   const { address = {}, tenantId = '' } = properties;
   const tenantInfo = tenantId.split('.') || [];
@@ -63,11 +73,19 @@ export const getAddressItems = (properties, OldProperty) => {
       },
       {
         key: getTranslatedLabel("PT_PROPERTY_ADDRESS_EXISTING_PID", localizationLabelsData),
+<<<<<<< HEAD
+=======
+        // value: properties.oldPropertyId || "NA",
+>>>>>>> punjab_DIGIT_V2.2
         value: propertyId || "NA",
         oldValue: OldProperty && OldProperty.oldPropertyId
       },
       {
         key: "Survey Id/UID",
+<<<<<<< HEAD
+=======
+        // value: properties.surveyId || "NA",
+>>>>>>> punjab_DIGIT_V2.2
         value: surveyid,
         showEditButton: true,
         onEdit: () => {
@@ -77,6 +95,10 @@ export const getAddressItems = (properties, OldProperty) => {
       },
       {
         key: "Year of creation of Property",
+<<<<<<< HEAD
+=======
+        //value: properties.additionalDetails? properties.additionalDetails.yearConstruction :"NA",
+>>>>>>> punjab_DIGIT_V2.2
         value: yearConsTruction || "NA",
       }
     ]
@@ -87,6 +109,7 @@ const PropertyAddressInfo = ({ properties, editIcon, OldProperty }) => {
   let surveyid = properties.surveyId;
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [surveyId, setSurveyId] = useState(properties ? properties.surveyId : "");
+<<<<<<< HEAD
 
   const handleEditClick = () => {
     setDialogOpen(true);
@@ -101,10 +124,29 @@ const PropertyAddressInfo = ({ properties, editIcon, OldProperty }) => {
     setDialogOpen(false);
     // TODO: Add further save logic here (e.g., API call to update backend)
   };
+=======
+>>>>>>> punjab_DIGIT_V2.2
 
+  const handleEditClick = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleSave = (newSurveyId) => {
+    setSurveyId(newSurveyId);
+    setDialogOpen(false);
+    // TODO: Add further save logic here (e.g., API call to update backend)
+  };
   let addressItems = [];
   const header = 'PT_PROPERTY_ADDRESS_SUB_HEADER';
   if (properties) {
+<<<<<<< HEAD
+=======
+    //addressItems = getAddressItems(properties, OldProperty);
+>>>>>>> punjab_DIGIT_V2.2
     addressItems = getAddressItems(properties, OldProperty).map(item => {
       if (item.key === "Survey Id/UID") {
         return {

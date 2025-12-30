@@ -17,6 +17,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
+  //debugger
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -97,7 +98,7 @@ export const searchApiCall = async (state, dispatch) => {
       searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
     }
 
-   
+   //console.log("serviceObject",serviceObject)
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ?  getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const responseFromAPI = await getGroupBillSearch(dispatch,searchScreenObject);
     
@@ -107,6 +108,8 @@ export const searchApiCall = async (state, dispatch) => {
     );
     const response = [];
     //console.log("responseTest"+JSON.stringify(bills))
+    const uiConfigs = get(state.screenConfiguration.preparedFinalObject, "searchScreenMdmsData.common-masters.uiCommonPay");
+    const configObject = uiConfigs.filter(item => item.code === searchScreenObject.businesService);
     for (let i = 0; i < bills.length; i++) {
      // if(get(bills[i], "status") === "ACTIVE" &&  get(bills[i], "totalAmount")>0 && get(bills[i].connection,"status").toUpperCase() === "ACTIVE"){
     if(get(bills[i], "status") === "ACTIVE" &&  get(bills[i], "totalAmount")>0 ){
@@ -116,13 +119,14 @@ export const searchApiCall = async (state, dispatch) => {
           ownerName: get(bills[i], "payerName"),
           billDate: get(bills[i], "billDate"),
           status : get(bills[i], "status"),
-          tenantId: tenantId
+          tenantId: tenantId,
+          businesService : serviceObject[0].code
         })
       }
      // }      
     }
     try {
-     
+      //console.log("Hello Response",response);
       let data = response.map(item => ({
         ["ABG_COMMON_TABLE_COL_BILL_NO"]: item.billNo || "-",
         ["ABG_COMMON_TABLE_COL_CONSUMER_ID"]: item.consumerId || "-",
@@ -130,7 +134,11 @@ export const searchApiCall = async (state, dispatch) => {
         ["ABG_COMMON_TABLE_COL_BILL_DATE"]:
           convertEpochToDate(item.billDate) || "-",
         ["ABG_COMMON_TABLE_COL_STATUS"]: item.status && getTextToLocalMapping(item.status.toUpperCase())  || "-",
-        ["TENANT_ID"]: item.tenantId
+        ["RECEIPT_KEY"]: get(configObject[0], "receiptKey"),
+        ["BILL_KEY"]: get(configObject[0], "billKey"),
+        ["TENANT_ID"]: item.tenantId,
+        ["BUSINESS_SERVICE"]:item.businesService,
+         ["BILL_SEARCH_URL"]: serviceObject[0].billGineiURL,
       }));
 
       dispatch(
@@ -149,6 +157,7 @@ export const searchApiCall = async (state, dispatch) => {
           data.length
         )
       );      
+       //console.log("Hello Response Data",data)
       showHideTable(true, dispatch);
       if(!isEmpty(response)){
         showHideMergeButton(true, dispatch);

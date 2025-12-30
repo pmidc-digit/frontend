@@ -204,6 +204,30 @@ const searchApiCall = async (state, dispatch, index) => {
     if (searchScreenObject.ids != '' || searchScreenObject.mobileNumber != '' || searchScreenObject.oldpropertyids != '' || searchScreenObject.locality != '' || searchScreenObject.name != '') {
       formValid = true;
     }
+      // Additional validation: If only owner name is filled, require at least one other field
+    const hasOwnerName =
+      searchScreenObject.name && searchScreenObject.name.trim() !== "";
+    const hasOtherFields =
+      (searchScreenObject.ids && searchScreenObject.ids.trim() !== "") ||
+      (searchScreenObject.mobileNumber &&searchScreenObject.mobileNumber.trim() !== "") ||
+      (searchScreenObject.oldpropertyids &&searchScreenObject.oldpropertyids.trim() !== "") ||
+      (searchScreenObject.locality &&searchScreenObject.locality.trim() !== "") ||
+      (searchScreenObject.surveyId &&searchScreenObject.surveyId.trim() !== "");
+
+    if (hasOwnerName && !hasOtherFields) {
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName:
+              "Please provide at least one additional field (Property ID, Mobile Number, Existing Property ID, Locality, or Survey ID)",
+            labelKey: "ERR_PT_OWNER_NAME_REQUIRES_ADDITIONAL_FIELD",
+          },
+          "error"
+        )
+      );
+      return;
+    }
   } else {
     if (searchScreenObject.ids != '' || searchScreenObject.mobileNumber != '' || searchScreenObject.acknowledgementIds != '' || searchScreenObject.locality != '' || searchScreenObject.name != '') {
       formValid = true;

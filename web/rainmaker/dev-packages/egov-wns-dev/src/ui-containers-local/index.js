@@ -62,6 +62,11 @@ const AutosuggestContainer = Loadable({
     loading: () => <Loading />
 });
 
+const EodbDialogContainer = Loadable({
+    loader: () => import("./EodbDialogContainer"),
+    loading: () => <Loading />
+});
+
 export {
   CustomTabContainer,
   LabelContainer,
@@ -75,5 +80,6 @@ export {
   EstimateOverviewCardContainer,
   ModificationDocumentListContainer,
   CheckboxContainerConnHolder,
-  AutosuggestContainer
+  AutosuggestContainer,
+  EodbDialogContainer
 };

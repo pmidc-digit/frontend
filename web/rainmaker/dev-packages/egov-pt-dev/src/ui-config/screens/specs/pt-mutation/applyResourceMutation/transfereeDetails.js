@@ -192,6 +192,9 @@ const commonApplicantInformation = () => {
           },
           {
             code: "HUSBAND"
+          },
+          {
+            code: "MOTHER"
           }
         ],
         localePrefix: {

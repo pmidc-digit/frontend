@@ -169,7 +169,6 @@ const screenConfig = {
                 action: "condition",
                 callBack: (state, dispatch) => {
                   showHideAdhocPopup(state, dispatch, "propertySearch");
-
                 }
               },
               // roleDefination: {

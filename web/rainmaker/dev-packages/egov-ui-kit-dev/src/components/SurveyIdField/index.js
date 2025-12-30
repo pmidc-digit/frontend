@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import TextField from "../TextField";
 
 const containerStyle = {
+<<<<<<< HEAD
   position: "relative",
   display: "inline-block",
   width: "100%",
@@ -11,6 +12,16 @@ const containerStyle = {
 
 const textFieldBaseStyle = {
   textIndent: 35,
+=======
+    position: "relative",
+    display: "inline-block",
+    width: "100%",
+    boxSizing: "border-box",
+};
+
+const textFieldBaseStyle = {
+    textIndent: 35,
+>>>>>>> punjab_DIGIT_V2.2
 };
 
 // const inputBaseStyle = {
@@ -25,6 +36,7 @@ const textFieldBaseStyle = {
 // // };
 
 const prefixBaseStyle = {
+<<<<<<< HEAD
   position: "absolute",
   color: "#969696",
   zIndex: 2,
@@ -35,10 +47,23 @@ const prefixBaseStyle = {
 
 const floatingLabelStyle = {
   left: -35,
+=======
+    position: "absolute",
+    color: "#969696",
+    zIndex: 2,
+    top: 36,
+    paddingRight: 5,
+    borderRight: "1px solid #eee",
+};
+
+const floatingLabelStyle = {
+    left: -35,
+>>>>>>> punjab_DIGIT_V2.2
 };
 
 const SurveyIdField = ({ className, textFieldStyle = {}, prefix = prefixStyle = {}, jsonPath, errorMessage, ...textFieldProps }) => {
 
+<<<<<<< HEAD
   return (
     <div style={containerStyle}>
       <div style={{ ...prefixBaseStyle, ...prefixStyle }}>{prefix}</div>
@@ -68,3 +93,34 @@ SurveyIdField.propTypes = {
 };
 
 export default SurveyIdField;
+=======
+    return (
+        <div style={containerStyle}>
+            <div style={{ ...prefixBaseStyle, ...prefixStyle }}>{prefix}</div>
+            <TextField
+                className={`mobile-number-field ${className}`}
+                id="mobile-number-field"
+                name="mobile-number-field"
+                InputProps={{
+                    maxLength: 10,
+                    minLength: 10,
+                }}
+                errorStyle={{ marginLeft: "-35px" }}
+                inputStyle={{ width: "85%" }}
+                style={{ ...textFieldBaseStyle, ...textFieldStyle }}
+                {...textFieldProps}
+                floatingLabelStyle={floatingLabelStyle}
+                type="text"
+            />
+        </div>
+    );
+};
+
+SurveyIdField.propTypes = {
+    textFieldStyle: PropTypes.object,
+    prefixStyle: PropTypes.object,
+    prefix: PropTypes.string,
+};
+
+export default SurveyIdField;
+>>>>>>> punjab_DIGIT_V2.2
