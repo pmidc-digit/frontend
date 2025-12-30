@@ -150,7 +150,7 @@ export const logout = () => {
         return;
       }
     } catch (error) {
-      console.log(error);
+      console.log('Log => ** [Auth:Logout]', error);
       clearUserDetails();
     }
     // whatever happens the client should clear the user details

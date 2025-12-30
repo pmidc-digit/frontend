@@ -17,7 +17,7 @@ export const fetchData = async (action, state, dispatch) => {
             value: JSON.parse(getUserInfo()).permanentCity ? JSON.parse(getUserInfo()).permanentCity : JSON.parse(getUserInfo()).roles[0].tenantId
         }
     ]
-debugger;
+
     // const response = await getWSMyResults(queryObject, 'APPLICATION', dispatch);
     // const swResponse = await getSWMyResults(queryObject, 'APPLICATION',dispatch);
 

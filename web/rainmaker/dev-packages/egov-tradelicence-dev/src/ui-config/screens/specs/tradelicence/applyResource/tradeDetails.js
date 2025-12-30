@@ -560,7 +560,7 @@ const tradeUnitCard = {
               }
              },
              afterFieldChange: (action, state, dispatch) => {
-              debugger
+              
               let tradeUnitall= get(
                   state,
                   "screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail.tradeUnits",
@@ -1229,7 +1229,7 @@ export const tradeDetails = getCommonCard({
           "applyScreenMdmsData.common-masters.StructureSubTypeTransformed"
       }),
       beforeFieldChange: (action, state, dispatch) => {
-        debugger
+        
         const tradeTypes = setFilteredTradeTypes(
           state,
           dispatch,

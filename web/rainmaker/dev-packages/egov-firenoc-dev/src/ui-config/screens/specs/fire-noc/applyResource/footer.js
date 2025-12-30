@@ -116,7 +116,7 @@ const getMdmsData = async (state, dispatch) => {
 };
 let activeStep = 0;
 const callBackForNext = async (state, dispatch) => {
-  debugger;
+  
 
   // console.log(activeStep);
   let isFormValid = true;

@@ -82,7 +82,7 @@ class Footer extends React.Component {
   openActionDialog = async (item, label) => {
     const { dataPath, state } = this.props;
     let diffDays;
-    debugger;
+    
     const getdate = get(
       state,
       "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicationNumber"
@@ -350,7 +350,7 @@ class Footer extends React.Component {
   };
   openTLPopup = async (financialYear, tenantId)=>{
       //console.log("shdgshdfs")
-      debugger;
+      
       let payload = null;
       let uuType ="TL"
       const { setRoute, state, toggleSnackbar } = this.props;
@@ -444,7 +444,7 @@ class Footer extends React.Component {
         const { buttonLabel, moduleName } = item;
 
         return {
-          labelName: { buttonLabel },
+          labelName:  buttonLabel ,
           labelKey: `WF_${appName.toUpperCase()}_${moduleName.toUpperCase()}_${buttonLabel}`,
           link: () => {
             (moduleName === "NewTL" || moduleName === "EDITRENEWAL") && buttonLabel === "APPLY" ? onDialogButtonClick(buttonLabel, isDocRequired) :

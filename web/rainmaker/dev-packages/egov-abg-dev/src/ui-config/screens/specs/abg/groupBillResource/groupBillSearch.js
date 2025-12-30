@@ -320,7 +320,7 @@ export const abgSearchCard = getCommonCard({
         }
         else{
   //locality
-  debugger;
+  
   let response = await httpRequest(
     "post",
     "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
@@ -410,7 +410,7 @@ export const abgSearchCard = getCommonCard({
           jsonPath: "searchCriteria.locality",
           sourceJsonPath: "applyScreenMdmsData.tenant.mohaladata", //applyScreenMdmsData.tenant.mohaladata
           //sourceJsonPath: mohallaDataArray,
-          labelsFromLocalisation: true,
+          labelsFromLocalisation: false,
           required: false,
           isClearable:true,
         }

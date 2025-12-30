@@ -217,7 +217,7 @@ export const createBill = getCommonCard({
         }
         else {
           //locality
-          debugger
+          
           let response = await httpRequest(
             "post",
             "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",

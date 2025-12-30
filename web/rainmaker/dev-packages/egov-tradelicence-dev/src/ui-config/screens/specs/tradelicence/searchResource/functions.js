@@ -21,7 +21,7 @@ export const ENAKSHA = async (state, dispatch) => {
 }
 
 export const filestoreid = async (state, dispatch) => {
-  debugger;
+  
   let searchScreenObject = get(
     state.screenConfiguration.preparedFinalObject.searchScreen,
     "applicationNumber",

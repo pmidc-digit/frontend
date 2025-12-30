@@ -386,7 +386,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
     if (additionalDetail == null) {
       set(queryObject[0], "tradeLicenseDetail.additionalDetail", null);
     }
-    //debugger
+    
     let tradeUnitMDMS = get(state.screenConfiguration.preparedFinalObject.applyScreenMdmsData.TradeLicense,"MdmsTradeType", []);
     let tradeUnitlicences = get(state.screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail,"tradeUnits",[]); 
     let filterObject = filterTradeUnitsFromObjects(tradeUnitMDMS,tradeUnitlicences);
@@ -449,7 +449,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
       // set(queryObject[0], "financialYear", currentFinancialYr);
       setBusinessServiceDataToLocalStorage(BSqueryObject, dispatch);
     }
-    debugger;
+    
     set(queryObject[0], "tenantId", tenantId);
     if (filterObject === "NEWTL.HAZ") {
       set(queryObject[0], "workflowCode", "NEWTL.HAZ");
@@ -571,7 +571,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         }
         set(queryObject[0], "tradeLicenseDetail.adhocPenalty", null);
         set(queryObject[0], "tradeLicenseDetail.adhocExemption", null);
-        //debugger
+        
         if(activeIndex === 1 && applicationStatus.toUpperCase() ==='INITIATED'){
 
         }else{
@@ -617,7 +617,7 @@ export const applyTradeLicense = async (state, dispatch, activeIndex) => {
         { key: "applicationNumber", value: updatedApplicationNo }
       ];
       let searchResponse = await getSearchResults(searchQueryObject);
-      //debugger
+      
       if (isEditFlow || (activeIndex === 1 && applicationStatus.toUpperCase() ==='INITIATED')){
         searchResponse = { Licenses: queryObject };
       } else {
@@ -874,7 +874,7 @@ export const checkValidOwnersForRenewal = (currentOwners = [], oldOwners = []) =
 }
 export const filterTradeUnitsFromObjects = (allTradeUnitsObj, someTradeUnitsObj) => {
   let result;
-  //debugger;
+  //
   for (let tunit of allTradeUnitsObj) {
     for(let mdmstunit of someTradeUnitsObj){
       if(tunit.code == mdmstunit.tradeType){
