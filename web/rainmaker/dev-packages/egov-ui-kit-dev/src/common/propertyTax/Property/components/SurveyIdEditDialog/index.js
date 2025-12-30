@@ -77,7 +77,7 @@ export default class SurveyIdEditDialog extends Component {
         propertiesf.creationReason = "UPDATE"
 >>>>>>> punjab_DIGIT_V2.2
         let queryObject = propertiesf;
-        debugger;
+        
         try {
             const payload = await httpRequest("property-services/property/_update", "_update", [], { Property: queryObject });
             if (!payload) {

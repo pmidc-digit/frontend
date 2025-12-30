@@ -881,7 +881,7 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 			}
 
 			if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-				debugger
+				
 				let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
 				let toTalDue = payloadReceiptDetails.Payments[0].totalDue
 				configKey = "ws-onetime-receipt";

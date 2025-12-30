@@ -44,8 +44,8 @@ class TlRenewDialog extends React.Component {
   state = {
     validityYears: [],
     roles: "",
-    tlValidity : "",
-    unType : false
+    tlValidity: "",
+    unType: false
   };
 
   // onEmployeeClick = e => {
@@ -66,37 +66,39 @@ class TlRenewDialog extends React.Component {
   getButtonLabelName = label => {
     return "Submit"
   };
-  renewTradelicence = async (licenseData, tlValidity) => {
-    //this.props.showSpinner();
+  renewTradelicence = async (licenseData, tlValidity, isHAZ) => {
+    debugger;
+    //showSpinner();
+    console.log("isHAZ" + isHAZ)
     let licences = [];
     let validityYears = {
-      validityYears :tlValidity
+      validityYears: tlValidity
     }
-   const wfCode = "DIRECTRENEWAL";
-   const nextFinancialYear =  get(licenseData, "financialYear");
-   const tenantId = get(licenseData, "tenantId");
-   //console.log("nextFinancialYear"+nextFinancialYear)
-   set(licenseData, "tradeLicenseDetail.additionalDetail" ,validityYears)
-   licences.push(licenseData)
-   try {
-    const response = await httpRequest(
-      "post",
-      "/tl-services/v1/_update",
-      "",
-      [],
-      {
-        Licenses: licences
-      }
-    );
-    const renewedapplicationNo = get(response, `Licenses[0].applicationNumber`);
-    const licenseNumber = get(response, `Licenses[0].licenseNumber`);
-    //console.log("Hello Response"+JSON.stringify(response))
-   // this.props.hideSpinner();
-    setRoute(
-      `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
-    );
+    const wfCode = "DIRECTRENEWAL";
+    const nextFinancialYear = get(licenseData, "financialYear");
+    const tenantId = get(licenseData, "tenantId");
+    //console.log("nextFinancialYear"+nextFinancialYear)
+    set(licenseData, "tradeLicenseDetail.additionalDetail", validityYears)
+    licences.push(licenseData)
+    try {
+      const response = await httpRequest(
+        "post",
+        "/tl-services/v1/_update",
+        "",
+        [],
+        {
+          Licenses: licences
+        }
+      );
+      const renewedapplicationNo = get(response, `Licenses[0].applicationNumber`);
+      const licenseNumber = get(response, `Licenses[0].licenseNumber`);
+      //console.log("Hello Response"+JSON.stringify(response))
+      // this.props.hideSpinner();
+      setRoute(
+        `/tradelicence/acknowledgement?purpose=DIRECTRENEWAL&status=success&applicationNumber=${renewedapplicationNo}&licenseNumber=${licenseNumber}&FY=${nextFinancialYear}&tenantId=${tenantId}&action=${wfCode}`
+      );
     } catch (exception) {
-     // this.props.hideSpinner();
+      // this.props.hideSpinner();
       console.log(exception);
       toggleSnackbar(
         true,
@@ -110,7 +112,7 @@ class TlRenewDialog extends React.Component {
     }
 
   };
-  
+
 
 
   render() {
@@ -122,24 +124,24 @@ class TlRenewDialog extends React.Component {
       wFCode,
       isHAZ
     } = this.props;
-    
+
     let dropdowndata = []
-    const {validityYears, roles, tlValidity, unType} = this.state
+    const { validityYears, roles, tlValidity, unType } = this.state
     const { getButtonLabelName } = this;
     //console.log("licenseData"+JSON.stringify(licenseData.tradeLicenseDetail))
-     if (isHAZ) {
-          dropdowndata.push ({ "value": 1, "label": 1 })       
-     }else{
-       dropdowndata.push ({ "value": 1, "label": 1 }, { "value": 2, "label": 2 }, { "value": 3, "label": 3 })     
-     }
-    
-   const dialogHeader = { "labelName": "Select Validity", "Key": "Select Validity" }
+    if (isHAZ) {
+      dropdowndata.push({ "value": 1, "label": 1 })
+    } else {
+      dropdowndata.push({ "value": 1, "label": 1 }, { "value": 2, "label": 2 }, { "value": 3, "label": 3 })
+    }
+
+    const dialogHeader = { "labelName": "Select Validity", "Key": "Select Validity" }
     let fullscreen = false;
     const showAssignee = process.env.REACT_APP_NAME === "Citizen" ? false : true;
     if (window.innerWidth <= 768) {
       fullscreen = true;
     }
-   
+
     return (
       <Dialog
         fullScreen={fullscreen}
@@ -202,10 +204,10 @@ class TlRenewDialog extends React.Component {
                       optionValue="value"
                       optionLabel="label"
                       hasLocalization={false}
-                      onChange ={(e)=> this.setState({
-                        tlValidity : e.target.value
+                      onChange={(e) => this.setState({
+                        tlValidity: e.target.value
                       })}
-                      value ={tlValidity}
+                      value={tlValidity}
                     //onChange={e => this.onEmployeeClick(e)}
                     // onChange={e =>
                     //   handleFieldChange(
@@ -228,9 +230,9 @@ class TlRenewDialog extends React.Component {
                         height: "48px"
                       }}
                       className="bottom-button"
-                     onClick={() =>
-                       this.renewTradelicence(licenseData, tlValidity)
-                     }
+                      onClick={() =>
+                        this.renewTradelicence(licenseData, tlValidity)
+                      }
                     >
                       <LabelContainer
                         labelName="Submit"

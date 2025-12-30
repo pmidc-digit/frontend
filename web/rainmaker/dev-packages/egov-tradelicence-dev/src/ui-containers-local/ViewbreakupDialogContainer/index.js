@@ -77,7 +77,7 @@ class ViewBreakupContainer extends React.Component {
       marginTop: 25
     }
   };
-  getValidityGridItem = (validityYears,accesTradetotal, finalTradeTotal, classes, style) => {
+  getValidityGridItem = (validityYears, accesTradetotal, finalTradeTotal, classes, style) => {
     return (
       <Grid sm={12} className={classes.container} container={true}>
         <Grid sm={10}>
@@ -88,11 +88,11 @@ class ViewBreakupContainer extends React.Component {
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px"
+                }
             }
           />
         </Grid>
@@ -103,15 +103,15 @@ class ViewBreakupContainer extends React.Component {
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px"
+                }
             }
           />
         </Grid>
-        
+
         <Grid sm={10}>
           <LabelContainer
             labelName={"Validity (In Years)"}
@@ -120,32 +120,32 @@ class ViewBreakupContainer extends React.Component {
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px",
-                    textAlign: "center"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px",
+                  textAlign: "center"
+                }
             }
           />
         </Grid>
         <Grid sm={2}>
           <LabelContainer
             labelName={`${validityYears}`}
-            
+
             style={
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px"
+                }
             }
           />
         </Grid>
-        
+
         <Grid sm={10}>
           <LabelContainer
             labelName={"Final Amount"}
@@ -154,17 +154,17 @@ class ViewBreakupContainer extends React.Component {
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px",
-                    textAlign : "right"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px",
+                  textAlign: "right"
+                }
             }
           />
         </Grid>
-        
-        
+
+
         <Grid sm={2}>
           <LabelContainer
             labelName={`Rs ${finalTradeTotal}`}
@@ -172,16 +172,16 @@ class ViewBreakupContainer extends React.Component {
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px"
+                }
             }
           />
         </Grid>
       </Grid>
-      
+
     );
   };
   getGridItem = (total, classes, style) => {
@@ -195,11 +195,11 @@ class ViewBreakupContainer extends React.Component {
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px"
+                }
             }
           />
         </Grid>
@@ -210,18 +210,18 @@ class ViewBreakupContainer extends React.Component {
               style
                 ? style
                 : {
-                    color: "rgba(0, 0, 0, 0.8700000047683716)",
-                    fontSize: "14px",
-                    fontWeigt: 400,
-                    lineSpacing: "17px"
-                  }
+                  color: "rgba(0, 0, 0, 0.8700000047683716)",
+                  fontSize: "14px",
+                  fontWeigt: 400,
+                  lineSpacing: "17px"
+                }
             }
           />
         </Grid>
       </Grid>
     );
   };
-  getRebatePenalty = (label,total, classes, style) => {
+  getRebatePenalty = (label, total, classes, style) => {
     return (
       <Grid sm={12} className={classes.container} container={true}>
         <Grid sm={10}>
@@ -272,17 +272,17 @@ class ViewBreakupContainer extends React.Component {
       estimateCardData,
       validityYears
     } = this.props;
-    debugger
+    //debugger
     //console.log("validityYears"+JSON.stringify(validityYears));
-    const finalTradeTotal = (tradeTotal+accessoriesTotal)*validityYears;
-    const accesTradetotal = (tradeTotal+accessoriesTotal);
-    const RebateArray=estimateCardData&&estimateCardData.length>1  && estimateCardData.filter(item => item.name.labelKey === "TL_RENEWAL_REBATE");
-    const PenaltyArray=estimateCardData && estimateCardData.length>1 &&estimateCardData.filter(item => item.name.labelKey === "TL_RENEWAL_PENALTY");
-    const RebateTotal=RebateArray&& get(RebateArray[0],"value",0);
-    const PenaltyTotal=PenaltyArray&& get(PenaltyArray[0],"value",0);
+    const finalTradeTotal = (tradeTotal + accessoriesTotal) * validityYears;
+    const accesTradetotal = (tradeTotal + accessoriesTotal);
+    const RebateArray = estimateCardData && estimateCardData.length > 1 && estimateCardData.filter(item => item.name.labelKey === "TL_RENEWAL_REBATE");
+    const PenaltyArray = estimateCardData && estimateCardData.length > 1 && estimateCardData.filter(item => item.name.labelKey === "TL_RENEWAL_PENALTY");
+    const RebateTotal = RebateArray && get(RebateArray[0], "value", 0);
+    const PenaltyTotal = PenaltyArray && get(PenaltyArray[0], "value", 0);
     const { style } = this.state;
     const { getGridItem, handleClose } = this;
-    const totalBill = finalTradeTotal +RebateTotal+PenaltyTotal;
+    const totalBill = finalTradeTotal + RebateTotal + PenaltyTotal;
     return (
       <Dialog
         open={open}
@@ -354,15 +354,15 @@ class ViewBreakupContainer extends React.Component {
               {accessoriesUnitData &&
                 accessoriesUnitData.length > 0 &&
                 getGridItem(accessoriesTotal, classes)}
-               <Divider className={classes.root} />
-              {validityYears && 
-                  this.getValidityGridItem(validityYears,accesTradetotal, finalTradeTotal,classes)}
               <Divider className={classes.root} />
-             {RebateArray&&RebateArray.length>0 && (
-              this.getRebatePenalty("TL_RENEWAL_REBATE",RebateTotal,classes,style)
+              {validityYears &&
+                this.getValidityGridItem(validityYears, accesTradetotal, finalTradeTotal, classes)}
+              <Divider className={classes.root} />
+              {RebateArray && RebateArray.length > 0 && (
+                this.getRebatePenalty("TL_RENEWAL_REBATE", RebateTotal, classes, style)
               )}
-              {PenaltyArray&&PenaltyArray.length >0 && (
-              this.getRebatePenalty("TL_RENEWAL_PENALTY",PenaltyTotal,classes,style)
+              {PenaltyArray && PenaltyArray.length > 0 && (
+                this.getRebatePenalty("TL_RENEWAL_PENALTY", PenaltyTotal, classes, style)
               )}
               {getGridItem(totalBill, classes, style)}
             </div>
@@ -380,11 +380,11 @@ class ViewBreakupContainer extends React.Component {
                   }}
                 />
               </div>
-              {RebateArray&&RebateArray.length>0 && (
-              this.getRebatePenalty("TL_RENEWAL_REBATE",RebateTotal,classes,style)
+              {RebateArray && RebateArray.length > 0 && (
+                this.getRebatePenalty("TL_RENEWAL_REBATE", RebateTotal, classes, style)
               )}
-              {PenaltyArray&&PenaltyArray.length >0 && (
-              this.getRebatePenalty("TL_RENEWAL_PENALTY",PenaltyTotal,classes,style)
+              {PenaltyArray && PenaltyArray.length > 0 && (
+                this.getRebatePenalty("TL_RENEWAL_PENALTY", PenaltyTotal, classes, style)
               )}
               {getGridItem(totalBill, classes, style)}
             </div>
@@ -422,7 +422,7 @@ const mapStateToProps = (state, ownProps) => {
   const estimateCardData = get(
     preparedFinalObject,
     "LicensesTemp[0].estimateCardData"
-  ); 
+  );
   const open = get(
     screenConfig,
     `${screenKey}.components.breakUpDialog.props.open`

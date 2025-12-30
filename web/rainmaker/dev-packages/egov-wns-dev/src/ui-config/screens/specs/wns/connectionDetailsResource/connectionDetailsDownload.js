@@ -122,7 +122,7 @@ const download = async (mode = "download", state, showConfirmation = false) => {
       }
 
       if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE") {
-        debugger;
+
         let dcbRow = null, dcbArray = [];
         let installment, totalamount = 0;
         payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element, index) => {
@@ -222,7 +222,7 @@ const download = async (mode = "download", state, showConfirmation = false) => {
         payloadReceiptDetails.Payments[0].paymentDetails[0].additionalDetails = dcbArray;
       }
 
-      debugger;
+
       // const queryStr = [
       //   { key: "key", value: configKey },
       //   { key: "tenantId", value: receiptQueryString[1].value.split('.')[0] }
@@ -258,6 +258,9 @@ const download = async (mode = "download", state, showConfirmation = false) => {
       }
       else {
         debugger
+        payloadReceiptDetails.Payments[0].ownerNumber = payloadReceiptDetails.Payments[0].ownerNumber.join(", ");
+        payloadReceiptDetails.Payments[0].ownername = payloadReceiptDetails.Payments[0].ownername.join(", ");
+        payloadReceiptDetails.Payments[0].address = payloadReceiptDetails.Payments[0].address.replace(/[^a-zA-Z0-9 ]/g, ' ');
         httpRequest("post", DOWNLOADRECEIPT.GET.URL, DOWNLOADRECEIPT.GET.ACTION, queryStr, { Payments: payloadReceiptDetails.Payments }, { 'Accept': 'application/json' }, { responseType: 'arraybuffer' })
           .then(res => {
             res.filestoreIds[0]

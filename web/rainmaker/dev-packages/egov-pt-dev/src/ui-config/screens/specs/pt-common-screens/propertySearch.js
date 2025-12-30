@@ -66,9 +66,9 @@ const getMDMSData = async (dispatch) => {
 
     let ptWorkflowDetails = get(payload, "MdmsRes.PropertyTax.PTWorkflow", []);
     ptWorkflowDetails.forEach(data => {
-      if(data.enable) {
+      if (data.enable) {
         dispatch(prepareFinalObject("applyScreenMdmsData.isCheckFromWNS", false));
-        if((data.businessService).includes("WNS")){
+        if ((data.businessService).includes("WNS")) {
           dispatch(prepareFinalObject("applyScreenMdmsData.isCheckFromWNS", true));
         }
       }
@@ -87,6 +87,7 @@ const screenConfig = {
   name: "propertySearch",
 
   beforeInitScreen: (action, state, dispatch) => {
+    debugger;
     resetFields(state, dispatch);
     getMDMSData(dispatch);
     return action;

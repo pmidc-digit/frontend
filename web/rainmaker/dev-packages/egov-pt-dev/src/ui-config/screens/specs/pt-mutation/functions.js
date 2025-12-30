@@ -193,7 +193,7 @@ const searchApiCall = async (state, dispatch, index) => {
     return;
 
   }
- debugger;
+ 
   let query = { "tenantId": searchScreenObject.tenantId };
   if (index == 1 && process.env.REACT_APP_NAME == "Citizen") {
     query = {}

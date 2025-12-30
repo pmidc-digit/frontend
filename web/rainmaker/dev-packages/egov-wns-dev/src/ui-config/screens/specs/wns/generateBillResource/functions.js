@@ -27,6 +27,7 @@ export const generateBillApiCall = async (state, dispatch) => {
     //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
     // }
     else {
+      debugger;
       let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
       if (batchtypechk == "Locality") {
         // var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
@@ -59,8 +60,8 @@ export const generateBillApiCall = async (state, dispatch) => {
             "tenantId": getTenantIdCommon(),
           }
         }
-        else if(batchtypechk == "Group") {
-          billSchedulerObject = { 
+        else if (batchtypechk == "Group") {
+          billSchedulerObject = {
             "transactionType": transactionType,
             "status": "INITIATED",
             "locality": '',
@@ -168,6 +169,8 @@ export const generateBillApiCall = async (state, dispatch) => {
 
 
 export const searchBillApiCall = async (state, dispatch) => {
+
+  debugger;
   var transactionType;
   // showHideApplicationTable(false, dispatch);
   // showHideConnectionTable(false, dispatch);
@@ -189,10 +192,10 @@ export const searchBillApiCall = async (state, dispatch) => {
 
     //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
     // }
-   // let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
-    else if(batchtypechk == "Group"){
-       let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
-   
+    // let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+    else if (batchtypechk == "Group") {
+      let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
       }
@@ -231,8 +234,8 @@ export const searchBillApiCall = async (state, dispatch) => {
 
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
-          locality = element.locality?element.locality: element.grup;
-         // group = element.grup;
+          locality = element.locality ? element.locality : element.grup;
+          // group = element.grup;
           billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
@@ -245,12 +248,12 @@ export const searchBillApiCall = async (state, dispatch) => {
             "billingcycleEnddate": billingcycleEnddate,
             "status": status,
             "tenantId": tenantId,
-            "billformDate" : billformDate
+            "billformDate": billformDate
           };
           searchBillArray.push(billRow);
         });
         //dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
-        const sortedSearchBillArray = searchBillArray.sort((a,b)=> b.billformDate - a.billformDate);
+        const sortedSearchBillArray = searchBillArray.sort((a, b) => b.billformDate - a.billformDate);
         dispatch(prepareFinalObject("createBillResponse", sortedSearchBillArray));
         if (searchBillArray.length == 0) {
 
@@ -273,8 +276,8 @@ export const searchBillApiCall = async (state, dispatch) => {
 
     }
     else {
-      
-      
+
+
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
       }
@@ -287,7 +290,8 @@ export const searchBillApiCall = async (state, dispatch) => {
       try {
         let tenant_Id = getTenantIdCommon();
         let response = null;
-  debugger;
+        debugger;
+        let servicety;
         if (transactionType == "WS") {
           response = await httpRequest(
             "post",
@@ -342,7 +346,7 @@ export const searchBillApiCall = async (state, dispatch) => {
           searchBillArray.push(billRow);
         });
         //dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
-        const sortedSearchBillArray = searchBillArray.sort((a,b)=> b.billformDate - a.billformDate);
+        const sortedSearchBillArray = searchBillArray.sort((a, b) => b.billformDate - a.billformDate);
         dispatch(prepareFinalObject("createBillResponse", sortedSearchBillArray));
         if (searchBillArray.length == 0) {
 

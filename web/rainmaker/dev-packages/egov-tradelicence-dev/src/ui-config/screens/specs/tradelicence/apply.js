@@ -102,7 +102,7 @@ export const tradeDocumentDetails = getCommonCard({
 });
 
 export const getMdmsData = async (action, state, dispatch) => {
-  debugger;
+  
   let mdmsBody = {
     MdmsCriteria: {
       tenantId: commonConfig.tenantId,

@@ -90,7 +90,7 @@ export const getMdmsData = async dispatch => {
       tenantId: getTenantId(),
       moduleDetails: [
         {
-          moduleName: "ws-services-masters", 
+          moduleName: "ws-services-masters",
           masterDetails: [
             { name: "subUsageType" }
           ]
@@ -107,7 +107,7 @@ export const getMdmsData = async dispatch => {
   } catch (e) { console.log(e); }
 }
 const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
-  //debugger
+
   // dispatch(handleField("apply",
   // "components",
   // "div", {}));
@@ -116,10 +116,10 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
   // "div", {}));
   dispatch(unMountScreen("apply"));
   dispatch(unMountScreen("search"));
-  dispatch(prepareFinalObject("WaterConnection",[]));
-  dispatch(prepareFinalObject("SewerageConnection",[]));
-  dispatch(prepareFinalObject("WaterConnectionOld",[]));
-  dispatch(prepareFinalObject("SewerageConnectionOld",[]));
+  dispatch(prepareFinalObject("WaterConnection", []));
+  dispatch(prepareFinalObject("SewerageConnection", []));
+  dispatch(prepareFinalObject("WaterConnectionOld", []));
+  dispatch(prepareFinalObject("SewerageConnectionOld", []));
   const queryObj = [
     { key: "businessIds", value: applicationNumber },
     { key: "history", value: true },
@@ -145,12 +145,12 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
     if (!getQueryArg(window.location.href, "edited")) {
       (await searchResults(action, state, dispatch, applicationNumber, processInstanceAppStatus));
     } else {
-      if(getQueryArg(window.location.href, "edited")) {
+      if (getQueryArg(window.location.href, "edited")) {
         (await searchResults(action, state, dispatch, applicationNumber, processInstanceAppStatus));
       }
       let applyScreenObject = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
 <<<<<<< HEAD
-//      console.log("applyScreen"+JSON.stringify(applyScreenObject))
+      //      console.log("applyScreen"+JSON.stringify(applyScreenObject))
       applyScreenObject.applicationNo.includes("WS") ? applyScreenObject.service = serviceConst.WATER : applyScreenObject.service = serviceConst.SEWERAGE;
 =======
         //      console.log("applyScreen"+JSON.stringify(applyScreenObject))
@@ -162,33 +162,33 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
 }
 >>>>>>> punjab_DIGIT_V2.2
       let parsedObject = parserFunction(findAndReplace(applyScreenObject, "NA", null));
-       // console.log("parsedObject"+JSON.stringify(parsedObject))
-     // debugger
+      // console.log("parsedObject"+JSON.stringify(parsedObject))
+      // debugger
       const equals = (a, b) =>
-      Object.keys(a).length === Object.keys(b).length 
+        Object.keys(a).length === Object.keys(b).length
         && Object.keys(a).every(p => a[p] === b[p]);
       let waterDetails = get(state.screenConfiguration.preparedFinalObject, "WaterConnection", []);
       let wtsubUssageType = applyScreenObject && applyScreenObject.additionalDetails ? applyScreenObject.additionalDetails.waterSubUsageType : null;
       let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
 <<<<<<< HEAD
       //debugger
-     //  console.log("subUsageTypes"+JSON.stringify(state.screenConfiguration.preparedFinalObject))
-     if(waterDetails[0].additionalDetails.waterSubUsageType) {
+      //  console.log("subUsageTypes"+JSON.stringify(state.screenConfiguration.preparedFinalObject))
+      if (waterDetails[0].additionalDetails.waterSubUsageType) {
         //debugger
         subUsageTypes.forEach(items => {
-         //   console.log("Item Name "+items.name)
-          if(items.name === wtsubUssageType || items.name === waterDetails[0].additionalDetails.waterSubUsageType) {
+          //   console.log("Item Name "+items.name)
+          if (items.name === wtsubUssageType || items.name === waterDetails[0].additionalDetails.waterSubUsageType) {
 =======
       if (waterDetails[0] && waterDetails[0].additionalDetails && waterDetails[0].additionalDetails.waterSubUsageType) {
         subUsageTypes.forEach(items => {
           if (items.name === wtsubUssageType || items.name === waterDetails[0].additionalDetails.waterSubUsageType) {
 >>>>>>> punjab_DIGIT_V2.2
             waterDetails[0].additionalDetails.waterSubUsageType = items.name;
-        }
+          }
         });
 <<<<<<< HEAD
-      }  
-      if(parsedObject && !(equals(parsedObject, waterDetails[0]))) {
+      }
+      if (parsedObject && !(equals(parsedObject, waterDetails[0]))) {
         parsedObject.additionalDetails.waterSubUsageType = wtsubUssageType;
 =======
       }
@@ -203,7 +203,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
         dispatch(prepareFinalObject("WaterConnection[0]", waterDetails[0]));
       }
 <<<<<<< HEAD
-      
+
       if (applyScreenObject.service = serviceConst.SEWERAGE)
 =======
 
@@ -269,76 +269,76 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
       // Multiple roadtype cards validations
       let multipleRoadTypeCardPath = "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewTen.props.items";
       let mutipleRoadTypeValues = get(state.screenConfiguration.preparedFinalObject, "applyScreen.roadCuttingInfo", []);
-     if (mutipleRoadTypeValues && mutipleRoadTypeValues.length > 0) {
-       for (var a = 0; a < mutipleRoadTypeValues.length; a++) {
-         if (mutipleRoadTypeValues[a].emptyObj) {
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.props.visible`, false);
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.visible`, false);
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.props.visible`, false);
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.visible`, false);
-         } else {
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.props.visible`, true);
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.visible`, true);
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.props.visible`, true);
-           set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.visible`, true);
-         }
-       }
-     }
+      if (mutipleRoadTypeValues && mutipleRoadTypeValues.length > 0) {
+        for (var a = 0; a < mutipleRoadTypeValues.length; a++) {
+          if (mutipleRoadTypeValues[a].emptyObj) {
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.props.visible`, false);
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.visible`, false);
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.props.visible`, false);
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.visible`, false);
+          } else {
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.props.visible`, true);
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewArea.visible`, true);
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.props.visible`, true);
+            set(action.screenConfig, `${multipleRoadTypeCardPath}[${a}].item${a}.children.reviewRoadType.visible`, true);
+          }
+        }
+      }
 
     }
     let subUsageType = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.waterSubUsageType");
     let subUsageTypes = get(state, "screenConfiguration.preparedFinalObject.subUsageType", []);
     //debugger
-    if(subUsageType) {
+    if (subUsageType) {
       subUsageTypes.forEach(items => {
-        if(items.code === subUsageType) {
+        if (items.code === subUsageType) {
           dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.waterSubUsageType", items["name"]));
-      }
+        }
       });
     }
     let providedBy = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.detailsProvidedBy");
-    if(providedBy ==="Self") {
+    if (providedBy === "Self") {
       dispatch(
         handleField(
           "search-preview",
           "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewEight.children.reviewPlumberLicenseNo",
-           "visible",
-           false
+          "visible",
+          false
         )
       );
       dispatch(
         handleField(
           "search-preview",
           "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewEight.children.reviewPlumberMobileNo",
-           "visible",
-           false
+          "visible",
+          false
         )
       );
       dispatch(
         handleField(
           "search-preview",
           "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewEight.children.reviewPlumberName",
-           "visible",
-           false
+          "visible",
+          false
         )
       );
     }
     let billingType = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.billingType");
-    if(billingType === "STANDARD") {
+    if (billingType === "STANDARD") {
       dispatch(
         handleField(
           "search-preview",
           "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.children.reviewBillingAmount",
-           "visible",
-           false
+          "visible",
+          false
         )
       );
       dispatch(
         handleField(
           "search-preview",
           "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.children.reviewBillingAmount",
-           "visible",
-           false
+          "visible",
+          false
         )
       );
     }
@@ -382,21 +382,21 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
     //   );
     // }
     let unitUsageTypee = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.usageCategory");
-    if(unitUsageTypee != "MIXED" ) {
+    if (unitUsageTypee != "MIXED") {
       dispatch(
         handleField(
-          "search-preview", 
+          "search-preview",
           "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.children.reviewUnitUsageType",
-           "visible",
-           false
+          "visible",
+          false
         )
       );
       dispatch(
         handleField(
-          "search-preview", 
+          "search-preview",
           "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.children.reviewUnitUsageType",
-           "visible",
-           false
+          "visible",
+          false
         )
       );
     }
@@ -726,20 +726,20 @@ const screenConfig = {
     set(action, 'screenConfig.components.div.children.taskStatus.props.bserviceTemp', (service === serviceConst.WATER) ? "WS.ONE_TIME_FEE" : "SW.ONE_TIME_FEE");
     set(action, 'screenConfig.components.div.children.taskStatus.props.redirectQueryString', redirectQueryString);
     isAlreadyEdited = getQueryArg(window.location.href, "edited", false);
-    editredirect = isAlreadyEdited ? `apply?${redirectQueryString}&action=edit&edited=true` : `apply?${redirectQueryString}&action=edit`;  
+    editredirect = isAlreadyEdited ? `apply?${redirectQueryString}&action=edit&edited=true` : `apply?${redirectQueryString}&action=edit`;
     set(action, 'screenConfig.components.div.children.taskStatus.props.editredirect', editredirect);
-    if(isAlreadyEdited) {
-      if(applicationNumber.includes("WS")) {
-        set(action, `screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForSW.visible`,false);
-        set(action, `screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForWater.visible`,true);
+    if (isAlreadyEdited) {
+      if (applicationNumber.includes("WS")) {
+        set(action, `screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForSW.visible`, false);
+        set(action, `screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForWater.visible`, true);
         set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.visible", false);
         set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", true);
       }
-      if (applicationNumber.includes("SW")){
-        set(action, `screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForSW.visible`,true);
-        set(action,`screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForWater.visible`,false);
+      if (applicationNumber.includes("SW")) {
+        set(action, `screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForSW.visible`, true);
+        set(action, `screenConfig.components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.scheama.children.cardContent.children.serviceCardContainerForWater.visible`, false);
         set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.visible", true);
-        set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", false); 
+        set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", false);
       }
     }
     return action;
@@ -851,7 +851,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
 =======
 
 
-const searchResults = async (action, state, dispatch, applicationNumber, processInstanceAppStatus) =>{  
+const searchResults = async (action, state, dispatch, applicationNumber, processInstanceAppStatus) =>{
   let appid;
   let iPin;
   let thirdPartyCode;
@@ -875,25 +875,25 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     //console.log("screenConfig"+JSON.stringify(action.screenConfig))
     if (payload !== undefined && payload !== null) {
       let roadCuttingInfos = payload.WaterConnection[0].roadCuttingInfo;
-      if(payload.WaterConnection[0] && Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.length > 0) {
+      if (payload.WaterConnection[0] && Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.length > 0) {
         payload.WaterConnection[0].roadCuttingInfo = Array.isArray(payload.WaterConnection[0].roadCuttingInfo) && payload.WaterConnection[0].roadCuttingInfo.filter(info => info.status == "ACTIVE");
       }
 
 <<<<<<< HEAD
-     payload.WaterConnection[0].additionalDetails.waterSubUsageType = payload.WaterConnection[0].additionalDetails.waterSubUsageType ? payload.WaterConnection[0].additionalDetails.waterSubUsageType : "NA";
-     // payload.WaterConnection[0].additionalDetails.waterSubUsageType="dsbdds";
-     dispatch(prepareFinalObject("WaterConnection[0]", payload.WaterConnection[0]));
+      payload.WaterConnection[0].additionalDetails.waterSubUsageType = payload.WaterConnection[0].additionalDetails.waterSubUsageType ? payload.WaterConnection[0].additionalDetails.waterSubUsageType : "NA";
+      // payload.WaterConnection[0].additionalDetails.waterSubUsageType="dsbdds";
+      dispatch(prepareFinalObject("WaterConnection[0]", payload.WaterConnection[0]));
 =======
       if (!payload.WaterConnection[0].additionalDetails) {
         payload.WaterConnection[0].additionalDetails = {};
       }
       payload.WaterConnection[0].additionalDetails.waterSubUsageType = payload.WaterConnection[0].additionalDetails.waterSubUsageType ? payload.WaterConnection[0].additionalDetails.waterSubUsageType : "NA";
       // payload.WaterConnection[0].additionalDetails.waterSubUsageType="dsbdds";
-      
+
       dispatch(prepareFinalObject("WaterConnection[0]", payload.WaterConnection[0]));
 >>>>>>> punjab_DIGIT_V2.2
       dispatch(prepareFinalObject("WaterConnection[0].roadCuttingInfos", roadCuttingInfos));
-      
+
       /**
        * POPULATE APPLYSCREEN WITH DISCHARGE INFORMATION FOR EDIT MODE
        * 
@@ -901,18 +901,18 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
        * contains the correct discharge information from the WaterConnection data.
        * This is crucial for the CheckboxContainer to display the correct initial state.
        */
-      
+
       // Check if this connection has discharge information
-      const hasDischargeConnection = payload.WaterConnection[0].additionalDetails && 
-                                   (payload.WaterConnection[0].additionalDetails.dischargeConnection === "OnlyDischarge" ||
-                                    payload.WaterConnection[0].additionalDetails.dischargeConnection === "true" ||
-                                    payload.WaterConnection[0].additionalDetails.dischargeConnection === "both");
-      
-      const dischargeFee = payload.WaterConnection[0].additionalDetails && 
-                          payload.WaterConnection[0].additionalDetails.dischargeFee ? 
-                          payload.WaterConnection[0].additionalDetails.dischargeFee : 0;
-      
-      
+      const hasDischargeConnection = payload.WaterConnection[0].additionalDetails &&
+        (payload.WaterConnection[0].additionalDetails.dischargeConnection === "OnlyDischarge" ||
+          payload.WaterConnection[0].additionalDetails.dischargeConnection === "true" ||
+          payload.WaterConnection[0].additionalDetails.dischargeConnection === "both");
+
+      const dischargeFee = payload.WaterConnection[0].additionalDetails &&
+        payload.WaterConnection[0].additionalDetails.dischargeFee ?
+        payload.WaterConnection[0].additionalDetails.dischargeFee : 0;
+
+
       /**
        * BASIC DISCHARGE INFORMATION POPULATION
        * 
@@ -926,17 +926,17 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       if (hasDischargeConnection) {
         // Set basic discharge information - CheckboxContainer handles the rest
         dispatch(prepareFinalObject("applyScreen.discharge", true));
-        
+
         if (dischargeFee && dischargeFee > 0) {
           dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
         }
-        
-        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 
-                payload.WaterConnection[0].additionalDetails.dischargeConnection));
+
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",
+          payload.WaterConnection[0].additionalDetails.dischargeConnection));
       } else {
         dispatch(prepareFinalObject("applyScreen.discharge", false));
       }
-      
+
       if (get(payload, "WaterConnection[0].property.status", "") !== "ACTIVE") {
         set(action.screenConfig, "components.div.children.snackbarWarningMessage.children.clickHereLink.props.propertyId", get(payload, "WaterConnection[0].property.propertyId", ""));
         set(action.screenConfig, "components.div.children.snackbarWarningMessage.children.clickHereLink.visible", true);
@@ -968,13 +968,13 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     }
 
     // Fetch bill for water connection BEFORE estimation
-    const consumerCode = (payload.WaterConnection && payload.WaterConnection[0]) ? 
+    const consumerCode = (payload.WaterConnection && payload.WaterConnection[0]) ?
       (payload.WaterConnection[0].connectionNo || payload.WaterConnection[0].applicationNo) : null;
-    
+
     const appStatus = payload.WaterConnection && payload.WaterConnection[0] ? payload.WaterConnection[0].applicationStatus : null;
     const billEligibleStatuses = ["PENDING_FOR_PAYMENT"];
     let hasBillData = false;
-    
+
     if (payload.WaterConnection && payload.WaterConnection[0] && consumerCode && billEligibleStatuses.includes(appStatus)) {
       try {
         const fetchBillQueryObj = [
@@ -982,12 +982,12 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
           { key: "consumerCode", value: applicationNumber },
           { key: "businessService", value: "WS.ONE_TIME_FEE" }
         ];
-        
+
         const billResponse = await fetchBill(fetchBillQueryObj, dispatch);
-        
+
         if (billResponse && typeof billResponse === "object" && billResponse !== "NA") {
           const bills = billResponse.Bill || billResponse.Bills || billResponse.bill || billResponse.bills || [];
-          
+
           if (Array.isArray(bills) && bills.length > 0) {
             dispatch(prepareFinalObject("fetchedBillData.water", bills));
             hasBillData = true;
@@ -1021,7 +1021,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
           estimate.Calculation[0].billSlabData = _.groupBy(estimate.Calculation[0].taxHeadEstimates, 'category')
           estimate.Calculation[0].appStatus = processInstanceAppStatus;
           estimate.Calculation[0].isFromFetchBill = false;
-          
+
           dispatch(prepareFinalObject("dataCalculation", estimate.Calculation[0]));
         }
       }
@@ -1031,13 +1031,13 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       let connectionNo = payload.WaterConnection[0].connectionNo;
       let queryObjForSearchApplications = [{ key: "tenantId", value: tenantId }, { key: "connectionNumber", value: connectionNo }, { key: "isConnectionSearch", value: true }]
       let oldApplicationPayload = await getSearchResults(queryObjForSearchApplications);
-      oldApplicationPayload.WaterConnection = oldApplicationPayload.WaterConnection.sort((row1,row2)=>row2.auditDetails.createdTime - row1.auditDetails.createdTime);
-      if(oldApplicationPayload.WaterConnection.length>1){
+      oldApplicationPayload.WaterConnection = oldApplicationPayload.WaterConnection.sort((row1, row2) => row2.auditDetails.createdTime - row1.auditDetails.createdTime);
+      if (oldApplicationPayload.WaterConnection.length > 1) {
         oldApplicationPayload.WaterConnection.shift();
       }
-      const waterSource=oldApplicationPayload.WaterConnection[0].waterSource||'';
-      oldApplicationPayload.WaterConnection[0].waterSource=waterSource.includes("null") ? "NA" : waterSource.split(".")[0];
-      oldApplicationPayload.WaterConnection[0].waterSubSource=waterSource.includes("null") ? "NA" : waterSource.split(".")[1];
+      const waterSource = oldApplicationPayload.WaterConnection[0].waterSource || '';
+      oldApplicationPayload.WaterConnection[0].waterSource = waterSource.includes("null") ? "NA" : waterSource.split(".")[0];
+      oldApplicationPayload.WaterConnection[0].waterSubSource = waterSource.includes("null") ? "NA" : waterSource.split(".")[1];
       if (oldApplicationPayload.WaterConnection.length > 0) {
         dispatch(prepareFinalObject("WaterConnectionOld", oldApplicationPayload.WaterConnection))
       }
@@ -1052,47 +1052,47 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.items[0].item0.children.cardContent.children.serviceCardContainerForSW.visible", true);
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFour.props.items[0].item0.children.cardContent.children.serviceCardContainerForWater.visible", false);
     set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixVS.visible", true);
-    set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", false); 
+    set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewOwnerDetails.children.cardContent.children.viewSixWS.visible", false);
     if (payload !== undefined && payload !== null) {
       let roadCuttingInfos = payload.SewerageConnections[0].roadCuttingInfo;
-      if(payload.SewerageConnections[0] && Array.isArray(payload.SewerageConnections[0].roadCuttingInfo) && payload.SewerageConnections[0].roadCuttingInfo.length > 0) {
+      if (payload.SewerageConnections[0] && Array.isArray(payload.SewerageConnections[0].roadCuttingInfo) && payload.SewerageConnections[0].roadCuttingInfo.length > 0) {
         payload.SewerageConnections[0].roadCuttingInfo = Array.isArray(payload.SewerageConnections[0].roadCuttingInfo) && payload.SewerageConnections[0].roadCuttingInfo.filter(info => info.status == "ACTIVE");
       }
       dispatch(prepareFinalObject("SewerageConnection[0]", payload.SewerageConnections[0]));
       dispatch(prepareFinalObject("WaterConnection[0]", payload.SewerageConnections[0]));
       dispatch(prepareFinalObject("SewerageConnection[0].roadCuttingInfos", roadCuttingInfos));
       dispatch(prepareFinalObject("WaterConnection[0].roadCuttingInfos", roadCuttingInfos));
-      
+
       /**
        * POPULATE APPLYSCREEN WITH DISCHARGE INFORMATION FOR SEWERAGE CONNECTIONS (EDIT MODE)
        * 
        * Similar to water connections, sewerage connections can also have discharge information.
        * We need to populate the applyScreen object with this data for proper form initialization.
        */
-      
+
       // Check if this sewerage connection has discharge information
-      const hasDischargeConnection = payload.SewerageConnections[0].additionalDetails && 
-                                   (payload.SewerageConnections[0].additionalDetails.dischargeConnection === "OnlyDischarge" ||
-                                    payload.SewerageConnections[0].additionalDetails.dischargeConnection === "true" ||
-                                    payload.SewerageConnections[0].additionalDetails.dischargeConnection === "both");
-      
-      const dischargeFee = payload.SewerageConnections[0].additionalDetails && 
-                          payload.SewerageConnections[0].additionalDetails.dischargeFee ? 
-                          payload.SewerageConnections[0].additionalDetails.dischargeFee : 0;
-      
+      const hasDischargeConnection = payload.SewerageConnections[0].additionalDetails &&
+        (payload.SewerageConnections[0].additionalDetails.dischargeConnection === "OnlyDischarge" ||
+          payload.SewerageConnections[0].additionalDetails.dischargeConnection === "true" ||
+          payload.SewerageConnections[0].additionalDetails.dischargeConnection === "both");
+
+      const dischargeFee = payload.SewerageConnections[0].additionalDetails &&
+        payload.SewerageConnections[0].additionalDetails.dischargeFee ?
+        payload.SewerageConnections[0].additionalDetails.dischargeFee : 0;
+
       if (hasDischargeConnection) {
         // Set discharge flag in applyScreen
         dispatch(prepareFinalObject("applyScreen.discharge", true));
-        
+
         // Set discharge fee if available
         if (dischargeFee && dischargeFee > 0) {
           dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeFee", dischargeFee));
         }
-        
+
         // Set discharge connection type
-        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection", 
-                payload.SewerageConnections[0].additionalDetails.dischargeConnection));
-        
+        dispatch(prepareFinalObject("applyScreen.additionalDetails.dischargeConnection",
+          payload.SewerageConnections[0].additionalDetails.dischargeConnection));
+
         /**
          * HANDLE DISCHARGE APPLICATIONS WITH SEWERAGE IN EDIT MODE
          * 
@@ -1112,7 +1112,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
         // Ensure discharge flag is false if no discharge connection
         dispatch(prepareFinalObject("applyScreen.discharge", false));
       }
-      
+
       if (!payload.SewerageConnections[0].connectionHolders || payload.SewerageConnections[0].connectionHolders === 'NA') {
         set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewFive.visible", false);
         set(action.screenConfig, "components.div.children.taskDetails.children.cardContent.children.reviewConnectionDetails.children.cardContent.children.viewSix.visible", true);
@@ -1123,13 +1123,13 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       if (isModifyMode()) {
         let connectionNo = payload.SewerageConnections[0].connectionNo;
         let queryObjForSearchApplications = [{ key: "tenantId", value: tenantId }, { key: "connectionNumber", value: connectionNo }, { key: "isConnectionSearch", value: true }]
-        let oldApplicationPayload = await getSearchResultsForSewerage(queryObjForSearchApplications,dispatch);
+        let oldApplicationPayload = await getSearchResultsForSewerage(queryObjForSearchApplications, dispatch);
         oldApplicationPayload.SewerageConnections = oldApplicationPayload.SewerageConnections.filter(row => {
           return row.applicationType !== "MODIFY_SEWERAGE_CONNECTION"
         })
-             if (oldApplicationPayload.SewerageConnections.length > 0) {
+        if (oldApplicationPayload.SewerageConnections.length > 0) {
           dispatch(prepareFinalObject("SewerageConnectionOld[0]", oldApplicationPayload.SewerageConnections[0]))
-          dispatch(prepareFinalObject("WaterConnectionOld[0]",oldApplicationPayload.SewerageConnections[0]));
+          dispatch(prepareFinalObject("WaterConnectionOld[0]", oldApplicationPayload.SewerageConnections[0]));
         }
       }
     }
@@ -1153,13 +1153,13 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     }
 
     // Fetch bill for sewerage connection BEFORE estimation
-    const swConsumerCode = (payload.SewerageConnections && payload.SewerageConnections[0]) ? 
+    const swConsumerCode = (payload.SewerageConnections && payload.SewerageConnections[0]) ?
       (payload.SewerageConnections[0].connectionNo || payload.SewerageConnections[0].applicationNo) : null;
-    
+
     const swAppStatus = payload.SewerageConnections && payload.SewerageConnections[0] ? payload.SewerageConnections[0].applicationStatus : null;
     const billEligibleStatuses = ["PENDING_FOR_PAYMENT"];
     let hasSwBillData = false;
-    
+
     if (payload.SewerageConnections && payload.SewerageConnections[0] && swConsumerCode && billEligibleStatuses.includes(swAppStatus)) {
       try {
         const fetchBillQueryObj = [
@@ -1167,12 +1167,12 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
           { key: "consumerCode", value: applicationNumber },
           { key: "businessService", value: "SW.ONE_TIME_FEE" }
         ];
-        
+
         const billResponse = await fetchBill(fetchBillQueryObj, dispatch);
-        
+
         if (billResponse && typeof billResponse === "object" && billResponse !== "NA") {
           const bills = billResponse.Bill || billResponse.Bills || billResponse.bill || billResponse.bills || [];
-          
+
           if (Array.isArray(bills) && bills.length > 0) {
             dispatch(prepareFinalObject("fetchedBillData.sewerage", bills));
             hasSwBillData = true;
@@ -1212,7 +1212,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
           estimate.Calculation[0].billSlabData = _.groupBy(estimate.Calculation[0].taxHeadEstimates, 'category')
           estimate.Calculation[0].appStatus = processInstanceAppStatus;
           estimate.Calculation[0].isFromFetchBill = false;
-          
+
           dispatch(prepareFinalObject("dataCalculation", estimate.Calculation[0]));
         }
       }
@@ -1223,14 +1223,14 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
   }
 
   // Hide Fees Estimate section for disconnection applications
-  const applicationType = service === serviceConst.WATER ? 
+  const applicationType = service === serviceConst.WATER ?
     (payload.WaterConnection && payload.WaterConnection[0] ? payload.WaterConnection[0].applicationType : null) :
     (payload.SewerageConnections && payload.SewerageConnections[0] ? payload.SewerageConnections[0].applicationType : null);
 
   if (applicationType && (
-      applicationType === "DISCONNECT_WATER_CONNECTION" || 
-      applicationType === "DISCONNECT_SEWERAGE_CONNECTION"
-    )) {
+    applicationType === "DISCONNECT_WATER_CONNECTION" ||
+    applicationType === "DISCONNECT_SEWERAGE_CONNECTION"
+  )) {
     set(
       action.screenConfig,
       "components.div.children.taskDetails.children.cardContent.children.estimate.visible",
@@ -1244,10 +1244,10 @@ const parserFunction = (obj) => {
   if (!obj) {
     return {};
   }
-  
+
   let waterDetails = get(obj, "additionalDetails", {});
 <<<<<<< HEAD
- //console.log("Hello OBJ"+waterDetails.waterSubUsageType)
+  //console.log("Hello OBJ"+waterDetails.waterSubUsageType)
 =======
 >>>>>>> punjab_DIGIT_V2.2
   let parsedObject = {
@@ -1284,9 +1284,9 @@ const parserFunction = (obj) => {
       userCharges: waterDetails && waterDetails.userCharges ? parseFloat(waterDetails.userCharges) : null,
       othersFee: waterDetails && waterDetails.othersFee ? parseFloat(waterDetails.othersFee) : null,
       unitUsageType: waterDetails && waterDetails ? waterDetails.unitUsageType : null,
-      waterSubUsageType : waterDetails && waterDetails ? waterDetails.waterSubUsageType : "null",
-      dischargeConnection : waterDetails && waterDetails ? waterDetails.dischargeConnection : "null",
-      dischargeFee : waterDetails && waterDetails ? waterDetails.dischargeFee : "0",
+      waterSubUsageType: waterDetails && waterDetails ? waterDetails.waterSubUsageType : "null",
+      dischargeConnection: waterDetails && waterDetails ? waterDetails.dischargeConnection : "null",
+      dischargeFee: waterDetails && waterDetails ? waterDetails.dischargeFee : "0",
       //meterStatus: waterDetails && waterDetails ? waterDetails.meterStatus : null,
       // detailsProvidedBy : null,
       adhocPenalty: null,

@@ -5,7 +5,7 @@ import { CityPicker } from "modules/common";
 import { ProfileSection } from "modules/common";
 
 const ProfileForm = ({ form, handleFieldChange, onClickAddPic, img, profilePic }) => {
-  debugger
+  
   let fields = form.fields || {};
   const submit = form.submit;
   

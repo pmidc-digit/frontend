@@ -236,7 +236,7 @@ export const getMdmsData = async dispatch => {
 
       let payloadData = payload.MdmsRes['ws-services-masters'];
       // console.log("Hello PayloadDAta"+tenantId);
-      // debugger;
+      // ////debugger;
       let tenantId = getQueryArg(window.location.href, "tenantId");
       if (tenantId === "pb.patiala") {
         let groupsar = [];
@@ -329,7 +329,7 @@ const showHideFiedsPendingForConnectionActivation = (action, state, dispatch) =>
 
 
 export const getData = async (action, state, dispatch) => {
-  //debugger
+
   let applicationNo = getQueryArg(window.location.href, "applicationNumber");
   const connectionNo = getQueryArg(window.location.href, "connectionNumber");
   const tenantId = getQueryArg(window.location.href, "tenantId");
@@ -454,9 +454,9 @@ export const getData = async (action, state, dispatch) => {
       }
       if (isModifyMode() && !isModifyModeAction()) {
         // ModifyEdit should not call create.
-          if (!window.location.href.includes("mode=MODIFY&action=edit")){
-            dispatch(prepareFinalObject("modifyAppCreated", true));
-          }
+        if (!window.location.href.includes("mode=MODIFY&action=edit")) {
+          dispatch(prepareFinalObject("modifyAppCreated", true));
+        }
       }
 
       dispatch(prepareFinalObject("applyScreen", findAndReplace(combinedArray[0], "null", "NA")));
@@ -765,6 +765,7 @@ const screenConfig = {
   name: "apply",
   // hasBeforeInitAsync:true,
   beforeInitScreen: (action, state, dispatch) => {
+    debugger
     // dispatch(prepareFinalObject("applyScreen.water", true));
     // dispatch(prepareFinalObject("applyScreen.sewerage", false));
     const propertyId = getQueryArg(window.location.href, "propertyId");
@@ -1100,7 +1101,7 @@ const screenConfig = {
       uiFramework: "custom-containers-local",
       moduleName: "egov-wns",
       componentPath: "EodbDialogContainer",
-      props: { 
+      props: {
         open: false
       }
     }
