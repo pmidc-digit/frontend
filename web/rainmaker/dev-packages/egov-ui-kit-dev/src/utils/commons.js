@@ -691,13 +691,13 @@ export const fetchDropdownData = async (dispatch, dataFetchConfig, formKey, fiel
             };
           }
 
-          // let option = {
-          //   label:
-          //     fieldKey === "mohalla"
-          //       ? `${queryParams[0].value.toUpperCase().replace(/[.]/g, "_")}_${hierarchyType}_${item.code.toUpperCase().replace(/[._:-\s\/]/g, "_")}`
-          //       : item.name,
-          //   value: item.code,
-          // };
+          //  option = {
+          //      label:
+          //        fieldKey === "mohalla"
+          //          ? `${queryParams[0].value.toUpperCase().replace(/[.]/g, "_")}_${hierarchyType}_${item.code.toUpperCase().replace(/[._:-\s\/]/g, "_")}`
+          //          : item.name,
+          //      value: item.code,
+          //    };
           //Only for boundary
           item.area && (option.area = item.area);
           ddData.push(option);

@@ -444,7 +444,7 @@ class Footer extends React.Component {
         const { buttonLabel, moduleName } = item;
 
         return {
-          labelName: { buttonLabel },
+          labelName:  buttonLabel ,
           labelKey: `WF_${appName.toUpperCase()}_${moduleName.toUpperCase()}_${buttonLabel}`,
           link: () => {
             (moduleName === "NewTL" || moduleName === "EDITRENEWAL") && buttonLabel === "APPLY" ? onDialogButtonClick(buttonLabel, isDocRequired) :
