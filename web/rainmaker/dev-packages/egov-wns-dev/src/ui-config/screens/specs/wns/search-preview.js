@@ -1415,7 +1415,9 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
       // NEW CODE: Try Payment Search API only if status is PENDING_FOR_CONNECTION_ACTIVATION
       let hasSwPaymentData = false;
       
-      if (processInstanceAppStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
+      if (processInstanceAppStatus === "PENDING_FOR_CONNECTION_ACTIVATION" 
+        || processInstanceAppStatus === "CONNECTION_ACTIVATED"
+      ) {
         try {
           const paymentResponse = await getPaymentForApplication(
             applicationNumber, 
