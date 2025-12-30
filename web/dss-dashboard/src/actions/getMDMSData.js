@@ -10,13 +10,13 @@ export default function getMDMSData(tenants) {
         }
         if (v.code === localStorage.getItem('tenant-id'))
             tenantName = v.name;
-        if (v.city.ddrName) {
+        if (v.city.districtName) {
             tenantId = v.code;
-            if (!_.isEmpty(tempDRRsObj, true) && typeof tempDRRsObj[v.city.ddrName] != 'undefined') {
-                tempDRRsObj[v.city.ddrName].push(tenantId);
+            if (!_.isEmpty(tempDRRsObj, true) && typeof tempDRRsObj[v.city.districtName] != 'undefined') {
+                tempDRRsObj[v.city.districtName].push(tenantId);
             } else {
-                tempDRRsObj[v.city.ddrName] = [tenantId]
-                tempDDRs.push(v.city.ddrName);
+                tempDRRsObj[v.city.districtName] = [tenantId]
+                tempDDRs.push(v.city.districtName);
             }
         }
     })
@@ -33,7 +33,8 @@ export default function getMDMSData(tenants) {
 
     
     return {
-        label: "DDRs",
+        label: "Districts",
+        label_locale: "DSS_DISTRICTS",
         type: "dropdown",
         values: tempDDRs,
         master: tempDRRsObj,

@@ -533,7 +533,7 @@ class GlobalFilter extends Component {
               object.values,
               ""
             );
-          case "DDRs":
+          case "Districts":
             return this.renderAutoComplete(
               object.label,
               this.handleChanges,
@@ -616,10 +616,10 @@ class GlobalFilter extends Component {
       });
     }
     filterData[target] = newFilterData;
-    this.setState({ filterData: filterData, DDRs: newFilterData });
+    this.setState({ filterData: filterData, Districts: newFilterData });
     if (typeof this.props.applyFilters === "function") {
       this.setState({
-        DDRs: newFilterData,
+        Districts: newFilterData,
       });
     }
     if (target === "ULBS") {
@@ -627,7 +627,7 @@ class GlobalFilter extends Component {
         ulbs: newFilterData,
       });
     }
-    if (target === "DDRs") {
+    if (target === "Districts") {
       this.setState({
         ddrs: newFilterData,
       });
@@ -638,15 +638,15 @@ class GlobalFilter extends Component {
     let { classes, GFilterData } = this.props;
     return (
       <div className={classes.fVisible}>
-        {GFilterData && GFilterData.DDRs && GFilterData.DDRs.length > 0 && (
+        {GFilterData && GFilterData.Districts && GFilterData.Districts.length > 0 && (
           <div className={classes.fVRow}>
             <div className={classes.fTitle}>
               <span style={{ margin: !isMobile ? "auto" : "" }}>
-                Selected DDRs:
+                Selected Districts:
               </span>
             </div>
             <div className={classes.mChips}>
-              {GFilterData.DDRs.map((item) => {
+              {GFilterData.Districts.map((item) => {
                 let handleOnDelete = this.handleOnDelete.bind(this);
                 return (
                   <div style={{ margin: isMobile ? "4px 0 0 0" : "0 4px 0 0" }}>
@@ -716,14 +716,14 @@ class GlobalFilter extends Component {
               {globalFilterData.map((ro) => {
                 if (this.props.hideDepart && ro.label == "Services") {
                   return <div></div>;
-                } else if (ro.label == "DDRs" && !_.isEmpty(mdmsData, true)) {
+                } else if (ro.label == "Districts" && !_.isEmpty(mdmsData, true)) {
                   return (
                     <div
                       key={ro.label}
                       className={`${classes.filterS} ${"GF_" + ro.label}`}
                     >
                       <div className={classes.filterHead}>
-                        {strings[ro.label_locale] || ro.label_locale}
+                        {strings[mdmsData.label_locale] || mdmsData.label_locale || "Districts"}
                       </div>
                       {this.renderComponents(mdmsData)}
                     </div>

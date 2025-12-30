@@ -80,8 +80,8 @@
             "values": ""
         },
         {
-            "label": "DDRs",
-            "label_locale": "DSS_DDRS",
+            "label": "Districts",
+            "label_locale": "DSS_DISTRICTS",
             "type": "dropdown",
             "values": [ "Ferozepur-DDR",
                           "Jalandhar-DDR",
@@ -815,7 +815,7 @@
     ],
     "GFilterData": {"Denomination": "Lac",
         "ULBS": [],
-        "DDRs": [],
+        "Districts": [],
         "Services": "",
         "duration": {
             "title": "",

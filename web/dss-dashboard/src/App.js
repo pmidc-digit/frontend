@@ -85,7 +85,7 @@ let dataL = {
     DSS_APPLY: "APPLY",
     DSS_CLEAR_ALL: "CLEAR",
     DSS_DATE_RANGE: "Date Range",
-    DSS_DDRS: "DDRs",
+    DSS_DISTRICTS: "Districts",
     DSS_ULBS: "ULBS",
     DSS_SERVICES: "Services",
     DSS_DENOMINATION: "Denomination",

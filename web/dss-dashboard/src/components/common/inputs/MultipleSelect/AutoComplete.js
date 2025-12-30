@@ -119,7 +119,7 @@ class CheckboxesTags extends React.Component {
     render() {
         const { classes, logo } = this.props;
         let svgicon;
-        if (logo === "DDRs") {
+        if (logo === "Districts") {
             svgicon = districts_icon;
         } else if (logo === "ULBS" || "Wards") {
             svgicon = ulbs_icon;
