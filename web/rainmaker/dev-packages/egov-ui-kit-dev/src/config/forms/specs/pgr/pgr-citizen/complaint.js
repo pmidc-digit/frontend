@@ -48,7 +48,7 @@ const formConfig = {
     city: {
       id: "city",
       jsonPath: "services[0].addressDetail.city",
-      floatingLabelText: "CORE_COMMON_CITY",
+      floatingLabelText: "CORE_COMMON_CITYdsdsds",
       hintText: "ES_CREATECOMPLAINT_SELECT_PLACEHOLDER",
       errorMessage: "CS_ADDCOMPLAINT_COMPLAINT_TYPE_PLACEHOLDER",
       required: true,
@@ -65,7 +65,7 @@ const formConfig = {
         }
         return action;
       },
-      labelsFromLocalisation: true,
+      labelsFromLocalisation: false,
       dataFetchConfig: {
         dependants: [
           {
