@@ -87,7 +87,12 @@ export const searchApiCall = async (state, dispatch) => {
     let batchlocality = get(
       state.screenConfiguration.preparedFinalObject,
       "applyScreenMdmsData.tenant.batchs");
+    let batchvalue = get(
+      state.screenConfiguration.preparedFinalObject,
+      "searchCriteria.locality");
     if (batchtype == 'Batch') {
+      debugger;
+      batchlocality = (batchlocality || []).find(item => item.code === batchvalue);
       const codes = batchlocality.children.map(item => item.code);
       searchScreenObject.locality = codes;
       if (searchScreenObject.businesService == 'WS') {
