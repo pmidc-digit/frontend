@@ -88,10 +88,7 @@ export const searchApiCall = async (state, dispatch) => {
       state.screenConfiguration.preparedFinalObject,
       "applyScreenMdmsData.tenant.batchs");
     if (batchtype == 'Batch') {
-      batchlocality = (batchlocality || []).find(item => item.code === "W-1");
-
       const codes = batchlocality.children.map(item => item.code);
-      console.log("batchlocality", codes);
       searchScreenObject.locality = codes;
       if (searchScreenObject.businesService == 'WS') {
         searchScreenObject.url = "/egov-searcher/bill-genie/wsbatchbilling/_get";
