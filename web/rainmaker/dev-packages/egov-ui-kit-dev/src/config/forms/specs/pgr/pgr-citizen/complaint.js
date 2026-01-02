@@ -48,7 +48,7 @@ const formConfig = {
     city: {
       id: "city",
       jsonPath: "services[0].addressDetail.city",
-      floatingLabelText: "CORE_COMMON_CITYdsdsds",
+      floatingLabelText: "CORE_COMMON_CITY",
       hintText: "ES_CREATECOMPLAINT_SELECT_PLACEHOLDER",
       errorMessage: "CS_ADDCOMPLAINT_COMPLAINT_TYPE_PLACEHOLDER",
       required: true,
