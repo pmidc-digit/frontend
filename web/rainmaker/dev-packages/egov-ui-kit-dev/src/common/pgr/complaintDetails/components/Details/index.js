@@ -140,6 +140,46 @@ class Details extends Component {
                       );
                     })}
                 </div>
+               {process.env.REACT_APP_NAME === "Citizen" && (
+                <div>
+                  <div className="complaint-detail-detail-section-status row">
+                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="PGRS Complaint Number" />
+                    <Label
+                      className="col-xs-6  col-sm-8 col-md-10 no-padding status-result-color"
+                      label={submittedDate}
+                      id="complaint-details-submission-date"
+                      labelStyle={{ color: "inherit" }}
+                    />
+                  </div>
+                  <div className="complaint-detail-detail-section-status row">
+                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="Assigned PGRS Employee" />
+                    <Label
+                      className="col-xs-6  col-sm-8 col-md-10 no-padding status-result-color"
+                      label={submittedDate}
+                      id="complaint-details-submission-date"
+                      labelStyle={{ color: "inherit" }}
+                    />
+                  </div>
+                  <div className="complaint-more-details-link" style={{ marginTop: '16px', marginBottom: '16px', textAlign: 'center' }}>
+                    <a
+                      href={`/complaint-details/${applicationNo}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: '#fe7a51',
+                        textDecoration: 'underline',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      For more details, please click here →
+                    </a>
+                  </div>
+                </div>
+                )}
+
+                
                 {addressDetail && !isEmpty(addressDetail) && (
                   <div className="rainmaker-displayInline">
                     <Icon className="map-icon" action="maps" name="place" style={{ marginRight: 13 }} color={"#767676"} />
