@@ -56,7 +56,38 @@ export const getMessageFromLocalization = code => {
   return messageObject ? messageObject.message : code;
 };
 
-export const loadUlbLogo = utenantId => {
+export const loadUlbLogo = async (utenantId) => {
+  
+  let ulblogUrl
+  let queryObject = [
+    {
+      key: "tenantId",
+      value: `${utenantId}`
+    },
+    {
+      key: "moduleName",
+      value: "tenant"
+    },
+     {
+      key: "masterName",
+      value: "tenants"
+    },
+  
+    
+  ];
+  let response = await getMdmsData(queryObject);
+
+  if (
+    response &&
+    response.MdmsRes &&
+    response.MdmsRes.tenant.tenants.length > 0
+  ) {
+    let ulbData = response.MdmsRes.tenant.tenants.find(item => {
+      return item.code == utenantId;
+    });
+
+   ulblogUrl = get(ulbData,"logoId", "NA")
+  }
   
   var img = new Image();
   img.crossOrigin = "Anonymous";
@@ -71,10 +102,15 @@ export const loadUlbLogo = utenantId => {
     );
     canvas = null;
   };
-  img.src =`https://s3.ap-south-1.amazonaws.com/pb-egov-assets/${utenantId}/logo.png`
+ const pathnameWithQuery =
+  ulblogUrl && ulblogUrl !== "NA"
+    ? new URL(ulblogUrl).pathname + new URL(ulblogUrl).search
+    : "NA";
+   //console.log("ulblogoulblogo===>",pathnameWithQuery)
+  //img.src =`https://s3.ap-south-1.amazonaws.com/pb-egov-assets/${utenantId}/logo.png`
   //img.src = `https://pb-egov-assets.s3.ap-south-1.amazonaws.com/${utenantId}/logo.png`
   //img.src = 'https://pb-egov-assets.s3.ap-south-1.amazonaws.com/pb.mohali/logo.png'
- //img.src = `/pb-egov-assets/${utenantId}/logo.png`; 
+  img.src = `${pathnameWithQuery}`; 
  //img.src = '/pb-egov-assets/pb/Punjab_FS_logo.jpg'; 
 };
 
@@ -809,12 +845,11 @@ export const loadUserNameData = async uuid => {
 /** Data used for creation of receipt is generated and stored in local storage here */
 export const loadPdfGenerationData = (applicationNumber, tenant) => {
   /** Logo loaded and stored in local storage in base64 */
-
+  
   loadUlbLogo(tenant);
   //store.dispatch(prepareFinalObject("base64UlbLogoForPdf", ''));
   loadApplicationData(applicationNumber, tenant); //PB-FN-2019-06-14-002241
   loadReceiptData(applicationNumber, tenant); //PB-FN-2019-06-14-002241
-
   loadMdmsData(tenant);
 
 
