@@ -139,60 +139,60 @@ export const abgSearchCard = getCommonCard({
           sm: 4
         }
       },
-      serviceCategory: {
-        uiFramework: "custom-containers-local",
-        moduleName: "egov-abg",
-        componentPath: "AutosuggestContainer",
-        props: {
-          label: {
-            labelName: "Service Category",
-            labelKey: "ABG_SERVICE_CATEGORY_LABEL"
-          },
-          placeholder: {
-            labelName: "Select Service Category",
-            labelKey: "ABG_SERVICE_CATEGORY_PLACEHOLDER"
-          },
-          required: true,
-          localePrefix: {
-            moduleName: "BillingService",
-            masterName: "BusinessService"
-          },
-          labelsFromLocalisation: true,
-          isClearable: true,
-          className: "autocomplete-dropdown",
-          jsonPath: "searchCriteria.businesService",
-          sourceJsonPath: "searchScreenMdmsData.BillingService.BusinessService",
-        },
-        required: true,
-        jsonPath: "searchCriteria.businesService",
-        gridDefination: {
-          xs: 12,
-          sm: 4
-        },
+      // serviceCategory: {
+      //   uiFramework: "custom-containers-local",
+      //   moduleName: "egov-abg",
+      //   componentPath: "AutosuggestContainer",
+      //   props: {
+      //     label: {
+      //       labelName: "Service Category",
+      //       labelKey: "ABG_SERVICE_CATEGORY_LABEL"
+      //     },
+      //     placeholder: {
+      //       labelName: "Select Service Category",
+      //       labelKey: "ABG_SERVICE_CATEGORY_PLACEHOLDER"
+      //     },
+      //     required: true,
+      //     localePrefix: {
+      //       moduleName: "BillingService",
+      //       masterName: "BusinessService"
+      //     },
+      //     labelsFromLocalisation: true,
+      //     isClearable: true,
+      //     className: "autocomplete-dropdown",
+      //     jsonPath: "searchCriteria.businesService",
+      //     sourceJsonPath: "searchScreenMdmsData.BillingService.BusinessService",
+      //   },
+      //   required: true,
+      //   jsonPath: "searchCriteria.businesService",
+      //   gridDefination: {
+      //     xs: 12,
+      //     sm: 4
+      //   },
 
-        // beforeFieldChange :(action, state, dispatch) => {
-        //   if(action.value === "WS"){
-        //     dispatch(
-        //       handleField(
-        //         "bulkmeterreading",
-        //         "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.billingPeriod",
-        //         "props.data",
-        //         wsBillinData
-        //       )
-        //     );
-        //   }else if(action.value === "PT"){
-        //     dispatch(
-        //       handleField(
-        //         "bulkmeterreading",
-        //         "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.billingPeriod",
-        //         "props.sourceJsonPath",
-        //         "searchScreenMdmsData.egf-master.FinancialYear"
-        //       )
-        //     );
-        //   }
+      //   // beforeFieldChange :(action, state, dispatch) => {
+      //   //   if(action.value === "WS"){
+      //   //     dispatch(
+      //   //       handleField(
+      //   //         "bulkmeterreading",
+      //   //         "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.billingPeriod",
+      //   //         "props.data",
+      //   //         wsBillinData
+      //   //       )
+      //   //     );
+      //   //   }else if(action.value === "PT"){
+      //   //     dispatch(
+      //   //       handleField(
+      //   //         "bulkmeterreading",
+      //   //         "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.billingPeriod",
+      //   //         "props.sourceJsonPath",
+      //   //         "searchScreenMdmsData.egf-master.FinancialYear"
+      //   //       )
+      //   //     );
+      //   //   }
 
-        // }
-      },
+      //   // }
+      // },
       // billingPeriod: getSelectField({
       //   label: {
       //     labelName: "Financial Year",

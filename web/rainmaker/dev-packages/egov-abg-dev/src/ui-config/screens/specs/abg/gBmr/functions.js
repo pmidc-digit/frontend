@@ -1,15 +1,17 @@
 import get from "lodash/get";
-import { getGroupBillSearch } from "../../../../../ui-utils/commons";
+//import { getGroupBillSearch } from "../../../../../ui-utils/commons";
 import {
   handleScreenConfigurationFieldChange as handleField,
-  prepareFinalObject
+  prepareFinalObject,
+  toggleSpinner,
+  toggleSnackbar
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import {
   convertEpochToDate,
   validateFields,
   getTextToLocalMapping
 } from "../../utils/index";
-import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import isEmpty from "lodash/isEmpty"
 import { loadUlbLogo } from "../../utils/receiptTransformer";
@@ -17,6 +19,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
+  debugger;
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -79,7 +82,37 @@ export const searchApiCall = async (state, dispatch) => {
 
     searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    const getGroupBillSearch = async (dispatch, searchScreenObject) => {
+      debugger;
+
+      try {
+        dispatch(toggleSpinner(true));
+        const requestBody = {
+          tenantId: searchScreenObject.tenantId || tenantId,
+          locality: "ALOC2",
+          offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
+        };
+        const url = `ws-calculator/meterConnection/_search?tenantId=${encodeURIComponent(requestBody.tenantId)}&locality=${encodeURIComponent(requestBody.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        const response = await httpRequest("post", url, "_search", []);
+        dispatch(toggleSpinner(false));
+        return response;
+      } catch (error) {
+        dispatch(toggleSpinner(false));
+        dispatch(
+          toggleSnackbar(
+            true,
+            { labelName: error.message || "Something went wrong", labelKey: error.message || "ERROR" },
+            "error"
+          )
+        );
+        return {};
+      }
+
+
+    };
     const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
+
+
     const bills = (responseFromAPI && responseFromAPI.Bills) || [];
     dispatch(
       prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
@@ -100,7 +133,7 @@ export const searchApiCall = async (state, dispatch) => {
     try {
       let data = response.map(item => ({
         ["ABG_COMMON_TABLE_COL_BILL_NO"]: item.billNo || "-",
-        ["ABG_COMMON_TABLE_COL_CONSUMER_ID"]: item.consumerId || "-",
+        ["ABG_COMMON_TABLE_COL_CONSUMER_IDdd"]: item.consumerId || "-",
         ["ABG_COMMON_TABLE_COL_OWN_NAME"]: item.ownerName || "-",
         ["ABG_COMMON_TABLE_COL_BILL_DATE"]:
           convertEpochToDate(item.billDate) || "-",
