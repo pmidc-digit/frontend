@@ -448,8 +448,7 @@ class TableData extends Component {
 
     let assignedToMe = [];
     const initialData = data.map((item) => {
-      // Retrieve from Cache
-        console.log("📋 Complete complaint data: = ", item);
+      
       const locality = this.state.showLocality && this.localityCache[item.businessId];
 
       var sla = item.businesssServiceSla && item.businesssServiceSla / (1000 * 60 * 60 * 24);
