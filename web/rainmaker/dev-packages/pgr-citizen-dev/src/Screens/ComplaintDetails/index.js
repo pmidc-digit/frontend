@@ -75,6 +75,9 @@ const mapStateToProps = (state, ownProps) => {
       images: fetchImages(selectedComplaint.actions).filter((imageSource) => isImage(imageSource)),
       feedback: selectedComplaint.feedback,
       rating: selectedComplaint.rating,
+      dgr_grievance_id: selectedComplaint.dgr_grievance_id || "",        // ✅ ADD THIS
+      dgr_employee_name: selectedComplaint.dgr_employee_name || "",      // ✅ ADD THIS
+     
     };
     let timeLine = [];
     timeLine = selectedComplaint && selectedComplaint.actions.filter((action) => action.status && action.status);

@@ -32,7 +32,7 @@ class Details extends Component {
   };
 
   render() {
-    const { status, phone,complaint, applicationNo, description, submittedDate, address, addressDetail, mapAction, images, action, role } = this.props;
+    const { status, phone,complaint, applicationNo, description, submittedDate, dgr_grievance_id, dgr_employee_name, address, addressDetail, mapAction, images, action, role } = this.props;
     const { houseNoAndStreetName, landmark, mohalla, city, locality } = addressDetail || "";
     const icon = {};
     icon.name = "location";
@@ -143,26 +143,26 @@ class Details extends Component {
                {process.env.REACT_APP_NAME === "Citizen" && (
                 <div>
                   <div className="complaint-detail-detail-section-status row">
-                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="PGRS Complaint Number" />
+                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="DGR Grievence Id" />
                     <Label
                       className="col-xs-6  col-sm-8 col-md-10 no-padding status-result-color"
-                      label={submittedDate}
-                      id="complaint-details-submission-date"
+                      label={dgr_grievance_id}
+                      id="complaint-details-dgr_grievance_id"
                       labelStyle={{ color: "inherit" }}
                     />
                   </div>
                   <div className="complaint-detail-detail-section-status row">
-                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="Assigned PGRS Employee" />
+                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="Assigned DGR Employee" />
                     <Label
                       className="col-xs-6  col-sm-8 col-md-10 no-padding status-result-color"
-                      label={submittedDate}
-                      id="complaint-details-submission-date"
+                      label={dgr_employee_name}
+                      id="complaint-details-dgr_employee_name"
                       labelStyle={{ color: "inherit" }}
                     />
                   </div>
                   <div className="complaint-more-details-link" style={{ marginTop: '16px', marginBottom: '16px', textAlign: 'center' }}>
                     <a
-                      href={`/complaint-details/${applicationNo}`}
+                      href={`https://connect.punjab.gov.in/track/grievance`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -173,7 +173,7 @@ class Details extends Component {
                         cursor: 'pointer',
                       }}
                     >
-                      For more details, please click here →
+                      Track Grievance →
                     </a>
                   </div>
                 </div>
