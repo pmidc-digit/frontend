@@ -325,6 +325,26 @@ const callBackForNext = async (state, dispatch) => {
         }
         // TODO else part update propertyId.
 
+        // ✅ ADD: Validate connection holder mobile number pattern BEFORE validateConnHolderDetails
+        const connectionHolders = get(state.screenConfiguration.preparedFinalObject, "connectionHolders[0]", {});
+        const sameAsOwner = get(connectionHolders, "sameAsPropertyAddress", false);
+        
+        if (!sameAsOwner && connectionHolders && Object.keys(connectionHolders).length > 0) {
+          const mobileNumber = get(connectionHolders, "mobileNumber", "");
+          const mobilePattern = /^(?!([0-9])\1{9})[6789][0-9]{9}$/;
+          
+          if (mobileNumber && !mobilePattern.test(mobileNumber)) {
+            dispatch(
+              toggleSnackbar(
+                true,
+                { labelKey: "ERR_INVALID_MOBILE_NUMBER", labelName: "Invalid mobile number format" },
+                "error"
+              )
+            );
+            return false; // ✅ BLOCK navigation
+          }
+        }
+
         if (validateConnHolderDetails(applyScreenObject)) {
           isFormValid = true;
           hasFieldToaster = false;
