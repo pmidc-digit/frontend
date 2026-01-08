@@ -5,7 +5,8 @@ import { httpRequest } from "../../../../ui-utils";
 import { getBoundaryData } from "../../../../ui-utils/commons";
 import {
   abgSearchCard,
-  mergeDownloadButton, resetFields
+  //mergeDownloadButton, 
+  resetFields
 } from "./gBmr/groupBillSearch";
 import { searchResults } from "./gBmr/searchResults";
 import "./index.css";
@@ -121,7 +122,7 @@ const abgSearchAndResult = {
         // progressStatus,
         searchResults,
         breakAfterSearchResults: getBreak(),
-        mergeDownloadButton
+        //mergeDownloadButton
       }
     }
   }

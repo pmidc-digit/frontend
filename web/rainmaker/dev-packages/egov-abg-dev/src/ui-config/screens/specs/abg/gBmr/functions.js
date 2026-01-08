@@ -18,10 +18,13 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
+export const updatesingleReading = async (consumerId, tenantId, currentReading, readingDate) => {
+  alert("Update requested for Consumer ID: " + (consumerId || "") + "  " + JSON.stringify({ consumerId, tenantId, currentReading, readingDate }));
+}
 export const searchApiCall = async (state, dispatch) => {
   debugger;
   showHideTable(false, dispatch);
-  showHideMergeButton(false, dispatch);
+  //showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
     state.screenConfiguration.preparedFinalObject,
     "searchCriteria",
@@ -94,6 +97,13 @@ export const searchApiCall = async (state, dispatch) => {
         };
         const url = `ws-calculator/meterConnection/_search?tenantId=${encodeURIComponent(requestBody.tenantId)}&locality=${encodeURIComponent(requestBody.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
         const response = await httpRequest("post", url, "_search", []);
+        // dispatch(toggleSpinner(false));
+        // return response;
+
+        const bills = (response && response.meterReadings) || [];
+        dispatch(
+          prepareFinalObject("searchScreenMdmsData.meterReadings", bills)
+        );
         dispatch(toggleSpinner(false));
         return response;
       } catch (error) {
@@ -113,31 +123,34 @@ export const searchApiCall = async (state, dispatch) => {
     const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
 
 
-    const bills = (responseFromAPI && responseFromAPI.Bills) || [];
+    const bills = (responseFromAPI && responseFromAPI.meterReadings) || [];
     dispatch(
       prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
     );
     const response = [];
     for (let i = 0; i < bills.length; i++) {
-      if (get(bills[i], "status") === "ACTIVE" && get(bills[i], "totalAmount") > 0 && get(bills[i].connection, "status").toUpperCase() === "ACTIVE") {
-        response.push({
-          consumerId: get(bills[i], "consumerCode"),
-          billNo: get(bills[i], "billNumber"),
-          ownerName: get(bills[i], "payerName"),
-          billDate: get(bills[i], "billDate"),
-          status: get(bills[i], "status"),
-          tenantId: tenantId
-        })
-      }
+
+      response.push({
+        connectionNo: get(bills[i], "connectionNo"),
+        billNo: get(bills[i], "connectionNo"),
+        lastReading: get(bills[i], "lastReading"),
+        // currentReading may come from API (per consumer). Use existing field if present.
+        currentReading: get(bills[i], "currentReading") || "",
+        currentReadingDate: get(bills[i], "currentReadingDate"),
+        meterStatus: get(bills[i], "meterStatus"),
+        tenantId: tenantId
+      })
+
     }
     try {
       let data = response.map(item => ({
-        ["ABG_COMMON_TABLE_COL_BILL_NO"]: item.billNo || "-",
-        ["ABG_COMMON_TABLE_COL_CONSUMER_IDdd"]: item.consumerId || "-",
-        ["ABG_COMMON_TABLE_COL_OWN_NAME"]: item.ownerName || "-",
+        ["ABG_COMMON_TABLE_COL_BILL_NO"]: item.connectionNo || "-",
+        ["ABG_COMMON_TABLE_COL_CONSUMER_ID"]: item.billNo || "-",
+        ["Last Reading"]: item.lastReading || "-",
+        ["ABG_COMMON_TABLE_COL_CURRENT_READING"]: item.currentReading || "",
         ["ABG_COMMON_TABLE_COL_BILL_DATE"]:
-          convertEpochToDate(item.billDate) || "-",
-        ["ABG_COMMON_TABLE_COL_STATUS"]: item.status && getTextToLocalMapping(item.status.toUpperCase()) || "-",
+          convertEpochToDate(item.currentReadingDate) || "-",
+        ["ABG_COMMON_TABLE_COL_STATUS"]: item.meterStatus || "-",
         ["TENANT_ID"]: item.tenantId
       }));
 
@@ -159,7 +172,7 @@ export const searchApiCall = async (state, dispatch) => {
       );
       showHideTable(true, dispatch);
       if (!isEmpty(response)) {
-        showHideMergeButton(true, dispatch);
+
         loadUlbLogo(tenantId);
       };
     } catch (error) {
@@ -180,13 +193,4 @@ const showHideTable = (booleanHideOrShow, dispatch) => {
   );
 };
 
-const showHideMergeButton = (booleanHideOrShow, dispatch) => {
-  dispatch(
-    handleField(
-      "bulkmeterreading",
-      "components.div.children.mergeDownloadButton.children.mergeButton",
-      "visible",
-      booleanHideOrShow
-    )
-  );
-};
+
