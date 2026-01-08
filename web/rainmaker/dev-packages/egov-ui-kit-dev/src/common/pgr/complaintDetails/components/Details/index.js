@@ -160,22 +160,26 @@ class Details extends Component {
                       labelStyle={{ color: "inherit" }}
                     />
                   </div>
-                  <div className="complaint-more-details-link" style={{ marginTop: '16px', marginBottom: '16px', textAlign: 'center' }}>
-                    <a
-                      href={`https://connect.punjab.gov.in/track/grievance`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        color: '#fe7a51',
-                        textDecoration: 'underline',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Track Grievance →
-                    </a>
-                  </div>
+                  <div className="complaint-more-details-section" style={{ marginTop: '16px', marginBottom: '16px' }}>
+                  <Button
+                    primary={true}
+                    label={<Label buttonLabel={true} label="Track Grievance" color="#ffffff" />}
+                    style={{
+                      height: 'auto',
+                      minWidth: '200px',
+                      backgroundColor: '#fe7a51',
+                    }}
+                    labelStyle={{
+                      padding: '8px 16px',
+                      letterSpacing: '0.6px',
+                      textTransform: 'none',
+                    }}
+                    onClick={() => {
+                      window.open(`https://connect.punjab.gov.in/track/grievance`, '_blank');
+                      
+                    }}
+                  />
+                </div>
                 </div>
                 )}
 
