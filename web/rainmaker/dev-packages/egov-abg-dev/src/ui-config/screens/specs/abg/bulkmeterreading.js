@@ -1,4 +1,8 @@
-import { getBreak, getCommonHeader } from "egov-ui-framework/ui-config/screens/specs/utils";
+import {
+  getBreak, getCommonHeader, getLabel, getCommonCard,
+  getCommonContainer,
+  getTextField, getSelectField
+} from "egov-ui-framework/ui-config/screens/specs/utils";
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import { httpRequest } from "../../../../ui-utils";
@@ -8,7 +12,9 @@ import {
   //mergeDownloadButton, 
   resetFields
 } from "./gBmr/groupBillSearch";
-import { searchResults } from "./gBmr/searchResults";
+
+import { updateAllReadings } from "./gBmr/functions";
+import { searchResults, brmeterReading } from "./gBmr/searchResults";
 import "./index.css";
 
 const tenantId = getTenantId();
@@ -122,9 +128,60 @@ const abgSearchAndResult = {
         // progressStatus,
         searchResults,
         breakAfterSearchResults: getBreak(),
-        //mergeDownloadButton
+
+        button: getCommonContainer({
+          buttonContainer: getCommonContainer({
+            firstCont: {
+              uiFramework: "custom-atoms",
+              componentPath: "Div",
+              gridDefination: {
+                xs: 12,
+                sm: 3
+              }
+            },
+
+            searchButton: {
+              componentPath: "Button",
+              gridDefination: {
+                xs: 12,
+                sm: 3
+                // align: "center"
+              },
+              props: {
+                variant: "contained",
+                style: {
+                  color: "white",
+                  backgroundColor: "#FE7A51",
+                  borderRadius: "2px",
+                  width: window.innerWidth > 480 ? "80%" : "100%",
+                  height: "48px"
+                }
+              },
+              children: {
+                buttonLabel: getLabel({
+                  labelName: "Update All Readings",
+                  labelKey: "Update All Readings"
+                })
+              },
+              onClickDefination: {
+                action: "condition",
+                //callBack: searchApiCall
+              }
+            },
+            lastCont: {
+              uiFramework: "custom-atoms",
+              componentPath: "Div",
+              gridDefination: {
+                xs: 12,
+                sm: 3
+              }
+            }
+          })
+        })
+
       }
-    }
+    },
+    //mergeDownloadButton
   }
 };
 

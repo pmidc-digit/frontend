@@ -7,19 +7,25 @@ import { localStorageGet } from "egov-ui-kit/utils/localStorageUtils";
 import { download, downloadBill } from "egov-common/ui-utils/commons";
 import { updatesingleReading } from "./functions";
 
-
+export const brmeterReading = (booleanHideOrShow, dispatch) => {
+  return (
+    <React.Fragment>
+      <h1>Testing</h1>
+    </React.Fragment>
+  );
+}
 export const searchResults = {
   uiFramework: "custom-molecules",
   componentPath: "Table",
   visible: false,
   props: {
     columns: [
-      { labelName: "Consumer ID", labelKey: "ABG_COMMON_TABLE_COL_CONSUMER_ID" },
-      { labelName: "Consumer ID", labelKey: "ABG_COMMON_TABLE_COL_CONSUMER_ID" },
+      { labelName: "Consumer ID", labelKey: "Consumer ID" },
+
       { labelName: "Last Reading", labelKey: "Last Reading" },
       {
         labelName: "Current Reading(in KL)",
-        labelKey: "ABG_COMMON_TABLE_COL_CURRENT_READING",
+        labelKey: "Current Reading(in KL)",
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
@@ -54,7 +60,7 @@ export const searchResults = {
       },
       {
         labelName: "Current Reading Date",
-        labelKey: "ABG_COMMON_TABLE_COL_CURRENT_READING_DATE",
+        labelKey: "Current Reading Date",
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
@@ -71,8 +77,9 @@ export const searchResults = {
           }
         }
       },
-      { labelName: "Bill Date", labelKey: "ABG_COMMON_TABLE_COL_BILL_DATE" },
-      { labelName: "Status", labelKey: "ABG_COMMON_TABLE_COL_STATUS" },
+      { labelName: "Current Reading Date", labelKey: "Current Reading Date" },
+      { labelName: "Billing Period", labelKey: "Billing Period" },
+      { labelName: "Status", labelKey: "Status" },
       {
         labelName: "Tenant Id",
         labelKey: "TENANT_ID",
@@ -128,6 +135,7 @@ export const searchResults = {
       filter: false,
       download: false,
       responsive: "stacked",
+      pagination: false,
       selectableRows: false,
       hover: true,
       rowsPerPageOptions: [10, 15, 20],

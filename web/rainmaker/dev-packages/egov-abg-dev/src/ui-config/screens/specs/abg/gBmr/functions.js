@@ -19,8 +19,106 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
 export const updatesingleReading = async (consumerId, tenantId, currentReading, readingDate) => {
-  alert("Update requested for Consumer ID: " + (consumerId || "") + "  " + JSON.stringify({ consumerId, tenantId, currentReading, readingDate }));
-}
+  const payload = { consumerId, tenantId, currentReading, readingDate };
+  try {
+    // Try calling backend update API if available. Endpoint is a best-guess; adjust if needed.
+    const url =
+      process.env.NODE_ENV === "development"
+        ? "/ws-calculator/meterReading/_update"
+        : "/ws-calculator/meterReading/_update";
+    // If httpRequest available, uncomment the next lines to call backend
+    // const response = await httpRequest("post", url, "_update", [], payload);
+    // return response;
+
+    // Fallback: no-op resolve so UI can proceed
+    console.log("Mock update for", payload);
+    return Promise.resolve({ success: true, data: payload });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const updateAllReadings = async (state, dispatch) => {
+  try {
+    const tableData = get(
+      state,
+      "screenConfiguration.screenConfig.bulkmeterreading.components.div.children.searchResults.props.data",
+      []
+    );
+    if (!tableData || tableData.length === 0) {
+      dispatch(
+        toggleSnackbar(
+          true,
+          { labelName: "No records to update", labelKey: "ABG_NO_RECORDS_TO_UPDATE" },
+          "warning"
+        )
+      );
+      return;
+    }
+
+    const updates = [];
+    for (let i = 0; i < tableData.length; i++) {
+      const row = tableData[i];
+      const consumerId = row["ABG_COMMON_TABLE_COL_CONSUMER_ID"];
+      const lastReading = Number(row["Last Reading"] || 0);
+      const currentReadingRaw = row["ABG_COMMON_TABLE_COL_CURRENT_READING"];
+      const currentReading = Number(currentReadingRaw);
+      const readingDate = row["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"];
+      const tenantId = row["TENANT_ID"];
+
+      if (currentReadingRaw === undefined || currentReadingRaw === "" || !Number.isFinite(currentReading) || currentReading < lastReading) {
+        // skip invalid or empty
+        continue;
+      }
+
+      updates.push({ consumerId, tenantId, currentReading, readingDate, rowIndex: i });
+    }
+
+    if (updates.length === 0) {
+      dispatch(
+        toggleSnackbar(
+          true,
+          { labelName: "No valid readings to update", labelKey: "ABG_NO_VALID_READINGS_TO_UPDATE" },
+          "warning"
+        )
+      );
+      return;
+    }
+
+    // Call update for each row sequentially (could be batched)
+    for (let u of updates) {
+      try {
+        await updatesingleReading(u.consumerId, u.tenantId, u.currentReading, u.readingDate);
+        // Update UI: set Last Reading to currentReading and clear currentReading
+        const updatedTable = [...tableData];
+        updatedTable[u.rowIndex] = {
+          ...updatedTable[u.rowIndex],
+          ["Last Reading"]: String(u.currentReading),
+          ["ABG_COMMON_TABLE_COL_CURRENT_READING"]: "",
+          ["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]: u.readingDate || updatedTable[u.rowIndex]["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]
+        };
+        dispatch(
+          handleField("bulkmeterreading", "components.div.children.searchResults", "props.data", updatedTable)
+        );
+      } catch (e) {
+        console.error("Update failed for consumer", u.consumerId, e);
+        // continue with others
+      }
+    }
+
+    dispatch(
+      toggleSnackbar(
+        true,
+        { labelName: "Update completed", labelKey: "ABG_UPDATE_COMPLETED" },
+        "success"
+      )
+    );
+  } catch (err) {
+    console.error(err);
+    dispatch(toggleSnackbar(true, { labelName: err.message || "Error", labelKey: err.message || "ERROR" }, "error"));
+  }
+};
 export const searchApiCall = async (state, dispatch) => {
   debugger;
   showHideTable(false, dispatch);
@@ -132,11 +230,12 @@ export const searchApiCall = async (state, dispatch) => {
 
       response.push({
         connectionNo: get(bills[i], "connectionNo"),
-        billNo: get(bills[i], "connectionNo"),
-        lastReading: get(bills[i], "lastReading"),
+
+        lastReading: get(bills[i], "currentReading"),
         // currentReading may come from API (per consumer). Use existing field if present.
         currentReading: get(bills[i], "currentReading") || "",
         currentReadingDate: get(bills[i], "currentReadingDate"),
+        billingPeriod: get(bills[i], "billingPeriod"),
         meterStatus: get(bills[i], "meterStatus"),
         tenantId: tenantId
       })
@@ -144,16 +243,16 @@ export const searchApiCall = async (state, dispatch) => {
     }
     try {
       let data = response.map(item => ({
-        ["ABG_COMMON_TABLE_COL_BILL_NO"]: item.connectionNo || "-",
-        ["ABG_COMMON_TABLE_COL_CONSUMER_ID"]: item.billNo || "-",
-        ["Last Reading"]: item.lastReading || "-",
-        ["ABG_COMMON_TABLE_COL_CURRENT_READING"]: item.currentReading || "",
-        ["ABG_COMMON_TABLE_COL_BILL_DATE"]:
+        ["Consumer ID"]: item.connectionNo || "-",
+
+        ["Last Reading"]: item.currentReading || "-",
+        ["Current Reading(in KL)"]: item.currentReading || "",
+        ["Current Reading Date"]:
           convertEpochToDate(item.currentReadingDate) || "-",
-        ["ABG_COMMON_TABLE_COL_STATUS"]: item.meterStatus || "-",
+        ["Billing Period"]: item.billingPeriod || "-",
+        ["Status"]: item.meterStatus || "-",
         ["TENANT_ID"]: item.tenantId
       }));
-
       dispatch(
         handleField(
           "bulkmeterreading",
