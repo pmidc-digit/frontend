@@ -32,7 +32,7 @@ class Details extends Component {
   };
 
   render() {
-    const { status, phone,complaint, applicationNo, description, submittedDate, address, addressDetail, mapAction, images, action, role } = this.props;
+    const { status, phone,complaint, applicationNo, description, submittedDate, address, addressDetail, mapAction, images, action, role, dgr_grievance_id, dgr_employee_name } = this.props;
     const { houseNoAndStreetName, landmark, mohalla, city, locality } = addressDetail || "";
     const icon = {};
     icon.name = "location";
@@ -140,6 +140,51 @@ class Details extends Component {
                       );
                     })}
                 </div>
+
+                 {process.env.REACT_APP_NAME === "Citizen" && (
+                <div>
+                  <div className="complaint-detail-detail-section-status row">
+                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="DGR Grievence Id" />
+                    <Label
+                      className="col-xs-6  col-sm-8 col-md-10 no-padding status-result-color"
+                      label={dgr_grievance_id}
+                      id="complaint-details-dgr_grievance_id"
+                      labelStyle={{ color: "inherit" }}
+                    />
+                  </div>
+                  <div className="complaint-detail-detail-section-status row">
+                    <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="Assigned DGR Employee" />
+                    <Label
+                      className="col-xs-6  col-sm-8 col-md-10 no-padding status-result-color"
+                      label={dgr_employee_name}
+                      id="complaint-details-dgr_employee_name"
+                      labelStyle={{ color: "inherit" }}
+                    />
+                  </div>
+                  <div className="complaint-more-details-section" style={{ marginTop: '16px', marginBottom: '16px' }}>
+                  <Button
+                    primary={true}
+                    label={<Label buttonLabel={true} label="Track Grievance" color="#ffffff" />}
+                    style={{
+                      height: 'auto',
+                      minWidth: '200px',
+                      backgroundColor: '#fe7a51',
+                    }}
+                    labelStyle={{
+                      padding: '8px 16px',
+                      letterSpacing: '0.6px',
+                      textTransform: 'none',
+                    }}
+                    onClick={() => {
+                      window.open(`https://connect.punjab.gov.in/track/grievance`, '_blank');
+                      
+                    }}
+                  />
+                </div>
+                </div>
+                )}
+
+
                 {addressDetail && !isEmpty(addressDetail) && (
                   <div className="rainmaker-displayInline">
                     <Icon className="map-icon" action="maps" name="place" style={{ marginRight: 13 }} color={"#767676"} />
