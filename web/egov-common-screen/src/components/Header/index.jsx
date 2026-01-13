@@ -45,11 +45,11 @@ export default function Header() {
                         <div className="col-sm-12 col-md-6">
                             <div className="rightharder">
                                 <a href={`${baseUrl}/employee`}>
-                                    {hostname} - Employee
+                                    Employee
                                 </a>
                                 {" | "}
                                 <a href={`${baseUrl}/citizen`}>
-                                    {hostname} - Citizen
+                                    Citizen
                                 </a>
                                 <img id="rightimg" src={rightImage} />
                             </div>
