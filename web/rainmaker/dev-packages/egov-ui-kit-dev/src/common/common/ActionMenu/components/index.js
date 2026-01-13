@@ -276,7 +276,6 @@ class ActionMenuComp extends Component {
     const showMenuItem = () => {
       const navigationURL = window.location.href.split("/").pop();
       if (searchText.length == 0) {
-        //console.log("menuItems",menuItems)
         return menuItems.map((item, index) => {
           let iconLeft;
           if (item.leftIcon) {
@@ -327,11 +326,15 @@ class ActionMenuComp extends Component {
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
+              const targetPath = item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen"? "/digit-ui/citizen": item.navigationURL === "/" 
+                    ? `${item.navigationURL}` 
+                    : `/${item.navigationURL}`;
+
               return (
                 <Link
                   style={{ textDecoration: "none" }}
                   key={index}
-                  to={item.navigationURL === "/" ? `${item.navigationURL}` : `/${item.navigationURL}`}
+                  to={targetPath}
                 >
                   <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
                     {/* <Tooltip
@@ -423,11 +426,16 @@ class ActionMenuComp extends Component {
             }
             if (item.path && item.url && item.displayName.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
               if (item.navigationURL) {
+                const targetPath = item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen"
+              ? "/digit-ui/citizen"
+              : item.navigationURL === "/" 
+                ? `${item.navigationURL}` 
+                : `/${item.navigationURL}`;
                 return (
                   <Link
                     style={{ textDecoration: "none" }}
                     key={index}
-                    to={item.navigationURL === "/" ? `${item.navigationURL}` : `/${item.navigationURL}`}
+                    to={targetPath}
                   >
                     <div className="sideMenuItem">
                       {/* <Tooltip
