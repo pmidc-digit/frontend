@@ -276,8 +276,8 @@ class ActionMenuComp extends Component {
     const showMenuItem = () => {
       const navigationURL = window.location.href.split("/").pop();
       if (searchText.length == 0) {
-        //console.log("menuItems",menuItems)
         return menuItems.map((item, index) => {
+          
           let iconLeft;
           if (item.leftIcon) {
             iconLeft = item.leftIcon.split(":");
@@ -327,11 +327,53 @@ class ActionMenuComp extends Component {
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
+              let targetPath;
+              
+              if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
+                targetPath = `${window.location.origin}/digit-ui/citizen`;
+              } else if (item.navigationURL === "/") {
+                targetPath = item.navigationURL;
+              } else {
+                targetPath = `${item.navigationURL}`;
+              }
+
+              // For Citizen Home, use <a> tag with absolute URL
+              if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
+                return (
+                  <a
+                    href={targetPath}
+                    style={{ textDecoration: "none" }}
+                    key={index}
+                  >
+                    <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
+                      <MenuItem
+                        innerDivStyle={styles.defaultMenuItemStyle}
+                        style={{ whiteSpace: "initial" }}
+                        key={index}
+                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                        onClick={() => {
+                          document.title = item.name;
+                          toggleDrawer && toggleDrawer();
+                          window.location.href = targetPath;
+                        }}
+                        leftIcon={this.renderLeftIcon(iconLeft, item)}
+                        primaryText={
+                          <Label
+                            className="menuStyle"
+                            label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                          />
+                        }
+                      />
+                    </div>
+                  </a>
+                );
+              }
+
               return (
                 <Link
                   style={{ textDecoration: "none" }}
                   key={index}
-                  to={item.navigationURL === "/" ? `${item.navigationURL}` : `/${item.navigationURL}`}
+                  to={targetPath}
                 >
                   <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
                     {/* <Tooltip
@@ -423,11 +465,52 @@ class ActionMenuComp extends Component {
             }
             if (item.path && item.url && item.displayName.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
               if (item.navigationURL) {
+                let targetPath;
+                
+                if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
+                  targetPath = `${window.location.origin}/digit-ui/citizen`;
+                } else if (item.navigationURL === "/") {
+                  targetPath = item.navigationURL;
+                } else {
+                  targetPath = `${item.navigationURL}`;
+                }
+
+                // For Citizen Home, use <a> tag with absolute URL
+                if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
+                  return (
+                    <a
+                      href={targetPath}
+                      style={{ textDecoration: "none" }}
+                      key={index}
+                    >
+                      <div className="sideMenuItem">
+                        <MenuItem
+                          innerDivStyle={styles.defaultMenuItemStyle}
+                          style={{ whiteSpace: "initial" }}
+                          id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                          onClick={() => {
+                            document.title = item.displayName;
+                            toggleDrawer && toggleDrawer();
+                            window.location.href = targetPath;
+                          }}
+                          leftIcon={this.renderLeftIcon(iconLeft, item)}
+                          primaryText={
+                            <Label
+                              className="menuStyle"
+                              label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                            />
+                          }
+                        />
+                      </div>
+                    </a>
+                  );
+                }
+                
                 return (
                   <Link
                     style={{ textDecoration: "none" }}
                     key={index}
-                    to={item.navigationURL === "/" ? `${item.navigationURL}` : `/${item.navigationURL}`}
+                    to={targetPath}
                   >
                     <div className="sideMenuItem">
                       {/* <Tooltip

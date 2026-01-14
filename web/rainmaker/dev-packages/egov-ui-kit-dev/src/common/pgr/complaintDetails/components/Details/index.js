@@ -141,7 +141,7 @@ class Details extends Component {
                     })}
                 </div>
 
-                 {process.env.REACT_APP_NAME === "Citizen" && (
+                 
                 <div>
                   <div className="complaint-detail-detail-section-status row">
                     <Label className="col-xs-6  col-sm-4 col-md-2 status-color" label="DGR Grievence Id" />
@@ -161,6 +161,7 @@ class Details extends Component {
                       labelStyle={{ color: "inherit" }}
                     />
                   </div>
+                  {process.env.REACT_APP_NAME === "Citizen" && (
                   <div className="complaint-more-details-section" style={{ marginTop: '16px', marginBottom: '16px' }}>
                   <Button
                     primary={true}
@@ -180,9 +181,9 @@ class Details extends Component {
                       
                     }}
                   />
+                </div>)}
                 </div>
-                </div>
-                )}
+                
 
 
                 {addressDetail && !isEmpty(addressDetail) && (
