@@ -44,12 +44,12 @@ export default function Header() {
                         </div>
                         <div className="col-sm-12 col-md-6">
                             <div className="rightharder">
-                                <a href={`${baseUrl}/employee`}>
-                                    Employee
+                                <a href="https://mseva.lgpunjab.gov.in/employee/language-selection" target="_blank">
+                                    Employee Login
                                 </a>
                                 {" | "}
                                 <a href={`${baseUrl}/citizen`}>
-                                    Citizen
+                                    Citizen Login
                                 </a>
                                 <img id="rightimg" src={rightImage} />
                             </div>
