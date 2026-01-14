@@ -327,7 +327,6 @@ class ActionMenuComp extends Component {
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
-              debugger;
               let targetPath;
               
               if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
@@ -465,7 +464,6 @@ class ActionMenuComp extends Component {
               iconLeft = item.leftIcon.split(":");
             }
             if (item.path && item.url && item.displayName.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
-              debugger;
               if (item.navigationURL) {
                 let targetPath;
                 
