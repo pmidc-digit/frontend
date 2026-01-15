@@ -339,35 +339,29 @@ class ActionMenuComp extends Component {
                 targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
               }
 
-              // Special case: Citizen Home button
+              // Special case: Citizen Home button - use absolute navigation
               if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
                 return (
-                  <Link
-                    style={{ textDecoration: "none" }}
-                    key={index}
-                    to={targetPath}
-                  >
-                    <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
-                      <MenuItem
-                        innerDivStyle={styles.defaultMenuItemStyle}
-                        style={{ whiteSpace: "initial" }}
-                        key={index}
-                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                        onClick={() => {
-                          document.title = item.name;
-                          toggleDrawer && toggleDrawer();
-                          this.props.history.push(targetPath);
-                        }}
-                        leftIcon={this.renderLeftIcon(iconLeft, item)}
-                        primaryText={
-                          <Label
-                            className="menuStyle"
-                            label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                          />
-                        }
-                      />
-                    </div>
-                  </Link>
+                  <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
+                    <MenuItem
+                      innerDivStyle={styles.defaultMenuItemStyle}
+                      style={{ whiteSpace: "initial" }}
+                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                      onClick={() => {
+                        document.title = item.name;
+                        toggleDrawer && toggleDrawer();
+                        // Use absolute path for Citizen Home only
+                        window.location.href = `${window.location.origin}/digit-ui/citizen`;
+                      }}
+                      leftIcon={this.renderLeftIcon(iconLeft, item)}
+                      primaryText={
+                        <Label
+                          className="menuStyle"
+                          label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                        />
+                      }
+                    />
+                  </div>
                 );
               }
 
@@ -477,34 +471,29 @@ class ActionMenuComp extends Component {
                   targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
                 }
 
-                // Special case: Citizen Home button
+                // Special case: Citizen Home button - use absolute navigation
                 if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
                   return (
-                    <Link
-                      style={{ textDecoration: "none" }}
-                      key={index}
-                      to={targetPath}
-                    >
-                      <div className="sideMenuItem">
-                        <MenuItem
-                          innerDivStyle={styles.defaultMenuItemStyle}
-                          style={{ whiteSpace: "initial" }}
-                          id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                          onClick={() => {
-                            document.title = item.displayName;
-                            toggleDrawer && toggleDrawer();
-                            this.props.history.push(targetPath);
-                          }}
-                          leftIcon={this.renderLeftIcon(iconLeft, item)}
-                          primaryText={
-                            <Label
-                              className="menuStyle"
-                              label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                            />
-                          }
-                        />
-                      </div>
-                    </Link>
+                    <div className="sideMenuItem" key={index}>
+                      <MenuItem
+                        innerDivStyle={styles.defaultMenuItemStyle}
+                        style={{ whiteSpace: "initial" }}
+                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                        onClick={() => {
+                          document.title = item.displayName;
+                          toggleDrawer && toggleDrawer();
+                          // Use absolute path for Citizen Home only
+                          window.location.href = `${window.location.origin}/digit-ui/citizen`;
+                        }}
+                        leftIcon={this.renderLeftIcon(iconLeft, item)}
+                        primaryText={
+                          <Label
+                            className="menuStyle"
+                            label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                          />
+                        }
+                      />
+                    </div>
                   );
                 }
                 
