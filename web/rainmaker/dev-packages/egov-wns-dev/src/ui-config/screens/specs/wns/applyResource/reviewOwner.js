@@ -7,7 +7,7 @@ import {
   getDivider,
   getLabelWithValueForModifiedLabel
 } from "egov-ui-framework/ui-config/screens/specs/utils";
-import { convertEpochToDateAndHandleNA, handleNA,handleNAnew, handleRoadType } from '../../utils';
+import { convertEpochToDateAndHandleNA, handleNA, handleNAnew, handleRoadType } from '../../utils';
 import { changeStep } from "./footer";
 
 const getHeader = label => {
@@ -38,7 +38,7 @@ const roadCuttingChargesHeader = getHeader({
 });
 const roadCuttingChargesHeadersw = getHeader({
   labelKey: "Sewerage Road Cutting Charges"
- // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
+  // labelKey: "WS_ROAD_CUTTING_CHARGE_DETAILSsss"
 });
 
 
@@ -237,8 +237,10 @@ export const reviewMeterMakeReading = getLabelWithValueForModifiedLabel(
     labelName: "Initial Meter Reading",
     labelKey: "WS_ADDN_DETAILS_INITIAL_METER_MAKE"
   },
-  { jsonPath: "applyScreen.additionalDetails.meterMake",
-    callBack: handleNA },
+  {
+    jsonPath: "applyScreen.additionalDetails.meterMake",
+    callBack: handleNA
+  },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
@@ -252,8 +254,10 @@ export const reviewAverageMakeReading = getLabelWithValueForModifiedLabel(
     labelName: "Initial Meter Reading",
     labelKey: "WS_ADDN_DETAILS_INITIAL_AVERAGE_MAKE"
   },
-  { jsonPath: "applyScreen.additionalDetails.avarageMeterReading",
-    callBack: handleNA },
+  {
+    jsonPath: "applyScreen.additionalDetails.avarageMeterReading",
+    callBack: handleNA
+  },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
@@ -361,6 +365,16 @@ export const reviewSubUsageType = getLabelWithValueForModifiedLabel(
     callBack: handleNA
   }
 );
+export const relatedSWConnection = getLabelWithValueForModifiedLabel(
+  {
+    labelName: "Related SW Connection",
+    labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION"
+  },
+  {
+    jsonPath: "applyScreen.relatedSwConnection",
+
+  }
+);
 export const reviewUnitUsageType = getLabelWithValueForModifiedLabel(
   {
     labelName: "Unit Usage Type",
@@ -417,8 +431,10 @@ export const reviewPlumberName = getLabelWithValueForModifiedLabel(
     labelName: "Plumber Name",
     labelKey: "WS_ADDN_DETAILS_PLUMBER_NAME_LABEL"
   },
-  { jsonPath: "applyScreen.plumberInfo[0].name",
-    callBack: handleNA },
+  {
+    jsonPath: "applyScreen.plumberInfo[0].name",
+    callBack: handleNA
+  },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
@@ -528,8 +544,10 @@ export const reviewMeterId = getLabelWithValueForModifiedLabel(
     labelName: "Meter ID",
     labelKey: "WS_SERV_DETAIL_METER_ID"
   },
-  { jsonPath: "applyScreen.meterId",
-    callBack: handleNA },
+  {
+    jsonPath: "applyScreen.meterId",
+    callBack: handleNA
+  },
   {
     labelKey: "WS_OLD_LABEL_NAME"
   },
@@ -562,8 +580,9 @@ export const reviewInitialMeterReading = getLabelWithValueForModifiedLabel(
     labelName: "Initial Meter Reading",
     labelKey: "WS_ADDN_DETAILS_INITIAL_METER_READING"
   },
-  { jsonPath: "applyScreen.additionalDetails.initialMeterReading",
-    callBack: handleNAnew 
+  {
+    jsonPath: "applyScreen.additionalDetails.initialMeterReading",
+    callBack: handleNAnew
   },
   {
     labelKey: "WS_OLD_LABEL_NAME"
@@ -655,10 +674,11 @@ const connectionDetails = getCommonContainer({
   reviewWaterSource,
   // reviewWaterSubSource,
   reviewPipeSize,
-  
+
   reviewWaterClosets,
   reviewNumberOfToilets,
   reviewSubUsageType,
+  relatedSWConnection,
   reviewUnitUsageType
 });
 
@@ -675,26 +695,26 @@ const roadCuttingCharges = {
   props: {
     className: "applicant-summary",
     scheama: getCommonContainer({
-        reviewRoadType : getLabelWithValue(
-          {
-            labelName: "Road Type",
-            labelKey: "WS_ADDN_DETAIL_ROAD_TYPE"
-          },
-          {
-            jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
-            callBack: handleRoadType
-          }
-        ),
-        reviewArea : getLabelWithValue(
-          {
-            labelName: "Area (in sq ft)",
-            labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
-          },
-          {
-            jsonPath: "applyScreen.roadCuttingInfo[0].roadCuttingArea",
-            callBack: handleNA
-          }
-        ),
+      reviewRoadType: getLabelWithValue(
+        {
+          labelName: "Road Type",
+          labelKey: "WS_ADDN_DETAIL_ROAD_TYPE"
+        },
+        {
+          jsonPath: "applyScreen.roadCuttingInfo[0].roadType",
+          callBack: handleRoadType
+        }
+      ),
+      reviewArea: getLabelWithValue(
+        {
+          labelName: "Area (in sq ft)",
+          labelKey: "WS_ADDN_DETAILS_AREA_LABEL"
+        },
+        {
+          jsonPath: "applyScreen.roadCuttingInfo[0].roadCuttingArea",
+          callBack: handleNA
+        }
+      ),
     }),
     items: [],
     hasAddItem: false,
@@ -710,7 +730,7 @@ const roadCuttingExtraCharges = getCommonContainer({
   reviewCompositionFee,
   reviewUserCharges,
   reviewOthersFee,
-  
+
 });
 const roadCuttingChargessw = {
   uiFramework: "custom-containers",
@@ -718,26 +738,26 @@ const roadCuttingChargessw = {
   props: {
     className: "applicant-summary",
     scheama: getCommonContainer({
-        reviewRoadTypesw : getLabelWithValue(
-          {
-            labelName: "Road Type",
-            labelKey: "SW_ADDN_DETAIL_ROAD_TYPE"
-          },
-          {     
-            jsonPath: "applyScreen.roadCuttingInfosw[0].roadType",
-            callBack: handleRoadType
-          }
-        ),
-        reviewArea : getLabelWithValue(
-          {
-            labelName: "Area (in sq ft)",
-            labelKey: "SW_ADDN_DETAILS_AREA_LABEL"
-          },
-          {
-            jsonPath: "applyScreen.roadCuttingInfosw[0].roadCuttingArea",
-            callBack: handleNA
-          }
-        ),
+      reviewRoadTypesw: getLabelWithValue(
+        {
+          labelName: "Road Type",
+          labelKey: "SW_ADDN_DETAIL_ROAD_TYPE"
+        },
+        {
+          jsonPath: "applyScreen.roadCuttingInfosw[0].roadType",
+          callBack: handleRoadType
+        }
+      ),
+      reviewArea: getLabelWithValue(
+        {
+          labelName: "Area (in sq ft)",
+          labelKey: "SW_ADDN_DETAILS_AREA_LABEL"
+        },
+        {
+          jsonPath: "applyScreen.roadCuttingInfosw[0].roadCuttingArea",
+          callBack: handleNA
+        }
+      ),
     }),
     items: [],
     hasAddItem: false,
@@ -750,7 +770,7 @@ const roadCuttingChargessw = {
 }
 
 export const reviewCompositionFeesw = getLabelWithValueForModifiedLabel(
-  
+
   {
     labelName: "Area (in sq ft)",
     labelKey: "SW_ADDN_DETAILS_COMPOSITION_LABEL"

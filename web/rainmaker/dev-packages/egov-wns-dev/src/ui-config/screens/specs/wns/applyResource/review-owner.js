@@ -18,7 +18,7 @@ import {
   handleScreenConfigurationFieldChange as handleField,
   prepareFinalObject
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { convertEpochToDateAndHandleNA, handleNA,handleNAnew, handleRoadType } from "../../utils";
+import { convertEpochToDateAndHandleNA, handleNA, handleNAnew, handleRoadType } from "../../utils";
 import { serviceConst } from "../../../../../ui-utils/commons";
 
 
@@ -295,9 +295,10 @@ export const activateDetailsMeter = {
     {
       jsonPath: "WaterConnection[0].connectionExecutionDate",
       callBack: convertEpochToDateAndHandleNA
-    }, {
-    labelKey: "WS_OLD_LABEL_NAME"
-  },
+    },
+    {
+      labelKey: "WS_OLD_LABEL_NAME"
+    },
     {
       jsonPath: "WaterConnectionOld[0].connectionExecutionDate",
       callBack: convertEpochToDateAndHandleNA
@@ -319,6 +320,7 @@ export const activateDetailsMeter = {
       callBack: handleNA
     }
   ),
+
   reviewMeterInstallationDate: getLabelWithValueForModifiedLabel(
     {
       labelName: "Meter Installation Date",
@@ -407,8 +409,10 @@ export const activationDetailsContainer = {
     //   }
     // ),
     reviewConnectionExecutionDate: getDateField({
-      label: { labelName: "Connection Execution Date",
-            labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"},
+      label: {
+        labelName: "Connection Execution Date",
+        labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE"
+      },
 
       gridDefination: {
         xs: 12,
@@ -432,7 +436,7 @@ export const activationDetailsContainer = {
       },
       sourceJsonPath: "WaterConnection[0].meterId",
       required: true,
-   //   pattern: /^[a-z0-9]+$/i,
+      //   pattern: /^[a-z0-9]+$/i,
       errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       jsonPath: "WaterConnection[0].meterId"
     }),
@@ -498,78 +502,78 @@ export const activationDetailsContainer = {
       jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading"
     }),
     button: getCommonContainer({
-			buttonContainer: getCommonContainer({
-					searchButton: {
-					uiFramework: "custom-atoms-local",
-					moduleName: "egov-pt",
-					componentPath: "Button",
-					gridDefination: {
-						xs: 12,
-						sm: 6
-					},
-					props: {
-						variant: "contained",
-						className: "public-domain-search-buttons",
-						style: {
-							color: "white",
-							margin: "8px",
-							backgroundColor: "rgb(254, 122, 81)",
-							borderRadius: "2px",
-							width: "220px",
-							height: "48px"
-						}
-					},
-					children: {
-						buttonLabel: getLabel({
-							labelName: "Update",
-							labelKey: "Update"
-						})
-					},
-					onClickDefination: {
-						action: "condition",
-						callBack:  async(state, dispatch) => {
+      buttonContainer: getCommonContainer({
+        searchButton: {
+          uiFramework: "custom-atoms-local",
+          moduleName: "egov-pt",
+          componentPath: "Button",
+          gridDefination: {
+            xs: 12,
+            sm: 6
+          },
+          props: {
+            variant: "contained",
+            className: "public-domain-search-buttons",
+            style: {
+              color: "white",
+              margin: "8px",
+              backgroundColor: "rgb(254, 122, 81)",
+              borderRadius: "2px",
+              width: "220px",
+              height: "48px"
+            }
+          },
+          children: {
+            buttonLabel: getLabel({
+              labelName: "Update",
+              labelKey: "Update"
+            })
+          },
+          onClickDefination: {
+            action: "condition",
+            callBack: async (state, dispatch) => {
               let tenantid = getQueryArg(window.location.href, "tenantId");
-                let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
-                let serviceType = getQueryArg(window.location.href, "service");
-                
-               // console.log(state.screenConfiguration.preparedFinalObject.WaterConnection,"ddd");
-                let WaterConnection =[];
-               
-                WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
-               //  state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
-               state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
+              let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
+              let serviceType = getQueryArg(window.location.href, "service");
+
+              // console.log(state.screenConfiguration.preparedFinalObject.WaterConnection,"ddd");
+              let WaterConnection = [];
+
+              WaterConnection = state.screenConfiguration.preparedFinalObject.WaterConnection[0];
+              //  state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.meterMake);
+              state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.initialMeterReading);
               state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].connectionExecutionDate).getTime();
-                state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate).getTime();
-                state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading);
-               let mydatadum = [
-                  { key: "tenantId", value: tenantid },
-                  { key: "applicationNumber", value: applicationNumber }
-                ];
-              
-                const responseWater = await httpRequest(
-                  "post",
-                  "/ws-services/wc/_search",
-                  "_search",
-                  mydatadum
-                );
-                
-                if (responseWater.WaterConnection && responseWater.WaterConnection.length > 0) {
+              state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate = new Date(state.screenConfiguration.preparedFinalObject.WaterConnection[0].meterInstallationDate).getTime();
+              state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading = parseInt(state.screenConfiguration.preparedFinalObject.WaterConnection[0].additionalDetails.avarageMeterReading);
+              let mydatadum = [
+                { key: "tenantId", value: tenantid },
+                { key: "applicationNumber", value: applicationNumber }
+              ];
+
+              const responseWater = await httpRequest(
+                "post",
+                "/ws-services/wc/_search",
+                "_search",
+                mydatadum
+              );
+
+              if (responseWater.WaterConnection && responseWater.WaterConnection.length > 0) {
                 //  WaterConnection.push(responseWater.WaterConnection[0]);"isworkflowdisabled":true,
 
-                }
-                dispatch(prepareFinalObject("WaterConnection[0].isworkflowdisabled", true));
-                WaterConnection
-               if(serviceType == "WATER"){
-                 let responce = await httpRequest("post","/ws-services/wc/_update","_update", [], { WaterConnection: WaterConnection });
-                 if(responce.WaterConnection.length > 0 ){
+              }
+              dispatch(prepareFinalObject("WaterConnection[0].isworkflowdisabled", true));
+              WaterConnection
+              if (serviceType == "WATER") {
+                let responce = await httpRequest("post", "/ws-services/wc/_update", "_update", [], { WaterConnection: WaterConnection });
+                if (responce.WaterConnection.length > 0) {
                   alert("Updated Meter Details");
-                 }
                 }
+              }
             }
-					}
-				}
-			})
-		}),
+          }
+        }
+      })
+    }),
   })
 };
 export const activateDetailsNonMeter = {
@@ -783,6 +787,22 @@ export const connectionWater = {
     {
       jsonPath: "WaterConnection[0].additionalDetails.waterSubUsageType",
       callBack: handleNA
+    }
+  ),
+  relatedSWConnection: getLabelWithValueForModifiedLabel(
+    {
+      labelName: "Related SW Connection",
+      labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION"
+    },
+    {
+      jsonPath: "WaterConnection[0].relatedSwConnection",
+
+    }, {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].relatedSwConnection",
+
     }
   ),
   reviewUnitUsageType: getLabelWithValueForModifiedLabel(

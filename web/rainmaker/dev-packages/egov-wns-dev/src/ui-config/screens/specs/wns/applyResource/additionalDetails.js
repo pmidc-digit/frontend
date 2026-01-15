@@ -12,9 +12,10 @@ import {
   getCommonGrayCard,
   getCommonSubHeader
 } from "egov-ui-framework/ui-config/screens/specs/utils";
+//import { getTenantId } from "../../utils/localStorageUtils";
 // import { roadcuthidevb } from "./functions";
 import commonConfig from "config/common.js";
-import { getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
+import { getTenantIdCommon, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import {
   handleScreenConfigurationFieldChange as handleField,
   prepareFinalObject
@@ -340,11 +341,11 @@ export const additionDetails = getCommonCard({
           // pattern: /^[0-9]*$/i,
           errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG"
         }),
-        
+
         afterFieldChange: async (action, state, dispatch) => {
           let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.connectionCategory");
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
-          
+
           if (ConectionCategory === "REGULARIZED" || ConectionCategory === 'DISCHARGE_CONNECTION') {
             dispatch(
               handleField(
@@ -883,6 +884,24 @@ export const additionDetails = getCommonCard({
         pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "applyScreen.additionalDetails.initialMeterReading"
+      }),
+      relatedSWConnection: getTextField({
+        label: {
+          labelKey: "Related Sewerage Connection"
+        },
+        placeholder: {
+          labelKey: "Related Sewerage Connection"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+        required: false,
+        //pattern: /^[a-z0-9]+$/i,
+        visible: getTenantId() == "pb.amritsar" ? true : false,
+        //visible: false,
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.relatedSwConnection"
       }),
       ...WSMeterMakes,
 
