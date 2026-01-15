@@ -10,7 +10,7 @@ import Menu from "material-ui/Menu";
 import MenuItem from "material-ui/MenuItem";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link,withRouter } from "react-router-dom";
 import "./index.css";
 
 const styles = {
@@ -329,21 +329,23 @@ class ActionMenuComp extends Component {
             if (item.navigationURL && item.navigationURL !== "newTab") {
               let targetPath;
               
+              // Special handling ONLY for Citizen Home button
               if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                targetPath = `${window.location.origin}/digit-ui/citizen`;
+                targetPath = `/digit-ui/citizen`;
               } else if (item.navigationURL === "/") {
-                targetPath = item.navigationURL;
+                targetPath = "/";
               } else {
-                targetPath = `${item.navigationURL}`;
+                // For all other internal navigation, use navigationURL as-is
+                targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
               }
 
-              // For Citizen Home, use <a> tag with absolute URL
+              // Special case: Citizen Home button
               if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
                 return (
-                  <a
-                    href={targetPath}
+                  <Link
                     style={{ textDecoration: "none" }}
                     key={index}
+                    to={targetPath}
                   >
                     <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
                       <MenuItem
@@ -354,7 +356,7 @@ class ActionMenuComp extends Component {
                         onClick={() => {
                           document.title = item.name;
                           toggleDrawer && toggleDrawer();
-                          window.location.href = targetPath;
+                          this.props.history.push(targetPath);
                         }}
                         leftIcon={this.renderLeftIcon(iconLeft, item)}
                         primaryText={
@@ -365,7 +367,7 @@ class ActionMenuComp extends Component {
                         }
                       />
                     </div>
-                  </a>
+                  </Link>
                 );
               }
 
@@ -387,23 +389,21 @@ class ActionMenuComp extends Component {
                       key={index}
                       id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
                       onClick={() => {
-                        //  localStorageSet("menuPath", item.path);
                         if (item.navigationURL === "tradelicence/apply") {
                           this.props.setRequiredDocumentFlag()
                         }
 
                         document.title = item.name;
-                        if (item.navigationURL && item.navigationURL.includes('digit-ui')) {
-                          window.location.href = item.navigationURL
-                          return;
-                        }
-                        else {
-                          updateActiveRoute(item.path, item.name);
-                        }
-
+                        
+                        // Use history.push for all internal navigation
+                        this.props.history.push(targetPath);
+                        updateActiveRoute(item.path, item.name);
+                        
                         toggleDrawer && toggleDrawer();
+                        
+                        // Handle integration reload if needed
                         if (window.location.href.indexOf(item.navigationURL) > 0 && item.navigationURL.startsWith("integration")) {
-                          window.location.reload();
+                          this.props.history.go(0);
                         }
                       }}
                       leftIcon={this.renderLeftIcon(iconLeft, item)}
@@ -467,21 +467,23 @@ class ActionMenuComp extends Component {
               if (item.navigationURL) {
                 let targetPath;
                 
+                // Special handling ONLY for Citizen Home button
                 if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                  targetPath = `${window.location.origin}/digit-ui/citizen`;
+                  targetPath = `/digit-ui/citizen`;
                 } else if (item.navigationURL === "/") {
-                  targetPath = item.navigationURL;
+                  targetPath = "/";
                 } else {
-                  targetPath = `${item.navigationURL}`;
+                  // For all other internal navigation, use navigationURL as-is
+                  targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
                 }
 
-                // For Citizen Home, use <a> tag with absolute URL
+                // Special case: Citizen Home button
                 if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
                   return (
-                    <a
-                      href={targetPath}
+                    <Link
                       style={{ textDecoration: "none" }}
                       key={index}
+                      to={targetPath}
                     >
                       <div className="sideMenuItem">
                         <MenuItem
@@ -491,7 +493,7 @@ class ActionMenuComp extends Component {
                           onClick={() => {
                             document.title = item.displayName;
                             toggleDrawer && toggleDrawer();
-                            window.location.href = targetPath;
+                            this.props.history.push(targetPath);
                           }}
                           leftIcon={this.renderLeftIcon(iconLeft, item)}
                           primaryText={
@@ -502,7 +504,7 @@ class ActionMenuComp extends Component {
                           }
                         />
                       </div>
-                    </a>
+                    </Link>
                   );
                 }
                 
@@ -525,6 +527,7 @@ class ActionMenuComp extends Component {
                         onClick={() => {
                           document.title = item.displayName;
                           toggleDrawer && toggleDrawer();
+                          this.props.history.push(targetPath);
                           updateActiveRoute(item.path, item.displayName);
                         }}
                         leftIcon={this.renderLeftIcon(iconLeft, item)}
@@ -673,7 +676,10 @@ const mapDispatchToProps = (dispatch) => ({
   fetchLocalizationLabel: (locale, moduleName, tenantId) => dispatch(fetchLocalizationLabel(locale, moduleName, tenantId)),
   setRequiredDocumentFlag: () => dispatch(prepareFinalObject("isRequiredDocuments", true))
 });
-export default connect(
-  null,
-  mapDispatchToProps
-)(ActionMenuComp);
+// export default connect(
+//   null,
+//   mapDispatchToProps
+// )(ActionMenuComp);
+export default withRouter(
+  connect(null, mapDispatchToProps)(ActionMenuComp)
+);
