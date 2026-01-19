@@ -411,19 +411,30 @@ class TableData extends Component {
         })
 
         if (endpoints.length > 0) {
-          const resp = await multiHttpRequest(endpoints, "search", queries, requestBodies)
-          resp && resp.map(res => {
-            if (res && res.Localities) {
-              res.Localities.forEach(loc => {
-                this.localityCache[loc.referencenumber] = loc;
-              });
-            } else if (res && res.Properties) {
-              res.Properties.forEach(property => {
-                this.localityCache[property.acknowldgementNumber] = {
-                  referencenumber: property.acknowldgementNumber,
-                  locality: property.address.locality.code
-                };
-              });
+            // Call each endpoint individually to handle partial failures
+          const responses = await Promise.allSettled(
+            endpoints.map((endpoint, index) => 
+              httpRequest(endpoint, "search", queries[index], requestBodies[index])
+            )
+          );
+          
+          // Process successful responses
+          responses.forEach((result, index) => {
+            if (result.status === "fulfilled") {
+              const res = result.value;
+              if (res && res.Localities) {
+                res.Localities.forEach(loc => {
+                  this.localityCache[loc.referencenumber] = loc;
+                });
+              } else if (res && res.Properties) {
+                res.Properties.forEach(property => {
+                  this.localityCache[property.acknowldgementNumber] = {
+                    referencenumber: property.acknowldgementNumber,
+                    locality: property.address.locality.code
+                  };
+                });
+              }
+            
             }
           });
         }
@@ -457,7 +468,8 @@ class TableData extends Component {
         ),
       };
 
-      let row3 = { text: item.assignes != null ? <Label label={item.assignes[0].name} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
+      // let row3 = { text: item.assignes != null ? <Label label={item.assignes[0].name} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
+      let row3 = { text: item.assigner && item.assigner.name ? <Label label={item.assigner.name} color="#000000" /> : <Label label={"NA"} color="#000000" /> };
       let row4 = { text: Math.round(sla), badge: true };
       let row5 = { historyButton: true };
 
@@ -699,7 +711,7 @@ class TableData extends Component {
         "WF_INBOX_HEADER_APPLICATION_NO",
         "WF_INBOX_HEADER_LOCALITY",
         "WF_INBOX_HEADER_STATUS",
-        "WF_INBOX_HEADER_CURRENT_OWNER",
+        "WF_INBOX_HEADER_CREATED_BY",
         "WF_INBOX_HEADER_SLA_DAYS_REMAINING",
       ];
       inboxData[0].headers = headersList;
@@ -784,7 +796,7 @@ class TableData extends Component {
         "WF_INBOX_HEADER_APPLICATION_NO",
         "WF_INBOX_HEADER_LOCALITY",
         "WF_INBOX_HEADER_STATUS",
-        "WF_INBOX_HEADER_CURRENT_OWNER",
+        "WF_INBOX_HEADER_CREATED_BY",
         "WF_INBOX_HEADER_SLA_DAYS_REMAINING",
       ];
       inboxData[0].headers = headersList;
