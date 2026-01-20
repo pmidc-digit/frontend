@@ -258,6 +258,16 @@ class ActionMenuComp extends Component {
     }
   }
 
+  getBasePath() {
+    const appName = process.env.REACT_APP_NAME;
+    if (appName === "Citizen") {
+      return "/digit-ui/citizen";
+    } else if (appName === "Employee") {
+      return "/digit-ui/employee";
+    }
+    return "";
+  }
+
   render() {
     let { role, actionListArr, activeRoutePath, updateActiveRoute, toggleDrawer, menuDrawerOpen } = this.props;
     let { searchText, path, menuItems } = this.state;
@@ -332,11 +342,19 @@ class ActionMenuComp extends Component {
               // Special handling ONLY for Citizen Home button
               if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
                 targetPath = `/digit-ui/citizen`;
-              } else if (item.navigationURL === "/") {
-                targetPath = "/";
               } else {
-                // For all other internal navigation, use navigationURL as-is
-                targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
+                // For all other navigation, ensure absolute path (add leading / if not present)
+                // This prevents React Router from treating it as relative to current path
+                if (item.navigationURL.startsWith('http://') || item.navigationURL.startsWith('https://')) {
+                  // External URL, use as-is
+                  targetPath = item.navigationURL;
+                } else if (item.navigationURL.startsWith('/')) {
+                  // Already absolute path
+                  targetPath = item.navigationURL;
+                } else {
+                  // Relative path, make it absolute
+                  targetPath = `/${item.navigationURL}`;
+                }
               }
 
               // Special case: Citizen Home button - use absolute navigation
@@ -464,11 +482,19 @@ class ActionMenuComp extends Component {
                 // Special handling ONLY for Citizen Home button
                 if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
                   targetPath = `/digit-ui/citizen`;
-                } else if (item.navigationURL === "/") {
-                  targetPath = "/";
                 } else {
-                  // For all other internal navigation, use navigationURL as-is
-                  targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
+                  // For all other navigation, ensure absolute path (add leading / if not present)
+                  // This prevents React Router from treating it as relative to current path
+                  if (item.navigationURL.startsWith('http://') || item.navigationURL.startsWith('https://')) {
+                    // External URL, use as-is
+                    targetPath = item.navigationURL;
+                  } else if (item.navigationURL.startsWith('/')) {
+                    // Already absolute path
+                    targetPath = item.navigationURL;
+                  } else {
+                    // Relative path, make it absolute
+                    targetPath = `/${item.navigationURL}`;
+                  }
                 }
 
                 // Special case: Citizen Home button - use absolute navigation
