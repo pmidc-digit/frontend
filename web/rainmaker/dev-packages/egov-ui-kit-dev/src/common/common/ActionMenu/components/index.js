@@ -266,7 +266,10 @@ class ActionMenuComp extends Component {
     }
     
     // External URLs - use as-is
-    if (navigationURL.startsWith('http://') || navigationURL.startsWith('https://')) {
+    // if (navigationURL.startsWith('http://') || navigationURL.startsWith('https://')) {
+    //   return navigationURL;
+    // }
+    if (navigationURL.startsWith('https://')) {
       return navigationURL;
     }
     
