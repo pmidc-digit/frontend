@@ -383,6 +383,36 @@ class ActionMenuComp extends Component {
                 );
               }
 
+              // For digit-ui paths, use absolute navigation to avoid base path duplication
+              if (targetPath.startsWith('/digit-ui/')) {
+                return (
+                  <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
+                    <MenuItem
+                      innerDivStyle={styles.defaultMenuItemStyle}
+                      style={{ whiteSpace: "initial" }}
+                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                      onClick={() => {
+                        if (item.navigationURL === "tradelicence/apply") {
+                          this.props.setRequiredDocumentFlag()
+                        }
+                        document.title = item.name;
+                        toggleDrawer && toggleDrawer();
+                        // Use absolute navigation for digit-ui paths
+                        window.location.pathname = targetPath;
+                        updateActiveRoute(item.path, item.name);
+                      }}
+                      leftIcon={this.renderLeftIcon(iconLeft, item)}
+                      primaryText={
+                        <Label
+                          className="menuStyle"
+                          label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                        />
+                      }
+                    />
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   style={{ textDecoration: "none" }}
@@ -510,6 +540,33 @@ class ActionMenuComp extends Component {
                           toggleDrawer && toggleDrawer();
                           // Use absolute path for Citizen Home only
                           window.location.href = `${window.location.origin}/digit-ui/citizen`;
+                        }}
+                        leftIcon={this.renderLeftIcon(iconLeft, item)}
+                        primaryText={
+                          <Label
+                            className="menuStyle"
+                            label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                          />
+                        }
+                      />
+                    </div>
+                  );
+                }
+
+                // For digit-ui paths, use absolute navigation to avoid base path duplication
+                if (targetPath.startsWith('/digit-ui/')) {
+                  return (
+                    <div className="sideMenuItem" key={index}>
+                      <MenuItem
+                        innerDivStyle={styles.defaultMenuItemStyle}
+                        style={{ whiteSpace: "initial" }}
+                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                        onClick={() => {
+                          document.title = item.displayName;
+                          toggleDrawer && toggleDrawer();
+                          // Use absolute navigation for digit-ui paths
+                          window.location.pathname = targetPath;
+                          updateActiveRoute(item.path, item.displayName);
                         }}
                         leftIcon={this.renderLeftIcon(iconLeft, item)}
                         primaryText={
