@@ -258,15 +258,58 @@ class ActionMenuComp extends Component {
     }
   }
 
-  getBasePath() {
-    const appName = process.env.REACT_APP_NAME;
-    if (appName === "Citizen") {
+  // Helper: Normalize navigation path
+  getTargetPath = (navigationURL) => {
+    // Special handling for Citizen Home button
+    if (navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
       return "/digit-ui/citizen";
-    } else if (appName === "Employee") {
-      return "/digit-ui/employee";
     }
-    return "";
-  }
+    
+    // External URLs - use as-is
+    if (navigationURL.startsWith('http://') || navigationURL.startsWith('https://')) {
+      return navigationURL;
+    }
+    
+    // Already absolute path
+    if (navigationURL.startsWith('/')) {
+      return navigationURL;
+    }
+    
+    // Relative path - make it absolute
+    return `/${navigationURL}`;
+  };
+
+  // Helper: Render a clickable menu item for digit-ui paths
+  renderClickableMenuItem = (item, index, targetPath, itemName, isActive = false) => {
+    const { toggleDrawer, updateActiveRoute } = this.props;
+    const iconLeft = item.leftIcon?.split(":");
+
+    return (
+      <div className={`sideMenuItem ${isActive ? "selected" : ""}`} key={index}>
+        <MenuItem
+          innerDivStyle={styles.defaultMenuItemStyle}
+          style={{ whiteSpace: "initial" }}
+          id={`${itemName.toUpperCase().replace(/[\s]/g, "-")}-${index}`}
+          onClick={() => {
+            if (item.navigationURL === "tradelicence/apply") {
+              this.props.setRequiredDocumentFlag();
+            }
+            document.title = itemName;
+            toggleDrawer && toggleDrawer();
+            window.location.pathname = targetPath;
+            updateActiveRoute(item.path, itemName);
+          }}
+          leftIcon={this.renderLeftIcon(iconLeft, item)}
+          primaryText={
+            <Label
+              className="menuStyle"
+              label={itemName ? `ACTION_TEST_${itemName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+            />
+          }
+        />
+      </div>
+    );
+  };
 
   render() {
     let { role, actionListArr, activeRoutePath, updateActiveRoute, toggleDrawer, menuDrawerOpen } = this.props;
@@ -337,30 +380,13 @@ class ActionMenuComp extends Component {
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
-              let targetPath;
-              
-              // Special handling ONLY for Citizen Home button
-              if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                targetPath = `/digit-ui/citizen`;
-              } else {
-                // For all other navigation, ensure absolute path (add leading / if not present)
-                // This prevents React Router from treating it as relative to current path
-                if (item.navigationURL.startsWith('http://') || item.navigationURL.startsWith('https://')) {
-                  // External URL, use as-is
-                  targetPath = item.navigationURL;
-                } else if (item.navigationURL.startsWith('/')) {
-                  // Already absolute path
-                  targetPath = item.navigationURL;
-                } else {
-                  // Relative path, make it absolute
-                  targetPath = `/${item.navigationURL}`;
-                }
-              }
+              const targetPath = this.getTargetPath(item.navigationURL);
+              const isActive = activeItmem == item.name;
 
               // Special case: Citizen Home button - use absolute navigation
               if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
                 return (
-                  <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
+                  <div className={`sideMenuItem ${isActive ? "selected" : ""}`} key={index}>
                     <MenuItem
                       innerDivStyle={styles.defaultMenuItemStyle}
                       style={{ whiteSpace: "initial" }}
@@ -385,32 +411,7 @@ class ActionMenuComp extends Component {
 
               // For digit-ui paths, use absolute navigation to avoid base path duplication
               if (targetPath.startsWith('/digit-ui/')) {
-                return (
-                  <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
-                    <MenuItem
-                      innerDivStyle={styles.defaultMenuItemStyle}
-                      style={{ whiteSpace: "initial" }}
-                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                      onClick={() => {
-                        if (item.navigationURL === "tradelicence/apply") {
-                          this.props.setRequiredDocumentFlag()
-                        }
-                        document.title = item.name;
-                        toggleDrawer && toggleDrawer();
-                        // Use absolute navigation for digit-ui paths
-                        window.location.pathname = targetPath;
-                        updateActiveRoute(item.path, item.name);
-                      }}
-                      leftIcon={this.renderLeftIcon(iconLeft, item)}
-                      primaryText={
-                        <Label
-                          className="menuStyle"
-                          label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                        />
-                      }
-                    />
-                  </div>
-                );
+                return this.renderClickableMenuItem(item, index, targetPath, item.name, isActive);
               }
 
               return (
@@ -507,25 +508,7 @@ class ActionMenuComp extends Component {
             }
             if (item.path && item.url && item.displayName.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
               if (item.navigationURL) {
-                let targetPath;
-                
-                // Special handling ONLY for Citizen Home button
-                if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                  targetPath = `/digit-ui/citizen`;
-                } else {
-                  // For all other navigation, ensure absolute path (add leading / if not present)
-                  // This prevents React Router from treating it as relative to current path
-                  if (item.navigationURL.startsWith('http://') || item.navigationURL.startsWith('https://')) {
-                    // External URL, use as-is
-                    targetPath = item.navigationURL;
-                  } else if (item.navigationURL.startsWith('/')) {
-                    // Already absolute path
-                    targetPath = item.navigationURL;
-                  } else {
-                    // Relative path, make it absolute
-                    targetPath = `/${item.navigationURL}`;
-                  }
-                }
+                const targetPath = this.getTargetPath(item.navigationURL);
 
                 // Special case: Citizen Home button - use absolute navigation
                 if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
@@ -555,29 +538,7 @@ class ActionMenuComp extends Component {
 
                 // For digit-ui paths, use absolute navigation to avoid base path duplication
                 if (targetPath.startsWith('/digit-ui/')) {
-                  return (
-                    <div className="sideMenuItem" key={index}>
-                      <MenuItem
-                        innerDivStyle={styles.defaultMenuItemStyle}
-                        style={{ whiteSpace: "initial" }}
-                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                        onClick={() => {
-                          document.title = item.displayName;
-                          toggleDrawer && toggleDrawer();
-                          // Use absolute navigation for digit-ui paths
-                          window.location.pathname = targetPath;
-                          updateActiveRoute(item.path, item.displayName);
-                        }}
-                        leftIcon={this.renderLeftIcon(iconLeft, item)}
-                        primaryText={
-                          <Label
-                            className="menuStyle"
-                            label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                          />
-                        }
-                      />
-                    </div>
-                  );
+                  return this.renderClickableMenuItem(item, index, targetPath, item.displayName);
                 }
                 
                 return (
