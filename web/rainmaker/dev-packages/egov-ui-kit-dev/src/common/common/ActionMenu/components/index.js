@@ -10,30 +10,11 @@ import Menu from "material-ui/Menu";
 import MenuItem from "material-ui/MenuItem";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link,withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import "./index.css";
 
 
-const toRedirect = (item) => {
-  console.log("item in toRedirect",item);
-  debugger;
-  const hostname = window.location.origin;
-  const navigationURL = item.navigationURL;
-if(item.name === "Home" && process.env.REACT_APP_NAME === "Citizen"){
-  console.log("hostname",`${hostname}/digit-ui/citizen`);
-    return `${hostname}/digit-ui/citizen`;
-}
-else{
 
-  if (navigationURL && navigationURL.includes('digit-ui')) {
-    return `${hostname}${navigationURL.startsWith('/') ? navigationURL : '/' + navigationURL}`;
-  }
-  
-  // return navigationURL;
-    return navigationURL.startsWith('/') ? navigationURL : `/${navigationURL}`;
-}
-  
-};
 
 const styles = {
   inputStyle: {
@@ -208,7 +189,7 @@ class ActionMenuComp extends Component {
     for (var i = 0; i < (actionList && actionList.length); i++) {
       if (actionList[i].path !== "") {
         if (path && !path.parentMenu && actionList[i].path.startsWith(path + ".")) {
-          let splitArray =  actionList[i].path && actionList[i].path.split(path + ".")[1].split(".");
+          let splitArray = actionList[i].path && actionList[i].path.split(path + ".")[1].split(".");
           let leftIconArray = actionList[i] && actionList[i].leftIcon && actionList[i].leftIcon.split(".");
           let leftIcon =
             leftIconArray &&
@@ -262,7 +243,26 @@ class ActionMenuComp extends Component {
     let { setRoute } = this.props;
     setRoute(route);
   };
+  toRedirect = (item) => {
+    //console.log("item in toRedirect", item);
+    //debugger;
+    const hostname = window.location.origin;
+    const navigationURL = item.navigationURL;
+    if (item.name === "Home" && process.env.REACT_APP_NAME === "Citizen") {
+      //console.log("hostname", `${hostname}/digit-ui/citizen`);
+      window.location.replace(`${hostname}/digit-ui/citizen`);
+    }
+    else {
 
+      if (navigationURL && navigationURL.includes('digit-ui')) {
+        window.location.replace(`${hostname}${navigationURL.startsWith('/') ? navigationURL : '/' + navigationURL}`);
+      }
+
+      // return navigationURL;
+      return this.props.history.push(navigationURL.startsWith('/') ? navigationURL : `/${navigationURL}`);
+    }
+
+  };
   renderLeftIcon(leftIcon = [], item) {
     let { menuDrawerOpen } = this.props;
     if (leftIcon.length >= 2) {
@@ -287,19 +287,19 @@ class ActionMenuComp extends Component {
     let actionList = actionListArr;
     let menuTitle = path.split(".");
     let activeItmem = localStorageGet("menuName");
-    if(process.env.REACT_APP_NAME === "Citizen"){
-      if(JSON.parse(getUserInfo()).roles.some((role)=> role.code === 'PESCO')){
-          menuItems = menuItems.filter(menu => menu.name.toUpperCase() === 'SWACH');
-          //menuItems = filterMenuItem;
-      }else{
-          menuItems = menuItems.filter(menu => menu.name.toUpperCase() !== 'SWACH');
+    if (process.env.REACT_APP_NAME === "Citizen") {
+      if (JSON.parse(getUserInfo()).roles.some((role) => role.code === 'PESCO')) {
+        menuItems = menuItems.filter(menu => menu.name.toUpperCase() === 'SWACH');
+        //menuItems = filterMenuItem;
+      } else {
+        menuItems = menuItems.filter(menu => menu.name.toUpperCase() !== 'SWACH');
       }
     }
     const showMenuItem = () => {
       const navigationURL = window.location.href.split("/").pop();
       if (searchText.length == 0) {
         return menuItems.map((item, index) => {
-          
+
           let iconLeft;
           if (item.leftIcon) {
             iconLeft = item.leftIcon.split(":");
@@ -349,7 +349,7 @@ class ActionMenuComp extends Component {
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
-              let targetPath = toRedirect(item);
+              //let targetPath = toRedirect(item);
 
               return (
                 <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
@@ -366,15 +366,7 @@ class ActionMenuComp extends Component {
                       updateActiveRoute(item.path, item.name);
                       
                       // Conditional navigation: digit-ui → href, else → history.push
-                      if (item.navigationURL.includes('digit-ui')) {
-                        window.location.href = targetPath;
-                      } else {
-                        this.props.history.push(targetPath);
-                      }
-                      
-                      if (window.location.href.indexOf(item.navigationURL) > 0 && item.navigationURL.startsWith("integration")) {
-                        this.props.history.go(0);
-                      }
+                      this.toRedirect(item)
                     }}
                     leftIcon={this.renderLeftIcon(iconLeft, item)}
                     primaryText={
@@ -431,7 +423,7 @@ class ActionMenuComp extends Component {
             }
             if (item.path && item.url && item.displayName.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
               if (item.navigationURL) {
-                let targetPath = toRedirect(item);
+               // let targetPath = toRedirect(item);
 
                 return (
                   <div className="sideMenuItem" key={index}>
@@ -440,16 +432,7 @@ class ActionMenuComp extends Component {
                       style={{ whiteSpace: "initial" }}
                       id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
                       onClick={() => {
-                        document.title = item.displayName;
-                        toggleDrawer && toggleDrawer();
-                        updateActiveRoute(item.path, item.displayName);
-                        
-                        // Conditional navigation: digit-ui → href, else → history.push
-                        if (item.navigationURL.includes('digit-ui')) {
-                          window.location.href = targetPath;
-                        } else {
-                          this.props.history.push(targetPath);
-                        }
+                        this.toRedirect(item)
                       }}
                       leftIcon={this.renderLeftIcon(iconLeft, item)}
                       primaryText={
@@ -468,7 +451,7 @@ class ActionMenuComp extends Component {
       }
     };
 
-    return actionList ? (       
+    return actionList ? (
       <div ref={this.setWrapperRef}>
         <div className="whiteColor" />
         <div className="menu-item-title">
