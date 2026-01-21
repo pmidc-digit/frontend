@@ -285,7 +285,7 @@ class ActionMenuComp extends Component {
   // Helper: Render a clickable menu item for digit-ui paths
   renderClickableMenuItem = (item, index, targetPath, itemName, isActive = false) => {
     const { toggleDrawer, updateActiveRoute } = this.props;
-    const iconLeft = item.leftIcon?.split(":");
+    const iconLeft = item.leftIcon && item.leftIcon.split(":");
 
     return (
       <div className={`sideMenuItem ${isActive ? "selected" : ""}`} key={index}>
