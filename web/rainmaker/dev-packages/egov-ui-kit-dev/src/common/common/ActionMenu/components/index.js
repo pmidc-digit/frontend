@@ -13,6 +13,28 @@ import { connect } from "react-redux";
 import { Link,withRouter } from "react-router-dom";
 import "./index.css";
 
+
+const toRedirect = (item) => {
+  console.log("item in toRedirect",item);
+  debugger;
+  const hostname = window.location.origin;
+  const navigationURL = item.navigationURL;
+if(item.name === "Home" && process.env.REACT_APP_NAME === "Citizen"){
+  console.log("hostname",`${hostname}/digit-ui/citizen`);
+    return `${hostname}/digit-ui/citizen`;
+}
+else{
+
+  if (navigationURL && navigationURL.includes('digit-ui')) {
+    return `${hostname}${navigationURL.startsWith('/') ? navigationURL : '/' + navigationURL}`;
+  }
+  
+  // return navigationURL;
+    return navigationURL.startsWith('/') ? navigationURL : `/${navigationURL}`;
+}
+  
+};
+
 const styles = {
   inputStyle: {
     color: "white !important",
@@ -327,96 +349,46 @@ class ActionMenuComp extends Component {
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
-              let targetPath;
-              
-              // Special handling ONLY for Citizen Home button
-              if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                targetPath = `/digit-ui/citizen`;
-              } else if (item.navigationURL === "/") {
-                targetPath = "/";
-              } else {
-                // For all other internal navigation, use navigationURL as-is
-                targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
-              }
-
-              // Special case: Citizen Home button - use absolute navigation
-              if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                return (
-                  <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
-                    <MenuItem
-                      innerDivStyle={styles.defaultMenuItemStyle}
-                      style={{ whiteSpace: "initial" }}
-                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                      onClick={() => {
-                        document.title = item.name;
-                        toggleDrawer && toggleDrawer();
-                        // Use absolute path for Citizen Home only
-                        window.location.href = `${window.location.origin}/digit-ui/citizen`;
-                      }}
-                      leftIcon={this.renderLeftIcon(iconLeft, item)}
-                      primaryText={
-                        <Label
-                          className="menuStyle"
-                          label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                        />
-                      }
-                    />
-                  </div>
-                );
-              }
+              let targetPath = toRedirect(item);
 
               return (
-                <Link
-                  style={{ textDecoration: "none" }}
-                  key={index}
-                  to={targetPath}
-                >
-                  <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
-                    {/* <Tooltip
-                      id={"menu-toggle-tooltip"}
-                      title={<Label defaultLabel={menuDrawerOpen ? "" : item.name} label={menuDrawerOpen ? "" : `ACTION_TEST_${item.name}`} />}
-                      placement="right"
-                    > */}
-                    <MenuItem
-                      innerDivStyle={styles.defaultMenuItemStyle}
-                      style={{ whiteSpace: "initial" }}
-                      key={index}
-                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                      onClick={() => {
-                        if (item.navigationURL === "tradelicence/apply") {
-                          this.props.setRequiredDocumentFlag()
-                        }
-
-                        document.title = item.name;
-                        
-                        // Use history.push for all internal navigation
-                        this.props.history.push(targetPath);
-                        updateActiveRoute(item.path, item.name);
-                        
-                        toggleDrawer && toggleDrawer();
-                        
-                        // Handle integration reload if needed
-                        if (window.location.href.indexOf(item.navigationURL) > 0 && item.navigationURL.startsWith("integration")) {
-                          this.props.history.go(0);
-                        }
-                      }}
-                      leftIcon={this.renderLeftIcon(iconLeft, item)}
-                      primaryText={
-                        <Label
-                          className="menuStyle"
-                          //defaultLabel={item.name}
-                          label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                        //   color="rgba(255, 255, 255, 0.87)"
-                        />
+                <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
+                  <MenuItem
+                    innerDivStyle={styles.defaultMenuItemStyle}
+                    style={{ whiteSpace: "initial" }}
+                    id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                    onClick={() => {
+                      if (item.navigationURL === "tradelicence/apply") {
+                        this.props.setRequiredDocumentFlag()
                       }
-                    />
-                    {/* </Tooltip> */}
-                  </div>
-                </Link>
+                      document.title = item.name;
+                      toggleDrawer && toggleDrawer();
+                      updateActiveRoute(item.path, item.name);
+                      
+                      // Conditional navigation: digit-ui → href, else → history.push
+                      if (item.navigationURL.includes('digit-ui')) {
+                        window.location.href = targetPath;
+                      } else {
+                        this.props.history.push(targetPath);
+                      }
+                      
+                      if (window.location.href.indexOf(item.navigationURL) > 0 && item.navigationURL.startsWith("integration")) {
+                        this.props.history.go(0);
+                      }
+                    }}
+                    leftIcon={this.renderLeftIcon(iconLeft, item)}
+                    primaryText={
+                      <Label
+                        className="menuStyle"
+                        label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                      />
+                    }
+                  />
+                </div>
               );
             } else {
               return (
-                <a href={item.url} target="_blank">
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
                   <div className="sideMenuItem">
                     {/* <Tooltip
                       id={"menu-toggle-tooltip"}
@@ -459,79 +431,35 @@ class ActionMenuComp extends Component {
             }
             if (item.path && item.url && item.displayName.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
               if (item.navigationURL) {
-                let targetPath;
-                
-                // Special handling ONLY for Citizen Home button
-                if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                  targetPath = `/digit-ui/citizen`;
-                } else if (item.navigationURL === "/") {
-                  targetPath = "/";
-                } else {
-                  // For all other internal navigation, use navigationURL as-is
-                  targetPath = item.navigationURL.startsWith('/') ? item.navigationURL : `/${item.navigationURL}`;
-                }
+                let targetPath = toRedirect(item);
 
-                // Special case: Citizen Home button - use absolute navigation
-                if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                  return (
-                    <div className="sideMenuItem" key={index}>
-                      <MenuItem
-                        innerDivStyle={styles.defaultMenuItemStyle}
-                        style={{ whiteSpace: "initial" }}
-                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                        onClick={() => {
-                          document.title = item.displayName;
-                          toggleDrawer && toggleDrawer();
-                          // Use absolute path for Citizen Home only
-                          window.location.href = `${window.location.origin}/digit-ui/citizen`;
-                        }}
-                        leftIcon={this.renderLeftIcon(iconLeft, item)}
-                        primaryText={
-                          <Label
-                            className="menuStyle"
-                            label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                          />
-                        }
-                      />
-                    </div>
-                  );
-                }
-                
                 return (
-                  <Link
-                    style={{ textDecoration: "none" }}
-                    key={index}
-                    to={targetPath}
-                  >
-                    <div className="sideMenuItem">
-                      {/* <Tooltip
-                        id={"menu-toggle-tooltip"}
-                        title={<Label defaultLabel={menuDrawerOpen ? "" : item.name} label={menuDrawerOpen ? "" : `ACTION_TEST_${item.name}`} />}
-                        placement="right"
-                      > */}
-                      <MenuItem
-                        innerDivStyle={styles.defaultMenuItemStyle}
-                        style={{ whiteSpace: "initial" }}
-                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                        onClick={() => {
-                          document.title = item.displayName;
-                          toggleDrawer && toggleDrawer();
+                  <div className="sideMenuItem" key={index}>
+                    <MenuItem
+                      innerDivStyle={styles.defaultMenuItemStyle}
+                      style={{ whiteSpace: "initial" }}
+                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                      onClick={() => {
+                        document.title = item.displayName;
+                        toggleDrawer && toggleDrawer();
+                        updateActiveRoute(item.path, item.displayName);
+                        
+                        // Conditional navigation: digit-ui → href, else → history.push
+                        if (item.navigationURL.includes('digit-ui')) {
+                          window.location.href = targetPath;
+                        } else {
                           this.props.history.push(targetPath);
-                          updateActiveRoute(item.path, item.displayName);
-                        }}
-                        leftIcon={this.renderLeftIcon(iconLeft, item)}
-                        primaryText={
-                          <Label
-                            className="menuStyle"
-                            //defaultLabel={item.displayName}
-                            label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                          // color="rgba(255, 255, 255, 0.87)"
-                          />
                         }
-                      />
-                      {/* </Tooltip> */}
-                    </div>
-                  </Link>
+                      }}
+                      leftIcon={this.renderLeftIcon(iconLeft, item)}
+                      primaryText={
+                        <Label
+                          className="menuStyle"
+                          label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                        />
+                      }
+                    />
+                  </div>
                 );
               }
             }
