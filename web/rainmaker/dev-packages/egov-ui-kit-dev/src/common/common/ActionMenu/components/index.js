@@ -280,61 +280,6 @@ class ActionMenuComp extends Component {
     }
   }
 
-  // Helper: Normalize navigation path
-  getTargetPath = (navigationURL) => {
-    // Special handling for Citizen Home button
-    if (navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-      return "/digit-ui/citizen";
-    }
-    
-    // External URLs - use as-is
-    // if (navigationURL.startsWith('http://') || navigationURL.startsWith('https://')) {
-    //   return navigationURL;
-    // }
-    if (navigationURL.startsWith('https://')) {
-      return navigationURL;
-    }
-    
-    // Already absolute path
-    if (navigationURL.startsWith('/')) {
-      return navigationURL;
-    }
-    
-    // Relative path - make it absolute
-    return `/${navigationURL}`;
-  };
-
-  // Helper: Render a clickable menu item for digit-ui paths
-  renderClickableMenuItem = (item, index, targetPath, itemName, isActive = false) => {
-    const { toggleDrawer, updateActiveRoute } = this.props;
-    const iconLeft = item.leftIcon && item.leftIcon.split(":");
-
-    return (
-      <div className={`sideMenuItem ${isActive ? "selected" : ""}`} key={index}>
-        <MenuItem
-          innerDivStyle={styles.defaultMenuItemStyle}
-          style={{ whiteSpace: "initial" }}
-          id={`${itemName.toUpperCase().replace(/[\s]/g, "-")}-${index}`}
-          onClick={() => {
-            if (item.navigationURL === "tradelicence/apply") {
-              this.props.setRequiredDocumentFlag();
-            }
-            document.title = itemName;
-            toggleDrawer && toggleDrawer();
-            window.location.pathname = targetPath;
-            updateActiveRoute(item.path, itemName);
-          }}
-          leftIcon={this.renderLeftIcon(iconLeft, item)}
-          primaryText={
-            <Label
-              className="menuStyle"
-              label={itemName ? `ACTION_TEST_${itemName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-            />
-          }
-        />
-      </div>
-    );
-  };
 
   render() {
     let { role, actionListArr, activeRoutePath, updateActiveRoute, toggleDrawer, menuDrawerOpen } = this.props;
