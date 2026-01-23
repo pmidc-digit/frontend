@@ -1,5 +1,6 @@
 import { mohalla } from "egov-ui-kit/config/forms/specs/PropertyTaxPay/utils/reusableFields";
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
+import { httpRequest } from "egov-ui-kit/utils/api";
 import { fetchGeneralMDMSData, prepareFormData } from "egov-ui-kit/redux/common/actions";
 import { setFieldProperty } from "egov-ui-kit/redux/form/actions";
 import { fetchDropdownData, generalMDMSDataRequestObj, getGeneralMDMSDataDropdownName, getTranslatedLabel } from "egov-ui-kit/utils/commons";
@@ -32,31 +33,65 @@ const formConfig = {
         xs: 12,
         sm: 6
       },
-      dataFetchConfig: {
-        dependants: [
-          {
-            fieldKey: "mohalla",
-          },
-        ],
-      },
-      updateDependentFields: ({ formKey, field, dispatch, state }) => {
-        dispatch(prepareFormData("Properties[0].tenantId", field.value));
-        dispatch(
-          prepareFormData(
-            "Properties[0].address.city",
-            filter(get(state, "common.cities"), (city) => {
-              return city.code === field.value;
-            })[0].name
-          )
-        );
-        dispatch(setFieldProperty("propertyAddress", "mohalla", "value", ""));
-        const moduleValue = field.value;
-        dispatch(fetchLocalizationLabel(getLocale(), moduleValue, moduleValue));
-        let requestBody = generalMDMSDataRequestObj(field.value);
+      updateDependentFields: async ({ formKey, field, dispatch, state }) => {
+        if (field.value) {
+          dispatch(prepareFormData("Properties[0].tenantId", field.value));
+          dispatch(
+            prepareFormData(
+              "Properties[0].address.city",
+              filter(get(state, "common.cities"), (city) => {
+                return city.code === field.value;
+              })[0].name
+            )
+          );
+          dispatch(setFieldProperty("propertyAddress", "mohalla", "value", ""));
+          const moduleValue = field.value;
+          dispatch(fetchLocalizationLabel(getLocale(), moduleValue, moduleValue));
+          let requestBody = generalMDMSDataRequestObj(field.value);
 
-        dispatch(
-          fetchGeneralMDMSData(requestBody, "PropertyTax", getGeneralMDMSDataDropdownName())
-        );
+          dispatch(
+            fetchGeneralMDMSData(requestBody, "PropertyTax", getGeneralMDMSDataDropdownName())
+          );
+
+          try {
+            let payload = await httpRequest(
+              "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+              "_search",
+              [{ key: "tenantId", value: field.value }],
+              {}
+            );
+            if (payload && payload.TenantBoundary && payload.TenantBoundary[0] && payload.TenantBoundary[0].boundary) {
+              const mohallaData = payload.TenantBoundary[0].boundary.reduce((result, item) => {
+                result.push({
+                  ...item,
+                  name: `${field.value
+                    .toUpperCase()
+                    .replace(
+                      /[.]/g,
+                      "_"
+                    )}_REVENUE_${item.code
+                      .toUpperCase()
+                      .replace(/[._:-\s\/]/g, "_")}`
+                });
+                return result;
+              }, []);
+              const dd = mohallaData.map((item) => {
+                return { label: item.name, value: item.code };
+              });
+              dispatch(
+                setFieldProperty(formKey, "mohalla", "dropDownData", dd)
+              );
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        } else {
+          dispatch(prepareFormData("Properties[0].tenantId", null));
+          dispatch(prepareFormData("Properties[0].address.city", null));
+          dispatch(setFieldProperty("propertyAddress", "mohalla", "value", ""));
+          dispatch(setFieldProperty("propertyAddress", "mohalla", "dropDownData", []));
+          dispatch(prepareFormData("Properties[0].address.locality.area", null));
+        }
       },
     },
     houseNumber: {
@@ -93,6 +128,10 @@ const formConfig = {
       maxLength: 64,
     },
     ...mohalla,
+    mohalla: {
+      ...mohalla.mohalla,
+      dataFetchConfig: null
+    },
     pincode: {
       id: "pincode",
       type: "number",
@@ -192,27 +231,39 @@ const formConfig = {
         dispatch(setFieldProperty("propertyAddress", "city", "dropDownData", sortBy(dd, ["label"])));
       }
       const tenant = get(state, 'form.propertyAddress.fields.city.value', null);
-      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);    
-    // const yearConstructionValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
-    // get(state, 'Properties[0].additionalDetails.yearConstruction', null) ||  get(state, 'form.Properties[0].additionalDetails.yearConstruction', null) ||
-    
-    // if (yearConstructionValue) {
-    //   dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearConstructionValue));
-    // }
+      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);
+      // const yearConstructionValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
+      // get(state, 'Properties[0].additionalDetails.yearConstruction', null) ||  get(state, 'form.Properties[0].additionalDetails.yearConstruction', null) ||
+
+      // if (yearConstructionValue) {
+      //   dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearConstructionValue));
+      // }
 
       if (process.env.REACT_APP_NAME === "Citizen" && tenant && mohallaDropDownData.length == 0) {
-        const dataFetchConfig = {
-          url: "egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
-          action: "",
-          queryParams: [{
-            key: "tenantId",
-            value: tenant
-          }],
-          requestBody: {},
-          isDependent: true,
-          hierarchyType: "REVENUE"
-        }
-        fetchDropdownData(dispatch, dataFetchConfig, 'propertyAddress', 'mohalla', state, true);
+        httpRequest(
+          "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+          "_search",
+          [{ key: "tenantId", value: tenant }],
+          {}
+        ).then(payload => {
+          if (payload && payload.TenantBoundary && payload.TenantBoundary[0] && payload.TenantBoundary[0].boundary) {
+            const mohallaData = payload.TenantBoundary[0].boundary.reduce((result, item) => {
+              result.push({
+                ...item,
+                name: `${tenant.toUpperCase().replace(/[.]/g, "_")}_REVENUE_${item.code.toUpperCase().replace(/[._:-\s\/]/g, "_")}`
+              });
+              return result;
+            }, []);
+            const dd = mohallaData.map((item) => {
+              return { label: item.name, value: item.code };
+            });
+            dispatch(
+              setFieldProperty("propertyAddress", "mohalla", "dropDownData", dd)
+            );
+          }
+        }).catch(e => {
+          console.log("Error loading localities", e);
+        });
       }
       return action;
     } catch (e) {
