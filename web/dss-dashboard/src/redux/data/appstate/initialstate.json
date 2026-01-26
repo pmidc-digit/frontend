@@ -80,8 +80,8 @@
             "values": ""
         },
         {
-            "label": "Districts",
-            "label_locale": "DSS_DISTRICTS",
+            "label": "DDRs",
+            "label_locale": "DSS_DDRS",
             "type": "dropdown",
             "values": [ "Ferozepur-DDR",
                           "Jalandhar-DDR",
