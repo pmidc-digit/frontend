@@ -493,6 +493,8 @@ const mapStateToProps = (state, ownProps) => {
         selectedComplaint.auditDetails.createdTime
       ),
       landMark: selectedComplaint.landmark,
+      dgr_grievance_id: selectedComplaint.dgr_grievance_id || "",        
+      dgr_employee_name: selectedComplaint.dgr_employee_name || "",  
       address: selectedComplaint.address,
       addressDetail: selectedComplaint.addressDetail
         ? selectedComplaint.addressDetail

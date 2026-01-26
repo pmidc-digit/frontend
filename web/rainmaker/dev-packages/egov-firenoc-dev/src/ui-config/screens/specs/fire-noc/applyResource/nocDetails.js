@@ -196,9 +196,14 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
     const matchingBuildingTypes = mdmsBuildingTypes.filter(
       (buildingType) => buildingType.code === oldNocUsageType
     );
+
+      const inactiveBuildingSubTypes =
+        matchingBuildingTypes.length > 0 && Array.isArray(matchingBuildingTypes[0].BuildingSubType)
+          ? matchingBuildingTypes[0].BuildingSubType.filter(subType => subType.active === false)
+          : [];
     if (
       matchingBuildingTypes.length > 0 &&
-      matchingBuildingTypes[0].active === false
+      matchingBuildingTypes[0].active === false && inactiveBuildingSubTypes[0].active === false
     ) {
       alert("The usage type from the old NOC is not valid in the current system. Please go on punjab invest portal.");
 
