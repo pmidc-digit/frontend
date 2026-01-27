@@ -42,6 +42,11 @@ const FeesEstimateCard = Loadable({
   loading: () => <Loading />
 });
 
+const SurveyIdEditDialog = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/gBmr/SurveyIdEditDialog"),
+  loading: () => <Loading />
+});
+
 export {
   TestMolecules,
   RadioButtonsGroup,
@@ -50,5 +55,6 @@ export {
   UploadSingleFile,
   MapLocator,
   FeesEstimateCard,
-  DividerWithLabel
+  DividerWithLabel,
+  SurveyIdEditDialog
 };

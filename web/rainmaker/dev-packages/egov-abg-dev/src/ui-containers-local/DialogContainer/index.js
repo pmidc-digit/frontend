@@ -2,14 +2,15 @@ import React from "react";
 import { connect } from "react-redux";
 import get from "lodash/get";
 import { Dialog, DialogContent } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import { handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 
 class DialogContainer extends React.Component {
   handleClose = () => {
-    const { screenKey } = this.props;
+    const { screenKey, dialogKey } = this.props;
     this.props.handleField(
       screenKey,
-      `components.adhocDialog`,
+      `components.${dialogKey}`,
       "props.open",
       false
     );
@@ -17,27 +18,35 @@ class DialogContainer extends React.Component {
 
   render() {
     const { open, maxWidth, children } = this.props;
+
+    const StyledDialog = withStyles(() => ({
+      root: {
+        zIndex: 13333
+      }
+    }))(Dialog);
+
     return (
-      <Dialog open={open} maxWidth={maxWidth} onClose={this.handleClose}>
+      <StyledDialog open={open} maxWidth={maxWidth} onClose={this.handleClose}>
         <DialogContent children={children} />
-      </Dialog>
+      </StyledDialog>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
   const { screenConfiguration } = state;
-  const { screenKey } = ownProps;
+  const { screenKey, dialogKey = "adhocDialog" } = ownProps;
   const { screenConfig } = screenConfiguration;
   const open = get(
     screenConfig,
-    `${screenKey}.components.adhocDialog.props.open`
+    `${screenKey}.components.${dialogKey}.props.open`
   );
 
   return {
     open,
     screenKey,
-    screenConfig
+    screenConfig,
+    dialogKey
   };
 };
 
