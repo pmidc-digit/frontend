@@ -280,6 +280,7 @@ class ActionMenuComp extends Component {
     }
   }
 
+
   render() {
     let { role, actionListArr, activeRoutePath, updateActiveRoute, toggleDrawer, menuDrawerOpen } = this.props;
     let { searchText, path, menuItems } = this.state;
