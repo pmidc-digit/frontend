@@ -61,8 +61,8 @@ export const getAddressItems = (properties, OldProperty) => {
       },
       {
         key: getTranslatedLabel("PT_PROPERTY_ADDRESS_EXISTING_PID", localizationLabelsData),
-        // value: properties.oldPropertyId || "NA",
-        value: propertyId || "NA",
+        value: properties.oldPropertyId || "NA",
+        // value: propertyId || "NA",
         oldValue: OldProperty && OldProperty.oldPropertyId
       },
       {
