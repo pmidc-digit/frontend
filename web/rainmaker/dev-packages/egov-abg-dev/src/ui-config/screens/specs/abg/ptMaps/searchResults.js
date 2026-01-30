@@ -9,7 +9,8 @@ import { updatesingleReading } from "./functions";
 import { actions } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { store } from "egov-ui-framework/ui-redux/store";
 import { Dialog } from "components";
-import SurveyIdEditDialog from "./SurveyIdEditDialog";
+import PTmapPopup from "./ptmapPopup";
+
 const popdata = () => {
 
 }
@@ -24,72 +25,16 @@ export const searchResults = {
   props: {
     data: [],
     columns: [
-      { labelName: "Consumer ID", labelKey: "Consumer ID" },
+      { labelName: "Property ID", labelKey: "Property ID" },
 
-      { labelName: "Last Reading", labelKey: "Last Reading" },
-      {
-        labelName: "Current Reading(in KL)",
-        labelKey: "Current Reading(in KL)",
-        options: {
-          filter: false,
-          customBodyRender: (value, tableMeta, updateValue) => {
-            const lastReading = tableMeta.rowData && tableMeta.rowData[1];
-            return (
-              <input
-                type="number"
-                min={lastReading || 0}
-                style={{ width: "120px", padding: "6px", boxSizing: "border-box" }}
-                defaultValue={value || ""}
-                onInput={e => {
-                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                }}
-                onBlur={e => {
-                  const v = e.target.value.trim();
-                  if (v === "") { updateValue(""); return; }
-                  const numeric = Number(v);
-                  const min = Number(lastReading || 0);
-                  if (!Number.isFinite(numeric) || numeric < min) {
-                    // reset and notify user
-                    e.target.value = "";
-                    updateValue("");
-                    alert("Please enter a numeric value greater than or equal to Last Reading");
-                  } else {
-                    updateValue(v);
-                  }
-                }}
-              />
-            );
-          }
-        }
-      },
-      {
-        labelName: "Current Reading Date",
-        labelKey: "Current Reading Date",
-        options: {
-          filter: false,
-          customBodyRender: (value, tableMeta, updateValue) => {
-            const today = new Date().toISOString().split("T")[0];
-            return (
-              <input
-                type="date"
-                min={today}
-                style={{ width: "160px", padding: "6px", boxSizing: "border-box" }}
-                defaultValue={value || today}
-                onChange={e => updateValue(e.target.value)}
-              />
-            );
-          }
-        }
-      },
-      { labelName: "Billing Period", labelKey: "Billing Period" },
-      { labelName: "Status", labelKey: "Status" },
-      {
-        labelName: "Tenant Id",
-        labelKey: "TENANT_ID",
-        options: {
-          display: false
-        }
-      },
+      { labelName: "Owner Name", labelKey: "Owner Name" },
+
+      { labelName: "Owner Mobile", labelKey: "Owner Mobile" },
+      { labelName: "Land Area", labelKey: "Land Area" },
+      { labelName: "Building Name", labelKey: "Building Name" },
+      { labelName: "Usage Category", labelKey: "Usage Category" },
+      { labelName: "Address", labelKey: "Address" },
+
       {
         labelName: "Action",
         labelKey: "ABG_COMMON_TABLE_COL_ACTION",
@@ -101,8 +46,12 @@ export const searchResults = {
 
               const row = tableMeta.rowData || [];
               const propertiesId = row[0] || "";
-              const oldSurveyId = row[5] || "";
-
+              const ownerName = row[1] || "";
+              const ownerMobile = row[2] || "";
+              const landArea = row[3] || "";
+              const buildingName = row[4] || "";
+              const usageCategory = row[5] || "";
+              const address = row[6] || "";
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
@@ -129,14 +78,19 @@ export const searchResults = {
                     isClose={true}
                     handleClose={handleClose}
                     bodyStyle={{ padding: 0 }}
-                    contentStyle={{ width: "420px", maxWidth: "95%" }}
+                    contentStyle={{ width: "1200px", maxWidth: "95%" }}
                   >
                     <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
-                      Welcome
+                      Property Revenue Map
                     </div>
-                    <SurveyIdEditDialog
+                    <PTmapPopup
                       propertiesId={propertiesId}
-                      oldSurveyId={oldSurveyId}
+                      ownerName={ownerName}
+                      ownerMobile={ownerMobile}
+                      landArea={landArea}
+                      buildingName={buildingName}
+                      usageCategory={usageCategory}
+                      address={address}
                       onClose={handleClose}
                     />
                   </Dialog>
@@ -155,10 +109,11 @@ export const searchResults = {
       filter: false,
       download: false,
       responsive: "stacked",
-      pagination: false,
+      pagination: true,
       selectableRows: false,
       hover: true,
       rowsPerPageOptions: [10, 15, 20],
+      rowsPerPage: 10
     },
     customSortColumn: {
       column: "Date Created",

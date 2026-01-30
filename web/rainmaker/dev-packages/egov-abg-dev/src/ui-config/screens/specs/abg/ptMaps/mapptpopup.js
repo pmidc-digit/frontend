@@ -25,7 +25,7 @@ const onUpdateSurveyId = () => {
     closeDialog();
 };
 
-export const viewPopup = getCommonContainer({
+export const mapptpopup = getCommonContainer({
     headerRow: {
         uiFramework: "custom-atoms",
         componentPath: "Div",
@@ -44,7 +44,7 @@ export const viewPopup = getCommonContainer({
                 style: { fontWeight: "bold", marginRight: "8px", display: "inline-block" }
             }),
             propIdValue: getLabel({
-                jsonPath: "viewPopup.consumerId"
+                jsonPath: "mapptpopup.consumerId"
             }, {
                 style: { marginRight: "16px", display: "inline-block" }
             }),
@@ -55,7 +55,7 @@ export const viewPopup = getCommonContainer({
                 style: { fontWeight: "bold", marginRight: "8px", display: "inline-block" }
             }),
             surveyIdValue: getLabel({
-                jsonPath: "viewPopup.status"
+                jsonPath: "mapptpopup.status"
             }, {
                 style: { display: "inline-block" }
             })
@@ -76,7 +76,7 @@ export const viewPopup = getCommonContainer({
             sm: 12
         },
         fullWidth: true,
-        jsonPath: "viewPopup.newSurveyId"
+        jsonPath: "mapptpopup.newSurveyId"
     }),
 
     updateButtonWrapper: {
@@ -113,4 +113,4 @@ export const viewPopup = getCommonContainer({
     }
 });
 
-export default viewPopup;
+export default mapptpopup;

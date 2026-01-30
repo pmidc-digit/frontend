@@ -43,7 +43,7 @@ export const updateAllReadings = async (state, dispatch) => {
   try {
     const tableData = get(
       state,
-      "screenConfiguration.screenConfig.bulkmeterreading.components.div.children.searchResults.props.data",
+      "screenConfiguration.screenConfig.ptreve.components.div.children.searchResults.props.data",
       []
     );
     if (!tableData || tableData.length === 0) {
@@ -99,7 +99,7 @@ export const updateAllReadings = async (state, dispatch) => {
           ["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]: u.readingDate || updatedTable[u.rowIndex]["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]
         };
         dispatch(
-          handleField("bulkmeterreading", "components.div.children.searchResults", "props.data", updatedTable)
+          handleField("ptreve", "components.div.children.searchResults", "props.data", updatedTable)
         );
       } catch (e) {
         console.error("Update failed for consumer", u.consumerId, e);
@@ -122,8 +122,8 @@ export const updateAllReadings = async (state, dispatch) => {
 export const showViewPopup = (state, dispatch, rowObject = {}) => {
   try {
     dispatch(prepareFinalObject("viewPopup", rowObject));
-    const toggle = get(state, "screenConfiguration.screenConfig.bulkmeterreading.components.div.children.viewDialog.props.open", false);
-    dispatch(handleField("bulkmeterreading", "components.div.children.viewDialog", "props.open", !toggle));
+    const toggle = get(state, "screenConfiguration.screenConfig.ptreve.components.div.children.viewDialog.props.open", false);
+    dispatch(handleField("ptreve", "components.div.children.viewDialog", "props.open", !toggle));
   } catch (e) {
     console.error(e);
   }
@@ -141,14 +141,14 @@ export const searchApiCall = async (state, dispatch) => {
     "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children",
     state,
     dispatch,
-    "bulkmeterreading"
+    "ptreve"
   );
 
   const isSearchBoxSecondRowValid = validateFields(
     "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children",
     state,
     dispatch,
-    "bulkmeterreading"
+    "ptreve"
   );
 
   if (!(isSearchBoxFirstRowValid && isSearchBoxSecondRowValid)) {
@@ -202,14 +202,14 @@ export const searchApiCall = async (state, dispatch) => {
           locality: "ALOC2",
           offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
         };
-        const url = `ws-calculator/meterConnection/_search?tenantId=${encodeURIComponent(requestBody.tenantId)}&locality=${encodeURIComponent(requestBody.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        const url = `egov-property-rate/property-rate/revenue/_missing?tenantId=${encodeURIComponent(requestBody.tenantId)}&localityCode=${encodeURIComponent(requestBody.locality)}&limit=100`;
         const response = await httpRequest("post", url, "_search", []);
         // dispatch(toggleSpinner(false));
         // return response;
-
-        const bills = (response && response.meterReadings) || [];
+        debugger;
+        const ptreveresponce = (response && response) || [];
         dispatch(
-          prepareFinalObject("searchScreenMdmsData.meterReadings", bills)
+          prepareFinalObject("searchScreenMdmsData.ptreveresponce", ptreveresponce)
         );
         dispatch(toggleSpinner(false));
         return response;
@@ -230,43 +230,62 @@ export const searchApiCall = async (state, dispatch) => {
     const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
 
 
-    const bills = (responseFromAPI && responseFromAPI.meterReadings) || [];
+    const ptreveresponce = (responseFromAPI && responseFromAPI) || [];
     dispatch(
-      prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
+      prepareFinalObject("searchScreenMdmsData.ptreveresponce", ptreveresponce)
     );
     const response = [];
-    for (let i = 0; i < bills.length; i++) {
+    for (let i = 0; i < ptreveresponce.length; i++) {
+      // Log to see actual structure
+      console.log("Property item:", ptreveresponce[i]);
+
+      // Try multiple possible paths for address
+      const addressObj = get(ptreveresponce[i], "address") ||
+        get(ptreveresponce[i], "propertyAddress") ||
+        get(ptreveresponce[i], "propertyDetails.address") || {};
+
+      console.log("Address object:", addressObj);
+
+      const fullAddress = [
+        addressObj.doorNo,
+        addressObj.buildingName,
+        addressObj.houseNo,
+        addressObj.street,
+        addressObj.locality || addressObj.localityName,
+        addressObj.city || addressObj.cityName
+      ].filter(Boolean).join(", ") || "-";
+
+      console.log("Full address:", fullAddress);
 
       response.push({
-        connectionNo: get(bills[i], "connectionNo"),
-
-        lastReading: get(bills[i], "currentReading"),
-        // currentReading may come from API (per consumer). Use existing field if present.
-        currentReading: get(bills[i], "currentReading") || "",
-        currentReadingDate: get(bills[i], "currentReadingDate"),
-        billingPeriod: get(bills[i], "billingPeriod"),
-        meterStatus: get(bills[i], "meterStatus"),
+        propertyId: get(ptreveresponce[i], "propertyId"),
+        ownerName: get(ptreveresponce[i], "ownerName"),
+        ownerMobile: get(ptreveresponce[i], "ownerMobile") || "",
+        landArea: get(ptreveresponce[i], "landArea"),
+        buildingName: get(ptreveresponce[i], "buildingName"),
+        usageCategory: get(ptreveresponce[i], "usageCategory"),
+        address: fullAddress,
         tenantId: tenantId
       })
 
     }
     try {
       let data = response.map(item => ({
-        ["Consumer ID"]: item.connectionNo || "-",
-
-        ["Last Reading"]: item.currentReading || "-",
-        ["Current Reading(in KL)"]: item.currentReading || "",
-        ["Current Reading Date"]:
-          convertEpochToDate(item.currentReadingDate) || "-",
-        ["Billing Period"]: item.billingPeriod || "-",
-        ["Status"]: item.meterStatus || "-",
+        ["Property ID"]: item.propertyId || "-",
+        ["Owner Name"]: item.ownerName || "-",
+        ["Owner Mobile"]: item.ownerMobile || "",
+        ["Land Area"]: item.landArea || "-",
+        ["Building Name"]: item.buildingName || "-",
+        ["Usage Category"]: item.usageCategory || "-",
+        ["Address"]: item.address || "-",
         ["TENANT_ID"]: item.tenantId
       }));
+
       console.log("searchApiCall: prepared table data length:", data.length);
       console.log("searchApiCall: sample row:", data[0]);
       dispatch(
         handleField(
-          "bulkmeterreading",
+          "ptreve",
           "components.div.children.searchResults",
           "props.data",
           data
@@ -274,7 +293,7 @@ export const searchApiCall = async (state, dispatch) => {
       );
       dispatch(
         handleField(
-          "bulkmeterreading",
+          "ptreve",
           "components.div.children.searchResults",
           "props.rows",
           data.length
@@ -285,7 +304,7 @@ export const searchApiCall = async (state, dispatch) => {
       try {
         const store = require("egov-ui-framework/ui-redux/store").default;
         const current = store.getState();
-        const cfg = (current && current.screenConfiguration && current.screenConfiguration.screenConfig && current.screenConfiguration.screenConfig.bulkmeterreading && current.screenConfiguration.screenConfig.bulkmeterreading.components && current.screenConfiguration.screenConfig.bulkmeterreading.components.div && current.screenConfiguration.screenConfig.bulkmeterreading.components.div.children && current.screenConfiguration.screenConfig.bulkmeterreading.components.div.children.searchResults) || {};
+        const cfg = (current && current.screenConfiguration && current.screenConfiguration.screenConfig && current.screenConfiguration.screenConfig.ptreve && current.screenConfiguration.screenConfig.ptreve.components && current.screenConfiguration.screenConfig.ptreve.components.div && current.screenConfiguration.screenConfig.ptreve.components.div.children && current.screenConfiguration.screenConfig.ptreve.components.div.children.searchResults) || {};
         console.log("searchApiCall: store.searchResults.props.data length:", (cfg.props && cfg.props.data && cfg.props.data.length) || 0);
         console.log("searchApiCall: store.searchResults.visible:", cfg.visible);
       } catch (e) {
@@ -305,7 +324,7 @@ export const searchApiCall = async (state, dispatch) => {
 const showHideTable = (booleanHideOrShow, dispatch) => {
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.searchResults",
       "visible",
       booleanHideOrShow

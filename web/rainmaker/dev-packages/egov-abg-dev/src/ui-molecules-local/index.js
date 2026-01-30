@@ -42,11 +42,15 @@ const FeesEstimateCard = Loadable({
   loading: () => <Loading />
 });
 
-const SurveyIdEditDialog = Loadable({
-  loader: () => import("../ui-config/screens/specs/abg/gBmr/SurveyIdEditDialog"),
+
+const ptmapPopup = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/ptMaps/ptmapPopup"),
   loading: () => <Loading />
 });
-
+const mapptpopup = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/ptMaps/mapptpopup"),
+  loading: () => <Loading />
+});
 export {
   TestMolecules,
   RadioButtonsGroup,
@@ -56,5 +60,6 @@ export {
   MapLocator,
   FeesEstimateCard,
   DividerWithLabel,
-  SurveyIdEditDialog
+  ptmapPopup,
+  mapptpopup
 };

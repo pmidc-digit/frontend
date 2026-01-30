@@ -27,7 +27,7 @@ const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSO
 export const resetFields = (state, dispatch) => {
   // dispatch(
   //   handleField(
-  //     "bulkmeterreading",
+  //     "ptreve",
   //     "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.billingPeriod",
   //     "props.value",
   //     ""
@@ -35,7 +35,7 @@ export const resetFields = (state, dispatch) => {
   // );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.ulb",
       "props.value",
       tenantId
@@ -43,7 +43,7 @@ export const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.consumerId",
       "props.value",
       ""
@@ -51,7 +51,7 @@ export const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.locMohalla",
       "props.value",
       ""
@@ -59,7 +59,7 @@ export const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.locMohalla",
       "props.error",
       false
@@ -67,7 +67,7 @@ export const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.locMohalla",
       "props.helperText",
       ""
@@ -75,7 +75,7 @@ export const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.serviceCategory",
       "props.value",
       ""
@@ -83,7 +83,7 @@ export const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.serviceCategory",
       "props.error",
       false
@@ -91,7 +91,7 @@ export const resetFields = (state, dispatch) => {
   );
   dispatch(
     handleField(
-      "bulkmeterreading",
+      "ptreve",
       "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.serviceCategory",
       "props.helperText",
       ""
@@ -165,21 +165,21 @@ export const abgSearchCard = getCommonCard({
           isClearable: true,
         }
       },
-      consumerId: getTextField({
+      propertyId: getTextField({
         label: {
-          labelName: "Consumer ID",
-          labelKey: "ABG_CONSUMER_ID_LABEL"
+          labelName: "Property ID",
+          labelKey: "ABG_PROPERTY_ID_LABEL"
         },
         placeholder: {
-          labelName: "Enter Consumer ID",
-          labelKey: "ABG_CONSUMER_ID_PLACEHOLDER"
+          labelName: "Enter Property ID",
+          labelKey: "ABG_PROPERTY_ID_PLACEHOLDER"
         },
         gridDefination: {
           xs: 12,
           sm: 4
         },
         required: false,
-        jsonPath: "searchCriteria.consumerCode"
+        jsonPath: "searchCriteria.propertyId"
       })
 
     },

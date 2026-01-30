@@ -11,13 +11,13 @@ import {
   abgSearchCard,
   //mergeDownloadButton, 
   resetFields
-} from "./gBmr/groupBillSearch";
+} from "./ptMaps/groupBillSearch";
 
-import { updateAllReadings } from "./gBmr/functions";
-import { searchResults, brmeterReading } from "./gBmr/searchResults";
-import viewPopup from "./gBmr/viewPopup";
-import welcomePopup from "./gBmr/welcomePopup";
-import surveyIdEditPopup from "./gBmr/surveyIdEditPopup";
+
+import { searchResults, brmeterReading } from "./ptMaps/searchResults";
+
+
+
 import "./index.css";
 
 const tenantId = getTenantId();
@@ -94,7 +94,7 @@ const getData = async (action, state, dispatch) => {
 
 const abgSearchAndResult = {
   uiFramework: "material-ui",
-  name: "bulkmeterreading",
+  name: "ptreve",
   beforeInitScreen: (action, state, dispatch) => {
     resetFields(state, dispatch);
     getData(action, state, dispatch).then(responseAction => {
@@ -109,7 +109,7 @@ const abgSearchAndResult = {
       componentPath: "Form",
       props: {
         className: "common-div-css",
-        id: "bulkmeterreading"
+        id: "ptreve"
       },
       children: {
         headerDiv: {
@@ -157,32 +157,32 @@ const abgSearchAndResult = {
 
       }
     },
-    welcomeDialog: {
-      uiFramework: "custom-containers",
-      componentPath: "DialogContainer",
-      props: {
-        open: false,
-        maxWidth: "sm",
-        screenKey: "bulkmeterreading",
-        dialogKey: "welcomeDialog"
-      },
-      children: {
-        popup: welcomePopup
-      }
-    },
-    surveyDialog: {
-      uiFramework: "custom-containers",
-      componentPath: "DialogContainer",
-      props: {
-        open: false,
-        maxWidth: "sm",
-        screenKey: "bulkmeterreading",
-        dialogKey: "surveyDialog"
-      },
-      children: {
-        popup: surveyIdEditPopup
-      }
-    }
+    // welcomeDialog: {
+    //   uiFramework: "custom-containers",
+    //   componentPath: "DialogContainer",
+    //   props: {
+    //     open: false,
+    //     maxWidth: "sm",
+    //     screenKey: "ptreve",
+    //     dialogKey: "welcomeDialog"
+    //   },
+    //   children: {
+    //     popup: welcomePopup
+    //   }
+    // },
+    // surveyDialog: {
+    //   uiFramework: "custom-containers",
+    //   componentPath: "DialogContainer",
+    //   props: {
+    //     open: false,
+    //     maxWidth: "sm",
+    //     screenKey: "ptreve",
+    //     dialogKey: "surveyDialog"
+    //   },
+    //   children: {
+    //     popup: surveyIdEditPopup
+    //   }
+    // }
     //mergeDownloadButton
   }
 };
