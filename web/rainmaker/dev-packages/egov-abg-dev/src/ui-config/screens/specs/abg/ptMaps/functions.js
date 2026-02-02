@@ -199,7 +199,7 @@ export const searchApiCall = async (state, dispatch) => {
         dispatch(toggleSpinner(true));
         const requestBody = {
           tenantId: searchScreenObject.tenantId || tenantId,
-          locality: "ALOC2",
+          locality: searchScreenObject.locality || "",
           offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
         };
         const url = `egov-property-rate/property-rate/revenue/_missing?tenantId=${encodeURIComponent(requestBody.tenantId)}&localityCode=${encodeURIComponent(requestBody.locality)}&limit=100`;
