@@ -106,7 +106,7 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
                     </div>
 
                     <div>
-                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Rate</div>
+                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Collect Rate</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>
                             {rate ? `₹${rate.toLocaleString()}` : "N/A"}
                         </div>

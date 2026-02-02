@@ -147,7 +147,7 @@ export const abgSearchCard = getCommonCard({
           sm: 4
         },
         jsonPath: "searchCriteria.locality",
-        required: true,
+        required: false,
         props: {
           className: "autocomplete-dropdown",
           label: {
@@ -161,7 +161,7 @@ export const abgSearchCard = getCommonCard({
           jsonPath: "searchCriteria.locality",
           sourceJsonPath: "searchScreenMdmsData.localities",
           labelsFromLocalisation: true,
-          required: true,
+          required: false,
           isClearable: true,
         }
       },

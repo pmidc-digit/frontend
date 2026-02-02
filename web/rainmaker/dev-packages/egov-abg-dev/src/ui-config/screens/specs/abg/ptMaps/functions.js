@@ -137,32 +137,9 @@ export const searchApiCall = async (state, dispatch) => {
     "searchCriteria",
     {}
   );
-  const isSearchBoxFirstRowValid = validateFields(
-    "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children",
-    state,
-    dispatch,
-    "ptreve"
-  );
 
-  const isSearchBoxSecondRowValid = validateFields(
-    "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children",
-    state,
-    dispatch,
-    "ptreve"
-  );
-
-  if (!(isSearchBoxFirstRowValid && isSearchBoxSecondRowValid)) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill at least one field to start search",
-          labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
-        },
-        "warning"
-      )
-    );
-  } else if (
+  // Check if at least one search field is filled
+  if (
     Object.keys(searchScreenObject).length == 0 ||
     Object.values(searchScreenObject).every(x => x === "")
   ) {
@@ -202,6 +179,9 @@ export const searchApiCall = async (state, dispatch) => {
           locality: searchScreenObject.locality || "",
           offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
         };
+        if (searchScreenObject.propertyId) {
+          requestBody.propertyId = searchScreenObject.propertyId;
+        }
         const url = `egov-property-rate/property-rate/revenue/_missing?tenantId=${encodeURIComponent(requestBody.tenantId)}&localityCode=${encodeURIComponent(requestBody.locality)}&limit=100`;
         const response = await httpRequest("post", url, "_search", []);
         // dispatch(toggleSpinner(false));
