@@ -264,6 +264,7 @@ export const searchApiCall = async (state, dispatch) => {
         landArea: get(ptreveresponce[i], "landArea"),
         buildingName: get(ptreveresponce[i], "buildingName"),
         usageCategory: get(ptreveresponce[i], "usageCategory"),
+        locality: get(ptreveresponce[i], "propertyAddress.localityCode") || "-",
         address: fullAddress,
         tenantId: tenantId
       })
@@ -277,6 +278,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["Land Area"]: item.landArea || "-",
         ["Building Name"]: item.buildingName || "-",
         ["Usage Category"]: item.usageCategory || "-",
+        ["Locality"]: item.locality || "-",
         ["Address"]: item.address || "-",
         ["TENANT_ID"]: item.tenantId
       }));

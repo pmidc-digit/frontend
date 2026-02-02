@@ -33,6 +33,7 @@ export const searchResults = {
       { labelName: "Land Area", labelKey: "Land Area" },
       { labelName: "Building Name", labelKey: "Building Name" },
       { labelName: "Usage Category", labelKey: "Usage Category" },
+      { labelName: "Locality", labelKey: "Locality" },
       { labelName: "Address", labelKey: "Address" },
 
       {
@@ -43,7 +44,7 @@ export const searchResults = {
           customBodyRender: (value, tableMeta) => {
             const RowAction = () => {
               const [open, setOpen] = React.useState(false);
-
+              debugger;
               const row = tableMeta.rowData || [];
               const propertiesId = row[0] || "";
               const ownerName = row[1] || "";
@@ -51,7 +52,8 @@ export const searchResults = {
               const landArea = row[3] || "";
               const buildingName = row[4] || "";
               const usageCategory = row[5] || "";
-              const address = row[6] || "";
+              const locality = row[6] || "";
+              const address = row[7] || "";
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
@@ -90,6 +92,7 @@ export const searchResults = {
                       landArea={landArea}
                       buildingName={buildingName}
                       usageCategory={usageCategory}
+                      locality={locality}
                       address={address}
                       onClose={handleClose}
                     />

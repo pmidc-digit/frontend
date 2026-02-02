@@ -1,5 +1,3 @@
-// Welcome popup content used inside ptreve.components.div.children.welcomeDialog
-
 import get from "lodash/get";
 import {
     getCommonCard,
@@ -12,6 +10,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { Dialog } from "components";
+import MapPTPopup from "./mapptpopup";
 // safe store getter to avoid "Cannot read properties of undefined (reading 'getState'"
 const getSafeStore = () => {
     if (typeof store !== "undefined" && store) return store;
@@ -92,7 +91,7 @@ const onContinue = () => {
 
 
 // React wrapper component
-const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingName, usageCategory, address, onClose, prepared, dispatch }) => {
+const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, buildingName, usageCategory, address, onClose, prepared, dispatch }) => {
 
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [revenueData, setRevenueData] = React.useState(null);
@@ -102,13 +101,17 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
     const [segments, setSegments] = React.useState([]);
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
-    const [localityState, setLocalityState] = React.useState(get(prepared, "ptmapPopup.locality", "") || "");
+    const [localityState, setLocalityState] = React.useState("");
     const [districtState, setDistrictState] = React.useState("");
     const [tehsilState, setTehsilState] = React.useState("");
     const [villageState, setVillageState] = React.useState("");
     const [segmentState, setSegmentState] = React.useState("");
     const [usageCategoryState, setUsageCategoryState] = React.useState("");
     const [subUsageCategoryState, setSubUsageCategoryState] = React.useState("");
+    const [mappedRate, setMappedRate] = React.useState(null);
+    const [mappedunit, setMappedunit] = React.useState(null);
+    const [mappedRateId, setMappedRateId] = React.useState(null);
+    const [mappedSegmentName, setMappedSegmentName] = React.useState(null);
 
     // Fetch revenue data when popup opens (component mounts)
     React.useEffect(() => {
@@ -128,7 +131,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
 
                 const requestBody = {
                     searchCriteria: {
-                        tenantId: tenantId
+                        tenantId: tenantId,
+                        locality: locality || ""
                     }
                 };
 
@@ -281,7 +285,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
 
                 const requestBody = {
                     searchCriteria: {
-                        districtId: selectedDistrict
+                        districtId: selectedDistrict,
+                        locality: locality || ""
                     }
                 };
 
@@ -335,8 +340,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
 
                 const requestBody = {
                     searchCriteria: {
-
-                        tehsilId: selectedTehsil
+                        tehsilId: selectedTehsil,
+                        locality: locality || ""
                     }
                 };
 
@@ -397,7 +402,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
 
                 const requestBody = {
                     searchCriteria: {
-                        villageId: selectedVillage
+                        villageId: selectedVillage,
+                        locality: locality || ""
                     }
                 };
 
@@ -458,6 +464,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
                 const requestBody = {
                     searchCriteria: {
                         "segment": selectedSegment,
+                        "locality": locality || "",
                         "isRateCheck": true
                     }
                 };
@@ -476,10 +483,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
 
                 console.log('Usage categories fetched for segment:', response);
                 console.log('Response structure:', Object.keys(response || {}));
-
-                // You can use this response to populate usage categories if needed
-                // For now, we keep the static options but you can extract from API if response has data
-
                 setIsSubmitting(false);
             } catch (error) {
                 console.error('Error fetching usage categories:', error);
@@ -502,6 +505,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
     const tenantIdValue = get(prepared, "searchCriteria.tenantId", "");
 
     const handleMapProperties = async () => {
+        // Remove the alert and directly open the dialog
         setDialogOpen(true);
     };
 
@@ -509,75 +513,143 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
         setDialogOpen(false);
     };
 
+    const handleSubmit = async () => {
+        try {
+            setIsSubmitting(true);
+            debugger;
+            // Prepare request body
+            const requestBody = {
+                "PropertyRates": [
+                    {
+                        "propertyId": propertiesId,
+                        "tenantId": tenantIdValue || "pb.amritsar",
+                        "districtId": districtState,
+                        "tehsilId": tehsilState,
+                        "villageId": villageState,
+                        "isUrban": true,
+                        "segmentId": segmentState,
+                        "categoryId": usageCategoryState,
+                        "subCategoryId": subUsageCategoryState,
+                        "locality": locality || "",
+                        "rate": mappedRate || 0,
+                        "unit": mappedunit || "",
+                        "rateId": mappedRateId,
+                        "isActive": true,
+                        "isProrataCal": false
+                    }
+                ]
+            };
+
+            console.log("Submit request body:", JSON.stringify(requestBody));
+
+            const url = "/egov-property-rate/property-rate/_create";
+
+            const response = await httpRequest(
+                "post",
+                url,
+                "",
+                [],
+                requestBody
+            );
+
+            console.log("Submit response:", response);
+
+            alert("Property rate mapping submitted successfully!");
+            setDialogOpen(false);
+            onClose();
+            setIsSubmitting(false);
+        } catch (error) {
+            console.error("Error submitting property rate:", error);
+            alert("Failed to submit property rate: " + (error.message || "Unknown error"));
+            setIsSubmitting(false);
+        }
+    };
+
     const handleConfirmMapping = async () => {
 
-        // alert("Map Properties functionality is currently disabled for testing purposes.");
-        // return;
+        alert("Map Properties functionality is currently disabled for testing purposes.");
+        //return;
 
-        // Validate required fields
-        // if (!districtState || !tehsilState || !villageState || !segmentState || !usageCategoryState || !subUsageCategoryState) {
-        //     alert("Please fill all required fields");
-        //     return;
-        // }
 
-        // try {
-        //     setIsSubmitting(true);
-        //     console.log("Mapping properties with data:", {
-        //         propertiesId,
-        //         district: districtState,
-        //         tehsil: tehsilState,
-        //         village: villageState,
-        //         segment: segmentState,
-        //         usageCategory: usageCategoryState,
-        //         subUsageCategory: subUsageCategoryState,
-        //         tenantId: tenantIdValue
-        //     });
+        if (!districtState || !tehsilState || !villageState || !segmentState || !usageCategoryState || !subUsageCategoryState) {
+            alert("Please fill all required fields");
+            return;
+        }
 
-        //     const requestBody = {
-        //         searchCriteria: {
-        //             segment: segmentState,
-        //             propertiesId,
-        //             district: districtState,
-        //             tehsil: tehsilState,
-        //             village: villageState,
-        //             segment: segmentState,
-        //             usageCategory: usageCategoryState,
-        //             subUsageCategory: subUsageCategoryState,
-        //             tenantId: tenantIdValue,
-        //             isRateCheck: true
-        //         }
-        //     };
+        try {
+            setIsSubmitting(true);
+            console.log("Mapping properties with data:", {
+                propertiesId,
+                district: districtState,
+                tehsil: tehsilState,
+                locality: locality,
+                village: villageState,
+                segment: segmentState,
+                usageCategory: usageCategoryState,
+                subUsageCategory: subUsageCategoryState,
+                tenantId: tenantIdValue
+            });
 
-        //     console.log("Map Properties request body:", JSON.stringify(requestBody));
+            const requestBody = {
+                searchCriteria: {
+                    segment: segmentState,
+                    propertiesId,
+                    district: districtState,
+                    tehsil: tehsilState,
+                    village: villageState,
+                    locality: locality,
+                    segment: segmentState,
+                    usageCategory: usageCategoryState,
+                    subUsageCategory: subUsageCategoryState,
+                    tenantId: tenantIdValue,
+                    isRateCheck: true
+                }
+            };
 
-        //     // Call API to map property
-        //     const url = "/egov-property-rate/property-rate/_search";
+            console.log("Map Properties request body:", JSON.stringify(requestBody));
 
-        //     const response = await httpRequest(
-        //         "post",
-        //         url,
-        //         "",
-        //         [],
-        //         requestBody
-        //     );
+            // Call API to map property
+            const url = "/egov-property-rate/property-rate/_search";
 
-        //     console.log('Property mapping response:', response);
+            const response = await httpRequest(
+                "post",
+                url,
+                "",
+                [],
+                requestBody
+            );
 
-        //     // Show success message
-        //     if (response) {
-        //         alert("Property mapped successfully!");
-        //         // Close the popup
-        //         onClose();
-        //     } else {
-        //         alert("No response from server");
-        //     }
+            console.log('Property mapping response:', response);
+            debugger;
+            // Show success message
+            if (response) {
+                // Store the rate data from API response
+                if (response.rates !== undefined) {
+                    setMappedRate(response.rates[0].rate);
+                }
+                if (response.rates[0].rateId) {
+                    setMappedRateId(response.rates[0].rateId);
+                }
+                if (response.rates[0].segmentName) {
+                    setMappedSegmentName(response.rates[0].segmentName);
+                }
+                if (response.rates[0].unit) {
+                    setMappedSegmentName(response.rates[0].unit);
+                }
+                if (response.rates[0].unit) {
+                    setMappedunit(response.rates[0].unit);
+                }
+                setDialogOpen(true);
+            } else {
+                alert("No response from server");
+            }
 
-        //     setIsSubmitting(false);
-        // } catch (error) {
-        //     console.error('Error mapping property:', error);
-        //     setIsSubmitting(false);
-        //     alert("Failed to map property: " + (error.message || "Unknown error"));
-        // }
+            setIsSubmitting(false);
+        } catch (error) {
+            console.error('Error mapping property:', error);
+            setIsSubmitting(false);
+            alert("Failed to map property: " + (error.message || "Unknown error"));
+        }
     };
 
     return (
@@ -622,7 +694,12 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
                         <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Owner Name</div>
                         <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{ownerName || "N/A"}</div>
                     </div>
-
+                    <div style={{
+                        padding: "0"
+                    }}>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>locality</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{locality || "N/A"}</div>
+                    </div>
                     <div style={{
                         padding: "0"
                     }}>
@@ -952,7 +1029,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
                         cursor: isSubmitting ? "not-allowed" : "pointer",
                         opacity: isSubmitting ? 0.6 : 1
                     }}
-                    onClick={handleMapProperties}
+                    onClick={handleConfirmMapping}
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? "Mapping..." : "Map Properties"}
@@ -963,305 +1040,33 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
                 open={dialogOpen}
                 isClose={true}
                 handleClose={handleDialogClose}
-                bodyStyle={{ padding: 0 }}
-                contentStyle={{ width: "1200px", maxWidth: "95%" }}
+                bodyStyle={{ padding: "24px", backgroundColor: "#ffffff" }}
+                contentStyle={{ width: "800px", maxWidth: "95%", backgroundColor: "#ffffff" }}
             >
-                <div style={{ padding: "24px" }}>
-                    <div style={{ padding: "0 0 16px 0", fontSize: "18px", fontWeight: 600 }}>
-                        Property Revenue Map
-                    </div>
-
-                    <h3 style={{
-                        margin: "0 0 20px 0",
-                        fontSize: "18px",
-                        fontWeight: 600,
-                        color: "#333"
-                    }}>
-                        Map Property to Revenue
-                    </h3>
-
-                    <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-                        {/* District Field */}
-                        <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
-                            <label style={{
-                                display: "block",
-                                marginBottom: "8px",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "#555"
-                            }}>
-                                District <span style={{ color: "#e53935" }}>*</span>
-                            </label>
-                            <select
-                                value={districtState}
-                                onChange={handleDistrictChange}
-                                onClick={(e) => e.stopPropagation()}
-                                style={{
-                                    width: "100%",
-                                    padding: "10px 12px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "4px",
-                                    fontSize: "14px",
-                                    backgroundColor: "#fff",
-                                    color: "#333",
-                                    boxSizing: "border-box",
-                                    cursor: "pointer"
-                                }}
-                            >
-                                <option value="">Select District</option>
-                                {districts.map((district, idx) => (
-                                    <option key={idx} value={district.code}>
-                                        {district.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Tehsil Field */}
-                        <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
-                            <label style={{
-                                display: "block",
-                                marginBottom: "8px",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "#555"
-                            }}>
-                                Tehsil <span style={{ color: "#e53935" }}>*</span>
-                            </label>
-                            <select
-                                value={tehsilState}
-                                onChange={handleTehsilChange}
-                                onClick={(e) => e.stopPropagation()}
-                                disabled={!districtState}
-                                style={{
-                                    width: "100%",
-                                    padding: "10px 12px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "4px",
-                                    fontSize: "14px",
-                                    backgroundColor: districtState ? "#fff" : "#f5f5f5",
-                                    color: "#333",
-                                    boxSizing: "border-box",
-                                    cursor: districtState ? "pointer" : "not-allowed"
-                                }}
-                            >
-                                <option value="">Select Tehsil</option>
-                                {tehsils.map((tehsil, idx) => (
-                                    <option key={idx} value={tehsil.code}>
-                                        {tehsil.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Village Field */}
-                        <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
-                            <label style={{
-                                display: "block",
-                                marginBottom: "8px",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "#555"
-                            }}>
-                                Village <span style={{ color: "#e53935" }}>*</span>
-                            </label>
-                            <select
-                                value={villageState}
-                                onChange={handleVillageChange}
-                                onClick={(e) => e.stopPropagation()}
-                                disabled={!tehsilState}
-                                style={{
-                                    width: "100%",
-                                    padding: "10px 12px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "4px",
-                                    fontSize: "14px",
-                                    backgroundColor: tehsilState ? "#fff" : "#f5f5f5",
-                                    color: "#333",
-                                    boxSizing: "border-box",
-                                    cursor: tehsilState ? "pointer" : "not-allowed"
-                                }}
-                            >
-                                <option value="">Select Village</option>
-                                {villages.map((village, idx) => (
-                                    <option key={idx} value={village.code}>
-                                        {village.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Segment Field */}
-                        <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
-                            <label style={{
-                                display: "block",
-                                marginBottom: "8px",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "#555"
-                            }}>
-                                Segment <span style={{ color: "#e53935" }}>*</span>
-                            </label>
-                            <select
-                                value={segmentState}
-                                onChange={handleSegmentChange}
-                                onClick={(e) => e.stopPropagation()}
-                                disabled={!villageState}
-                                style={{
-                                    width: "100%",
-                                    padding: "10px 12px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "4px",
-                                    fontSize: "14px",
-                                    backgroundColor: villageState ? "#fff" : "#f5f5f5",
-                                    color: "#333",
-                                    boxSizing: "border-box",
-                                    cursor: villageState ? "pointer" : "not-allowed"
-                                }}
-                            >
-                                <option value="">Select Segment</option>
-                                {segments.map((segment, idx) => (
-                                    <option key={idx} value={segment.code}>
-                                        {segment.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Usage Category Field */}
-                        <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
-                            <label style={{
-                                display: "block",
-                                marginBottom: "8px",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "#555"
-                            }}>
-                                Usage Category <span style={{ color: "#e53935" }}>*</span>
-                            </label>
-                            <select
-                                value={usageCategoryState}
-                                onChange={handleUsageCategoryChange}
-                                onClick={(e) => e.stopPropagation()}
-                                disabled={!segmentState}
-                                style={{
-                                    width: "100%",
-                                    padding: "10px 12px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "4px",
-                                    fontSize: "14px",
-                                    backgroundColor: segmentState ? "#fff" : "#f5f5f5",
-                                    color: "#333",
-                                    boxSizing: "border-box",
-                                    cursor: segmentState ? "pointer" : "not-allowed"
-                                }}
-                            >
-                                <option value="">Select Usage Category</option>
-                                <option value="RESIDENTIAL">Residential</option>
-                                <option value="COMMERCIAL">Commercial</option>
-                                <option value="INDUSTRIAL">Industrial</option>
-                                <option value="MIXED">Mixed</option>
-                            </select>
-                        </div>
-
-                        {/* Sub Usage Category Field */}
-                        <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
-                            <label style={{
-                                display: "block",
-                                marginBottom: "8px",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                color: "#555"
-                            }}>
-                                Sub Usage Category <span style={{ color: "#e53935" }}>*</span>
-                            </label>
-                            <select
-                                value={subUsageCategoryState}
-                                onChange={handleSubUsageCategoryChange}
-                                onClick={(e) => e.stopPropagation()}
-                                disabled={!usageCategoryState}
-                                style={{
-                                    width: "100%",
-                                    padding: "10px 12px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "4px",
-                                    fontSize: "14px",
-                                    backgroundColor: usageCategoryState ? "#fff" : "#f5f5f5",
-                                    color: "#333",
-                                    boxSizing: "border-box",
-                                    cursor: usageCategoryState ? "pointer" : "not-allowed"
-                                }}
-                            >
-                                <option value="">Select Sub Usage Category</option>
-                                {usageCategoryState === "RESIDENTIAL" && [
-                                    <option key="residential1" value="RESIDENTIAL.INDEPENDENT">Independent</option>,
-                                    <option key="residential2" value="RESIDENTIAL.APARTMENT">Apartment</option>,
-                                    <option key="residential3" value="RESIDENTIAL.VILLA">Villa</option>
-                                ]}
-                                {usageCategoryState === "COMMERCIAL" && [
-                                    <option key="commercial1" value="COMMERCIAL.OFFICE">Office</option>,
-                                    <option key="commercial2" value="COMMERCIAL.SHOP">Shop</option>,
-                                    <option key="commercial3" value="COMMERCIAL.MALL">Mall</option>
-                                ]}
-                                {usageCategoryState === "INDUSTRIAL" && [
-                                    <option key="industrial1" value="INDUSTRIAL.FACTORY">Factory</option>,
-                                    <option key="industrial2" value="INDUSTRIAL.WAREHOUSE">Warehouse</option>,
-                                    <option key="industrial3" value="INDUSTRIAL.PLANT">Plant</option>
-                                ]}
-                                {usageCategoryState === "MIXED" && [
-                                    <option key="mixed1" value="MIXED.RESIDENTIAL_COMMERCIAL">Residential + Commercial</option>,
-                                    <option key="mixed2" value="MIXED.COMMERCIAL_INDUSTRIAL">Commercial + Industrial</option>
-                                ]}
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div style={{
-                        display: "flex",
-                        gap: "16px",
-                        marginTop: "24px",
-                        justifyContent: "flex-end"
-                    }}>
-                        <button
-                            type="button"
-                            style={{
-                                minWidth: "120px",
-                                color: "#FF5722",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                backgroundColor: "#fff",
-                                border: "1px solid #FF5722",
-                                padding: "10px 24px",
-                                borderRadius: "4px",
-                                cursor: "pointer"
-                            }}
-                            onClick={handleDialogClose}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            type="button"
-                            style={{
-                                minWidth: "160px",
-                                color: "white",
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                background: "#FF5722",
-                                border: "none",
-                                padding: "10px 24px",
-                                borderRadius: "4px",
-                                cursor: isSubmitting ? "not-allowed" : "pointer",
-                                opacity: isSubmitting ? 0.6 : 1
-                            }}
-                            onClick={handleConfirmMapping}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Mapping..." : "Map Properties"}
-                        </button>
-                    </div>
+                <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
+                    Property Revenue Map
                 </div>
+                <MapPTPopup
+                    propertiesId={propertiesId}
+                    ownerName={ownerName}
+                    ownerMobile={ownerMobile}
+                    landArea={landArea}
+                    locality={locality}
+                    buildingName={buildingName}
+                    usageCategory={usageCategory}
+                    address={address}
+                    district={(districts.find(d => d.code === districtState) || {}).name || districtState}
+                    tehsil={(tehsils.find(t => t.code === tehsilState) || {}).name || tehsilState}
+                    village={(villages.find(v => v.code === villageState) || {}).name || villageState}
+                    segment={(segments.find(s => s.code === segmentState) || {}).name || segmentState}
+                    subUsageCategory={subUsageCategoryState}
+                    rate={mappedRate}
+                    unit={mappedunit}
+                    rateId={mappedRateId}
+                    segmentName={mappedSegmentName}
+                    onClose={handleDialogClose}
+                    onSubmit={handleSubmit}
+                />
             </Dialog>
         </div>
     );
