@@ -101,13 +101,13 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const [segments, setSegments] = React.useState([]);
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
-    const [localityState, setLocalityState] = React.useState("");
-    const [districtState, setDistrictState] = React.useState("");
-    const [tehsilState, setTehsilState] = React.useState("");
-    const [villageState, setVillageState] = React.useState("");
-    const [segmentState, setSegmentState] = React.useState("");
-    const [usageCategoryState, setUsageCategoryState] = React.useState("");
-    const [subUsageCategoryState, setSubUsageCategoryState] = React.useState("");
+    const [localityState, setLocalityState] = React.useState(() => localStorage.getItem("ptmap_locality") || "");
+    const [districtState, setDistrictState] = React.useState(() => localStorage.getItem("ptmap_district") || "");
+    const [tehsilState, setTehsilState] = React.useState(() => localStorage.getItem("ptmap_tehsil") || "");
+    const [villageState, setVillageState] = React.useState(() => localStorage.getItem("ptmap_village") || "");
+    const [segmentState, setSegmentState] = React.useState(() => localStorage.getItem("ptmap_segment") || "");
+    const [usageCategoryState, setUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_usageCategory") || "");
+    const [subUsageCategoryState, setSubUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_subUsageCategory") || "");
     const [mappedRate, setMappedRate] = React.useState(null);
     const [mappedunit, setMappedunit] = React.useState(null);
     const [mappedRateId, setMappedRateId] = React.useState(null);
@@ -173,6 +173,80 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         fetchRevenueData();
     }, [prepared]); // Add prepared as dependency
+
+    // Load dependent dropdowns on mount if there are persisted values
+    React.useEffect(() => {
+        const loadPersistedDropdowns = async () => {
+            const tenantId = get(prepared, "searchCriteria.tenantId") ||
+                get(prepared, "tenantId") ||
+                localStorage.getItem("tenant-id") ||
+                "pb.amritsar";
+
+            try {
+                // Load tehsils if district is persisted
+                if (districtState && !tehsils.length) {
+                    const tehsilResponse = await httpRequest(
+                        "post",
+                        "/egov-property-rate/property-rate/_search",
+                        "",
+                        [],
+                        { searchCriteria: { districtId: districtState, locality: locality || "" } }
+                    );
+                    const tehsilsData = (tehsilResponse && tehsilResponse.tehsils) || [];
+                    if (Array.isArray(tehsilsData) && tehsilsData.length > 0) {
+                        setTehsils(tehsilsData);
+                    }
+                }
+
+                // Load villages if tehsil is persisted
+                if (tehsilState && !villages.length) {
+                    const villageResponse = await httpRequest(
+                        "post",
+                        "/egov-property-rate/property-rate/_search",
+                        "",
+                        [],
+                        { searchCriteria: { tehsilId: tehsilState, locality: locality || "" } }
+                    );
+                    const villagesData = (villageResponse && (
+                        villageResponse.villages ||
+                        villageResponse.Villages ||
+                        villageResponse.villageList ||
+                        villageResponse.data
+                    )) || [];
+                    if (Array.isArray(villagesData) && villagesData.length > 0) {
+                        setVillages(villagesData);
+                    }
+                }
+
+                // Load segments if village is persisted
+                if (villageState && !segments.length) {
+                    const segmentResponse = await httpRequest(
+                        "post",
+                        "/egov-property-rate/property-rate/_search",
+                        "",
+                        [],
+                        { searchCriteria: { villageId: villageState, locality: locality || "" } }
+                    );
+                    const segmentsData = (segmentResponse && (
+                        segmentResponse.segments ||
+                        segmentResponse.Segments ||
+                        segmentResponse.segmentList ||
+                        segmentResponse.data
+                    )) || [];
+                    if (Array.isArray(segmentsData) && segmentsData.length > 0) {
+                        setSegments(segmentsData);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading persisted dropdown data:', error);
+            }
+        };
+
+        // Only load if we have persisted values
+        if (districtState || tehsilState || villageState) {
+            loadPersistedDropdowns();
+        }
+    }, [districtState, tehsilState, villageState]);
 
     // Filter tehsils when district changes
     React.useEffect(() => {
@@ -257,6 +331,31 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         const newLocality = get(prepared, "ptmapPopup.locality", "") || "";
         setLocalityState(newLocality);
     }, [prepared]);
+
+    // Save dropdown values to localStorage whenever they change
+    React.useEffect(() => {
+        if (districtState) localStorage.setItem("ptmap_district", districtState);
+    }, [districtState]);
+
+    React.useEffect(() => {
+        if (tehsilState) localStorage.setItem("ptmap_tehsil", tehsilState);
+    }, [tehsilState]);
+
+    React.useEffect(() => {
+        if (villageState) localStorage.setItem("ptmap_village", villageState);
+    }, [villageState]);
+
+    React.useEffect(() => {
+        if (segmentState) localStorage.setItem("ptmap_segment", segmentState);
+    }, [segmentState]);
+
+    React.useEffect(() => {
+        if (usageCategoryState) localStorage.setItem("ptmap_usageCategory", usageCategoryState);
+    }, [usageCategoryState]);
+
+    React.useEffect(() => {
+        if (subUsageCategoryState) localStorage.setItem("ptmap_subUsageCategory", subUsageCategoryState);
+    }, [subUsageCategoryState]);
 
     const handleLocalityChange = (e) => {
         e.stopPropagation();
@@ -567,10 +666,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
     const handleConfirmMapping = async () => {
 
-        alert("Map Properties functionality is currently disabled for testing purposes.");
-        //return;
-
-
         if (!districtState || !tehsilState || !villageState || !segmentState || !usageCategoryState || !subUsageCategoryState) {
             alert("Please fill all required fields");
             return;
@@ -805,17 +900,16 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             value={tehsilState}
                             onChange={handleTehsilChange}
                             onClick={(e) => e.stopPropagation()}
-                            disabled={!districtState}
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
                                 border: "1px solid #ccc",
                                 borderRadius: "4px",
                                 fontSize: "14px",
-                                backgroundColor: districtState ? "#fff" : "#f5f5f5",
+                                backgroundColor: "#fff",
                                 color: "#333",
                                 boxSizing: "border-box",
-                                cursor: districtState ? "pointer" : "not-allowed"
+                                cursor: "pointer"
                             }}
                         >
                             <option value="">Select Tehsil</option>
@@ -842,17 +936,16 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             value={villageState}
                             onChange={handleVillageChange}
                             onClick={(e) => e.stopPropagation()}
-                            disabled={!tehsilState}
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
                                 border: "1px solid #ccc",
                                 borderRadius: "4px",
                                 fontSize: "14px",
-                                backgroundColor: tehsilState ? "#fff" : "#f5f5f5",
+                                backgroundColor: "#fff",
                                 color: "#333",
                                 boxSizing: "border-box",
-                                cursor: tehsilState ? "pointer" : "not-allowed"
+                                cursor: "pointer"
                             }}
                         >
                             <option value="">Select Village</option>
@@ -879,17 +972,16 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             value={segmentState}
                             onChange={handleSegmentChange}
                             onClick={(e) => e.stopPropagation()}
-                            disabled={!villageState}
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
                                 border: "1px solid #ccc",
                                 borderRadius: "4px",
                                 fontSize: "14px",
-                                backgroundColor: villageState ? "#fff" : "#f5f5f5",
+                                backgroundColor: "#fff",
                                 color: "#333",
                                 boxSizing: "border-box",
-                                cursor: villageState ? "pointer" : "not-allowed"
+                                cursor: "pointer"
                             }}
                         >
                             <option value="">Select Segment</option>
@@ -916,17 +1008,16 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             value={usageCategoryState}
                             onChange={handleUsageCategoryChange}
                             onClick={(e) => e.stopPropagation()}
-                            disabled={!segmentState}
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
                                 border: "1px solid #ccc",
                                 borderRadius: "4px",
                                 fontSize: "14px",
-                                backgroundColor: segmentState ? "#fff" : "#f5f5f5",
+                                backgroundColor: "#fff",
                                 color: "#333",
                                 boxSizing: "border-box",
-                                cursor: segmentState ? "pointer" : "not-allowed"
+                                cursor: "pointer"
                             }}
                         >
                             <option value="">Select Usage Category</option>
@@ -952,17 +1043,16 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             value={subUsageCategoryState}
                             onChange={handleSubUsageCategoryChange}
                             onClick={(e) => e.stopPropagation()}
-                            disabled={!usageCategoryState}
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
                                 border: "1px solid #ccc",
                                 borderRadius: "4px",
                                 fontSize: "14px",
-                                backgroundColor: usageCategoryState ? "#fff" : "#f5f5f5",
+                                backgroundColor: "#fff",
                                 color: "#333",
                                 boxSizing: "border-box",
-                                cursor: usageCategoryState ? "pointer" : "not-allowed"
+                                cursor: "pointer"
                             }}
                         >
                             <option value="">Select Sub Usage Category</option>
