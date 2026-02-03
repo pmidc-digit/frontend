@@ -621,7 +621,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 "PropertyRates": [
                     {
                         "propertyId": propertiesId,
-                        "tenantId": tenantIdValue || "pb.amritsar",
+                        "tenantId": tenantIdValue,
                         "districtId": districtState,
                         "tehsilId": tehsilState,
                         "villageId": villageState,
@@ -687,15 +687,14 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
             const requestBody = {
                 searchCriteria: {
-                    segment: segmentState,
-                    propertiesId,
-                    district: districtState,
-                    tehsil: tehsilState,
-                    village: villageState,
+                    segmentId: segmentState,
+                    propertyId: propertiesId,
+                    districtId: districtState,
+                    tehsilId: tehsilState,
+                    villageId: villageState,
                     locality: locality,
-                    segment: segmentState,
-                    usageCategory: usageCategoryState,
-                    subUsageCategory: subUsageCategoryState,
+                    categoryId: usageCategoryState,
+                    subCategoryId: subUsageCategoryState,
                     tenantId: tenantIdValue,
                     isRateCheck: true
                 }
