@@ -165,22 +165,22 @@ export const abgSearchCard = getCommonCard({
           isClearable: true,
         }
       },
-      consumerId: getTextField({
-        label: {
-          labelName: "Consumer ID",
-          labelKey: "ABG_CONSUMER_ID_LABEL"
-        },
-        placeholder: {
-          labelName: "Enter Consumer ID",
-          labelKey: "ABG_CONSUMER_ID_PLACEHOLDER"
-        },
-        gridDefination: {
-          xs: 12,
-          sm: 4
-        },
-        required: false,
-        jsonPath: "searchCriteria.consumerCode"
-      })
+      // consumerId: getTextField({
+      //   label: {
+      //     labelName: "Consumer ID",
+      //     labelKey: "ABG_CONSUMER_ID_LABEL"
+      //   },
+      //   placeholder: {
+      //     labelName: "Enter Consumer ID",
+      //     labelKey: "ABG_CONSUMER_ID_PLACEHOLDER"
+      //   },
+      //   gridDefination: {
+      //     xs: 12,
+      //     sm: 4
+      //   },
+      //   required: false,
+      //   jsonPath: "searchCriteria.consumerCode"
+      // })
 
     },
     {

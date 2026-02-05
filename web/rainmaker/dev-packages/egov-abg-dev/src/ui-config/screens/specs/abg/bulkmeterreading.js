@@ -20,8 +20,8 @@ import "./index.css";
 const tenantId = getTenantId();
 
 const header = getCommonHeader({
-  labelName: "Group Bills",
-  labelKey: "ABG_COMMON_HEADERtttttt"
+  labelName: "Bulk Meter Reading",
+  labelKey: "Bulk Meter Reading"
 });
 
 const getMDMSData = async (action, state, dispatch) => {
