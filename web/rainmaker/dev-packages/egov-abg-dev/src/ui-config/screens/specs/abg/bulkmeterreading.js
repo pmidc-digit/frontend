@@ -13,8 +13,8 @@ import {
   resetFields
 } from "./gBmr/groupBillSearch";
 
-import { updateAllReadings } from "./gBmr/functions";
-import { searchResults, brmeterReading } from "./gBmr/searchResults";
+// import { updateAllReadings } from "./gBmr/functions";
+import { searchResults, brmeterReading, updateAllButton, updateAllReadings } from "./gBmr/searchResults";
 import "./index.css";
 
 const tenantId = getTenantId();
@@ -140,12 +140,11 @@ const abgSearchAndResult = {
               }
             },
 
-            searchButton: {
+            updateAllButton: {
               componentPath: "Button",
               gridDefination: {
                 xs: 12,
                 sm: 3
-                // align: "center"
               },
               props: {
                 variant: "contained",
@@ -165,7 +164,7 @@ const abgSearchAndResult = {
               },
               onClickDefination: {
                 action: "condition",
-                //callBack: searchApiCall
+                callBack: updateAllReadings
               }
             },
             lastCont: {

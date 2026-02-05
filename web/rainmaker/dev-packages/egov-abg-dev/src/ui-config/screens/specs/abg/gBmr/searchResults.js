@@ -24,18 +24,20 @@ export const searchResults = {
 
       { labelName: "Last Reading", labelKey: "Last Reading" },
       {
-        labelName: "Current Reading(in KL)",
-        labelKey: "Current Reading(in KL)",
+        labelName: "New Reading(in KL)",
+        labelKey: "New Reading(in KL)",
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
-            const lastReading = tableMeta.rowData && tableMeta.rowData[2];
+            // Last Reading is the second column (index 1)
+            const lastReading = tableMeta.rowData && tableMeta.rowData[1];
             return (
               <input
                 type="number"
                 min={lastReading || 0}
+                className="bulk-new-reading"
                 style={{ width: "120px", padding: "6px", boxSizing: "border-box" }}
-                defaultValue={value || ""}
+                // defaultValue={value || ""}
                 onInput={e => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, "");
                 }}
@@ -59,18 +61,33 @@ export const searchResults = {
         }
       },
       {
-        labelName: "Current Reading Date",
-        labelKey: "Current Reading Date",
+        labelName: "New Reading Date",
+        labelKey: "New Reading Date",
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
-            const today = new Date().toISOString().split("T")[0];
+            // Disable dates earlier than Current Reading Date for that row
+            const currentReadingDateDisplay =
+              tableMeta.rowData && tableMeta.rowData[4]; // e.g. "05/02/2026"
+
+            let minDate = "";
+            if (
+              currentReadingDateDisplay &&
+              currentReadingDateDisplay !== "-" &&
+              currentReadingDateDisplay.indexOf("/") > -1
+            ) {
+              const [dd, mm, yyyy] = currentReadingDateDisplay.split("/");
+              if (dd && mm && yyyy) {
+                minDate = `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+              }
+            }
             return (
               <input
                 type="date"
-                min={today}
+                min={minDate || undefined}
+                className="bulk-new-reading-date"
                 style={{ width: "160px", padding: "6px", boxSizing: "border-box" }}
-                defaultValue={value || today}
+                // defaultValue={value || today}
                 onChange={e => updateValue(e.target.value)}
               />
             );
@@ -93,21 +110,38 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
+            debugger;
+            let readingDatenew = tableMeta.rowData && tableMeta.rowData[3] ? tableMeta.rowData[3] : null;
+            readingDatenew = readingDatenew ? readingDatenew.split("-").reverse().join("/") : null;
             const handleUpdate = async () => {
               const consumerId = tableMeta.rowData && tableMeta.rowData[0];
-              const lastReading = Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
-              const currentReadingRaw = tableMeta.rowData && tableMeta.rowData[3];
-              const currentReading = Number(currentReadingRaw);
-              const readingDate = tableMeta.rowData && tableMeta.rowData[4];
+              const lastReading = Number(tableMeta.rowData && tableMeta.rowData[1]) || 0;
+              const currentReadingRaw = Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
+              const currentReadingDate = tableMeta.rowData && tableMeta.rowData[4] ? getEpochForDate(tableMeta.rowData[4]) : null;
+              const currentReading = Number(currentReadingRaw) || 0;
+              const billingPeriod = readingDatenew ? `${tableMeta.rowData[4]} - ${readingDatenew}` : "";
+              const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
+              const status = tableMeta.rowData && tableMeta.rowData[6];
               const tenantId = tableMeta.rowData && tableMeta.rowData[7];
 
-              if (!currentReadingRaw || !Number.isFinite(currentReading) || currentReading < lastReading) {
+              if (!currentReadingRaw || !Number.isFinite(currentReading)) {
                 alert("Please enter a numeric Current Reading greater than or equal to Last Reading before updating");
                 return;
               }
 
+              if (currentReading < lastReading) {
+                alert("Please enter a numeric Current Reading greater than or equal to Last Reading before updating");
+                return;
+              }
+
+              // New Reading Date must not be earlier than Current Reading Date
+              if (readingDate && currentReadingDate && readingDate < currentReadingDate) {
+                alert("New Reading Date cannot be earlier than Current Reading Date");
+                return;
+              }
+
               try {
-                const resp = await updatesingleReading(consumerId, tenantId, currentReading, readingDate);
+                const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, tenantId);
                 // updatesingleReading may return response or throw on error
                 alert("Update successful for Consumer ID: " + (consumerId || ""));
               } catch (err) {
@@ -157,4 +191,102 @@ export const searchResults = {
     }
   }
 };
+export const updateAllReadings = async (state, dispatch) => {
+  debugger;
 
+  // will contain only complete & valid rows
+  let allarray = [];
+
+  // get table data from screen config
+  const rows = get(
+    state,
+    "screenConfiguration.screenConfig.bulkmeterreading.components.div.children.searchResults.props.data",
+    []
+  );
+
+  // read the live values typed in the table inputs
+  const readingInputs = document.querySelectorAll("input.bulk-new-reading");
+  const dateInputs = document.querySelectorAll("input.bulk-new-reading-date");
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+
+    // Support both object-style rows and array-style rows
+    const isArrayRow = Array.isArray(row);
+
+    const consumerId = isArrayRow ? row[0] : row["Consumer ID"];
+    const lastReading = Number(isArrayRow ? row[1] : row["Last Reading"]) || 0;
+
+    // New reading / date: always take what user typed in the row inputs
+    const currentReadingRawEl = readingInputs[i];
+    const newReadingDateEl = dateInputs[i];
+    const currentReadingRaw = currentReadingRawEl ? currentReadingRawEl.value : "";
+    const newReadingDate = newReadingDateEl ? newReadingDateEl.value : "";
+
+    const currentReadingDateDisplay = isArrayRow ? row[4] : row["Current Reading Date"];
+    const status = isArrayRow ? row[6] : row["Status"];
+    const tenantId = isArrayRow ? row[7] : row["TENANT_ID"];
+
+    // only take complete rows (both value and date filled)
+    if (!currentReadingRaw || !newReadingDate) {
+      continue;
+    }
+
+    const currentReading = Number(currentReadingRaw) || 0;
+
+    // skip invalid readings
+    if (!Number.isFinite(currentReading) || currentReading < lastReading) {
+      continue;
+    }
+
+    const readingDatenew = newReadingDate
+      ? newReadingDate.split("-").reverse().join("/")
+      : null;
+    const billingPeriod =
+      readingDatenew && currentReadingDateDisplay
+        ? `${currentReadingDateDisplay} - ${readingDatenew}`
+        : "";
+    const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
+
+    // New Reading Date must not be earlier than Current Reading Date
+    const currentReadingDateEpoch = currentReadingDateDisplay
+      ? getEpochForDate(currentReadingDateDisplay)
+      : null;
+    if (readingDate && currentReadingDateEpoch && readingDate < currentReadingDateEpoch) {
+      // skip this row if date is invalid
+      continue;
+    }
+
+    // push only complete row into array
+    allarray.push({
+      consumerId,
+      lastReading,
+      newReading: currentReadingRaw,
+      newReadingDate,
+      currentReadingDate: currentReadingDateDisplay,
+      billingPeriod,
+      status,
+      tenantId,
+      readingDate
+    });
+
+    // call single update API
+    try {
+      await updatesingleReading(
+        consumerId,
+        lastReading,
+        currentReadingRaw,
+        currentReading,
+        billingPeriod,
+        status,
+        readingDate,
+        tenantId
+      );
+    } catch (err) {
+      console.error(`Failed to update Consumer ${consumerId}:`, err);
+    }
+  }
+
+  console.log("Complete rows for bulk update", allarray);
+  return allarray;
+};
