@@ -628,3 +628,31 @@ export const setServiceCategory = (businessServiceData, dispatch) => {
 export const checkValueForNA = (value) => {
   return value == null || value == undefined || value == "" ? "NA" : value;
 };
+
+export const batchMergeAndDownload = async (billkey, locality, businesService, tenantId, isConsolidated = false)=>{
+
+      const DOWNLOADRECEIPT = {
+      GET: {
+        URL: "egov-pdf/download/WNS/wnsgroupbill",
+        ACTION: "",
+      },
+    };
+    
+    const queryStr = [
+      { key: "key", value: billkey },
+      { key: "tenantId", value: tenantId },
+      {key : "locality", value : locality},
+      {key : "isConsolidated", value : isConsolidated},
+      {key : "bussinessService", value : businesService}
+    ];
+
+     const egovPdfResponse = await httpRequest(
+    "post",
+    DOWNLOADRECEIPT.GET.URL,
+    DOWNLOADRECEIPT.GET.ACTION,
+    queryStr,
+   
+  );
+
+  return egovPdfResponse
+}
