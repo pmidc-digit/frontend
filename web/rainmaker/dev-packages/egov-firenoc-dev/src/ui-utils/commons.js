@@ -108,8 +108,9 @@ export const download = async (receiptQueryString, mode = "download" ,configKey 
             owners=owners+","+ele.name; 
             contacts=contacts+","+ele.mobileNumber;
           }
-
+          
         });
+        payloadReceiptDetails.Payments[0].validityYears = response.FireNOCs[0].fireNOCDetails.additionalDetail  ? response.FireNOCs[0].fireNOCDetails.additionalDetail.validityYears : 1;
         payloadReceiptDetails.Payments[0].payerName=owners;
         payloadReceiptDetails.Payments[0].mobileNumber=contacts;
         let receiptDate=convertEpochToDate(payloadReceiptDetails.Payments[0].paymentDetails[0].receiptDate);
@@ -174,9 +175,9 @@ export const download = async (receiptQueryString, mode = "download" ,configKey 
       }
 
       const oldFileStoreId = get(payloadReceiptDetails.Payments[0], "fileStoreId")
-      if (oldFileStoreId) {
-        downloadReceiptFromFilestoreID(oldFileStoreId, mode)
-      }
+       if (oldFileStoreId) {
+         downloadReceiptFromFilestoreID(oldFileStoreId, mode)
+       }
       else {
         const propertiesById = get(state.properties , "propertiesById");
         const propertiesFound = propertiesById ? Object.values(propertiesById) : null;
@@ -605,7 +606,7 @@ export const createUpdateNocApplication = async (state, dispatch, status) => {
         convertDateToEpoch(get(owner, "dob"))
       );
     });
-    debugger;
+    
     payload[0].fireNOCDetails.buildings[0].landArea = parseInt(payload[0].fireNOCDetails.buildings[0].landArea);
     payload[0].fireNOCDetails.buildings[0].parkingArea = parseInt(payload[0].fireNOCDetails.buildings[0].parkingArea);
     payload[0].fireNOCDetails.buildings[0].totalCoveredArea = parseInt(payload[0].fireNOCDetails.buildings[0].totalCoveredArea);

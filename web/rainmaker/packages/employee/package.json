@@ -3,8 +3,13 @@
   "version": "2.0.0",
   "license": "egov",
   "private": true,
+<<<<<<< HEAD
   "homepage": "https://mseva-dev.lgpunjab.gov.in/employee/",
   "proxy": "https://mseva-dev.lgpunjab.gov.in/",
+=======
+  "homepage": "https://mseva.lgpunjab.gov.in/employee/",
+  "proxy": "https://mseva.lgpunjab.gov.in/",
+>>>>>>> punjab_DIGIT_V2.2
   "dependencies": {
     "@babel/runtime": "^7.3.1",
     "@material-ui/core": "^1.5.1",
@@ -76,7 +81,12 @@
     "**/datatables.net-responsive-dt": "2.3.0",
     "**/datatables.net-responsive": "2.2.9",
     "**/datatables.net-buttons-bs": "2.0.0",
+<<<<<<< HEAD
     "**/datatables.net-buttons": "2.2.2"
+=======
+    "**/datatables.net-buttons": "2.2.2",
+    "jquery": "3.7.1"
+>>>>>>> punjab_DIGIT_V2.2
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",

@@ -27,21 +27,37 @@ const mapStateToProps = (state, ownProps) => {
   const propertyId = ownProps.consumerCode;
   const selPropertyDetails = propertiesById[propertyId] || {};
   const propertyDetails = selPropertyDetails.propertyDetails || [];
-  localityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].address.locality.code;
- editlocalityCode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId
-;
-surveyIdcode = state.screenConfiguration.preparedFinalObject.propertiesAudit[0].surveyId;
+
+  // FIX: Add null safety checks to prevent "Cannot read properties of undefined" errors
+  const propertiesAudit = state && state.screenConfiguration && state.screenConfiguration.preparedFinalObject
+    ? state.screenConfiguration.preparedFinalObject.propertiesAudit
+    : null;
+  const firstProperty = propertiesAudit && propertiesAudit.length > 0 ? propertiesAudit[0] : null;
+
+  if (firstProperty) {
+    localityCode = firstProperty.address && firstProperty.address.locality && firstProperty.address.locality.code
+      ? firstProperty.address.locality.code
+      : null;
+    editlocalityCode = firstProperty.surveyId || null;
+    surveyIdcode = firstProperty.surveyId || null;
+  } else {
+    localityCode = null;
+    editlocalityCode = null;
+    surveyIdcode = null;
+    console.log('Log => ** [TotalDues] Warning: propertiesAudit is empty or undefined');
+  }
+
   return {
     propertyDetails,
     propertyId
   };
 };
 
-debugger;
+
 const getUserDataFromUuid = async (state, dispatch) => {
   
-  debugger;
- if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+  
+ if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
   let request = { searchCriteria: { tenantId: tenantIdcode} };
   try {
     const response = await httpRequest(
@@ -62,7 +78,7 @@ const getUserDataFromUuid = async (state, dispatch) => {
 }
 };
 
-if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
   getUserDataFromUuid();
 }
 const labelStyle = {
@@ -187,7 +203,7 @@ class TotalDues extends React.Component {
                 
                 labelText="PT_TOTALDUES_PAY"
                 onClickAction={() => {
-                  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing"){
+                  if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
                     if(isLocMatch){
                       if(surveyIdcode != 'null'){
                         payAction(consumerCode, tenantId);

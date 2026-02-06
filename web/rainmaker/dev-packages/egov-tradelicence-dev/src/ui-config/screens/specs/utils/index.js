@@ -1585,6 +1585,7 @@ export const validateFields = (
   dispatch,
   screen = "apply"
 ) => {
+  
   const fields = get(
     state.screenConfiguration.screenConfig[screen],
     objectJsonPath,

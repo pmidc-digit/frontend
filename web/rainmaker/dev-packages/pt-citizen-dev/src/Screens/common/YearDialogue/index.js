@@ -71,7 +71,7 @@ class YearDialog extends Component {
                 color="black"
               />
             </div>
-            <div className="year-range-botton-cont">
+            <div className="year-range-botton-cont" style={{overflowY:"scroll",maxHeight:"300px"}}>
               {Object.values(getYearList).map((item, index) => (
                 <YearDialogueHOC
                   handleRadioButton={this.handleRadioButton}

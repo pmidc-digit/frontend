@@ -7,10 +7,10 @@ import Label from "egov-ui-kit/utils/translationNode";
 import get from "lodash/get";
 
 console.log("new property form loaded");
-if(!confirm("Only one property id should be created for a single property.\nplease check and verify your existing properties.\nDo you want to create new property ?"))
-    window.location.href=`${window.origin}/citizen/property-tax`;
-    //window.location.href="http://localhost:3000/property-tax";
-  
+if (!confirm("Only one property id should be created for a single property.\nplease check and verify your existing properties.\nDo you want to create new property ?"))
+  window.location.href = `${window.origin}/citizen/property-tax`;
+// window.location.href="http://localhost:3000/property-tax";
+
 console.log("allowed");
 
 const options = [
@@ -140,6 +140,9 @@ const OwnerInformation = ({
               )}
             </div>
             <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
+              <Field fieldKey="ownerPan" field={fields["ownerPan"]} handleFieldChange={handleFieldChange} disabled={disabled} />
+            </div>
+            <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
               <Field fieldKey="ownerEmail" field={fields["ownerEmail"]} handleFieldChange={handleFieldChange} disabled={disabled} />
             </div>
             <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
@@ -202,7 +205,7 @@ const InstitutionAuthority = ({ form, formKey, handleFieldChange, cardTitle, for
 };
 
 const UsageInformationHOC = formHoc({ formKey: "basicInformation", path: "PropertyTaxPay", isCoreConfiguration: true })(GenericForm);
-const BussinessDetailsHOC = formHoc({ formKey: "bussinessDetails", path: "PropertyTaxPay/ImpelExtended", isCoreConfiguration: true })(GenericForm);
+const BussinessDetailsHOC = formHoc({ formKey: "bussinessDetailsct", path: "PropertyTaxPay/ImpelExtended", isCoreConfiguration: true })(GenericForm);
 const CheckBoxDetailsHOC = formHoc({ formKey: "checkBoxDetails", path: "PropertyTaxPay/ImpelExtended", isCoreConfiguration: true })(GenericForm);
 const PropertyAddressHOC = formHoc({ formKey: "propertyAddress", path: "PropertyTaxPay", isCoreConfiguration: true })(GenericForm);
 //const PlotInformationHOC = formHoc({ formKey: "plotInformation", path: "PropertyTaxPay" })(GenericForm);

@@ -105,14 +105,14 @@ export const searchApplications = {
 						moduleName: "TENANT",
 						masterName: "TENANTS"
 					},
-					required: true,
+					required: false,
 					isClearable: true,
 					labelsFromLocalisation: true,
 					jsonPath: "searchScreen.locality.code",
 					sourceJsonPath: "applyScreenMdmsData.tenant.localities",
 					className: "locality-dropdown autocomplete-dropdown pds-search"
 				},
-				required: true,
+				required: false,
 				jsonPath: "searchScreen.locality.code",
 				gridDefination: {
 					xs: 12,

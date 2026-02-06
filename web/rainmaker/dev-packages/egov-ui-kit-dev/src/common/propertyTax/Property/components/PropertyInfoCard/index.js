@@ -59,6 +59,25 @@ class PropertyInfoCard extends Component {
                                 fontSize="16px"
                               />
                             </div>
+                            {item.showEditButton && (
+                              <div className="col-sm-12 col-xs-12" style={{ padding: "5px 0px 0px 0px" }}>
+                                <button
+                                  style={{
+                                    backgroundColor: "transparent",
+                                    border: "none",
+                                    color: "#fe7a51",
+                                    cursor: "pointer",
+                                    padding: 0,
+                                    fontSize: "14px",
+                                    textDecoration: "underline",
+                                  }}
+                                  onClick={item.onEdit}
+                                  type="button"
+                                >
+                                  EDIT
+                                </button>
+                              </div>
+                            )}
                             {isModify && (
                               <div className="col-sm-12 col-xs-12" style={{ padding: "5px 0px 0px 0px" }}>
                                 <OldValueLabelContainer value={item.value} jsonPath={item.jsonPath} oldValue={item.oldValue} />

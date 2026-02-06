@@ -269,6 +269,16 @@ export const tradeReviewDetails = {
       jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.oldReceiptNumber",
       callBack: checkValueForNA
     }
+  ),
+  reviewtradeValidity: getLabelWithValue(
+    {
+      labelName: "Valadity (In Years)",
+      labelKey: "Valadity (In Years)"
+    },
+    {
+      jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",
+      callBack: checkValueForNA
+    }
   )
 }
 

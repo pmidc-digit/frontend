@@ -36,6 +36,10 @@ const mainRoutes = [
   {
     isRedirect:true,
     to:mainRouteConstants.REDIRECT
+  },
+  {
+    isRedirect:true,
+    to:mainRouteConstants.PROPERTYREDIRECT
   }
 ];
 

@@ -560,7 +560,7 @@ const tradeUnitCard = {
               }
              },
              afterFieldChange: (action, state, dispatch) => {
-              debugger;
+              
               let tradeUnitall= get(
                   state,
                   "screenConfiguration.preparedFinalObject.Licenses[0].tradeLicenseDetail.tradeUnits",
@@ -571,21 +571,35 @@ const tradeUnitCard = {
                   "screenConfiguration.preparedFinalObject.applyScreenMdmsData.TradeLicense.MdmsTradeType",
                   ""
                 );
+                dispatch(
+                  pFO(
+                    "applyScreenMdmsData.TradeLicense.validityYears",
+                    [{code :1},{code :2},{code :3}]
+                  )
+                );
+             //let filterdtradeUnitall = tradeUnitall.filter(item => !item.isDeleted);
+             //console.log("filterdtradeUnitall"+JSON.stringify(filterdtradeUnitall))
               for(let tunit of tradeUnitall){
                 for(let mdmstunit of mdmstradeUnitall){
                  if(tunit.tradeType == mdmstunit.code){
                   if(mdmstunit.ishazardous == true){
-                  dispatch(
-                    pFO(
-                      `Licenses[0].ishazardous`,
-                      "NEWTL.HAZ"
-                    )
-                  )
+                      dispatch(
+                        pFO(
+                          `Licenses[0].ishazardous`,
+                          "NEWTL.HAZ"
+                        )
+                      )
+                      dispatch(
+                        pFO(
+                          "applyScreenMdmsData.TradeLicense.validityYears",
+                          [{code :1}]
+                        )
+                      );
                     }
                   }
                 }
               }
-              
+             
             }
           },
           tradeUOM: getTextField({
@@ -1215,6 +1229,7 @@ export const tradeDetails = getCommonCard({
           "applyScreenMdmsData.common-masters.StructureSubTypeTransformed"
       }),
       beforeFieldChange: (action, state, dispatch) => {
+        
         const tradeTypes = setFilteredTradeTypes(
           state,
           dispatch,
@@ -1315,46 +1330,43 @@ export const tradeDetails = getCommonCard({
         labelKey: "Enter Old Receipt No."
       },
       jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.oldReceiptNumber"
-     })
-  ,
-  //   tradeRenewalYears:  {
-  //     ...getSelectField({
-  //     label: {
-  //       labelName: "Valid for No. of Years",
-  //       labelKey: "Valid for No. of Years"
-  //     },
-  //     placeholder: {
-  //       labelName: "Select Valid for No. of Years",
-  //       labelKey: "Select Valid for No. of Years"
-  //     },
-  //     props:{
-  //       className:"applicant-details-error"
-  //      //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
-  //     }, 
-  //     data: [
-  //       {
-  //         code: "1"
-  //       },
-  //       {
-  //         code: "2"
-  //       },
-  //       {
-  //         code: "3"
-  //       }
-  //     ],
-  //     localePrefix: {
-  //       moduleName: "common-masters",
-  //       masterName: "STRUCTURETYPE"
-  //     },
-  //     required: true,
-  //     jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.validityYears"
-  //   })
-  // }
+     }),
+     
 },
   {style:getQueryArg(window.location.href, "action") === "EDITRENEWAL"? {"cursor":"not-allowed"}:{}},
   ),
   tradeUnitCard,
-  accessoriesCard
+  accessoriesCard,
+   tradeRenewalYears:  {
+     ...getSelectField({
+     label: {
+       labelName: "Valid for No. of Years",
+       labelKey: "Valid for No. of Years"
+     },
+     placeholder: {
+       labelName: "Select Valid for No. of Years",
+       labelKey: "Select Valid for No. of Years"
+     },
+     props:{
+       className:"applicant-details-error",
+       required: true,
+      //disabled:getQueryArg(window.location.href, "action") === "RESUBMIT" || getQueryArg(window.location.href, "action") === "edit" || getQueryArg(window.location.href, "action") === "EDITRENEWAL"? true:false,
+     }, 
+     inputLabelProps: {
+      shrink: true
+    },
+    // data: get(state.screenConfiguration.preparedFinalObject,"Licenses[0].ishazardous")==='NEWTL.HAZ'?[{code : "1"}]:[{code :"3"}],
+    
+   //  localePrefix: {
+   //     moduleName: "common-masters",
+   //     masterName: "STRUCTURETYPE"
+   //   },
+     required: true,
+     jsonPath: "Licenses[0].tradeLicenseDetail.additionalDetail.validityYears",
+     sourceJsonPath:"applyScreenMdmsData.TradeLicense.validityYears"
+   }),
+  
+ }
 });
 
 const setFieldsOnAddItem = (state, multiItemContent) => {

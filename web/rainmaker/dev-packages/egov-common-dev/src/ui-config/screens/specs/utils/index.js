@@ -766,6 +766,15 @@ export const generateBill = async (dispatch, consumerCode, tenantId, businessSer
               estimateData
             )
           );
+      }else{
+        dispatch(prepareFinalObject("ReceiptTemp[0].Bill", []));
+        dispatch(
+          toggleSnackbar(true,
+            {labelName: 'Unable to fetchbill, try again later or contact to admin '},
+            "error"
+          )
+        )
+        
       }
     }
   } catch (e) {

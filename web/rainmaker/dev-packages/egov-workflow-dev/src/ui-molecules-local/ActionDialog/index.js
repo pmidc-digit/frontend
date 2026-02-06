@@ -112,6 +112,7 @@ class ActionDialog extends React.Component {
       open,
       onClose,
       dropDownData,
+      nocValid,
       handleFieldChange,
       onButtonClick,
       dialogData,
@@ -126,6 +127,7 @@ class ActionDialog extends React.Component {
     } = dialogData;
     const { getButtonLabelName } = this;
     let fullscreen = false;
+
     const showAssignee = process.env.REACT_APP_NAME === "Citizen" ? false : true;
     if (window.innerWidth <= 768) {
       fullscreen = true;
@@ -231,6 +233,7 @@ class ActionDialog extends React.Component {
                     <TextFieldContainer
                       InputLabelProps={{ shrink: true }}
                       label={fieldConfig.comments.label}
+                      required={nocValid}
                       onChange={e =>
                         handleFieldChange(`${dataPath}.comment`, e.target.value)
                       }
@@ -242,6 +245,7 @@ class ActionDialog extends React.Component {
                     <TextFieldContainer
                       InputLabelProps={{ shrink: true }}
                       label={fieldConfig.Respresntativename.label} 
+                      required={nocValid}
                       onChange={e =>
                         handleFieldChange(`${dataPath}.name`, e.target.value)
                       }
@@ -253,6 +257,7 @@ class ActionDialog extends React.Component {
                     <TextFieldContainer
                       InputLabelProps={{ shrink: true }}
                       label={fieldConfig.datetime.label}
+                      required={nocValid}
                       onChange={e =>
                         handleFieldChange(`${dataPath}.date`, e.target.value)
                       }
@@ -279,9 +284,10 @@ class ActionDialog extends React.Component {
                           labelName="Supporting Documents"
                           labelKey="WF_APPROVAL_UPLOAD_HEAD"
                         />
-                        {isDocRequired && (
+                        {isDocRequired || nocValid && (
                           <span style={{ marginLeft: 5, color: "red" }}>*</span>
-                        )}
+                        )
+                       }
                       </div>
                     </Typography>
                     <div

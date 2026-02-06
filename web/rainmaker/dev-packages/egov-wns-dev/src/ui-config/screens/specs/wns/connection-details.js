@@ -99,6 +99,7 @@ export const sortpayloadDataObj = (connectionObj) => {
 };
 
 const getActiveConnectionObj = (connectionsObj) => {
+  
   let getActiveConnectionObj = "";
   for (var i = 0; i < connectionsObj.length; i++) {
     if (
@@ -114,6 +115,8 @@ const getActiveConnectionObj = (connectionsObj) => {
 };
 
 const searchResults = async (action, state, dispatch, connectionNumber) => {
+    
+ 
   /**
    * This methods holds the api calls and the responses of fetch bill and search connection for both water and sewerage service
    */
@@ -123,7 +126,15 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
   ];
   let serviceUrl = getQueryArg(window.location.href, "service");
   if (serviceUrl === serviceConst.SEWERAGE) {
-    let payloadData = await getSearchResultsForSewerage(
+
+    let payloadData = await httpRequest(
+      "post",
+      "/sw-services/swc/_search",
+      "_search",
+      queryObject
+  );
+
+    payloadData = await getSearchResultsForSewerage(
       queryObject,
       dispatch,
       true
@@ -133,14 +144,16 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       payloadData !== undefined &&
       payloadData.SewerageConnections.length > 0
     ) {
-      payloadData.SewerageConnections = sortpayloadDataObj(
-        payloadData.SewerageConnections
-      );
-
+       payloadData.SewerageConnections = sortpayloadDataObj(
+         payloadData.SewerageConnections
+       );
+      const maxModifiedDate = Math.max(...payloadData.SewerageConnections.map(item => item.auditDetails.lastModifiedTime));
+      payloadData.SewerageConnections = payloadData.SewerageConnections.filter((element) =>  element.auditDetails.lastModifiedTime === maxModifiedDate);
       let sewerageConnection = getActiveConnectionObj(
-        payloadData.SewerageConnections
-      );
-      let propTenantId = sewerageConnection.property.tenantId.split(".")[0];
+         payloadData.SewerageConnections
+       );
+     let propTenantId = sewerageConnection.property.tenantId.split(".")[0];
+     
       sewerageConnection.service = serviceUrl;
 
       if (sewerageConnection.property.propertyType !== undefined) {
@@ -229,6 +242,7 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       amendments=amendments&&Array.isArray(amendments)&&amendments.filter(amendment=>amendment.status==='INWORKFLOW');
       dispatch(prepareFinalObject("BILL_FOR_WNS", bill));
       dispatch(prepareFinalObject("isAmendmentInWorkflow", amendments&&Array.isArray(amendments)&&amendments.length==0?true:false));
+      //dispatch(prepareFinalObject("WaterConnection[0]", sewerageConnection));
       dispatch(prepareFinalObject("WaterConnection[0]", sewerageConnection));
       getApplicationNumber(dispatch, payloadData.SewerageConnections);
       dispatch(
@@ -277,6 +291,10 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       payloadData.WaterConnection = sortpayloadDataObj(
         payloadData.WaterConnection
       );
+      
+      const maxModifiedDate = Math.max(...payloadData.WaterConnection.map(item => item.auditDetails.lastModifiedTime));
+      payloadData.WaterConnection = payloadData.WaterConnection.filter((element) =>  element.auditDetails.lastModifiedTime === maxModifiedDate);
+      
       let waterConnection = getActiveConnectionObj(payloadData.WaterConnection);
       waterConnection.service = serviceUrl;
       let propTenantId = waterConnection.property.tenantId.split(".")[0];
@@ -516,16 +534,22 @@ export const getDCBDetail = async (queryObject , dispatch) => {
     let dcbtotalArray = [];
     let dcbRow=null;
     let dcbtotalRow=null;
+    
     let installment,advance,taxAmount,taxCollected,taxBalance,interestAmount,interestCollected,interestBalance,penaltyBalance,penaltyCollected,penaltyAmount;
     response.Demands.map((element,index) => {
       taxAmount=0;taxCollected=0;taxBalance=0;interestAmount=0;
       interestCollected=0;interestBalance=0;penaltyBalance=0;penaltyCollected=0;penaltyAmount=0;
-advance=0;
+     advance=0;
   if(element.status == "ACTIVE")
   {
   installment=convertEpochToDate(element.taxPeriodFrom) +"-"+convertEpochToDate(element.taxPeriodTo);
   element.demandDetails.map((dd)=>{
     if(dd.taxHeadMasterCode=='WS_CHARGE' || dd.taxHeadMasterCode=='SW_CHARGE' ){
+      taxAmount=taxAmount+dd.taxAmount;
+      taxCollected=taxCollected+dd.collectionAmount;
+      taxBalance=taxAmount-taxCollected;
+    }
+    if(dd.taxHeadMasterCode=='WS_DISCHARGE_CHARGES' || dd.taxHeadMasterCode=='SW_DISCHARGE_CHARGES' ){
       taxAmount=taxAmount+dd.taxAmount;
       taxCollected=taxCollected+dd.collectionAmount;
       taxBalance=taxAmount-taxCollected;
@@ -709,7 +733,7 @@ const getMDMSData = async (action, state, dispatch) => {
     payload.MdmsRes.BillingService.BusinessService = payload.MdmsRes.BillingService.BusinessService.filter(
       (service) => service.billGineiURL
     );
-    // console.log(payload.MdmsRes,"nishant")
+    
     dispatch(prepareFinalObject("connectDetailsData", payload.MdmsRes));
   } catch (e) {
     console.log(e);

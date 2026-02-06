@@ -170,6 +170,18 @@ const routes = [
     },
   },
   {
+    path: "report-v2/:moduleName/:reportName",
+    component: Report,
+    needsAuthentication: true,
+
+    options: {
+      hideFooter: true,
+      title: "CS_PGR_REPORTS_HEADER",
+      hideTitle: true,
+      redirectionUrl,
+    },
+  },
+  {
     path: "push-localization",
     component: PushLocalization,
     needsAuthentication: true,

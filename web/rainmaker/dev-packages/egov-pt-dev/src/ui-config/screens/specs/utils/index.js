@@ -1158,3 +1158,20 @@ export const setCardVisibility = (state, action, dispatch) => {
     );
   }
 }
+
+
+export const getLocality = async (tenantid) =>{
+   try {
+          let payload = await httpRequest(
+            "post",
+            "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+            "_search",
+            [{ key: "tenantId", value: tenantid}],
+            {}
+          );
+          return payload;
+
+          } catch (e) {
+          console.log(e);
+        }
+}

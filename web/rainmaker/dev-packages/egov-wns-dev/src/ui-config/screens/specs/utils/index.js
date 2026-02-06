@@ -314,6 +314,11 @@ export const handleNA = params => {
     return params;
   } else { return "NA"; }
 }
+export const handleNAnew = params => {
+  if (params !== undefined && params !== null && params !== "" && params!==0) {
+    return params;
+  } else { return "0"; }
+}
 
 export const handleAmount = params => {
   if (params !== undefined && params !== null && params !== "" && params!==0) {
@@ -1950,3 +1955,19 @@ export const validateFieldOfWNS = (
   }
   return isFormValid;
 };
+
+export const getLocality = async (tenantid) =>{
+   try {
+          let payload = await httpRequest(
+            "post",
+            "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+            "_search",
+            [{ key: "tenantId", value: tenantid}],
+            {}
+          );
+          return payload;
+
+          } catch (e) {
+          console.log(e);
+        }
+}

@@ -21,6 +21,8 @@ import { formWizardConstants, getFormattedEstimate, getPurpose, propertySubmitAc
 import { convertRawDataToFormConfig } from "egov-ui-kit/utils/PTCommon/propertyToFormTransformer";
 import Label from "egov-ui-kit/utils/translationNode";
 import { get, isEqual, range, set } from "lodash";
+
+//import get from "lodash/get";
 import sortBy from "lodash/sortBy";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -289,7 +291,7 @@ class FormWizard extends Component {
       const draftUuid = getQueryValue(search, "uuid");
       fetchLocalizationLabel(getLocale(), tenantId, tenantId);
       let requestBody = generalMDMSDataRequestObj(commonConfig.tenantId);
-      fetchGeneralMDMSData(requestBody, "PropertyTax", getGeneralMDMSDataDropdownName()); 
+      fetchGeneralMDMSData(requestBody, "PropertyTax", getGeneralMDMSDataDropdownName());
       const documentTypeMdms = await getDocumentTypes();
       if (!!documentTypeMdms) fetchMDMDDocumentTypeSuccess(documentTypeMdms);
       this.unlisten = history.listen((location, action) => {
@@ -367,10 +369,10 @@ class FormWizard extends Component {
         prepareFinalObject('Properties', this.props.common.prepareFormData.Properties);
       }
       // Fetch property and store in state as Old property in case of edit in workflow
-      if(isModify){
+      if (isModify) {
         await setOldPropertyData(search, prepareFinalObject);
         this.props.setFieldProperty("propertyAddress", "city", "disabled", true);
-      } else{
+      } else {
         this.props.setFieldProperty("propertyAddress", "city", "disabled", false);
         prepareFinalObject('OldProperty', null);
       }
@@ -458,6 +460,7 @@ class FormWizard extends Component {
   };
 
   renderStepperContent = (selected, fromReviewPage) => {
+
     const { getOwnerDetails, updateTotalAmount, toggleTerms } = this;
     const {
       estimation,
@@ -474,6 +477,12 @@ class FormWizard extends Component {
     let isReassesment = getQueryValue(searchQuery, "purpose") == 'reassess';
     const isCompletePayment = getQueryValue(searchQuery, "isCompletePayment");
     const disableOwner = !formWizardConstants[purpose].canEditOwner;
+    let state = store.getState();
+
+    let cityconditionval = get(state, 'form.propertyAddress.fields.city.value', null)
+    if (cityconditionval == "pb.mohali") {
+      selected = selected == 3 ? 4 : selected;
+    }
     switch (selected) {
       case 0:
         return (
@@ -508,7 +517,12 @@ class FormWizard extends Component {
           </div>
         );
       case 3:
-        return (<Card textChildren={<DocumentsUpload></DocumentsUpload>} />);
+
+        return (
+
+          <Card textChildren={<DocumentsUpload></DocumentsUpload>} />
+
+        );
       case 4:
         return (<div className="review-pay-tab">
           <ReviewForm
@@ -743,7 +757,7 @@ class FormWizard extends Component {
     // utils
     const { pay, estimate, createAndUpdate } = this;
     const { selected, formValidIndexArray, estimation } = this.state;
-    const { displayFormErrorsAction, form, requiredDocCount , showSpinner} = this.props;
+    const { displayFormErrorsAction, form, requiredDocCount, showSpinner } = this.props;
     switch (selected) {
       //validating property address is validated
       case 0:
@@ -881,12 +895,11 @@ class FormWizard extends Component {
             if (ownershipTypeSelected === "SINGLEOWNER") {
               const { ownerInfo } = form;
               //To check whether ownership percentage is 100 for this SingleUser
-              var isOwnerPercentValid=true;
+              var isOwnerPercentValid = true;
               //alert("percentage is "+ownerInfo.fields["ownerPercentage"].value);
-              if(ownerInfo.fields["ownerPercentage"].value!=null && ownerInfo.fields["ownerPercentage"].value!="" && ownerInfo.fields["ownerPercentage"].value!="100")
-              {
+              if (ownerInfo.fields["ownerPercentage"].value != null && ownerInfo.fields["ownerPercentage"].value != "" && ownerInfo.fields["ownerPercentage"].value != "100") {
                 alert("ownership percentage must be 100 for single owner")
-                isOwnerPercentValid=false;
+                isOwnerPercentValid = false;
                 //displayFormErrorsAction("ownerInfo");
                 //isFormValid = false;
                 //break;  
@@ -906,17 +919,17 @@ class FormWizard extends Component {
                 displayFormErrorsAction("ownerInfo");
               }
             } else if (ownershipTypeSelected === "MULTIPLEOWNERS") {
-              let sumPercent=0;
+              let sumPercent = 0;
               let ownerValidation = true;
-              let allNull=true;
+              let allNull = true;
               for (const variable in form) {
                 if (variable.search("ownerInfo_") !== -1) {
                   //alert("percentage is "+form[variable].fields["ownerPercentage"].value);
-                  sumPercent=sumPercent + parseInt(form[variable].fields["ownerPercentage"].value);
+                  sumPercent = sumPercent + parseInt(form[variable].fields["ownerPercentage"].value);
                   // if ownerPercentage for this owner is not null i.e. not empty field
-                  if(form[variable].fields["ownerPercentage"].value!=null && form[variable].fields["ownerPercentage"].value!="")
-                    allNull=false;  
-            
+                  if (form[variable].fields["ownerPercentage"].value != null && form[variable].fields["ownerPercentage"].value != "")
+                    allNull = false;
+
                   const isDynamicFormValid = validateForm(form[variable]);
                   if (!isDynamicFormValid) {
                     displayFormErrorsAction(variable);
@@ -924,11 +937,10 @@ class FormWizard extends Component {
                   }
                 }
               }
-              var isOwnerPercentValid=true;
-              if(allNull==false && sumPercent!=100)
-              {
+              var isOwnerPercentValid = true;
+              if (allNull == false && sumPercent != 100) {
                 alert("sum of ownership percentage must be 100 for multiple owners")
-                isOwnerPercentValid=false;
+                isOwnerPercentValid = false;
                 //displayFormErrorsAction("ownerInfo");
                 //isFormValid = false;
                 //break;  
@@ -1109,12 +1121,10 @@ class FormWizard extends Component {
       const userType =
         process.env.REACT_APP_NAME === "Citizen" ? "CITIZEN" : "EMPLOYEE";
       if (userType === "CITIZEN") {
-        callbackUrl = `${
-          window.origin
+        callbackUrl = `${window.origin
           }/citizen/property-tax/payment-redirect-page`;
       } else {
-        callbackUrl = `${
-          window.origin
+        callbackUrl = `${window.origin
           }/employee/property-tax/payment-redirect-page`;
       }
     }
@@ -1241,7 +1251,7 @@ class FormWizard extends Component {
           }
         );
         //For calculation screen
-        const tenantId =  process.env.REACT_APP_NAME === "Employee" ? getTenantId() : getQueryArg(window.location.href, "tenantId");
+        const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : getQueryArg(window.location.href, "tenantId");
         const calculationScreenData = await getCalculationScreenData(
           get(estimateResponse, "Calculation[0].billingSlabIds", []),
           tenantId,
@@ -1701,7 +1711,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchMDMDDocumentTypeSuccess(data)),
     handleFieldChange: (formKey, fieldKey, value) =>
       dispatch(handleFieldChange(formKey, fieldKey, value)),
-    setFieldProperty: (formKey, fieldKey, property, value) => 
+    setFieldProperty: (formKey, fieldKey, property, value) =>
       dispatch(setFieldProperty(formKey, fieldKey, property, value)),
     prepareFormDataAction: (path, value) =>
       dispatch(prepareFormDataAction(path, value)),
@@ -1711,7 +1721,7 @@ const mapDispatchToProps = dispatch => {
     prepareFinalObject: (jsonPath, value) =>
       dispatch(prepareFinalObject(jsonPath, value)),
     fetchAssessments: (fetchAssessmentsQueryObject) => dispatch(fetchAssessments(fetchAssessmentsQueryObject)),
-    fetchLocalizationLabel: (locale, moduleName, tenantId)=> dispatch(fetchLocalizationLabel(locale, moduleName, tenantId))
+    fetchLocalizationLabel: (locale, moduleName, tenantId) => dispatch(fetchLocalizationLabel(locale, moduleName, tenantId))
   };
 };
 

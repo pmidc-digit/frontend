@@ -181,6 +181,28 @@ const propertyLocationDetails = {
           },
           { jsonPath: "applyScreenOld.property.address.pincode", callBack: handleNA },
         ),
+        surveyId: getLabelWithValueForModifiedLabel(
+          {
+            labelName: "Survey Id",
+            labelKey: "Survey Id"
+          },
+          { jsonPath: "applyScreen.property.surveyId", callBack: handleNA },
+          {
+            labelKey: "WS_OLD_LABEL_NAME"
+          },
+          { jsonPath: "applyScreenOld.property.surveyId", callBack: handleNA },
+        ),
+        OldPropertyId: getLabelWithValueForModifiedLabel(
+          {
+            labelName: "Old Property Id",
+            labelKey: "Old Property Id"
+          },
+          { jsonPath: "applyScreen.property.oldPropertyId", callBack: handleNA },
+          {
+            labelKey: "WS_OLD_LABEL_NAME"
+          },
+          { jsonPath: "applyScreenOld.property.oldPropertyId", callBack: handleNA },
+        ),
       })
     }),
 

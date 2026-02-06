@@ -10,13 +10,14 @@ import {
   getTextToLocalMapping
 } from "../../utils/index";
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { getTenantId,getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
+import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import isEmpty from "lodash/isEmpty"
 import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
+
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -24,6 +25,12 @@ export const searchApiCall = async (state, dispatch) => {
     "searchCriteria",
     {}
   );
+  let batchtype = get(
+    state.screenConfiguration.preparedFinalObject.generateBillScreen,
+    "batchtype",
+    {}
+  );
+
   const isSearchBoxFirstRowValid = validateFields(
     "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children",
     state,
@@ -65,6 +72,7 @@ export const searchApiCall = async (state, dispatch) => {
     );
   } else {
     for (var key in searchScreenObject) {
+
       if (
         searchScreenObject.hasOwnProperty(key) &&
         searchScreenObject[key] === ""
@@ -76,36 +84,77 @@ export const searchApiCall = async (state, dispatch) => {
       state.screenConfiguration.preparedFinalObject,
       "searchScreenMdmsData.BillingService.BusinessService"
     ).filter(item => item.code === searchScreenObject.businesService);
+    let batchlocality = get(
+      state.screenConfiguration.preparedFinalObject,
+      "applyScreenMdmsData.tenant.batchs");
+    let batchvalue = get(
+      state.screenConfiguration.preparedFinalObject,
+      "searchCriteria.locality");
+    if (batchtype == 'Batch') {
+      debugger;
+      batchlocality = (batchlocality || []).find(item => item.code === batchvalue);
+      const codes = batchlocality.children.map(item => item.code);
+      searchScreenObject.locality = codes;
+      if (searchScreenObject.businesService == 'WS') {
+        searchScreenObject.url = "/egov-searcher/bill-genie/wsbatchbilling/_get";
+      } else {
+        searchScreenObject.url = "/egov-searcher/bill-genie/swbatchbilling/_get";
+      }
+    }
+    else if (batchtype == 'Group' && searchScreenObject.businesService == 'SW') {
+      searchScreenObject.url = "/egov-searcher/bill-genie/groupbillssw/_get";
+    }
+    else if (batchtype == 'Group') {
+      searchScreenObject.url = "/egov-searcher/bill-genie/groupbills/_get";
+    }
+    else if (batchtype == 'Integrated Bill') {
+      searchScreenObject.url = "/egov-searcher/bill-genie/integratedbills/_get";  //added Url for integratedbills
+    }
+    else {
+      searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
+    }
 
-    searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
-    searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ?  getTenantId() : JSON.parse(getUserInfo()).permanentCity;
-    const responseFromAPI = await getGroupBillSearch(dispatch,searchScreenObject);
+    //console.log("serviceObject",serviceObject)
+    searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
+
     const bills = (responseFromAPI && responseFromAPI.Bills) || [];
     dispatch(
       prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
     );
     const response = [];
+    //console.log("responseTest"+JSON.stringify(bills))
+    const uiConfigs = get(state.screenConfiguration.preparedFinalObject, "searchScreenMdmsData.common-masters.uiCommonPay");
+    const configObject = uiConfigs.filter(item => item.code === searchScreenObject.businesService);
     for (let i = 0; i < bills.length; i++) {
-      if(get(bills[i], "status") === "ACTIVE" &&  get(bills[i], "totalAmount")>0 && get(bills[i].connection,"status").toUpperCase() === "ACTIVE"){
+      // if(get(bills[i], "status") === "ACTIVE" &&  get(bills[i], "totalAmount")>0 && get(bills[i].connection,"status").toUpperCase() === "ACTIVE"){
+      if (get(bills[i], "status") === "ACTIVE" && get(bills[i], "totalAmount") > 0) {
         response.push({
           consumerId: get(bills[i], "consumerCode"),
           billNo: get(bills[i], "billNumber"),
           ownerName: get(bills[i], "payerName"),
           billDate: get(bills[i], "billDate"),
-          status : get(bills[i], "status"),
-          tenantId: tenantId
+          status: get(bills[i], "status"),
+          tenantId: tenantId,
+          businesService: serviceObject[0].code
         })
-      }      
+      }
+      // }      
     }
     try {
+      //console.log("Hello Response",response);
       let data = response.map(item => ({
         ["ABG_COMMON_TABLE_COL_BILL_NO"]: item.billNo || "-",
         ["ABG_COMMON_TABLE_COL_CONSUMER_ID"]: item.consumerId || "-",
         ["ABG_COMMON_TABLE_COL_OWN_NAME"]: item.ownerName || "-",
         ["ABG_COMMON_TABLE_COL_BILL_DATE"]:
           convertEpochToDate(item.billDate) || "-",
-        ["ABG_COMMON_TABLE_COL_STATUS"]: item.status && getTextToLocalMapping(item.status.toUpperCase())  || "-",
-        ["TENANT_ID"]: item.tenantId
+        ["ABG_COMMON_TABLE_COL_STATUS"]: item.status && getTextToLocalMapping(item.status.toUpperCase()) || "-",
+        ["RECEIPT_KEY"]: get(configObject[0], "receiptKey"),
+        ["BILL_KEY"]: get(configObject[0], "billKey"),
+        ["TENANT_ID"]: item.tenantId,
+        ["BUSINESS_SERVICE"]: item.businesService,
+        ["BILL_SEARCH_URL"]: serviceObject[0].billGineiURL,
       }));
 
       dispatch(
@@ -123,9 +172,10 @@ export const searchApiCall = async (state, dispatch) => {
           "props.rows",
           data.length
         )
-      );      
+      );
+      //console.log("Hello Response Data",data)
       showHideTable(true, dispatch);
-      if(!isEmpty(response)){
+      if (!isEmpty(response)) {
         showHideMergeButton(true, dispatch);
         loadUlbLogo(tenantId);
       };

@@ -93,7 +93,7 @@ const OwnerInformation = ({
                 iconStyle={styles.iconStyle}
                 valueSelected={genderSelected}
                 disabled={disabled}
-                radioButtonItemStyle={styles.childrenStyle}
+              //radioButtonItemStyle={styles.childrenStyle}
               />
             </div>
             <div className="col-sm-6">
@@ -135,11 +135,14 @@ const OwnerInformation = ({
               )}
             </div>
             <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
+              <Field fieldKey="ownerPan" field={fields["ownerPan"]} handleFieldChange={handleFieldChange} disabled={disabled} />
+            </div>
+            <div className="col-sm-6" style={{ paddingBottom: "4px", paddingTop: "2px" }}>
               <Field fieldKey="ownerEmail" field={fields["ownerEmail"]} handleFieldChange={handleFieldChange} disabled={disabled} />
             </div>
             <div className="col-sm-6">
-                <Field fieldKey="ownerPercentage" field={fields["ownerPercentage"]} handleFieldChange={handleFieldChange} disabled={disabled} />
-              </div>
+              <Field fieldKey="ownerPercentage" field={fields["ownerPercentage"]} handleFieldChange={handleFieldChange} disabled={disabled} />
+            </div>
             <div className="col-sm-6" style={{ paddingBottom: "8px" }}>
               <Field fieldKey="ownerAddress" field={fields["ownerAddress"]} handleFieldChange={handleFieldChange} disabled={disabled} />
             </div>

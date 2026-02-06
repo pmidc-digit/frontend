@@ -141,7 +141,6 @@ export default class UpdateMobileDialog extends React.Component {
     var myHeaders = new Headers();
     let { property, propertyNumbers } = this.props;
     const { mobileNumber } = this.state.fields;
-
     if (property && property.owners && property.owners.length > 0) {
       property.owners.map(owner => {
         if (owner.uuid == propertyNumbers.uuid) {
@@ -271,7 +270,7 @@ export default class UpdateMobileDialog extends React.Component {
 
   validateAndSendOtp = async () => {
     try {
-        debugger;
+        
       const newItem = { mobileNumber: this.state.fields.mobileNumber };
       if (Object.values(newItem).some((item) => item.value == "")) {
         this.setMessage("PT_SEC_ENTER_NAME_NUMBER", "ERROR");
@@ -330,11 +329,14 @@ export default class UpdateMobileDialog extends React.Component {
     }
   }
   setDocFileDetails = (ind, file, fileStoreId) => {
-    ind = this.state.clickedElement != "IDENTITYPROOF" ? 0 : 1;
+    // Find the correct index based on the clicked element
     const documents = this.state.documents;
-    documents[ind].fileName = file.name;
-    documents[ind].fileStoreId = fileStoreId;
-    documents[ind].uploaded = true;
+    const correctIndex = documents.findIndex(doc => doc.documentType === this.state.clickedElement);
+    const indexToUse = correctIndex !== -1 ? correctIndex : ind;
+    
+    documents[indexToUse].fileName = file.name;
+    documents[indexToUse].fileStoreId = fileStoreId;
+    documents[indexToUse].uploaded = true;
     this.setState({ documents: documents });
     this.hideLoading();
   }
@@ -374,6 +376,7 @@ export default class UpdateMobileDialog extends React.Component {
           backgroundColor: "white"
         }}
       >
+   {Object.keys(propertyNumbers).length != 0 && propertyNumbers.mobileNumber!="" && propertyNumbers.mobileNumber!="" ? 
         <div className="pt-update-popup-holder">
           {loadingStatus == "loading" &&
             <div><LoadingIndicator></LoadingIndicator>
@@ -405,7 +408,7 @@ export default class UpdateMobileDialog extends React.Component {
               onChange={(e) => this.handleChange(key, e.target.value)}></MobileNumberField>
             </span>
             {process.env.REACT_APP_NAME !== "Citizen" && <div style={{marginTop: '10px'}}>
-              {documents.map((document, ind) => {
+              {documents && documents.length > 0 && documents.map((document, ind) => {
                 return (<div>
                   <Label label={document.code} labelStyle={{ color: '#000000DF', fontSize: "16px" }} />
                   <Label label="PT_ATTACH_RESTRICTIONS_SIZE" />
@@ -453,6 +456,8 @@ export default class UpdateMobileDialog extends React.Component {
             <button type="button" disabled={this.state.verifyButton} style={{ width: '100%',marginTop:"10px" }} className={"button-verify-link"} onClick={() => this.validateAndCreate()} ><Label label="PTUPNO_VERUPD_NO"></Label></button>
           </div>}
         </div>
+     :  <div className="error-comp-second-num"><Label label={"Data load failed. Please refresh the page (F5) to retry. If issue persists, contact support."}></Label></div>              
+  }
         {errorMessage && <div className={type == "ERROR" ? "error-comp-second-num" : "success-comp-second-num"}><Label label={errorMessage}></Label></div>}
       </Dialog>
     )

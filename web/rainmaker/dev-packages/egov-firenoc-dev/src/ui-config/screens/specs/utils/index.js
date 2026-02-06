@@ -717,7 +717,7 @@ export const searchBill = async (dispatch, applicationNumber, tenantId) => {
 const isApplicationPaid = (currentStatus, nextAction, workflowCode) => {
   let isPAID = false;
   if (currentStatus === "CITIZENACTIONREQUIRED") {
-    return isPAID;
+    return true;
   }
   const businessServiceData = JSON.parse(localStorageGet("businessServiceData"));
 
@@ -739,7 +739,9 @@ const isApplicationPaid = (currentStatus, nextAction, workflowCode) => {
 
 export const createEstimateData = (billObject, dispatch) => {
   dispatch(prepareFinalObject("ReceiptTemp[0].Bill", [billObject]));
+  
   const billDetails = billObject && billObject.billDetails;
+  console.log("billObject"+JSON.stringify(billDetails));
   let fees =
     billDetails &&
     billDetails[0].billAccountDetails &&
@@ -809,6 +811,7 @@ export const generateBill = async (state, dispatch, applicationNumber, tenantId,
       const payload = isPAID
         ? await getReceiptData(billQueryObj.filter(item => item.key !== "businessService"))
         : fetchBillResponse && fetchBillResponse.Bill && fetchBillResponse.Bill[0];
+        console.log("PAYLOAD"+JSON.stringify(payload))
       let estimateData = payload
       ? isPAID
       ? payload &&

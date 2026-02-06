@@ -3,6 +3,7 @@ import { getBreak, getCommonHeader, getLabel } from "egov-ui-framework/ui-config
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getQueryArg, getRequiredDocData,showHideAdhocPopup } from "egov-ui-framework/ui-utils/commons";
 import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+import {getLocality} from "../utils/index"
 import "./index.css";
 import get from "lodash/get";
 import { resetFields } from "./mutation-methods";
@@ -93,6 +94,32 @@ const getMDMSData = async (action, dispatch) => {
   }
 };
 
+const getLocalityData = async (action, dispatch, tenantid) =>{
+      let payload = await getLocality(tenantid)
+          //console.log("payload", payload)
+          const mohallaData =
+            payload &&
+            payload.TenantBoundary[0] &&
+            payload.TenantBoundary[0].boundary &&
+            payload.TenantBoundary[0].boundary.reduce((result, item) => {
+              result.push({
+                ...item,
+                name: `${tenantid
+                  .toUpperCase()
+                  .replace(
+                    /[.]/g,
+                    "_"
+                  )}_REVENUE_${item.code
+                    .toUpperCase()
+                    .replace(/[._:-\s\/]/g, "_")}`
+              });
+              return result;
+            }, []);
+  
+  
+            dispatch(prepareFinalObject('applyScreenMdmsData.tenant.localities', mohallaData));
+}
+
 const header = getCommonHeader({
   labelName: "Property Tax",
   labelKey: "PROPERTY_TAX"
@@ -102,9 +129,11 @@ const screenConfig = {
   name: "propertySearch",
 
   beforeInitScreen: (action, state, dispatch) => {
+    
     resetFields(state, dispatch);
     
     getMDMSData(action, dispatch);
+    getLocalityData(action, dispatch,tenant)
     return action;
   },
 
@@ -169,7 +198,6 @@ const screenConfig = {
                 action: "condition",
                 callBack: (state, dispatch) => {
                   showHideAdhocPopup(state, dispatch, "propertySearch");
-
                 }
               },
               // roleDefination: {

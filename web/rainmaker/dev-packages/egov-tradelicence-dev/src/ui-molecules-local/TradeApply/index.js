@@ -26,29 +26,30 @@ class TradeApply extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.root} onClick={this.clickHandler}>
-        <List component="nav">
-          <ListItem button>
-            <ListItemText
-              primary={
-                <LabelContainer
-                  labelKey="How to apply & pay Trade License"
-                  labelName="How to apply & pay Trade License"
-                  style={{
-                    fontSize: 14,
-                    color: "rgba(0, 0, 0, 0.8700000047683716)"
-                  }}
-                />
-              }
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end">
-                <KeyboardRightIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-      </div>
+      // <div className={classes.root} onClick={this.clickHandler}>
+      //   <List component="nav">
+      //     <ListItem button>
+      //       <ListItemText
+      //         primary={
+      //           <LabelContainer
+      //             labelKey="How to apply & pay Trade License"
+      //             labelName="How to apply & pay Trade License"
+      //             style={{
+      //               fontSize: 14,
+      //               color: "rgba(0, 0, 0, 0.8700000047683716)"
+      //             }}
+      //           />
+      //         }
+      //       />
+      //       <ListItemSecondaryAction>
+      //         <IconButton edge="end">
+      //           <KeyboardRightIcon />
+      //         </IconButton>
+      //       </ListItemSecondaryAction>
+      //     </ListItem>
+      //   </List>
+      // </div>
+      <div></div>
     );
   }
 }

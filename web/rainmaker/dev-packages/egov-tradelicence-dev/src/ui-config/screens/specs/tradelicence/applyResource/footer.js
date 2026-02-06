@@ -11,10 +11,10 @@ import get from "lodash/get";
 import set from "lodash/set";
 import some from "lodash/some";
 import { applyTradeLicense, checkValidOwners, getNextFinancialYearForRenewal } from "../../../../../ui-utils/commons";
-import {createEstimateData,downloadCertificateForm, getButtonVisibility,getCommonApplyFooter,getDocList, setMultiOwnerForApply,setValidToFromVisibilityForApply,validateFields,getCurrentFinancialYear} from "../../utils";
+import { createEstimateData, downloadCertificateForm, getButtonVisibility, getCommonApplyFooter, getDocList, setMultiOwnerForApply, setValidToFromVisibilityForApply, validateFields, getCurrentFinancialYear } from "../../utils";
 import "./index.css";
 let isDecL;
-debugger;
+
 const moveToSuccess = (LicenseData, dispatch) => {
   const applicationNo = get(LicenseData, "applicationNumber");
   const tenantId = get(LicenseData, "tenantId");
@@ -22,15 +22,18 @@ const moveToSuccess = (LicenseData, dispatch) => {
   const purpose = "apply";
   const status = "success";
   dispatch(
+    // setRoute(
+    //   `/tradelicence/acknowledgement?purpose=${purpose}&status=${status}&applicationNumber=${applicationNo}&FY=${financialYear}&tenantId=${tenantId}`
+    // )
     setRoute(
-      `/tradelicence/acknowledgement?purpose=${purpose}&status=${status}&applicationNumber=${applicationNo}&FY=${financialYear}&tenantId=${tenantId}`
+      `/tradelicence/search-preview?applicationNumber=${applicationNo}&tenantId=${tenantId}`
     )
   );
 };
 const editRenewalMoveToSuccess = (LicenseData, dispatch) => {
   const applicationNo = get(LicenseData, "applicationNumber");
   const tenantId = get(LicenseData, "tenantId");
-  
+
   const financialYear = get(LicenseData, "financialYear");
   const licenseNumber = get(LicenseData, "licenseNumber");
   const purpose = "EDITRENEWAL";
@@ -78,7 +81,7 @@ export const generatePdfFromDiv = (action, applicationNumber) => {
     }
   });
 };
-// debugger;
+// 
 // export const callisDecL = async (state, dispatch) => {
 //   isDecL=  get(state.screenConfiguration.preparedFinalObject.Licenses[0], "isDeclared");
 //   alert("demo  "+isDecL);
@@ -93,21 +96,21 @@ export const callBackForNext = async (state, dispatch) => {
   let isFormValid = true;
   let hasFieldToaster = true;
   if (activeStep === 0) {
-    debugger;
-    // if(process.env.REACT_APP_NAME == "Citizen"){
-    //   let urldatavalues = window.location.search;
-    // //   let feachdataurl = urldatavalues.split("https://mseva.lgpunjab.gov.in/citizen/tradelicense-citizen/apply?");
-    // //  let feachdataurl = urldatavalues.split("http://localhost:3000/tradelicense-citizen/apply?");
-    //   let shortdataurl = feachdataurl[0].split("&");
-    //   if(shortdataurl[1]){
-    //    let ChanNel = shortdataurl[1].split("channel=")[1].split(":");
-    //    dispatch(prepareFinalObject( "Licenses[0].tradeLicenseDetail.additionalDetail.CHANNEL",ChanNel[0] ,""));
-    //    dispatch(prepareFinalObject( "Licenses[0].tradeLicenseDetail.additionalDetail.IPIN",ChanNel[1] ,""));
-    //    dispatch(prepareFinalObject( "Licenses[0].tradeLicenseDetail.additionalDetail.APPID",ChanNel[2] ,""));
-    //    dispatch(prepareFinalObject( "Licenses[0].tradeLicenseDetail.additionalDetail.mobileNo",shortdataurl[4].split("mobileNo=")[1] ,""));
-    //   }
-    //   console.log(shortdataurl);
-    //      }
+    
+    if (process.env.REACT_APP_NAME == "Citizen") {
+      let urldatavalues = window.location.search;
+      let feachdataurl = urldatavalues.split("https://mseva.lgpunjab.gov.in/citizen/tradelicense-citizen/apply?");
+      //let feachdataurl = urldatavalues.split("http://localhost:3000/tradelicense-citizen/apply?");
+      let shortdataurl = feachdataurl[0].split("&");
+      if (shortdataurl[1]) {
+        let ChanNel = shortdataurl[1].split("channel=")[1].split(":");
+        dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.CHANNEL", ChanNel[0], ""));
+        dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.IPIN", ChanNel[1], ""));
+        dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.APPID", ChanNel[2], ""));
+        dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.additionalDetail.mobileNo", shortdataurl[4].split("mobileNo=")[1], ""));
+      }
+      console.log(shortdataurl);
+    }
     const isTradeDetailsValid = validateFields(
       "components.div.children.formwizardFirstStep.children.tradeDetails.children.cardContent.children.tradeDetailsConatiner.children",
       state,
@@ -175,25 +178,25 @@ export const callBackForNext = async (state, dispatch) => {
     );
     // ownership = ownership.split(".")[0];
     let subOwnerShipCategoryType = ownership.split(".")[1];
-      if (subOwnerShipCategoryType === "MULTIPLEOWNERS") {
-        dispatch(
-          handleField(
-            "apply",
-            "components.div.children.formwizardSecondStep.children.tradeOwnerDetails.children.cardContent.children.OwnerInfoCard",
-            "props.hasAddItem",
-            true
-          )
-        );
-      }else {
-        dispatch(
-          handleField(
-            "apply",
-            "components.div.children.formwizardSecondStep.children.tradeOwnerDetails.children.cardContent.children.OwnerInfoCard",
-            "props.hasAddItem",
-            false
-          )
-        );
-      }
+    if (subOwnerShipCategoryType === "MULTIPLEOWNERS") {
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardSecondStep.children.tradeOwnerDetails.children.cardContent.children.OwnerInfoCard",
+          "props.hasAddItem",
+          true
+        )
+      );
+    } else {
+      dispatch(
+        handleField(
+          "apply",
+          "components.div.children.formwizardSecondStep.children.tradeOwnerDetails.children.cardContent.children.OwnerInfoCard",
+          "props.hasAddItem",
+          false
+        )
+      );
+    }
   }
 
   if (activeStep === 1) {
@@ -241,7 +244,7 @@ export const callBackForNext = async (state, dispatch) => {
       get(
         state.screenConfiguration.preparedFinalObject,
         "Licenses[0].tradeLicenseDetail.subOwnerShipCategory"
-      ) === "INDIVIDUAL.MULTIPLEOWNERS" 
+      ) === "INDIVIDUAL.MULTIPLEOWNERS"
       &&
       get(
         state.screenConfiguration.preparedFinalObject,
@@ -325,7 +328,7 @@ export const callBackForNext = async (state, dispatch) => {
             get(state.screenConfiguration.preparedFinalObject, "LicensesTemp[0].tradeLicenseDetail.owners", [])
           )
         );
-        dispatch(prepareFinalObject( "Licenses[0].tradeLicenseDetail.owners", checkValidOwners(get(state.screenConfiguration.preparedFinalObject, "Licenses[0].tradeLicenseDetail.owners",[]),oldOwners)));
+        dispatch(prepareFinalObject("Licenses[0].tradeLicenseDetail.owners", checkValidOwners(get(state.screenConfiguration.preparedFinalObject, "Licenses[0].tradeLicenseDetail.owners", []), oldOwners)));
         dispatch(
           setRoute(
             `/tradelicence/search-preview?applicationNumber=${businessId}&tenantId=${tenantId}&edited=true`
@@ -337,7 +340,7 @@ export const callBackForNext = async (state, dispatch) => {
         };
         dispatch(toggleSnackbar(true, updateMessage, "info"));
       }
-      uploadedDocData=uploadedDocData.filter(item=> item.fileUrl&&item.fileName)
+      uploadedDocData = uploadedDocData.filter(item => item.fileUrl && item.fileName)
       const reviewDocData =
         uploadedDocData &&
         uploadedDocData.map(item => {
@@ -359,22 +362,22 @@ export const callBackForNext = async (state, dispatch) => {
     }
   }
   if (activeStep === 3) {
-    let  isDlcd = state.screenConfiguration.preparedFinalObject.Licenses[0].isDeclared;
-    if(isDlcd != true && process.env.REACT_APP_NAME === "Citizen"){
-    alert("Please check the declaration box to proceed futher");
-    }else{
-    const LicenseData = get(
-      state.screenConfiguration.preparedFinalObject,
-      "Licenses[0]"
-    );
-    isFormValid = await applyTradeLicense(state, dispatch, activeStep);
-    if (isFormValid) {
-      if (getQueryArg(window.location.href, "action") === "EDITRENEWAL")
-        editRenewalMoveToSuccess(LicenseData, dispatch);
-      else
-        moveToSuccess(LicenseData, dispatch);
+    let isDlcd = state.screenConfiguration.preparedFinalObject.Licenses[0].isDeclared;
+    if (isDlcd != true && process.env.REACT_APP_NAME === "Citizen") {
+      alert("Please check the declaration box to proceed futher");
+    } else {
+      const LicenseData = get(
+        state.screenConfiguration.preparedFinalObject,
+        "Licenses[0]"
+      );
+      isFormValid = await applyTradeLicense(state, dispatch, activeStep);
+      if (isFormValid) {
+        if (getQueryArg(window.location.href, "action") === "EDITRENEWAL")
+          editRenewalMoveToSuccess(LicenseData, dispatch);
+        else
+          moveToSuccess(LicenseData, dispatch);
+      }
     }
-   }
   }
   if (activeStep !== 3) {
     if (isFormValid) {
@@ -406,7 +409,7 @@ export const callBackForNext = async (state, dispatch) => {
             labelKey: "ERR_UPLOAD_REQUIRED_DOCUMENTS"
           };
           break;
-          
+
       }
       dispatch(toggleSnackbar(true, errorMessage, "warning"));
     }
@@ -440,11 +443,11 @@ export const changeStep = (
   }
 
   const isPreviousButtonVisible = activeStep > 0 ? true : false;
-debugger;
-const isNextButtonVisible = activeStep < 3 ? true : false;
-const isPayButtonVisible = activeStep === 3 ? true : false;
- dispatch(prepareFinalObject("Licenses[0].isDeclared", 'false'));
- 
+  
+  const isNextButtonVisible = activeStep < 3 ? true : false;
+  const isPayButtonVisible = activeStep === 3 ? true : false;
+  dispatch(prepareFinalObject("Licenses[0].isDeclared", 'false'));
+
   const actionDefination = [
     {
       path: "components.div.children.stepper.props",
@@ -625,7 +628,7 @@ export const footer = getCommonApplyFooter({
         height: "48px",
         marginRight: "45px",
         borderRadius: "inherit",
-       // display: isDecL=="true" ? "block":"None"
+        // display: isDecL=="true" ? "block":"None"
       }
     },
     children: {
@@ -646,7 +649,7 @@ export const footer = getCommonApplyFooter({
       callBack: callBackForNext
     },
     visible: false
-    
+
   }
 });
 export const renewTradelicence = async (financialYear, state, dispatch) => {
@@ -658,8 +661,8 @@ export const renewTradelicence = async (financialYear, state, dispatch) => {
   const tenantId = get(licences[0], "tenantId");
 
   var nextFinancialYear = await getNextFinancialYearForRenewal(financialYear);
-  if(licences[0].financialYear=='2019-20' || licences[0].financialYear=='2020-21' || licences[0].financialYear=='2021-22' || licences[0].financialYear=='2022-23'){
-    nextFinancialYear=getCurrentFinancialYear();
+  if (licences[0].financialYear == '2019-20' || licences[0].financialYear == '2020-21' || licences[0].financialYear == '2021-22' || licences[0].financialYear == '2022-23' || licences[0].financialYear == '2023-24' || licences[0].financialYear == '2024-25') {
+    nextFinancialYear = getCurrentFinancialYear();
   }
   const wfCode = "DIRECTRENEWAL";
   set(licences[0], "action", "INITIATE");
@@ -904,7 +907,7 @@ export const footerReviewTop = (
       const receiptQueryString = [
         { key: "consumerCodes", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
         { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
-        { key: "businessService", value:'TL' }    
+        { key: "businessService", value: 'TL' }
       ]
       download(receiptQueryString, "download", receiptKey, state);
       // generateReceipt(state, dispatch, "receipt_download");
@@ -917,7 +920,7 @@ export const footerReviewTop = (
       const receiptQueryString = [
         { key: "consumerCodes", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
         { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
-        { key: "businessService", value:'TL' }   
+        { key: "businessService", value: 'TL' }
       ]
       download(receiptQueryString, "print", receiptKey, state);
       // generateReceipt(state, dispatch, "receipt_print");
@@ -1072,7 +1075,7 @@ export const downloadPrintContainer = (
       const receiptQueryString = [
         { key: "consumerCodes", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
         { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
-        { key: "businessService", value:'TL' }   
+        { key: "businessService", value: 'TL' }
       ]
       download(receiptQueryString, "download", receiptKey);
     },
@@ -1084,7 +1087,7 @@ export const downloadPrintContainer = (
       const receiptQueryString = [
         { key: "consumerCodes", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
         { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
-        { key: "businessService", value:'TL' }   
+        { key: "businessService", value: 'TL' }
       ]
       download(receiptQueryString, "print", receiptKey);
     },

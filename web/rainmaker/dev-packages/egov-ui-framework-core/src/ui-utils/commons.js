@@ -143,10 +143,22 @@ export const transformById = (payload, id) => {
 };
 
 export const getTransformedLocalStorgaeLabels = () => {
-  const localeLabels = JSON.parse(
-    getLocalization(`localization_${getLocale()}`)
-  );
-  return transformById(localeLabels, "code");
+  // FIX: Add proper error handling for localStorage access
+  try {
+    const localStorageData = getLocalization(`localization_${getLocale()}`);
+    if (localStorageData) {
+      const localeLabels = JSON.parse(localStorageData);
+      return transformById(localeLabels, "code");
+    } else {
+      // No localization data available - return empty object
+      console.warn('[getTransformedLocalStorgaeLabels] No localization data found in storage');
+      return {};
+    }
+  } catch (error) {
+    // Handle JSON parse errors or localStorage access errors
+    console.warn('[getTransformedLocalStorgaeLabels] Error loading localization from storage:', error);
+    return {};
+  }
 };
 
 export const getTranslatedLabel = (labelKey, localizationLabels) => {
@@ -178,15 +190,29 @@ export const epochToYmd = et => {
 };
 
 export const getLocaleLabels = (label, labelKey, localizationLabels) => {
-  if (!localizationLabels)
-    localizationLabels = transformById(
-      JSON.parse(getLocalization(`localization_${getLocale()}`)),
-      "code"
-    );
+  // FIX: Add proper error handling for localStorage access
+  if (!localizationLabels) {
+    try {
+      const localStorageData = getLocalization(`localization_${getLocale()}`);
+      if (localStorageData) {
+        localizationLabels = transformById(JSON.parse(localStorageData), "code");
+      } else {
+        // No localization data available - return fallback immediately
+        localizationLabels = {};
+      }
+    } catch (error) {
+      // Handle JSON parse errors or localStorage access errors
+      console.warn('[getLocaleLabels] Error loading localization from storage:', error);
+      localizationLabels = {};
+    }
+  }
+
   if (labelKey) {
     let translatedLabel = getTranslatedLabel(labelKey, localizationLabels);
+    // FIX: If translation not found (key equals translated), use labelName fallback
     if (!translatedLabel || labelKey === translatedLabel) {
-      return translatedLabel;
+      // Return labelName fallback if provided, otherwise return key
+      return label || translatedLabel;
     } else {
       return translatedLabel;
     }
@@ -204,10 +230,25 @@ export const replaceStrInPath = (inputString, search, replacement) => {
 };
 
 export const getFileUrlFromAPI = async (fileStoreId, tenantId) => {
+  //let tenantIdd = getQueryArg(window.location.href, "tenantId")
+  //let service = getQueryArg(window.location.href, "service")
   const queryObject = [
     { key: "tenantId", value: tenantId || commonConfig.tenantId },
     { key: "fileStoreIds", value: fileStoreId }
   ];
+  // let queryObject;
+  // if (service == "WATER" || service == "SEWERAGE") {
+  //   queryObject = [
+  //     { key: "tenantId", value: tenantIdd },
+  //     { key: "fileStoreIds", value: fileStoreId }
+  //   ];
+  // } else {
+
+  //   queryObject = [
+  //     { key: "tenantId", value: tenantId || commonConfig.tenantId },
+  //     { key: "fileStoreIds", value: fileStoreId }
+  //   ];
+  // }
   try {
     const fileUrl = await httpRequest(
       "get",
@@ -343,30 +384,30 @@ export const setBusinessServiceDataToLocalStorage = async (
         JSON.stringify(get(payload, "BusinessServices"))
       );
     } else {
-      dispatch(
-        toggleSnackbar(
-          true,
-          {
-            labelName: "Business Service returned empty object",
-            labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
-          },
-          "error"
-        )
-      );
+      // dispatch(
+      //   toggleSnackbar(
+      //     true,
+      //     {
+      //       labelName: "Business Service returned empty object",
+      //       labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
+      //     },
+      //     "error"
+      //   )
+      // );
     }
     dispatch(toggleSpinner());
   } catch (e) {
     dispatch(toggleSpinner());
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Not authorized to access Business Service!",
-          labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
-        },
-        "error"
-      )
-    );
+    // dispatch(
+    //   toggleSnackbar(
+    //     true,
+    //     {
+    //       labelName: "Not authorized to access Business Service!",
+    //       labelKey: "ERR_NOT_AUTHORISED_BUSINESS_SERVICE"
+    //     },
+    //     "error"
+    //   )
+    // );
   }
 };
 
@@ -695,10 +736,10 @@ export const getStatusKey = (status) => {
 
 export const getRequiredDocData = async (action, dispatch, moduleDetails, closePopUp) => {
   let tenantId =
-    process.env.REACT_APP_NAME === "Citizen" ? JSON.parse(getUserInfo()).permanentCity|| commonConfig.tenantId : getTenantId();
+    process.env.REACT_APP_NAME === "Citizen" ? JSON.parse(getUserInfo()).permanentCity || commonConfig.tenantId : getTenantId();
   let mdmsBody = {
     MdmsCriteria: {
-      tenantId: moduleDetails[0].moduleName === "ws-services-masters" || moduleDetails[0].moduleName === "PropertyTax" || moduleDetails[0].moduleName === "FireNoc"|| moduleDetails[0].moduleName === "TradeLicense"  ? commonConfig.tenantId : tenantId,
+      tenantId: moduleDetails[0].moduleName === "ws-services-masters" || moduleDetails[0].moduleName === "PropertyTax" || moduleDetails[0].moduleName === "FireNoc" || moduleDetails[0].moduleName === "TradeLicense" ? commonConfig.tenantId : tenantId,
       moduleDetails: moduleDetails
     }
   };
@@ -712,11 +753,11 @@ export const getRequiredDocData = async (action, dispatch, moduleDetails, closeP
       mdmsBody
     );
     const moduleName = moduleDetails[0].moduleName;
-    let documents = moduleName==="FireNoc" ? get(
+    let documents = moduleName === "FireNoc" ? get(
       payload.MdmsRes,
       `${moduleName}.Documents[0].allowedDocs`,
       []
-    ):  get(
+    ) : get(
       payload.MdmsRes,
       `${moduleName}.Documents`,
       []
@@ -901,3 +942,42 @@ export const sortDropdownLabels = (e1, e2) => {
     return 1;
   }
 }
+
+export const validateFieldsNew = (
+  objectJsonPath,
+  state,
+  dispatch,
+  screen = "apply"
+) => {
+  const fields = get(
+    state.screenConfiguration.screenConfig[screen],
+    objectJsonPath,
+    {}
+  );
+  let isFormValid = true;
+  for (var variable in fields) {
+    if (variable && fields[variable].required) {
+      let value = get(
+        state.screenConfiguration.preparedFinalObject,
+        fields[variable].jsonPath
+      )
+      console.log("value variable", value, variable);
+      if (!value || value == null) {
+        !validate(
+          screen,
+          {
+            ...fields[variable],
+            value: get(
+              state.screenConfiguration.preparedFinalObject,
+              fields[variable].jsonPath
+            )
+          },
+          dispatch,
+          true
+        )
+        isFormValid = false;
+      }
+    }
+  }
+  return isFormValid;
+};

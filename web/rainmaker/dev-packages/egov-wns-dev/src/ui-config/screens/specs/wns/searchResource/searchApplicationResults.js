@@ -37,6 +37,7 @@ export const searchApplicationResults = {
         options: {
           filter: false,
           customBodyRender: (value, data) => {
+            
             if (data.rowData[1] !== "NA" && data.rowData[1] !== null) {
               return (
                 <div className="linkStyle" onClick={() => getApplicationDetails(data)}>
@@ -64,6 +65,7 @@ export const searchApplicationResults = {
         }
       },
       {name : "Owner Name",labelKey: "WS_COMMON_TABLE_COL_OWN_NAME_LABEL" },
+      {name : "Mobile Number",labelKey: "WS_HOME_SEARCH_RESULTS_OWN_MOB_LABEL" },
       {name : "Application Status",labelKey: "WS_COMMON_TABLE_COL_APPLICATION_STATUS_LABEL" },
       {name : "Address",labelKey: "WS_COMMON_TABLE_COL_ADDRESS" },
       {
@@ -86,9 +88,30 @@ export const searchApplicationResults = {
         options: {
           display: false
         }
+      },
+      {
+        name: "applicationStatusdata",
+        labelKey: "WS_COMMON_TABLE_COL_APPLICATION_STATUS_TEST",
+        options: {
+          display: false
+        }
+      },
+      {
+        name: "dischargeCOnnection",
+        labelKey: "WS_COMMON_TABLE_COL_APPLICATION_DISCHARGE_CONNECTION",
+        options: {
+          display: false
+        }
+      },
+      {
+        name: "dischargeFee",
+        labelKey: "WS_COMMON_TABLE_COL_APPLICATION_DISCHARGE_FEE",
+        options: {
+          display: false
+        }
       }
     ],
-    title: {labelKey:"WS_HOME_SEARCH_APPLICATION_RESULTS_TABLE_HEADING", labelName:"Search Results for Water & Sewerage Application"},
+    title: {labelKey:"WS_HOME_SEARCH_APPLICATION_RESULTS_TABLE_HEADINGdsdsdsdsd", labelName:"Search Results for Water & Sewerage Application"},
     options: {
       filter: false,
       download: false,
@@ -116,20 +139,22 @@ export const searchApplicationResults = {
 };
 
 const getApplicationDetails = data => {
+    
   let connectionNo = `${data.rowData[0]}`;
   if(connectionNo && connectionNo !== 'NA' && data.rowData[2].includes('MODIFY')) {
     store.dispatch(
-      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}&mode=MODIFY`)
+      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[7]}&history=true&service=${data.rowData[8]}&mode=MODIFY&applicationStatus=${data.rowData[10]}&connectionType=${data.rowData[9]}&dischargeConnection=${data.rowData[11]}&dischargeFee=${data.rowData[12]}`)
     )
   } else {
     store.dispatch(
-      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[6]}&history=true&service=${data.rowData[7]}`)
+      setRoute(`search-preview?applicationNumber=${data.rowData[1]}&tenantId=${data.rowData[7]}&history=true&service=${data.rowData[8]}&applicationStatus=${data.rowData[10]}&connectionType=${data.rowData[9]}&dischargeConnection=${data.rowData[11]}&dischargeFee=${data.rowData[12]}`)
     )
   }
 }
 
 const getConnectionDetails = data => {
+  
   store.dispatch(
-    setRoute(`connection-details?connectionNumber=${data.rowData[0]}&tenantId=${data.rowData[6]}&service=${data.rowData[7]}&connectionType=${data.rowData[8]}`)
+    setRoute(`connection-details?connectionNumber=${data.rowData[0]}&tenantId=${data.rowData[7]}&service=${data.rowData[8]}&connectionType=${data.rowData[9]}`)
   )
 }

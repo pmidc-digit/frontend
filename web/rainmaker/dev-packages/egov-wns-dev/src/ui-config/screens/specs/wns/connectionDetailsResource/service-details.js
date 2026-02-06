@@ -25,7 +25,10 @@ export const waterDetails = () => {
       pipeSize: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_PIPE_SIZE" }, { jsonPath: "WaterConnection[0].pipeSize" }),
       connectionExecutionDate: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE" }, { jsonPath: "WaterConnection[0].connectionExecutionDate" }),
       waterSource: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_WATER_SOURCE" }, { jsonPath: "WaterConnection[0].waterSource" }),
-      oldConsumerNo: getLabelWithValue({ labelKey: "WS_OLD_CONSUMER_NO" }, { jsonPath: "WaterConnection[0].oldConnectionNo",callBack: checkValueForNA }),
+      ledgerId: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_LEDGER_ID" }, { jsonPath: "WaterConnection[0].additionalDetails.ledgerId", callBack: checkValueForNA }),
+      averageMeterReading: getLabelWithValue({ labelKey: "AVERAGE METER READING" }, { jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading" }),
+      group: getLabelWithValue({ labelKey: "Group" }, { jsonPath: "WaterConnection[0].additionalDetails.groups" }),
+      oldConsumerNo: getLabelWithValue({ labelKey: "WS_OLD_CONSUMER_NO" }, { jsonPath: "WaterConnection[0].oldConnectionNo", callBack: checkValueForNA }),
     })
   } else {
     return getCommonContainer({
@@ -35,19 +38,24 @@ export const waterDetails = () => {
       pipeSize: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_PIPE_SIZE" }, { jsonPath: "WaterConnection[0].pipeSize" }),
       connectionExecutionDate: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE" }, { jsonPath: "WaterConnection[0].connectionExecutionDate" }),
       waterSource: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_WATER_SOURCE" }, { jsonPath: "WaterConnection[0].waterSource" }),
+      ledgerId: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_LEDGER_ID" }, { jsonPath: "WaterConnection[0].additionalDetails.ledgerId", callBack: checkValueForNA }),
+      averageMeterReading: getLabelWithValue({ labelKey: "AVERAGE METER READING" }, { jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading" }),
+      group: getLabelWithValue({ labelKey: "Group" }, { jsonPath: "WaterConnection[0].additionalDetails.groups" }),
       // waterSubSource: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_WATER_SUB_SOURCE" }, { jsonPath: "WaterConnection[0].waterSubSource" }),
       numberOfTaps: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_NO_OF_TAPS" }, { jsonPath: "WaterConnection[0].noOfTaps" }),
-      oldConsumerNo: getLabelWithValue({ labelKey: "WS_OLD_CONSUMER_NO" }, { jsonPath: "WaterConnection[0].oldConnectionNo",callBack: checkValueForNA })
+      oldConsumerNo: getLabelWithValue({ labelKey: "WS_OLD_CONSUMER_NO" }, { jsonPath: "WaterConnection[0].oldConnectionNo", callBack: checkValueForNA })
     })
   }
 }
 export const sewerDetails = () => {
   return getCommonContainer({
-    serviceType: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_SERV_LABEL" }, { jsonPath: "WaterConnection[0].service",callBack: checkValueForNA }),
-    connectionExecutionDate: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE" }, { jsonPath: "WaterConnection[0].connectionExecutionDate",callBack: checkValueForNA }),
-    unitOfMeasurement: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_UNIT_OF_MEASUREMENT" }, { jsonPath: "WaterConnection[0].uom",callBack: checkValueForNA }),
-    numberOfToilets: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_NO_OF_TOILETS" }, { jsonPath: "WaterConnection[0].noOfToilets",callBack: checkValueForNA }),
-    oldConsumerNo: getLabelWithValue({ labelKey: "WS_OLD_CONSUMER_NO" }, { jsonPath: "WaterConnection[0].oldConnectionNo",callBack: checkValueForNA })
+    serviceType: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_SERV_LABEL" }, { jsonPath: "WaterConnection[0].service", callBack: checkValueForNA }),
+    connectionExecutionDate: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_CONN_EXECUTION_DATE" }, { jsonPath: "WaterConnection[0].connectionExecutionDate", callBack: checkValueForNA }),
+    unitOfMeasurement: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_UNIT_OF_MEASUREMENT" }, { jsonPath: "WaterConnection[0].uom", callBack: checkValueForNA }),
+    ledgerId: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_LEDGER_ID" }, { jsonPath: "WaterConnection[0].additionalDetails.ledgerId", callBack: checkValueForNA }),
+
+    numberOfToilets: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_NO_OF_TOILETS" }, { jsonPath: "WaterConnection[0].noOfToilets", callBack: checkValueForNA }),
+    oldConsumerNo: getLabelWithValue({ labelKey: "WS_OLD_CONSUMER_NO" }, { jsonPath: "WaterConnection[0].oldConnectionNo", callBack: checkValueForNA })
 
   })
 }
@@ -72,7 +80,7 @@ export const getServiceDetails = () => {
         }
       }
     },
-    waterDetails:  waterDetails(),
+    waterDetails: waterDetails(),
     sewerDetails: sewerDetails(),
   });
 };

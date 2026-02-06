@@ -13,6 +13,7 @@ import {
   localStorageSet,
   localStorageGet,
   clearUserDetails,
+  removeFields
 } from "../../utils/localStorageUtils";
 
 // temp fix
@@ -40,6 +41,11 @@ export const userProfileUpdateError = (error) => {
 //user search success/failure
 export const searchUserSuccess = (user = {}) => {
   user = fixUserDob(user.user[0]);
+  user = removeFields(user, [aadhaarNumber, pan, bloodGroup, identificationMark])
+  // delete user.aadhaarNumber;
+  // delete user.pan;
+  // delete user.bloodGroup;
+  // delete user.identificationMark;
   //temporary fix for dat of birth format issue in prfile update
   setUserInfo(JSON.stringify(user));
   return { type: authType.USER_SEARCH_SUCCESS, user };
@@ -66,6 +72,7 @@ export const authenticated = (payload = {}) => {
   setTenantId(userInfo.tenantId);
   localStorageSet("expires-in", expiresIn);
   localStorageSet("last-login-time", lastLoginTime);
+  localStorageSet("CITIZEN.CITY",userInfo.permanentCity);
 
   return { type: authType.AUTHENTICATED, userInfo, accessToken };
 };
@@ -143,7 +150,7 @@ export const logout = () => {
         return;
       }
     } catch (error) {
-      console.log(error);
+      console.log('Log => ** [Auth:Logout]', error);
       clearUserDetails();
     }
     // whatever happens the client should clear the user details

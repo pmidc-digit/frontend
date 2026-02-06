@@ -34,110 +34,6 @@ class PTInformation extends React.Component {
   };
   componentDidMount = async () => {
     let { propertiesAudit, properties } = this.props;
-    let fetchBillQueryObject = null;
-    const purpose = getPurpose();
-    if (window.location.href.includes("citizen")) {
-      fetchBillQueryObject = [
-        {
-          key: "tenantId",
-          value: getTenantId(),
-        },
-        {
-          key: "consumerCode",
-          value: window.location.href.split("/")[7],
-        },
-        {
-          key: "businessService",
-          value: "PT",
-        },
-      ];
-    } else if (window.location.href.includes("localhost")) {
-      if (window.location.href.includes("my-properties")) {
-        fetchBillQueryObject = [
-          {
-            key: "tenantId",
-            value: window.location.href.split("/")[7],
-          },
-          {
-            key: "consumerCode",
-            value: window.location.href.split("/")[6],
-          },
-          {
-            key: "businessService",
-            value: "PT",
-          },
-        ];
-      } else if (window.location.href.includes("pt-acknowledgment")) {
-        fetchBillQueryObject = [
-          {
-            key: "tenantId",
-            value: getQueryArg(window.location.href, "tenantId"),
-          },
-          {
-            key: "consumerCode",
-            value: getQueryArg(window.location.href, "propertyId"),
-          },
-          {
-            key: "businessService",
-            value: "PT",
-          },
-        ];
-      } else {
-        fetchBillQueryObject = [
-          {
-            key: "tenantId",
-            value: getTenantId(),
-          },
-          {
-            key: "consumerCode",
-            value: window.location.href.split("/")[5],
-          },
-          {
-            key: "businessService",
-            value: "PT",
-          },
-        ];
-      }
-    } else {
-      fetchBillQueryObject = [
-        {
-          key: "tenantId",
-          value: getTenantId(),
-        },
-        {
-          key: "consumerCode",
-          value: window.location.href.split("/")[6],
-        },
-        {
-          key: "businessService",
-          value: "PT",
-        },
-      ];
-    }
-    const FETCHBILL = {
-      GET: {
-        URL: "/billing-service/bill/v2/_fetchbill",
-        ACTION: "_get",
-      },
-    };
-    // if (purpose != PROPERTY_FORM_PURPOSE.CREATE) {
-      const payloadProperty = await httpRequest(FETCHBILL.GET.URL, FETCHBILL.GET.ACTION, fetchBillQueryObject);
-      let paymentDueYears = "";
-      if (payloadProperty.Bill != null && payloadProperty.Bill.length >= 0) {
-          payloadProperty.Bill[0].billDetails.map((item) => {
-          console.log(item.toPeriod);
-          console.log(item.fromPeriod);
-          if (item.amount > 0) {
-            let toDate = convertEpochToDate(item.toPeriod).split("/")[2];
-            let fromDate = convertEpochToDate(item.fromPeriod).split("/")[2];
-            paymentDueYears = paymentDueYears == "" ? fromDate + "-" + toDate + "(Rs." + item.amount + ")" : paymentDueYears + "," + fromDate + "-" + toDate + "(Rs." + item.amount + ")";
-           
-          }
-        });
-      }
-
-      this.setState({ paymentDueYears });
-   // }
     const mdmsBody = {
       MdmsCriteria: {
         tenantId: commonConfig.tenantId,
@@ -244,6 +140,23 @@ class PTInformation extends React.Component {
     const { cities } = this.props;
     const filteredCity = cities && cities.length > 0 && cities.filter((item) => item.code === tenantId);
     return filteredCity ? get(filteredCity[0], "logoId") : "";
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { Bill } = this.props;
+    if (Bill && Bill !== prevProps.Bill) {
+      let paymentDueYears = "";
+      if (Bill != null && Bill.length >= 0 && Bill[0] && Bill[0].billDetails) {
+        Bill[0].billDetails.map((item) => {
+          if (item.amount > 0) {
+            let toDate = convertEpochToDate(item.toPeriod).split("/")[2];
+            let fromDate = convertEpochToDate(item.fromPeriod).split("/")[2];
+            paymentDueYears = paymentDueYears == "" ? fromDate + "-" + toDate + "(Rs." + item.amount + ")" : paymentDueYears + "," + fromDate + "-" + toDate + "(Rs." + item.amount + ")";
+          }
+        });
+      }
+      this.setState({ paymentDueYears });
+    }
   };
 
   render() {
@@ -456,13 +369,14 @@ class PTInformation extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { screenConfiguration = {} } = state;
+  const { screenConfiguration = {}, properties = {} } = state;
   const { cities } = state.common || [];
+  const { Bill } = properties;
 
   const { preparedFinalObject } = screenConfiguration;
   let { propertiesAudit = [] } = preparedFinalObject;
   const updateNumberConfig = get(preparedFinalObject, "updateNumberConfig", []);
-  return { cities, propertiesAudit, updateNumberConfig };
+  return { cities, propertiesAudit, updateNumberConfig, Bill };
 };
 
 export default connect(mapStateToProps, null)(PTInformation);

@@ -1,4 +1,4 @@
-import { pincode, mohalla ,street, colony, houseNumber } from "egov-ui-kit/config/forms/specs/PropertyTaxPay/utils/reusableFields";
+import { pincode, mohalla, street, colony, houseNumber } from "egov-ui-kit/config/forms/specs/PropertyTaxPay/utils/reusableFields";
 import { handleFieldChange, setFieldProperty } from "egov-ui-kit/redux/form/actions";
 import { CITY } from "egov-ui-kit/utils/endPoints";
 import { prepareFormData } from "egov-ui-kit/redux/common/actions";
@@ -16,7 +16,7 @@ let floorDropDownData = [];
 
 floorDropDownData.push({ label: "2013-14", value: "2013-14" }, { label: "2014-15", value: "2014-15" }, { label: "2015-16", value: "2015-16" }, { label: "2016-17", value: "2016-17" }, { label: "2017-18", value: "2017-18" }, { label: "2018-19", value: "2018-19" },
   { label: "2019-20", value: "2019-20" }, { label: "2020-21", value: "2020-21" },
-  { label: "2021-22", value: "2021-22" }, { label: "2022-23", value: "2022-23" }, { label: "2023-24", value: "2023-24" });
+  { label: "2021-22", value: "2021-22" }, { label: "2022-23", value: "2022-23" }, { label: "2023-24", value: "2023-24" }, { label: "2024-25", value: "2024-25" }, { label: "2025-26", value: "2025-26" });
 
 
 const formConfig = {
@@ -72,18 +72,20 @@ const formConfig = {
     ...houseNumber,
     ...colony,
     ...street,
-   // ...mohalla,
+    // ...mohalla,
     mohalla: {
       id: "mohalla",
       jsonPath: "Properties[0].address.locality.code",
       type: "AutocompleteDropdown",
+      optionLabel: "label",  
+      optionValue: "value",   
       floatingLabelText: "PT_PROPERTY_DETAILS_MOHALLA",
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       fullWidth: true,
       toolTip: true,
       localePrefix: true,
       toolTipMessage: "PT_MOHALLA_TOOLTIP_MESSAGE",
-      labelsFromLocalisation: true,
+      labelsFromLocalisation: false,
       //toolTipMessage: "Name of the area in which your property is located",
       boundary: true,
       numcols: 6,
@@ -112,28 +114,28 @@ const formConfig = {
         }
         setTimeout(async () => {
           let localityCode = await state.screenConfiguration.preparedFinalObject.Properties[0].address.locality.code;
-              if (tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing") {
-                
-                let request = { searchCriteria: { tenantId: tenantIdcode } };
-                try {
-                  const response = await httpRequest(
-                    "/egov-searcher/rainmaker-pt-gissearch/GetTenantConfig/_get",
-                    "_get",
-                    [],
-                    request);
-                  if (response) {
-                    const data = response.data.find(obj => {
-                      return obj.locality == localityCode;
-                    });
-                    dispatch(setFieldProperty(formKey, "UID", "required", data ? true : false));
-                  }
-                } catch (error) {
-                  console.log("functions-js getUserDataFromUuid error", error);
-                }
+          if (tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing") {
+
+            let request = { searchCriteria: { tenantId: tenantIdcode } };
+            try {
+              const response = await httpRequest(
+                "/egov-searcher/rainmaker-pt-gissearch/GetTenantConfig/_get",
+                "_get",
+                [],
+                request);
+              if (response) {
+                const data = response.data.find(obj => {
+                  return obj.locality == localityCode;
+                });
+                dispatch(setFieldProperty(formKey, "UID", "required", data ? true : false));
               }
-            }, "100");
-              
-        
+            } catch (error) {
+              console.log("functions-js getUserDataFromUuid error", error);
+            }
+          }
+        }, "100");
+
+
       },
     },
     ...pincode,

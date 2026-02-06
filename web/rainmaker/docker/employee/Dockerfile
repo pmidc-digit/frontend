@@ -1,4 +1,3 @@
-
 FROM egovio/alpine-node-builder-10:yarn AS build  
 ARG WORK_DIR
 WORKDIR /app
@@ -6,6 +5,7 @@ ENV NODE_OPTIONS "--max-old-space-size=4000"
 
 # copy the project files
 COPY ${WORK_DIR} .
+
 RUN yarn run prod:employee
 
 # Create runtime image
