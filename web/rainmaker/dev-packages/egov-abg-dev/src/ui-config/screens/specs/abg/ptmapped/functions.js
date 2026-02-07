@@ -182,7 +182,7 @@ export const searchApiCall = async (state, dispatch) => {
         if (searchScreenObject.propertyId) {
           requestBody.propertyId = searchScreenObject.propertyId;
         }
-        const url = `egov-property-rate/property-rate/revenue/_missing?tenantId=${encodeURIComponent(requestBody.tenantId)}&localityCode=${encodeURIComponent(requestBody.locality)}&limit=100`;
+        const url = `/egov-property-rate/property-rate/revenue/_mappedsearch?tenantId=${encodeURIComponent(requestBody.tenantId)}&localityCode=${encodeURIComponent(requestBody.locality)}&limit=100`;
         const response = await httpRequest("post", url, "_search", []);
         // dispatch(toggleSpinner(false));
         // return response;

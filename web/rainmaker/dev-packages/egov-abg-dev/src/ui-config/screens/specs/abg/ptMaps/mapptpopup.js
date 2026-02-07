@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import get from "lodash/get";
 
-const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingName, locality,
-    usageCategory, subUsageCategory, district, tehsil, village, segment, address, rate, rateId, segmentName, onClose, onSubmit }) => {
+const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, locality,
+    usageCategory, district, tehsil, village, segment, address, rate, rateId, segmentName, onClose, onSubmit }) => {
     return (
         <div style={{
             padding: "28px",
@@ -85,20 +85,13 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, buildingNa
                         </div>
                     </div>
 
-                    <div>
-                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Building Name</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{buildingName || "-"}</div>
-                    </div>
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Usage Category</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{usageCategory || "N/A"}</div>
                     </div>
 
-                    <div>
-                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Sub Usage Category</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{subUsageCategory || "N/A"}</div>
-                    </div>
+
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Rate ID</div>

@@ -1020,10 +1020,10 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             }}
                         >
                             <option value="">Select Usage Category</option>
-                            <option value="RESIDENTIAL">Residential</option>
-                            <option value="COMMERCIAL">Commercial</option>
-                            <option value="INDUSTRIAL">Industrial</option>
-                            <option value="MIXED">Mixed</option>
+                            <option value="1">Residential</option>
+                            <option value="2">Commercial</option>
+                            <option value="3">Industrial</option>
+                            <option value="4">Mixed</option>
                         </select>
                     </div>
 
@@ -1055,22 +1055,22 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             }}
                         >
                             <option value="">Select Sub Usage Category</option>
-                            {usageCategoryState === "RESIDENTIAL" && [
+                            {usageCategoryState === "1" && [
                                 <option key="residential1" value="RESIDENTIAL.INDEPENDENT">Independent</option>,
                                 <option key="residential2" value="RESIDENTIAL.APARTMENT">Apartment</option>,
                                 <option key="residential3" value="RESIDENTIAL.VILLA">Villa</option>
                             ]}
-                            {usageCategoryState === "COMMERCIAL" && [
+                            {usageCategoryState === "2" && [
                                 <option key="commercial1" value="COMMERCIAL.OFFICE">Office</option>,
                                 <option key="commercial2" value="COMMERCIAL.SHOP">Shop</option>,
                                 <option key="commercial3" value="COMMERCIAL.MALL">Mall</option>
                             ]}
-                            {usageCategoryState === "INDUSTRIAL" && [
+                            {usageCategoryState === "3" && [
                                 <option key="industrial1" value="INDUSTRIAL.FACTORY">Factory</option>,
                                 <option key="industrial2" value="INDUSTRIAL.WAREHOUSE">Warehouse</option>,
                                 <option key="industrial3" value="INDUSTRIAL.PLANT">Plant</option>
                             ]}
-                            {usageCategoryState === "MIXED" && [
+                            {usageCategoryState === "4" && [
                                 <option key="mixed1" value="MIXED.RESIDENTIAL_COMMERCIAL">Residential + Commercial</option>,
                                 <option key="mixed2" value="MIXED.COMMERCIAL_INDUSTRIAL">Commercial + Industrial</option>
                             ]}

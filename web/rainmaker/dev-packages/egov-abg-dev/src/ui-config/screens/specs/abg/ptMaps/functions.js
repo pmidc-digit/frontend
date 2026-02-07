@@ -216,35 +216,51 @@ export const searchApiCall = async (state, dispatch) => {
     );
     const response = [];
     for (let i = 0; i < ptreveresponce.length; i++) {
+      const item = ptreveresponce[i];
+
       // Log to see actual structure
-      console.log("Property item:", ptreveresponce[i]);
+      console.log("Property item:", item);
+
+      // Handle both camelCase and lowercase field names
+      const propertyId = item.propertyId || item.propertyid;
+      const ownerName = item.ownerName || item.ownername;
+      const ownerMobile = item.ownerMobile || item.ownerMobile || item.ownermobile || "";
+      const landArea = item.landArea || item.landarea;
+      const buildingName = item.buildingName || item.buildingname;
+      const usageCategory = item.usageCategory || item.usagecategory;
+      const localityCode = item.localityCode || item.localitycode;
+      const doorNo = item.doorNo || item.doorno;
+      const street = item.street;
+      const city = item.city;
+      const plotNo = item.plotNo || item.plotno;
 
       // Try multiple possible paths for address
-      const addressObj = get(ptreveresponce[i], "address") ||
-        get(ptreveresponce[i], "propertyAddress") ||
-        get(ptreveresponce[i], "propertyDetails.address") || {};
+      const addressObj = get(item, "address") ||
+        get(item, "propertyAddress") ||
+        get(item, "propertyDetails.address") || {};
 
       console.log("Address object:", addressObj);
 
+      // Build full address from available fields
       const fullAddress = [
-        addressObj.doorNo,
-        addressObj.buildingName,
-        addressObj.houseNo,
-        addressObj.street,
-        addressObj.locality || addressObj.localityName,
-        addressObj.city || addressObj.cityName
+        doorNo || addressObj.doorNo || addressObj.doorno,
+        buildingName || addressObj.buildingName || addressObj.buildingname,
+        plotNo || addressObj.plotNo || addressObj.plotno,
+        street || addressObj.street,
+        localityCode || addressObj.locality || addressObj.localityName || addressObj.localitycode,
+        city || addressObj.city || addressObj.cityName
       ].filter(Boolean).join(", ") || "-";
 
       console.log("Full address:", fullAddress);
 
       response.push({
-        propertyId: get(ptreveresponce[i], "propertyId"),
-        ownerName: get(ptreveresponce[i], "ownerName"),
-        ownerMobile: get(ptreveresponce[i], "ownerMobile") || "",
-        landArea: get(ptreveresponce[i], "landArea"),
-        buildingName: get(ptreveresponce[i], "buildingName"),
-        usageCategory: get(ptreveresponce[i], "usageCategory"),
-        locality: get(ptreveresponce[i], "propertyAddress.localityCode") || "-",
+        propertyId: propertyId,
+        ownerName: ownerName,
+        ownerMobile: ownerMobile,
+        landArea: landArea,
+        buildingName: buildingName,
+        usageCategory: usageCategory,
+        locality: localityCode,
         address: fullAddress,
         tenantId: tenantId
       })
