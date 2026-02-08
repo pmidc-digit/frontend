@@ -51,6 +51,15 @@ const mapptpopup = Loadable({
   loader: () => import("../ui-config/screens/specs/abg/ptMaps/mapptpopup"),
   loading: () => <Loading />
 });
+
+const ptmapedPopup = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/propertyMapped/ptmapedPopup"),
+  loading: () => <Loading />
+});
+const mapptedpopup = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/propertyMapped/mapptedpopup"),
+  loading: () => <Loading />
+});
 export {
   TestMolecules,
   RadioButtonsGroup,
@@ -61,5 +70,7 @@ export {
   FeesEstimateCard,
   DividerWithLabel,
   ptmapPopup,
-  mapptpopup
+  mapptpopup,
+  ptmapedPopup,
+  mapptedpopup,
 };

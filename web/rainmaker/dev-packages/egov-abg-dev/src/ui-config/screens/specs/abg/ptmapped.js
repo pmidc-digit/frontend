@@ -11,10 +11,10 @@ import {
   abgSearchCard,
   //mergeDownloadButton, 
   resetFields
-} from "./ptmapped/ptmapSearch";
+} from "./propertyMapped/groupBillSearch";
 
 
-import { searchResults, brmeterReading } from "./ptmapped/searchResults";
+import { searchResults, brmeterReading } from "./propertyMapped/searchResults";
 
 
 

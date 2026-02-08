@@ -9,7 +9,7 @@ import { updatesingleReading } from "./functions";
 import { actions } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { store } from "egov-ui-framework/ui-redux/store";
 import { Dialog } from "components";
-import PTmapPopup from "./ptmapPopup";
+import PTmapPopup from "./ptmapedPopup";
 
 const popdata = () => {
 
@@ -37,6 +37,14 @@ export const searchResults = {
       { labelName: "Address", labelKey: "Address" },
 
       {
+        labelName: "Row Data Complete",
+        labelKey: "Row Data Complete",
+        options: {
+          display: false
+        }
+      },
+
+      {
         labelName: "Action",
         labelKey: "ABG_COMMON_TABLE_COL_ACTION",
         options: {
@@ -55,12 +63,52 @@ export const searchResults = {
               const usageCategory = row[4] || "";
               const locality = row[5] || "";
               const address = row[6] || "";
+              const rowdatacomplete = row[7] || {};
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
-              const handleMarkCorrect = () => {
-                // Placeholder action for "correct" button
-                // Wire this to your business logic as needed
+              const handleMarkCorrect = async () => {
+                try {
+                  const requestBody = {
+                    "PropertyRates": [
+                      {
+                        id: rowdatacomplete.integration_id,
+                        "propertyId": rowdatacomplete.propertyid,
+                        "tenantId": rowdatacomplete.tenantid,
+                        "districtId": rowdatacomplete.districtid,
+                        "tehsilId": rowdatacomplete.tehsilid,
+                        "villageId": rowdatacomplete.village_id,
+
+
+                        "locality": rowdatacomplete.locality || "",
+
+
+                      }
+                    ]
+                  };
+
+                  console.log("Submit request body:", JSON.stringify(requestBody));
+
+                  const url = "/egov-property-rate/property-rate/_update";
+
+                  const response = await httpRequest(
+                    "post",
+                    url,
+                    "",
+                    [],
+                    requestBody
+                  );
+
+                  console.log("Submit response:", response);
+
+                  alert("Property rate mapping submitted successfully!");
+
+
+                } catch (error) {
+                  console.error("Error submitting property rate:", error);
+                  alert("Failed to submit property rate: " + (error.message || "Unknown error"));
+
+                }
                 console.log("Marked as correct:", {
                   propertiesId,
                   ownerName,
@@ -69,7 +117,7 @@ export const searchResults = {
                   usageCategory,
                   locality,
                   address,
-                  row
+                  rowdatacomplete
                 });
               };
 
@@ -127,7 +175,7 @@ export const searchResults = {
                     contentStyle={{ width: "1200px", maxWidth: "95%" }}
                   >
                     <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
-                      Property Revenue Map
+                      Property Revenue Mapped Details
                     </div>
                     <PTmapPopup
                       propertiesId={propertiesId}
@@ -137,6 +185,7 @@ export const searchResults = {
                       usageCategory={usageCategory}
                       locality={locality}
                       address={address}
+                      rowdatacomplete={rowdatacomplete}
                       onClose={handleClose}
                     />
                   </Dialog>

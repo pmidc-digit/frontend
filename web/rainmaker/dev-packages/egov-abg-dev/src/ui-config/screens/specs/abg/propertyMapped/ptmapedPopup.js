@@ -10,7 +10,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { Dialog } from "components";
-import MapPTPopup from "./mapptpopup";
+import MapPTPopup from "./mapptedpopup";
 // safe store getter to avoid "Cannot read properties of undefined (reading 'getState'"
 const getSafeStore = () => {
     if (typeof store !== "undefined" && store) return store;
@@ -91,7 +91,7 @@ const onContinue = () => {
 
 
 // React wrapper component
-const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, usageCategory, address, onClose, prepared, dispatch }) => {
+const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, usageCategory, address, onClose, prepared, rowdatacomplete, dispatch }) => {
 
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [revenueData, setRevenueData] = React.useState(null);
@@ -647,6 +647,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             const requestBody = {
                 "PropertyRates": [
                     {
+                        integration_id: rowdatacomplete.integration_id,
                         "propertyId": propertiesId,
                         "tenantId": tenantIdValue,
                         "districtId": districtState,
@@ -668,7 +669,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
             console.log("Submit request body:", JSON.stringify(requestBody));
 
-            const url = "/egov-property-rate/property-rate/_create";
+            const url = "/egov-property-rate/property-rate/_update";
 
             const response = await httpRequest(
                 "post",
@@ -698,6 +699,11 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             return;
         }
 
+        if (!rowdatacomplete) {
+            alert("Row data is missing. Please try again.");
+            return;
+        }
+
         try {
             setIsSubmitting(true);
             console.log("Mapping properties with data:", {
@@ -708,12 +714,13 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 village: villageState,
                 segment: segmentState,
                 usageCategory: usageCategoryState,
-                //subUsageCategory: subUsageCategoryState,
+                rowdatacomplete: rowdatacomplete,
                 tenantId: tenantIdValue
             });
 
             const requestBody = {
-                searchCriteria: {
+                PropertyRates: [{
+                    id: rowdatacomplete.integration_id,
                     segmentId: segmentState,
                     propertyId: propertiesId,
                     districtId: districtState,
@@ -722,15 +729,13 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     locality: locality,
                     usageCategoryId: usageCategoryState,
 
-                    tenantId: tenantIdValue,
-                    isRateCheck: true
-                }
+                    tenantId: tenantIdValue
+
+                }]
             };
 
-            console.log("Map Properties request body:", JSON.stringify(requestBody));
-
             // Call API to map property
-            const url = "/egov-property-rate/property-rate/_search";
+            const url = "/egov-property-rate/property-rate/_update";
 
             const response = await httpRequest(
                 "post",
@@ -744,23 +749,10 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             debugger;
             // Show success message
             if (response) {
-                // Store the rate data from API response
-                if (response.rates !== undefined) {
-                    setMappedRate(response.rates[0].rate);
-                }
-                if (response.rates[0].rateId) {
-                    setMappedRateId(response.rates[0].rateId);
-                }
-                if (response.rates[0].segmentName) {
-                    setMappedSegmentName(response.rates[0].segmentName);
-                }
-                if (response.rates[0].unit) {
-                    setMappedSegmentName(response.rates[0].unit);
-                }
-                if (response.rates[0].unit) {
-                    setMappedunit(response.rates[0].unit);
-                }
-                setDialogOpen(true);
+                alert("Property rate mapping submitted successfully!");
+
+                onClose();
+                // setDialogOpen(true);
             } else {
                 alert("No response from server");
             }
@@ -1112,7 +1104,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 contentStyle={{ width: "800px", maxWidth: "95%", backgroundColor: "#ffffff" }}
             >
                 <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
-                    Property Revenue Map
+                    Property Revenue Maped Details
                 </div>
                 <MapPTPopup
                     propertiesId={propertiesId}
