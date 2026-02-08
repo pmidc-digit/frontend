@@ -162,12 +162,19 @@ export const searchApiCall = async (state, dispatch) => {
         delete searchScreenObject[key];
       }
     }
-    let serviceObject = get(
+    // Safely read BillingService masters (may be missing if MDMS failed)
+    const billingServices = get(
       state.screenConfiguration.preparedFinalObject,
-      "searchScreenMdmsData.BillingService.BusinessService"
-    ).filter(item => item.code === searchScreenObject.businesService);
+      "searchScreenMdmsData.BillingService.BusinessService",
+      []
+    );
+    const serviceObject = Array.isArray(billingServices)
+      ? billingServices.filter(item => item.code === searchScreenObject.businesService)
+      : [];
 
-    searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
+    if (serviceObject[0] && serviceObject[0].billGineiURL) {
+      searchScreenObject.url = serviceObject[0].billGineiURL;
+    }
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
       debugger;

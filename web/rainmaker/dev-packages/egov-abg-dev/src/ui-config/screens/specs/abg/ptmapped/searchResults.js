@@ -31,7 +31,7 @@ export const searchResults = {
 
       { labelName: "Owner Mobile", labelKey: "Owner Mobile" },
       { labelName: "Land Area", labelKey: "Land Area" },
-      { labelName: "Building Name", labelKey: "Building Name" },
+
       { labelName: "Usage Category", labelKey: "Usage Category" },
       { labelName: "Locality", labelKey: "Locality" },
       { labelName: "Address", labelKey: "Address" },
@@ -43,6 +43,7 @@ export const searchResults = {
           filter: false,
           customBodyRender: (value, tableMeta) => {
             const RowAction = () => {
+              debugger;
               const [open, setOpen] = React.useState(false);
               debugger;
               const row = tableMeta.rowData || [];
@@ -50,30 +51,73 @@ export const searchResults = {
               const ownerName = row[1] || "";
               const ownerMobile = row[2] || "";
               const landArea = row[3] || "";
-              const buildingName = row[4] || "";
-              const usageCategory = row[5] || "";
-              const locality = row[6] || "";
-              const address = row[7] || "";
+
+              const usageCategory = row[4] || "";
+              const locality = row[5] || "";
+              const address = row[6] || "";
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
+              const handleMarkCorrect = () => {
+                // Placeholder action for "correct" button
+                // Wire this to your business logic as needed
+                console.log("Marked as correct:", {
+                  propertiesId,
+                  ownerName,
+                  ownerMobile,
+                  landArea,
+                  usageCategory,
+                  locality,
+                  address,
+                  row
+                });
+              };
+
               return (
                 <React.Fragment>
-                  <button
-                    type="button"
+                  <div
                     style={{
-                      minWidth: "64px",
-                      padding: "4px 12px",
-                      background: "#FE7A51",
-                      border: "none",
-                      color: "#fff",
-                      borderRadius: "2px",
-                      cursor: "pointer"
+                      display: "flex",
+                      alignItems: "center"
                     }}
-                    onClick={handleOpen}
                   >
-                    View
-                  </button>
+                    <button
+                      type="button"
+                      style={{
+                        minWidth: "40px",
+                        marginLeft: "8px",
+                        padding: "4px 10px",
+                        background: "#4CAF50",
+                        border: "none",
+                        color: "#fff",
+                        borderRadius: "2px",
+                        cursor: "pointer"
+                      }}
+                      title="Mark as correct"
+                      onClick={handleMarkCorrect}
+                    >
+                      ✓
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        minWidth: "40px",
+                        marginLeft: "8px",
+                        padding: "4px 10px",
+                        background: "#c51414",
+                        border: "none",
+                        color: "#fff",
+                        borderRadius: "2px",
+                        cursor: "pointer"
+                      }}
+                      title="Mark as INcorrect"
+                      onClick={handleOpen}
+                    >
+                      ✗
+                    </button>
+
+
+                  </div>
 
                   <Dialog
                     open={open}
@@ -90,7 +134,6 @@ export const searchResults = {
                       ownerName={ownerName}
                       ownerMobile={ownerMobile}
                       landArea={landArea}
-                      buildingName={buildingName}
                       usageCategory={usageCategory}
                       locality={locality}
                       address={address}

@@ -43,7 +43,7 @@ export const updateAllReadings = async (state, dispatch) => {
   try {
     const tableData = get(
       state,
-      "screenConfiguration.screenConfig.ptreve.components.div.children.searchResults.props.data",
+      "screenConfiguration.screenConfig.ptmapped.components.div.children.searchResults.props.data",
       []
     );
     if (!tableData || tableData.length === 0) {
@@ -99,7 +99,7 @@ export const updateAllReadings = async (state, dispatch) => {
           ["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]: u.readingDate || updatedTable[u.rowIndex]["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]
         };
         dispatch(
-          handleField("ptreve", "components.div.children.searchResults", "props.data", updatedTable)
+          handleField("ptmapped", "components.div.children.searchResults", "props.data", updatedTable)
         );
       } catch (e) {
         console.error("Update failed for consumer", u.consumerId, e);
@@ -122,8 +122,8 @@ export const updateAllReadings = async (state, dispatch) => {
 export const showViewPopup = (state, dispatch, rowObject = {}) => {
   try {
     dispatch(prepareFinalObject("viewPopup", rowObject));
-    const toggle = get(state, "screenConfiguration.screenConfig.ptreve.components.div.children.viewDialog.props.open", false);
-    dispatch(handleField("ptreve", "components.div.children.viewDialog", "props.open", !toggle));
+    const toggle = get(state, "screenConfiguration.screenConfig.ptmapped.components.div.children.viewDialog.props.open", false);
+    dispatch(handleField("ptmapped", "components.div.children.viewDialog", "props.open", !toggle));
   } catch (e) {
     console.error(e);
   }
@@ -162,12 +162,19 @@ export const searchApiCall = async (state, dispatch) => {
         delete searchScreenObject[key];
       }
     }
-    let serviceObject = get(
+    // Safely read BillingService masters (may be missing if MDMS failed)
+    const billingServices = get(
       state.screenConfiguration.preparedFinalObject,
-      "searchScreenMdmsData.BillingService.BusinessService"
-    ).filter(item => item.code === searchScreenObject.businesService);
+      "searchScreenMdmsData.BillingService.BusinessService",
+      []
+    );
+    const serviceObject = Array.isArray(billingServices)
+      ? billingServices.filter(item => item.code === searchScreenObject.businesService)
+      : [];
 
-    searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
+    if (serviceObject[0] && serviceObject[0].billGineiURL) {
+      searchScreenObject.url = serviceObject[0].billGineiURL;
+    }
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
       debugger;
@@ -216,36 +223,53 @@ export const searchApiCall = async (state, dispatch) => {
     );
     const response = [];
     for (let i = 0; i < ptreveresponce.length; i++) {
-      // Log to see actual structure
-      console.log("Property item:", ptreveresponce[i]);
+      const item = ptreveresponce[i];
 
+      // Log to see actual structure
+      console.log("Property item:", item);
+
+      // Handle both camelCase and lowercase field names
+      const propertyId = item.propertyId || item.propertyid;
+      const ownerName = item.ownerName || item.ownername;
+      const ownerMobile = item.ownerMobile || item.ownerMobile || item.ownermobile || "";
+      const landArea = item.landArea || item.landarea;
+      const buildingName = item.buildingName || item.buildingname;
+      const usageCategory = item.usageCategory || item.usagecategory;
+      const localityCode = item.localityCode || item.localitycode;
+      const doorNo = item.doorNo || item.doorno;
+      const street = item.street;
+      const city = item.city;
+      const plotNo = item.plotNo || item.plotno;
+      const rowdatacomplete = item;
       // Try multiple possible paths for address
-      const addressObj = get(ptreveresponce[i], "address") ||
-        get(ptreveresponce[i], "propertyAddress") ||
-        get(ptreveresponce[i], "propertyDetails.address") || {};
+      const addressObj = get(item, "address") ||
+        get(item, "propertyAddress") ||
+        get(item, "propertyDetails.address") || {};
 
       console.log("Address object:", addressObj);
 
+      // Build full address from available fields
       const fullAddress = [
-        addressObj.doorNo,
-        addressObj.buildingName,
-        addressObj.houseNo,
-        addressObj.street,
-        addressObj.locality || addressObj.localityName,
-        addressObj.city || addressObj.cityName
+        doorNo || addressObj.doorNo || addressObj.doorno,
+        buildingName || addressObj.buildingName || addressObj.buildingname,
+        plotNo || addressObj.plotNo || addressObj.plotno,
+        street || addressObj.street,
+        localityCode || addressObj.locality || addressObj.localityName || addressObj.localitycode,
+        city || addressObj.city || addressObj.cityName
       ].filter(Boolean).join(", ") || "-";
 
       console.log("Full address:", fullAddress);
 
       response.push({
-        propertyId: get(ptreveresponce[i], "propertyId"),
-        ownerName: get(ptreveresponce[i], "ownerName"),
-        ownerMobile: get(ptreveresponce[i], "ownerMobile") || "",
-        landArea: get(ptreveresponce[i], "landArea"),
-        buildingName: get(ptreveresponce[i], "buildingName"),
-        usageCategory: get(ptreveresponce[i], "usageCategory"),
-        locality: get(ptreveresponce[i], "propertyAddress.localityCode") || "-",
+        propertyId: propertyId,
+        ownerName: ownerName,
+        ownerMobile: ownerMobile,
+        landArea: landArea,
+        buildingName: buildingName,
+        usageCategory: usageCategory,
+        locality: localityCode,
         address: fullAddress,
+        rowdatacomplete: rowdatacomplete,
         tenantId: tenantId
       })
 
@@ -260,6 +284,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["Usage Category"]: item.usageCategory || "-",
         ["Locality"]: item.locality || "-",
         ["Address"]: item.address || "-",
+        ["Row Data Complete"]: item.rowdatacomplete || {},
         ["TENANT_ID"]: item.tenantId
       }));
 
@@ -267,7 +292,7 @@ export const searchApiCall = async (state, dispatch) => {
       console.log("searchApiCall: sample row:", data[0]);
       dispatch(
         handleField(
-          "ptreve",
+          "ptmapped",
           "components.div.children.searchResults",
           "props.data",
           data
@@ -275,7 +300,7 @@ export const searchApiCall = async (state, dispatch) => {
       );
       dispatch(
         handleField(
-          "ptreve",
+          "ptmapped",
           "components.div.children.searchResults",
           "props.rows",
           data.length
@@ -286,7 +311,7 @@ export const searchApiCall = async (state, dispatch) => {
       try {
         const store = require("egov-ui-framework/ui-redux/store").default;
         const current = store.getState();
-        const cfg = (current && current.screenConfiguration && current.screenConfiguration.screenConfig && current.screenConfiguration.screenConfig.ptreve && current.screenConfiguration.screenConfig.ptreve.components && current.screenConfiguration.screenConfig.ptreve.components.div && current.screenConfiguration.screenConfig.ptreve.components.div.children && current.screenConfiguration.screenConfig.ptreve.components.div.children.searchResults) || {};
+        const cfg = (current && current.screenConfiguration && current.screenConfiguration.screenConfig && current.screenConfiguration.screenConfig.ptmapped && current.screenConfiguration.screenConfig.ptmapped.components && current.screenConfiguration.screenConfig.ptmapped.components.div && current.screenConfiguration.screenConfig.ptmapped.components.div.children && current.screenConfiguration.screenConfig.ptmapped.components.div.children.searchResults) || {};
         console.log("searchApiCall: store.searchResults.props.data length:", (cfg.props && cfg.props.data && cfg.props.data.length) || 0);
         console.log("searchApiCall: store.searchResults.visible:", cfg.visible);
       } catch (e) {
@@ -306,7 +331,7 @@ export const searchApiCall = async (state, dispatch) => {
 const showHideTable = (booleanHideOrShow, dispatch) => {
   dispatch(
     handleField(
-      "ptreve",
+      "ptmapped",
       "components.div.children.searchResults",
       "visible",
       booleanHideOrShow
