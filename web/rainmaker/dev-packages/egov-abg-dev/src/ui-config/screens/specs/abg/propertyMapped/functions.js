@@ -189,7 +189,15 @@ export const searchApiCall = async (state, dispatch) => {
         if (searchScreenObject.propertyId) {
           requestBody.propertyId = searchScreenObject.propertyId;
         }
-        const url = `/egov-property-rate/property-rate/revenue/_mappedsearch?tenantId=${encodeURIComponent(requestBody.tenantId)}&localityCode=${encodeURIComponent(requestBody.locality)}&limit=100`;
+
+        // Build URL with query parameters
+        let url = `/egov-property-rate/property-rate/revenue/_mappedsearch?tenantId=${encodeURIComponent(requestBody.tenantId)}&localityCode=${encodeURIComponent(requestBody.locality)}&limit=100`;
+
+        // Add propertyId to URL if provided
+        if (requestBody.propertyId) {
+          url += `&propertyId=${encodeURIComponent(requestBody.propertyId)}`;
+        }
+
         const response = await httpRequest("post", url, "_search", []);
         // dispatch(toggleSpinner(false));
         // return response;

@@ -97,6 +97,14 @@ export const resetFields = (state, dispatch) => {
       ""
     )
   );
+  dispatch(
+    handleField(
+      "ptreve",
+      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.propertyId",
+      "props.value",
+      ""
+    )
+  );
 };
 
 export const abgSearchCard = getCommonCard({
