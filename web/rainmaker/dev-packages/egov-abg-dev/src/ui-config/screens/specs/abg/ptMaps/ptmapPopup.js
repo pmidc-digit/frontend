@@ -99,6 +99,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const [tehsils, setTehsils] = React.useState([]);
     const [villages, setVillages] = React.useState([]);
     const [segments, setSegments] = React.useState([]);
+    const [subSegments, setSubSegments] = React.useState([]);
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
     const [localityState, setLocalityState] = React.useState(() => localStorage.getItem("ptmap_locality") || "");
@@ -239,80 +240,87 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         setSegments(segmentsData);
                     }
                 }
+
+                // Load sub-segments if segment is persisted
+                if (segmentState && !subSegments.length) {
+                    const subSegResponse = await httpRequest(
+                        "post",
+                        "/egov-property-rate/property-rate/_search",
+                        "",
+                        [],
+                        {
+                            searchCriteria: {
+                                segmentId: segmentState,
+                                locality: locality || "",
+                                getSubSegments: true
+                            }
+                        }
+                    );
+
+                    const subSegmentsData = (subSegResponse && (
+                        subSegResponse.subSegments ||
+                        subSegResponse.SubSegments ||
+                        subSegResponse.subSegmentList ||
+                        subSegResponse.data
+                    )) || [];
+
+                    if (Array.isArray(subSegmentsData) && subSegmentsData.length > 0) {
+                        const subSegmentOptions = subSegmentsData.map((s, idx) => ({
+                            code: String(s.code || s.subSegmentId || s.id || s.value || idx + 1),
+                            name: s.name || s.label || s.display || s.subSegmentName || (s.code || `Sub-Segment ${idx + 1}`)
+                        }));
+                        setSubSegments(subSegmentOptions);
+                    }
+                }
+
+                // Load usage categories if segment and sub-segment are persisted
+                if (segmentState && subUsageCategoryState && !usageCategories.length) {
+                    const usageSearchCriteria = {
+                        // segmentId: segmentState,
+                        // subSegmentId: subUsageCategoryState,
+                        // locality: locality || "",
+                        getUsageCategories: true
+                    };
+
+                    const usageResponse = await httpRequest(
+                        "post",
+                        "/egov-property-rate/property-rate/_search",
+                        "",
+                        [],
+                        { searchCriteria: usageSearchCriteria }
+                    );
+
+                    const usageData = (usageResponse && (
+                        usageResponse.usageCategories ||
+                        usageResponse.usageCategoryList ||
+                        usageResponse.usageCategory ||
+                        usageResponse.categories ||
+                        usageResponse.data
+                    )) || [];
+
+                    if (Array.isArray(usageData) && usageData.length > 0) {
+                        const usageOptions = usageData.map((u, idx) => ({
+                            code: String(u.code || u.categoryId || u.id || u.value || idx + 1),
+                            name: u.name || u.label || u.display || (u.code || u.categoryId || `Option ${idx + 1}`)
+                        }));
+                        setUsageCategories(usageOptions);
+                    }
+                }
             } catch (error) {
                 console.error('Error loading persisted dropdown data:', error);
             }
         };
 
         // Only load if we have persisted values
-        if (districtState || tehsilState || villageState) {
+        if (districtState || tehsilState || villageState || segmentState) {
             loadPersistedDropdowns();
         }
-    }, [districtState, tehsilState, villageState]);
+    }, [districtState, tehsilState, villageState, segmentState]);
 
-    // Filter tehsils when district changes
-    React.useEffect(() => {
-        if (districtState && revenueData) {
-            const districtsdata = (revenueData && (revenueData.districts
-                || revenueData.districts)) || [];
-            const filteredTehsils = [...new Set(
-                districtsdata
-                    .filter(item => item.district === districtState)
-                    .map(item => item.tehsil)
-                    .filter(Boolean)
-            )];
-            const tehsilOptions = filteredTehsils.map(t => ({
-                code: t,
-                name: t
-            }));
-            setTehsils(tehsilOptions);
-            console.log('Tehsils for district:', tehsilOptions);
-        } else {
-            setTehsils([]);
-        }
-    }, [districtState, revenueData]);
-
-    // Filter villages when tehsil changes
-    React.useEffect(() => {
-        if (tehsilState && revenueData) {
-            const propertyRates = (revenueData && (revenueData.districts || revenueData.districts)) || [];
-            const filteredVillages = [...new Set(
-                propertyRates
-                    .filter(item => item.tehsil === tehsilState)
-                    .map(item => item.village)
-                    .filter(Boolean)
-            )];
-            const villageOptions = filteredVillages.map(v => ({
-                code: v,
-                name: v
-            }));
-            setVillages(villageOptions);
-            console.log('Villages for tehsil:', villageOptions);
-        } else {
-            setVillages([]);
-        }
-    }, [tehsilState, revenueData]);
-
-    // Filter segments when village changes
-    React.useEffect(() => {
-        if (villageState && revenueData) {
-            const propertyRates = (revenueData && (revenueData.districts || revenueData.districts)) || [];
-            const filteredSegments = [...new Set(
-                propertyRates
-                    .filter(item => item.village === villageState)
-                    .map(item => item.segment)
-                    .filter(Boolean)
-            )];
-            const segmentOptions = filteredSegments.map(s => ({
-                code: s,
-                name: s
-            }));
-            setSegments(segmentOptions);
-            console.log('Segments for village:', segmentOptions);
-        } else {
-            setSegments([]);
-        }
-    }, [villageState, revenueData]);
+    // Note: Tehsil, Village, and Segment options are now loaded exclusively
+    // via API calls in their respective change handlers and the
+    // loadPersistedDropdowns effect above, to avoid overwriting
+    // selections with mismatched data from revenueData.
 
     const mobile = String(get(prepared, "ptmapPopup.mobileNumber", "") || "");
 
@@ -556,65 +564,63 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         setUsageCategoryState("");
         setSubUsageCategoryState("");
         setUsageCategories([]);
+        setSubSegments([]);
 
-        // Fetch usage categories for selected segment
-        if (selectedSegment) {
-            try {
-                setIsSubmitting(true);
-                console.log("Fetching usage categories for segment:", selectedSegment);
-
-                const requestBody = {
-                    searchCriteria: {
-                        segmentId: selectedSegment,
-                        locality: locality || "",
-
-                    }
-                };
-
-                console.log("Request body for usage categories:", JSON.stringify(requestBody));
-
-                const url = "/egov-property-rate/property-rate/_search";
-
-                const response = await httpRequest(
-                    "post",
-                    url,
-                    "",
-                    [],
-                    requestBody
-                );
-
-                console.log('Usage categories fetched for segment:', response);
-                console.log('Response structure:', Object.keys(response || {}));
-                // Try to extract usage categories from a variety of possible response shapes
-                const usageData = (response && (
-                    response.usageCategories ||
-                    response.usageCategoryList ||
-                    response.usageCategory ||
-                    response.categories ||
-                    response.data
-                )) || [];
-
-                let usageOptions = [];
-                if (Array.isArray(usageData) && usageData.length > 0) {
-                    usageOptions = usageData.map((u, idx) => ({
-                        code: String(u.code || u.categoryId || u.id || u.value || idx + 1),
-                        name: u.name || u.label || u.display || (u.code || u.categoryId || `Option ${idx + 1}`)
-                    }));
-                }
-
-                if (usageOptions.length) {
-                    setUsageCategories(usageOptions);
-                } else {
-                    // fallback: keep existing static numeric mapping
-                    setUsageCategories([]);
-                }
-
-                setIsSubmitting(false);
-            } catch (error) {
-                console.error('Error fetching usage categories:', error);
-                setIsSubmitting(false);
-            }
+        if (!selectedSegment) {
+            return;
         }
+
+        // Fetch sub-segments for selected segment
+        try {
+            setIsSubmitting(true);
+            console.log("Fetching sub-segments for segment:", selectedSegment);
+
+            const subSegRequestBody = {
+                searchCriteria: {
+                    segmentId: selectedSegment,
+                    locality: locality || "",
+                    getSubSegments: true
+                }
+            };
+
+            console.log("Request body for sub-segments:", JSON.stringify(subSegRequestBody));
+
+            const subSegResponse = await httpRequest(
+                "post",
+                "/egov-property-rate/property-rate/_search",
+                "",
+                [],
+                subSegRequestBody
+            );
+
+            console.log('Sub-segments fetched for segment:', subSegResponse);
+
+            const subSegmentsData = (subSegResponse && (
+                subSegResponse.subSegments ||
+                subSegResponse.SubSegments ||
+                subSegResponse.subSegmentList ||
+                subSegResponse.data
+            )) || [];
+
+            if (Array.isArray(subSegmentsData) && subSegmentsData.length > 0) {
+                const subSegmentOptions = subSegmentsData.map((s, idx) => ({
+                    code: String(s.code || s.subSegmentId || s.id || s.value || idx + 1),
+                    name: s.name || s.label || s.display || s.subSegmentName || (s.code || `Sub-Segment ${idx + 1}`)
+                }));
+                console.log('Sub-segments available (normalized):', subSegmentOptions);
+                setSubSegments(subSegmentOptions);
+            } else {
+                console.warn('No sub-segments found for segment');
+                setSubSegments([]);
+            }
+
+            setIsSubmitting(false);
+        } catch (error) {
+            console.error('Error fetching sub-segments:', error);
+            setIsSubmitting(false);
+            setSubSegments([]);
+        }
+
     };
 
     const handleUsageCategoryChange = (e) => {
@@ -623,9 +629,72 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
     };
 
-    const handleSubUsageCategoryChange = (e) => {
+    const handleSubUsageCategoryChange = async (e) => {
         e.stopPropagation();
-        setSubUsageCategoryState(e.target.value);
+        const selectedSubSegment = e.target.value;
+        setSubUsageCategoryState(selectedSubSegment);
+
+        // Reset usage category when sub segment changes
+        setUsageCategoryState("");
+        setUsageCategories([]);
+
+        if (!selectedSubSegment) {
+            return;
+        }
+
+        try {
+            setIsSubmitting(true);
+            console.log("Fetching usage categories for sub-segment:", selectedSubSegment);
+
+            const requestBody = {
+                searchCriteria: {
+                    // segmentId: segmentState,
+                    // subSegmentId: selectedSubSegment,
+                    // locality: locality || "",
+                    getUsageCategories: true
+                }
+            };
+
+            const url = "/egov-property-rate/property-rate/_search";
+
+            const response = await httpRequest(
+                "post",
+                url,
+                "",
+                [],
+                requestBody
+            );
+
+            console.log("Usage categories fetched for sub-segment:", response);
+
+            const usageData = (response && (
+                response.usageCategories ||
+                response.usageCategoryList ||
+                response.usageCategory ||
+                response.categories ||
+                response.data
+            )) || [];
+
+            let usageOptions = [];
+            if (Array.isArray(usageData) && usageData.length > 0) {
+                usageOptions = usageData.map((u, idx) => ({
+                    code: String(u.code || u.categoryId || u.id || u.value || idx + 1),
+                    name: u.name || u.label || u.display || (u.code || u.categoryId || `Option ${idx + 1}`)
+                }));
+            }
+
+            if (usageOptions.length) {
+                setUsageCategories(usageOptions);
+            } else {
+                setUsageCategories([]);
+            }
+
+            setIsSubmitting(false);
+        } catch (error) {
+            console.error("Error fetching usage categories for sub-segment:", error);
+            setIsSubmitting(false);
+            setUsageCategories([]);
+        }
     };
 
     const tenantIdValue = get(prepared, "searchCriteria.tenantId", "");
@@ -1010,6 +1079,43 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                                     {segment.name}
                                 </option>
                             ))}
+                        </select>
+                    </div>
+
+                    {/* Sub Segment Field */}
+                    <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
+                        <label style={{
+                            display: "block",
+                            marginBottom: "8px",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            color: "#555"
+                        }}>
+                            Sub Segment
+                        </label>
+                        <select
+                            value={subUsageCategoryState}
+                            onChange={handleSubUsageCategoryChange}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                                width: "100%",
+                                padding: "10px 12px",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                fontSize: "14px",
+                                backgroundColor: "#fff",
+                                color: "#333",
+                                boxSizing: "border-box",
+                                cursor: "pointer"
+                            }}
+                        >
+                            <option value="">Select Sub Segment</option>
+                            {subSegments && subSegments.length > 0 &&
+                                subSegments.map((ss, idx) => (
+                                    <option key={idx} value={ss.code}>
+                                        {ss.name}
+                                    </option>
+                                ))}
                         </select>
                     </div>
 
