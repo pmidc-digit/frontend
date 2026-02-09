@@ -1108,8 +1108,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 open={dialogOpen}
                 isClose={true}
                 handleClose={handleDialogClose}
-                bodyStyle={{ padding: "24px", backgroundColor: "#ffffff" }}
-                contentStyle={{ width: "800px", maxWidth: "95%", backgroundColor: "#ffffff" }}
+                bodyStyle={{ padding: "24px", backgroundColor: "#ffffff", maxHeight: "90vh", overflowY: "auto" }}
+                contentStyle={{ width: "800px", maxWidth: "95%", backgroundColor: "#ffffff", maxHeight: "90vh" }}
             >
                 <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
                     Property Revenue Map

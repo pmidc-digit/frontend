@@ -79,8 +79,8 @@ export const searchResults = {
                     open={open}
                     isClose={true}
                     handleClose={handleClose}
-                    bodyStyle={{ padding: 0 }}
-                    contentStyle={{ width: "1200px", maxWidth: "95%" }}
+                    bodyStyle={{ padding: 0, maxHeight: "90vh", overflowY: "auto" }}
+                    contentStyle={{ width: "1200px", maxWidth: "95%", maxHeight: "90vh" }}
                   >
                     <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
                       Property Revenue Map
