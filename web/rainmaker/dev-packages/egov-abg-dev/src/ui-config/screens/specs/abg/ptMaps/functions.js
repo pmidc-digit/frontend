@@ -12,12 +12,26 @@ import {
   validateFields,
   getTextToLocalMapping
 } from "../../utils/index";
-import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
+import { getTenantId, getUserInfo, getLocalization } from "egov-ui-kit/utils/localStorageUtils";
 import isEmpty from "lodash/isEmpty"
 import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
+
+// Get human readable text from localisation for a given code
+const getLocalTextFromCode = localCode => {
+  try {
+    const localisationStr = getLocalization("localization_en_IN");
+    if (!localisationStr || !localCode) return "";
+    const localisationArr = JSON.parse(localisationStr) || [];
+    const match = localisationArr.find(item => item.code === localCode);
+    return (match && match.message) || "";
+  } catch (e) {
+    console.log("Error resolving localisation for", localCode, e);
+    return "";
+  }
+};
 export const updatesingleReading = async (consumerId, tenantId, currentReading, readingDate) => {
   const payload = { consumerId, tenantId, currentReading, readingDate };
   try {
@@ -229,6 +243,14 @@ export const searchApiCall = async (state, dispatch) => {
     dispatch(
       prepareFinalObject("searchScreenMdmsData.ptreveresponce", ptreveresponce)
     );
+
+    // MDMS locality metadata for mapping code -> localisation key
+    const mdmsLocalities = get(
+      state,
+      "screenConfiguration.preparedFinalObject.searchScreenMdmsData.localities",
+      []
+    );
+
     const response = [];
     for (let i = 0; i < ptreveresponce.length; i++) {
       const item = ptreveresponce[i];
@@ -256,13 +278,29 @@ export const searchApiCall = async (state, dispatch) => {
 
       console.log("Address object:", addressObj);
 
+      // Resolve locality display name using MDMS + localisation, falling back to code
+      const localityMdms =
+        Array.isArray(mdmsLocalities) &&
+        mdmsLocalities.find(loc => loc.code === localityCode);
+
+      // MDMS 'name' is a localisation code like TENANT_REVENUE_<CODE>
+      const localityLabelCode =
+        (localityMdms && localityMdms.name) ||
+        addressObj.localityName ||
+        addressObj.locality ||
+        addressObj.localitycode ||
+        localityCode;
+
+      const localityName =
+        getLocalTextFromCode(localityLabelCode) || localityLabelCode;
+
       // Build full address from available fields
       const fullAddress = [
         doorNo || addressObj.doorNo || addressObj.doorno,
         buildingName || addressObj.buildingName || addressObj.buildingname,
         plotNo || addressObj.plotNo || addressObj.plotno,
         street || addressObj.street,
-        localityCode || addressObj.locality || addressObj.localityName || addressObj.localitycode,
+        localityName,
         city || addressObj.city || addressObj.cityName
       ].filter(Boolean).join(", ") || "-";
 

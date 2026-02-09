@@ -33,7 +33,15 @@ export const searchResults = {
       { labelName: "Land Area", labelKey: "Land Area" },
 
       { labelName: "Usage Category", labelKey: "Usage Category" },
-      { labelName: "Locality", labelKey: "Locality" },
+      {
+        labelName: "Locality",
+        labelKey: "Locality",
+        options: {
+          display: false,
+          viewColumns: false,
+          filter: false
+        }
+      },
       { labelName: "Address", labelKey: "Address" },
 
       {
