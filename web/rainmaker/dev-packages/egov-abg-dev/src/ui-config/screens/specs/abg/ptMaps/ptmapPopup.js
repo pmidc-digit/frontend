@@ -110,6 +110,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const [usageCategoryState, setUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_usageCategory") || "");
     const [subUsageCategoryState, setSubUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_subUsageCategory") || "");
     const [usageCategories, setUsageCategories] = React.useState([]);
+    const [subUsageCategories, setSubUsageCategories] = React.useState([]);
+    const [subUsageCategoryValue, setSubUsageCategoryValue] = React.useState(() => localStorage.getItem("ptmap_subUsageCategoryValue") || "");
 
     const [mappedRate, setMappedRate] = React.useState(null);
     const [mappedunit, setMappedunit] = React.useState(null);
@@ -306,6 +308,39 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         setUsageCategories(usageOptions);
                     }
                 }
+
+                // Load sub-usage categories if usage category is persisted
+                if (usageCategoryState && !subUsageCategories.length) {
+                    const subUsageRequestBody = {
+                        searchCriteria: {
+                            usageCategoryId: usageCategoryState
+                        }
+                    };
+
+                    const subUsageResponse = await httpRequest(
+                        "post",
+                        "/egov-property-rate/property-rate/_search",
+                        "",
+                        [],
+                        subUsageRequestBody
+                    );
+
+                    const subUsageData = (subUsageResponse && (
+                        subUsageResponse.subUsageCategories ||
+                        subUsageResponse.subUsageCategoryList ||
+                        subUsageResponse.usageCategories ||
+                        subUsageResponse.categories ||
+                        subUsageResponse.data
+                    )) || [];
+
+                    if (Array.isArray(subUsageData) && subUsageData.length > 0) {
+                        const subUsageOptions = subUsageData.map((u, idx) => ({
+                            code: String(u.code || u.subUsageCategoryId || u.id || u.value || idx + 1),
+                            name: u.name || u.label || u.display || (u.code || u.subUsageCategoryId || `Option ${idx + 1}`)
+                        }));
+                        setSubUsageCategories(subUsageOptions);
+                    }
+                }
             } catch (error) {
                 console.error('Error loading persisted dropdown data:', error);
             }
@@ -366,6 +401,10 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     React.useEffect(() => {
         if (subUsageCategoryState) localStorage.setItem("ptmap_subUsageCategory", subUsageCategoryState);
     }, [subUsageCategoryState]);
+
+    React.useEffect(() => {
+        if (subUsageCategoryValue) localStorage.setItem("ptmap_subUsageCategoryValue", subUsageCategoryValue);
+    }, [subUsageCategoryValue]);
 
     const handleLocalityChange = (e) => {
         e.stopPropagation();
@@ -623,10 +662,72 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
     };
 
-    const handleUsageCategoryChange = (e) => {
+    const handleUsageCategoryChange = async (e) => {
         e.stopPropagation();
-        setUsageCategoryState(e.target.value);
+        const selectedUsageCategory = e.target.value;
+        setUsageCategoryState(selectedUsageCategory);
+        setSubUsageCategoryValue("");
+        setSubUsageCategories([]);
 
+        if (!selectedUsageCategory) {
+            return;
+        }
+
+        try {
+            setIsSubmitting(true);
+            console.log("Fetching sub usage categories for usage category:", selectedUsageCategory);
+
+            const requestBody = {
+                searchCriteria: {
+                    usageCategoryId: selectedUsageCategory
+                }
+            };
+
+            const url = "/egov-property-rate/property-rate/_search";
+
+            const response = await httpRequest(
+                "post",
+                url,
+                "",
+                [],
+                requestBody
+            );
+
+            console.log("Sub usage categories fetched:", response);
+
+            const subUsageData = (response && (
+                response.subUsageCategories ||
+                response.subUsageCategoryList ||
+                response.usageCategories ||
+                response.categories ||
+                response.data
+            )) || [];
+
+            let subUsageOptions = [];
+            if (Array.isArray(subUsageData) && subUsageData.length > 0) {
+                subUsageOptions = subUsageData.map((u, idx) => ({
+                    code: String(u.code || u.subUsageCategoryId || u.id || u.value || idx + 1),
+                    name: u.name || u.label || u.display || (u.code || u.subUsageCategoryId || `Option ${idx + 1}`)
+                }));
+            }
+
+            if (subUsageOptions.length) {
+                setSubUsageCategories(subUsageOptions);
+            } else {
+                setSubUsageCategories([]);
+            }
+
+            setIsSubmitting(false);
+        } catch (error) {
+            console.error("Error fetching sub usage categories:", error);
+            setIsSubmitting(false);
+            setSubUsageCategories([]);
+        }
+    };
+
+    const handleSubUsageCategoryValueChange = (e) => {
+        e.stopPropagation();
+        setSubUsageCategoryValue(e.target.value);
     };
 
     const handleSubUsageCategoryChange = async (e) => {
@@ -900,7 +1001,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     <div style={{
                         padding: "0"
                     }}>
-                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Land Area</div>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Land Area/build Area</div>
                         <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{landArea ? `${landArea} sq.ft` : "N/A"}</div>
                     </div>
 
@@ -1159,6 +1260,43 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                                     <option key="4" value="4">Mixed</option>
                                 ]
                             )}
+                        </select>
+                    </div>
+
+                    {/* Sub Usage Category Field */}
+                    <div style={{ flex: "1 1 calc(50% - 10px)", minWidth: "250px" }}>
+                        <label style={{
+                            display: "block",
+                            marginBottom: "8px",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            color: "#555"
+                        }}>
+                            Sub Usage Category
+                        </label>
+                        <select
+                            value={subUsageCategoryValue}
+                            onChange={handleSubUsageCategoryValueChange}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                                width: "100%",
+                                padding: "10px 12px",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                fontSize: "14px",
+                                backgroundColor: "#fff",
+                                color: "#333",
+                                boxSizing: "border-box",
+                                cursor: "pointer"
+                            }}
+                        >
+                            <option value="">Select Sub Usage Category</option>
+                            {subUsageCategories && subUsageCategories.length > 0 &&
+                                subUsageCategories.map((suc, idx) => (
+                                    <option key={idx} value={suc.code}>
+                                        {suc.name}
+                                    </option>
+                                ))}
                         </select>
                     </div>
                 </div>

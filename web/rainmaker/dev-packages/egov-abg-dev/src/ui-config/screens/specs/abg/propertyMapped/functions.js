@@ -260,8 +260,8 @@ export const searchApiCall = async (state, dispatch) => {
 
       // Handle both camelCase and lowercase field names
       const propertyId = item.propertyId || item.propertyid;
-      const ownerName = item.ownerName || item.ownername;
-      const ownerMobile = item.ownerMobile || item.ownerMobile || item.ownermobile || "";
+      const ownerName = item.owners && item.owners[0] ? item.owners[0].name : item.ownername;
+      const ownerMobile = item.owners && item.owners[0] ? item.owners[0].mobileNumber : item.ownermobile || "";
       const landArea = item.landArea || item.landarea;
       const buildingName = item.buildingName || item.buildingname;
       const usageCategory = item.usageCategory || item.usagecategory;
