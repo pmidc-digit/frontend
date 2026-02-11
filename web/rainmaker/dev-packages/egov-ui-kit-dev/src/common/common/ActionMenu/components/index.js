@@ -10,8 +10,11 @@ import Menu from "material-ui/Menu";
 import MenuItem from "material-ui/MenuItem";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import "./index.css";
+
+
+
 
 const styles = {
   inputStyle: {
@@ -186,7 +189,7 @@ class ActionMenuComp extends Component {
     for (var i = 0; i < (actionList && actionList.length); i++) {
       if (actionList[i].path !== "") {
         if (path && !path.parentMenu && actionList[i].path.startsWith(path + ".")) {
-          let splitArray =  actionList[i].path && actionList[i].path.split(path + ".")[1].split(".");
+          let splitArray = actionList[i].path && actionList[i].path.split(path + ".")[1].split(".");
           let leftIconArray = actionList[i] && actionList[i].leftIcon && actionList[i].leftIcon.split(".");
           let leftIcon =
             leftIconArray &&
@@ -240,7 +243,26 @@ class ActionMenuComp extends Component {
     let { setRoute } = this.props;
     setRoute(route);
   };
+  toRedirect = (item) => {
+    //console.log("item in toRedirect", item);
+    //debugger;
+    const hostname = window.location.origin;
+    const navigationURL = item.navigationURL;
+    if (item.name === "Home" && process.env.REACT_APP_NAME === "Citizen") {
+      //console.log("hostname", `${hostname}/digit-ui/citizen`);
+      window.location.replace(`${hostname}/digit-ui/citizen`);
+    }
+    else {
 
+      if (navigationURL && navigationURL.includes('digit-ui')) {
+        window.location.replace(`${hostname}${navigationURL.startsWith('/') ? navigationURL : '/' + navigationURL}`);
+      }
+
+      // return navigationURL;
+      return this.props.history.push(navigationURL.startsWith('/') ? navigationURL : `/${navigationURL}`);
+    }
+
+  };
   renderLeftIcon(leftIcon = [], item) {
     let { menuDrawerOpen } = this.props;
     if (leftIcon.length >= 2) {
@@ -265,19 +287,19 @@ class ActionMenuComp extends Component {
     let actionList = actionListArr;
     let menuTitle = path.split(".");
     let activeItmem = localStorageGet("menuName");
-    if(process.env.REACT_APP_NAME === "Citizen"){
-      if(JSON.parse(getUserInfo()).roles.some((role)=> role.code === 'PESCO')){
-          menuItems = menuItems.filter(menu => menu.name.toUpperCase() === 'SWACH');
-          //menuItems = filterMenuItem;
-      }else{
-          menuItems = menuItems.filter(menu => menu.name.toUpperCase() !== 'SWACH');
+    if (process.env.REACT_APP_NAME === "Citizen") {
+      if (JSON.parse(getUserInfo()).roles.some((role) => role.code === 'PESCO')) {
+        menuItems = menuItems.filter(menu => menu.name.toUpperCase() === 'SWACH');
+        //menuItems = filterMenuItem;
+      } else {
+        menuItems = menuItems.filter(menu => menu.name.toUpperCase() !== 'SWACH');
       }
     }
     const showMenuItem = () => {
       const navigationURL = window.location.href.split("/").pop();
       if (searchText.length == 0) {
         return menuItems.map((item, index) => {
-          
+
           let iconLeft;
           if (item.leftIcon) {
             iconLeft = item.leftIcon.split(":");
@@ -327,102 +349,38 @@ class ActionMenuComp extends Component {
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
-              let targetPath;
-              
-              if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                targetPath = `${window.location.origin}/digit-ui/citizen`;
-              } else if (item.navigationURL === "/") {
-                targetPath = item.navigationURL;
-              } else {
-                targetPath = `${item.navigationURL}`;
-              }
-
-              // For Citizen Home, use <a> tag with absolute URL
-              if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                return (
-                  <a
-                    href={targetPath}
-                    style={{ textDecoration: "none" }}
-                    key={index}
-                  >
-                    <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
-                      <MenuItem
-                        innerDivStyle={styles.defaultMenuItemStyle}
-                        style={{ whiteSpace: "initial" }}
-                        key={index}
-                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                        onClick={() => {
-                          document.title = item.name;
-                          toggleDrawer && toggleDrawer();
-                          window.location.href = targetPath;
-                        }}
-                        leftIcon={this.renderLeftIcon(iconLeft, item)}
-                        primaryText={
-                          <Label
-                            className="menuStyle"
-                            label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                          />
-                        }
-                      />
-                    </div>
-                  </a>
-                );
-              }
+              //let targetPath = toRedirect(item);
 
               return (
-                <Link
-                  style={{ textDecoration: "none" }}
-                  key={index}
-                  to={targetPath}
-                >
-                  <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`}>
-                    {/* <Tooltip
-                      id={"menu-toggle-tooltip"}
-                      title={<Label defaultLabel={menuDrawerOpen ? "" : item.name} label={menuDrawerOpen ? "" : `ACTION_TEST_${item.name}`} />}
-                      placement="right"
-                    > */}
-                    <MenuItem
-                      innerDivStyle={styles.defaultMenuItemStyle}
-                      style={{ whiteSpace: "initial" }}
-                      key={index}
-                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                      onClick={() => {
-                        //  localStorageSet("menuPath", item.path);
-                        if (item.navigationURL === "tradelicence/apply") {
-                          this.props.setRequiredDocumentFlag()
-                        }
-
-                        document.title = item.name;
-                        if (item.navigationURL && item.navigationURL.includes('digit-ui')) {
-                          window.location.href = item.navigationURL
-                          return;
-                        }
-                        else {
-                          updateActiveRoute(item.path, item.name);
-                        }
-
-                        toggleDrawer && toggleDrawer();
-                        if (window.location.href.indexOf(item.navigationURL) > 0 && item.navigationURL.startsWith("integration")) {
-                          window.location.reload();
-                        }
-                      }}
-                      leftIcon={this.renderLeftIcon(iconLeft, item)}
-                      primaryText={
-                        <Label
-                          className="menuStyle"
-                          //defaultLabel={item.name}
-                          label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                        //   color="rgba(255, 255, 255, 0.87)"
-                        />
+                <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
+                  <MenuItem
+                    innerDivStyle={styles.defaultMenuItemStyle}
+                    style={{ whiteSpace: "initial" }}
+                    id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                    onClick={() => {
+                      if (item.navigationURL === "tradelicence/apply") {
+                        this.props.setRequiredDocumentFlag()
                       }
-                    />
-                    {/* </Tooltip> */}
-                  </div>
-                </Link>
+                      document.title = item.name;
+                      toggleDrawer && toggleDrawer();
+                      updateActiveRoute(item.path, item.name);
+                      
+                      // Conditional navigation: digit-ui → href, else → history.push
+                      this.toRedirect(item)
+                    }}
+                    leftIcon={this.renderLeftIcon(iconLeft, item)}
+                    primaryText={
+                      <Label
+                        className="menuStyle"
+                        label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                      />
+                    }
+                  />
+                </div>
               );
             } else {
               return (
-                <a href={item.url} target="_blank">
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
                   <div className="sideMenuItem">
                     {/* <Tooltip
                       id={"menu-toggle-tooltip"}
@@ -465,81 +423,26 @@ class ActionMenuComp extends Component {
             }
             if (item.path && item.url && item.displayName.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
               if (item.navigationURL) {
-                let targetPath;
-                
-                if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                  targetPath = `${window.location.origin}/digit-ui/citizen`;
-                } else if (item.navigationURL === "/") {
-                  targetPath = item.navigationURL;
-                } else {
-                  targetPath = `${item.navigationURL}`;
-                }
+               // let targetPath = toRedirect(item);
 
-                // For Citizen Home, use <a> tag with absolute URL
-                if (item.navigationURL === "/" && process.env.REACT_APP_NAME === "Citizen") {
-                  return (
-                    <a
-                      href={targetPath}
-                      style={{ textDecoration: "none" }}
-                      key={index}
-                    >
-                      <div className="sideMenuItem">
-                        <MenuItem
-                          innerDivStyle={styles.defaultMenuItemStyle}
-                          style={{ whiteSpace: "initial" }}
-                          id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                          onClick={() => {
-                            document.title = item.displayName;
-                            toggleDrawer && toggleDrawer();
-                            window.location.href = targetPath;
-                          }}
-                          leftIcon={this.renderLeftIcon(iconLeft, item)}
-                          primaryText={
-                            <Label
-                              className="menuStyle"
-                              label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                            />
-                          }
-                        />
-                      </div>
-                    </a>
-                  );
-                }
-                
                 return (
-                  <Link
-                    style={{ textDecoration: "none" }}
-                    key={index}
-                    to={targetPath}
-                  >
-                    <div className="sideMenuItem">
-                      {/* <Tooltip
-                        id={"menu-toggle-tooltip"}
-                        title={<Label defaultLabel={menuDrawerOpen ? "" : item.name} label={menuDrawerOpen ? "" : `ACTION_TEST_${item.name}`} />}
-                        placement="right"
-                      > */}
-                      <MenuItem
-                        innerDivStyle={styles.defaultMenuItemStyle}
-                        style={{ whiteSpace: "initial" }}
-                        id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                        onClick={() => {
-                          document.title = item.displayName;
-                          toggleDrawer && toggleDrawer();
-                          updateActiveRoute(item.path, item.displayName);
-                        }}
-                        leftIcon={this.renderLeftIcon(iconLeft, item)}
-                        primaryText={
-                          <Label
-                            className="menuStyle"
-                            //defaultLabel={item.displayName}
-                            label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                          // color="rgba(255, 255, 255, 0.87)"
-                          />
-                        }
-                      />
-                      {/* </Tooltip> */}
-                    </div>
-                  </Link>
+                  <div className="sideMenuItem" key={index}>
+                    <MenuItem
+                      innerDivStyle={styles.defaultMenuItemStyle}
+                      style={{ whiteSpace: "initial" }}
+                      id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                      onClick={() => {
+                        this.toRedirect(item)
+                      }}
+                      leftIcon={this.renderLeftIcon(iconLeft, item)}
+                      primaryText={
+                        <Label
+                          className="menuStyle"
+                          label={item.name ? `ACTION_TEST_${item.displayName.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                        />
+                      }
+                    />
+                  </div>
                 );
               }
             }
@@ -548,7 +451,7 @@ class ActionMenuComp extends Component {
       }
     };
 
-    return actionList ? (       
+    return actionList ? (
       <div ref={this.setWrapperRef}>
         <div className="whiteColor" />
         <div className="menu-item-title">
@@ -673,7 +576,10 @@ const mapDispatchToProps = (dispatch) => ({
   fetchLocalizationLabel: (locale, moduleName, tenantId) => dispatch(fetchLocalizationLabel(locale, moduleName, tenantId)),
   setRequiredDocumentFlag: () => dispatch(prepareFinalObject("isRequiredDocuments", true))
 });
-export default connect(
-  null,
-  mapDispatchToProps
-)(ActionMenuComp);
+// export default connect(
+//   null,
+//   mapDispatchToProps
+// )(ActionMenuComp);
+export default withRouter(
+  connect(null, mapDispatchToProps)(ActionMenuComp)
+);
