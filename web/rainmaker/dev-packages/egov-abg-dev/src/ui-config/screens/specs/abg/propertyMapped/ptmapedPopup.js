@@ -608,7 +608,86 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         setSubUsageCategoryValue("");
         setSubUsageCategories([]);
 
+        if (!selectedUsageCategory) {
+            // Reset rate values if no category selected
+            setMappedRate(null);
+            setMappedRateId(null);
+            setMappedSegmentName(null);
+            setMappedunit(null);
+            return;
+        }
+        debugger;
+        try {
+            setIsSubmitting(true);
+            console.log("Fetching rates for usage category:", selectedUsageCategory);
+            console.log("Current state values:", {
+                segmentState,
+                subUsageCategoryState,
+                propertiesId,
+                districtState,
+                tehsilState,
+                villageState,
+                locality,
+                tenantIdValue
+            });
 
+            const requestBody = {
+                searchCriteria: {
+                    segmentId: segmentState,
+                    subSegmentId: subUsageCategoryState,
+                    propertyId: propertiesId,
+                    districtId: districtState,
+                    tehsilId: tehsilState,
+                    villageId: villageState,
+                    locality: locality || "",
+                    usageCategoryId: selectedUsageCategory,
+                    tenantId: tenantIdValue,
+                    isRateCheck: true
+                }
+            };
+
+            console.log("Rate check request body:", JSON.stringify(requestBody, null, 2));
+
+            const url = "/egov-property-rate/property-rate/_search";
+
+            const response = await httpRequest(
+                "post",
+                url,
+                "",
+                [],
+                requestBody
+            );
+
+            console.log('Property rate response:', response.rates);
+            console.log('Response structure:', Object.keys(response || {}));
+
+            // Extract and set rate information from response
+            if (response && response.rates && Array.isArray(response.rates) && response.rates.length > 0) {
+                const rateData = response.rates[0];
+                setMappedRate(rateData.rate || 0);
+                setMappedunit(rateData.unit || "");
+                setMappedRateId(rateData.id || rateData.rateId || null);
+                setMappedSegmentName(rateData.segmentName || null);
+                console.log('Rate information set:', { rate: rateData.rate, unit: rateData.unit, rateId: rateData.id });
+            } else {
+                console.warn('No rates found in response');
+                setMappedRate(0);
+                setMappedunit("");
+                setMappedRateId(null);
+            }
+
+            setIsSubmitting(false);
+        } catch (error) {
+            console.error('Error fetching rates for usage category:', error);
+            console.error('Error details:', error.message, error.response);
+            setIsSubmitting(false);
+            setMappedRate(null);
+            setMappedRateId(null);
+            setMappedSegmentName(null);
+            setMappedunit(null);
+
+            alert('Failed to fetch rate information. Please check console for details.');
+        }
     };
 
     const handleSubUsageCategoryValueChange = (e) => {
@@ -787,6 +866,9 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     locality: locality,
                     usageCategoryId: usageCategoryState,
 
+                    rate: mappedRate || 0,
+                    rateId: mappedRateId,
+                    unit: mappedunit || "",
                     tenantId: tenantIdValue
 
                 }]
@@ -868,8 +950,21 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     <div style={{
                         padding: "0"
                     }}>
-                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>locality</div>
-                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{locality || "N/A"}</div>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>District Name</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{districtState ? (districts.find(d => d.code === districtState) || {}).name : locality || "N/A"}</div>
+                    </div>
+                    <div style={{
+                        padding: "0"
+                    }}>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Tehsil Name</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{tehsilState ? (tehsils.find(t => t.code === tehsilState) || {}).name : "N/A"}</div>
+                    </div>
+
+                    <div style={{
+                        padding: "0"
+                    }}>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Village Name</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{villageState ? (villages.find(v => v.code === villageState) || {}).name : "N/A"}</div>
                     </div>
                     <div style={{
                         padding: "0"

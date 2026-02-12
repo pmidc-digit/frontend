@@ -263,6 +263,7 @@ export const searchApiCall = async (state, dispatch) => {
       const ownerName = item.owners && item.owners[0] ? item.owners[0].name : item.ownername;
       const ownerMobile = item.owners && item.owners[0] ? item.owners[0].mobileNumber : item.ownermobile || "";
       const landArea = item.landArea || item.landarea;
+      const superbuiltuparea = item.superBuiltUpArea || item.superbuiltuparea;
       const buildingName = item.buildingName || item.buildingname;
       const usageCategory = item.usageCategory || item.usagecategory;
       const localityCode = item.localityCode || item.localitycode;
@@ -311,6 +312,7 @@ export const searchApiCall = async (state, dispatch) => {
         ownerName: ownerName,
         ownerMobile: ownerMobile,
         landArea: landArea,
+        superbuiltuparea: superbuiltuparea,
         buildingName: buildingName,
         usageCategory: usageCategory,
         locality: localityCode,
@@ -325,7 +327,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["Property ID"]: item.propertyId || "-",
         ["Owner Name"]: item.ownerName || "-",
         ["Owner Mobile"]: item.ownerMobile || "",
-        ["Land Area"]: item.landArea || "-",
+        ["Land Area"]: item.landArea || item.superbuiltuparea || "-",
         ["Building Name"]: item.buildingName || "-",
         ["Usage Category"]: item.usageCategory || "-",
         ["Locality"]: item.locality || "-",
