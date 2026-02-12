@@ -53,10 +53,7 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, locality,
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{ownerMobile || "N/A"}</div>
                     </div>
 
-                    <div>
-                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Locality</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{locality || "N/A"}</div>
-                    </div>
+
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>District</div>
@@ -93,10 +90,7 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, locality,
 
 
 
-                    <div>
-                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Rate ID</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rateId || "N/A"}</div>
-                    </div>
+
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Collect Rate</div>
@@ -105,10 +99,7 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, locality,
                         </div>
                     </div>
 
-                    <div style={{ gridColumn: "1 / -1" }}>
-                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Segment Name</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{segmentName || "N/A"}</div>
-                    </div>
+
 
                     <div style={{ gridColumn: "1 / -1" }}>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Address</div>

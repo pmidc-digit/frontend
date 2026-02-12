@@ -76,6 +76,23 @@ export const searchResults = {
               const handleClose = () => setOpen(false);
 
               const handleMarkCorrect = async () => {
+                console.log("Marked as correct:", {
+                  propertiesId,
+                  ownerName,
+                  ownerMobile,
+                  landArea,
+                  usageCategory,
+                  locality,
+                  address,
+                  rowdatacomplete,
+                  segmentId: rowdatacomplete.segmentid,
+                  subSegmentId: rowdatacomplete.subsegmentid,
+                  tehsil_name: rowdatacomplete.tehsil_name,
+                  tehsilid: rowdatacomplete.tehsilid,
+                  village_id: rowdatacomplete.village_id,
+                  village_name: rowdatacomplete.village_name,
+
+                });
                 try {
                   const requestBody = {
                     "PropertyRates": [
@@ -86,8 +103,13 @@ export const searchResults = {
                         "districtId": rowdatacomplete.districtid,
                         "tehsilId": rowdatacomplete.tehsilid,
                         "villageId": rowdatacomplete.village_id,
-
-
+                        "landArea": rowdatacomplete.landarea,
+                        "segmentId": rowdatacomplete.segmentid,
+                        "subSegmentId": rowdatacomplete.subsegmentid,
+                        "tehsil_name": rowdatacomplete.tehsil_name,
+                        "tehsilid": rowdatacomplete.tehsilid,
+                        "village_id": rowdatacomplete.village_id,
+                        "village_name": rowdatacomplete.village_name,
                         "locality": rowdatacomplete.locality || "",
 
 
@@ -117,16 +139,7 @@ export const searchResults = {
                   alert("Failed to submit property rate: " + (error.message || "Unknown error"));
 
                 }
-                console.log("Marked as correct:", {
-                  propertiesId,
-                  ownerName,
-                  ownerMobile,
-                  landArea,
-                  usageCategory,
-                  locality,
-                  address,
-                  rowdatacomplete
-                });
+
               };
 
               return (
