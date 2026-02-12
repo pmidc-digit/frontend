@@ -196,7 +196,7 @@ class Property extends Component {
 
     const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
-    if (selPropertyDetails.status != "ACTIVE") {
+    if (selPropertyDetails.status != "ACTIVE" && selPropertyDetails.status != "PENDINGWS") {
       this.props.toggleSnackbarAndSetText(
         true,
         { labelName: "Property in Workflow", labelKey: "ERROR_PROPERTY_IN_WORKFLOW" },
@@ -222,7 +222,7 @@ class Property extends Component {
 
     const { latestPropertyDetails, propertyId, tenantId, selPropertyDetails } = this.props;
     const assessmentNo = latestPropertyDetails && latestPropertyDetails.assessmentNumber;
-    if (selPropertyDetails.status != "ACTIVE") {
+    if (selPropertyDetails.status != "ACTIVE" && selPropertyDetails.status != "PENDINGWS") {
       this.props.toggleSnackbarAndSetText(
         true,
         { labelName: "Property in Workflow", labelKey: "ERROR_PROPERTY_IN_WORKFLOW" },
