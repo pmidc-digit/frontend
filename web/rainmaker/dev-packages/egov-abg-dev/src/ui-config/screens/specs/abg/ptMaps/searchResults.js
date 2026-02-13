@@ -32,6 +32,8 @@ export const searchResults = {
       { labelName: "Owner Mobile", labelKey: "Owner Mobile" },
       { labelName: "Land Area", labelKey: "Land Area" },
 
+      { labelName: "Property Type", labelKey: "Property Type" },
+
       { labelName: "Usage Category", labelKey: "Usage Category" },
       {
         labelName: "Locality",
@@ -58,10 +60,10 @@ export const searchResults = {
               const ownerName = row[1] || "";
               const ownerMobile = row[2] || "";
               const landArea = row[3] || "";
-
-              const usageCategory = row[4] || "";
-              const locality = row[5] || "";
-              const address = row[6] || "";
+              const propertyType = row[4] || "";
+              const usageCategory = row[5] || "";
+              const locality = row[6] || "";
+              const address = row[7] || "";
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
@@ -98,6 +100,7 @@ export const searchResults = {
                       ownerName={ownerName}
                       ownerMobile={ownerMobile}
                       landArea={landArea}
+                      propertyType={propertyType}
                       usageCategory={usageCategory}
                       locality={locality}
                       address={address}

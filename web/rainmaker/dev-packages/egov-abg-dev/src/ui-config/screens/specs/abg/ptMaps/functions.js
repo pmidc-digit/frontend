@@ -152,21 +152,22 @@ export const searchApiCall = async (state, dispatch) => {
     {}
   );
 
-  // Check if at least one search field is filled
-  if (
-    Object.keys(searchScreenObject).length == 0 ||
-    Object.values(searchScreenObject).every(x => x === "")
-  ) {
+  // Require at least one of locality or propertyId (ULB/tenantId is always set)
+  const hasLocality = !!(searchScreenObject && searchScreenObject.locality);
+  const hasPropertyId = !!(searchScreenObject && searchScreenObject.propertyId);
+
+  if (!hasLocality && !hasPropertyId) {
     dispatch(
       toggleSnackbar(
         true,
         {
-          labelName: "Please fill at least one field to start search",
+          labelName: "Please enter Location/Mohalla or Property ID to start search",
           labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
         },
         "warning"
       )
     );
+    return;
   } else {
     for (var key in searchScreenObject) {
       if (
@@ -244,6 +245,50 @@ export const searchApiCall = async (state, dispatch) => {
       prepareFinalObject("searchScreenMdmsData.ptreveresponce", ptreveresponce)
     );
 
+    // Ensure MDMS PropertyType master is available for human-friendly names
+    let mdmsPropertyTypes = get(
+      state,
+      "screenConfiguration.preparedFinalObject.searchScreenMdmsData.PropertyTax.PropertyType",
+      []
+    );
+
+    if (!Array.isArray(mdmsPropertyTypes) || mdmsPropertyTypes.length === 0) {
+      try {
+        const mdmsBody = {
+          MdmsCriteria: {
+            tenantId: searchScreenObject.tenantId || tenantId,
+            moduleDetails: [
+              {
+                moduleName: "PropertyTax",
+                masterDetails: [{ name: "PropertyType" }]
+              }
+            ]
+          }
+        };
+
+        const mdmsPayload = await httpRequest(
+          "post",
+          "/egov-mdms-service/v1/_search",
+          "_search",
+          [],
+          mdmsBody
+        );
+
+        mdmsPropertyTypes = get(mdmsPayload, "MdmsRes.PropertyTax.PropertyType", []);
+
+        if (Array.isArray(mdmsPropertyTypes) && mdmsPropertyTypes.length > 0) {
+          dispatch(
+            prepareFinalObject(
+              "searchScreenMdmsData.PropertyTax.PropertyType",
+              mdmsPropertyTypes
+            )
+          );
+        }
+      } catch (e) {
+        console.error("Error fetching MDMS PropertyType masters", e);
+      }
+    }
+
     // MDMS locality metadata for mapping code -> localisation key
     const mdmsLocalities = get(
       state,
@@ -266,6 +311,38 @@ export const searchApiCall = async (state, dispatch) => {
       const superbuiltuparea = item.superbuiltuparea || item.superbuiltuparea;
       const buildingName = item.buildingName || item.buildingname;
       const usageCategory = item.usageCategory || item.usagecategory;
+      const propertyTypeCode =
+        item.propertyType ||
+        item.propertytype ||
+        get(item, "propertyDetails[0].propertyType") ||
+        get(item, "property.propertyType") ||
+        get(item, "propertyTypeData") ||
+        "";
+
+      // Resolve Property Type using MDMS master first, then localisation / pretty-code fallback
+      let propertyType = "";
+      if (propertyTypeCode) {
+        const mdmsMatch =
+          Array.isArray(mdmsPropertyTypes) &&
+          mdmsPropertyTypes.find(pt => pt.code === propertyTypeCode);
+
+        if (mdmsMatch && mdmsMatch.name) {
+          propertyType = mdmsMatch.name;
+        } else {
+          const localized = getLocalTextFromCode(propertyTypeCode);
+          if (localized && localized !== propertyTypeCode) {
+            propertyType = localized;
+          } else {
+            const pretty = propertyTypeCode
+              .split(/[.]/)
+              .join(" ")
+              .replace(/_/g, " ")
+              .toLowerCase()
+              .replace(/\b\w/g, ch => ch.toUpperCase());
+            propertyType = pretty;
+          }
+        }
+      }
       const localityCode = item.localityCode || item.localitycode;
       const doorNo = item.doorNo || item.doorno;
       const street = item.street;
@@ -315,6 +392,7 @@ export const searchApiCall = async (state, dispatch) => {
         superbuiltuparea: superbuiltuparea,
         buildingName: buildingName,
         usageCategory: usageCategory,
+        propertyType: propertyType,
         locality: localityCode,
         address: fullAddress,
         tenantId: tenantId
@@ -328,6 +406,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["Owner Mobile"]: item.ownerMobile || "",
         ["Land Area"]: item.landArea || item.superbuiltuparea || "-",
         ["Building Name"]: item.buildingName || "-",
+        ["Property Type"]: item.propertyType || "-",
         ["Usage Category"]: item.usageCategory || "-",
         ["Locality"]: item.locality || "-",
         ["Address"]: item.address || "-",

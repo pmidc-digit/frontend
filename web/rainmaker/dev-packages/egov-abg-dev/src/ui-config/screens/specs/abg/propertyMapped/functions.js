@@ -13,7 +13,7 @@ import {
   getTextToLocalMapping
 } from "../../utils/index";
 import { getTenantId, getUserInfo, getLocalization } from "egov-ui-kit/utils/localStorageUtils";
-import isEmpty from "lodash/isEmpty"
+import isEmpty from "lodash/isEmpty";
 import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
@@ -60,6 +60,7 @@ export const updateAllReadings = async (state, dispatch) => {
       "screenConfiguration.screenConfig.ptmapped.components.div.children.searchResults.props.data",
       []
     );
+
     if (!tableData || tableData.length === 0) {
       dispatch(
         toggleSnackbar(
@@ -81,7 +82,12 @@ export const updateAllReadings = async (state, dispatch) => {
       const readingDate = row["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"];
       const tenantId = row["TENANT_ID"];
 
-      if (currentReadingRaw === undefined || currentReadingRaw === "" || !Number.isFinite(currentReading) || currentReading < lastReading) {
+      if (
+        currentReadingRaw === undefined ||
+        currentReadingRaw === "" ||
+        !Number.isFinite(currentReading) ||
+        currentReading < lastReading
+      ) {
         // skip invalid or empty
         continue;
       }
@@ -110,7 +116,8 @@ export const updateAllReadings = async (state, dispatch) => {
           ...updatedTable[u.rowIndex],
           ["Last Reading"]: String(u.currentReading),
           ["ABG_COMMON_TABLE_COL_CURRENT_READING"]: "",
-          ["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]: u.readingDate || updatedTable[u.rowIndex]["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]
+          ["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]:
+            u.readingDate || updatedTable[u.rowIndex]["ABG_COMMON_TABLE_COL_CURRENT_READING_DATE"]
         };
         dispatch(
           handleField("ptmapped", "components.div.children.searchResults", "props.data", updatedTable)
@@ -130,7 +137,13 @@ export const updateAllReadings = async (state, dispatch) => {
     );
   } catch (err) {
     console.error(err);
-    dispatch(toggleSnackbar(true, { labelName: err.message || "Error", labelKey: err.message || "ERROR" }, "error"));
+    dispatch(
+      toggleSnackbar(
+        true,
+        { labelName: err.message || "Error", labelKey: err.message || "ERROR" },
+        "error"
+      )
+    );
   }
 };
 export const showViewPopup = (state, dispatch, rowObject = {}) => {
@@ -152,21 +165,22 @@ export const searchApiCall = async (state, dispatch) => {
     {}
   );
 
-  // Check if at least one search field is filled
-  if (
-    Object.keys(searchScreenObject).length == 0 ||
-    Object.values(searchScreenObject).every(x => x === "")
-  ) {
+  // Require at least one of locality or propertyId (tenantId is always set)
+  const hasLocality = !!(searchScreenObject && searchScreenObject.locality);
+  const hasPropertyId = !!(searchScreenObject && searchScreenObject.propertyId);
+
+  if (!hasLocality && !hasPropertyId) {
     dispatch(
       toggleSnackbar(
         true,
         {
-          labelName: "Please fill at least one field to start search",
+          labelName: "Please enter Location/Mohalla or Property ID to start search",
           labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
         },
         "warning"
       )
     );
+    return;
   } else {
     for (var key in searchScreenObject) {
       if (
@@ -244,6 +258,50 @@ export const searchApiCall = async (state, dispatch) => {
       prepareFinalObject("searchScreenMdmsData.ptreveresponce", ptreveresponce)
     );
 
+    // Ensure MDMS PropertyType master is available for human-friendly names
+    let mdmsPropertyTypes = get(
+      state,
+      "screenConfiguration.preparedFinalObject.searchScreenMdmsData.PropertyTax.PropertyType",
+      []
+    );
+
+    if (!Array.isArray(mdmsPropertyTypes) || mdmsPropertyTypes.length === 0) {
+      try {
+        const mdmsBody = {
+          MdmsCriteria: {
+            tenantId: searchScreenObject.tenantId || tenantId,
+            moduleDetails: [
+              {
+                moduleName: "PropertyTax",
+                masterDetails: [{ name: "PropertyType" }]
+              }
+            ]
+          }
+        };
+
+        const mdmsPayload = await httpRequest(
+          "post",
+          "/egov-mdms-service/v1/_search",
+          "_search",
+          [],
+          mdmsBody
+        );
+
+        mdmsPropertyTypes = get(mdmsPayload, "MdmsRes.PropertyTax.PropertyType", []);
+
+        if (Array.isArray(mdmsPropertyTypes) && mdmsPropertyTypes.length > 0) {
+          dispatch(
+            prepareFinalObject(
+              "searchScreenMdmsData.PropertyTax.PropertyType",
+              mdmsPropertyTypes
+            )
+          );
+        }
+      } catch (e) {
+        console.error("Error fetching MDMS PropertyType masters", e);
+      }
+    }
+
     // MDMS locality metadata for mapping code -> localisation key
     const mdmsLocalities = get(
       state,
@@ -272,6 +330,35 @@ export const searchApiCall = async (state, dispatch) => {
       const city = item.city;
       const plotNo = item.plotNo || item.plotno;
       const rowdatacomplete = item;
+      const tehsilName = item.tehsil_name || item.tehsilName || "";
+      const villageName = item.village_name || item.villageName || "";
+      const districtName = item.district_name || item.districtName || "";
+      const propertyTypeCode = item.propertytype || item.propertyType || "";
+
+      // Resolve Property Type using MDMS master first, then localisation / pretty-code fallback
+      let propertyType = "";
+      if (propertyTypeCode) {
+        const mdmsMatch =
+          Array.isArray(mdmsPropertyTypes) &&
+          mdmsPropertyTypes.find(pt => pt.code === propertyTypeCode);
+
+        if (mdmsMatch && mdmsMatch.name) {
+          propertyType = mdmsMatch.name;
+        } else {
+          const localized = getLocalTextFromCode(propertyTypeCode);
+          if (localized && localized !== propertyTypeCode) {
+            propertyType = localized;
+          } else {
+            const pretty = propertyTypeCode
+              .split(/[.]/)
+              .join(" ")
+              .replace(/_/g, " ")
+              .toLowerCase()
+              .replace(/\b\w/g, ch => ch.toUpperCase());
+            propertyType = pretty;
+          }
+        }
+      }
       // Try multiple possible paths for address
       const addressObj = get(item, "address") ||
         get(item, "propertyAddress") ||
@@ -315,6 +402,10 @@ export const searchApiCall = async (state, dispatch) => {
         superbuiltuparea: superbuiltuparea,
         buildingName: buildingName,
         usageCategory: usageCategory,
+        tehsilName: tehsilName,
+        villageName: villageName,
+        districtName: districtName,
+        propertyType: propertyType,
         locality: localityCode,
         address: fullAddress,
         rowdatacomplete: rowdatacomplete,
@@ -329,6 +420,10 @@ export const searchApiCall = async (state, dispatch) => {
         ["Owner Mobile"]: item.ownerMobile || "",
         ["Land Area"]: item.landArea || item.superbuiltuparea || "-",
         ["Building Name"]: item.buildingName || "-",
+        ["Tehsil Name"]: item.tehsilName || "-",
+        ["Village Name"]: item.villageName || "-",
+        ["District Name"]: item.districtName || "-",
+        ["Property Type"]: item.propertyType || "-",
         ["Usage Category"]: item.usageCategory || "-",
         ["Locality"]: item.locality || "-",
         ["Address"]: item.address || "-",

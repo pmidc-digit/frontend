@@ -31,6 +31,11 @@ export const searchResults = {
 
       { labelName: "Owner Mobile", labelKey: "Owner Mobile" },
       { labelName: "Land Area", labelKey: "Land Area" },
+      { labelName: "District Name", labelKey: "District Name" },
+      { labelName: "Tehsil Name", labelKey: "Tehsil Name" },
+      { labelName: "Village Name", labelKey: "Village Name" },
+
+      { labelName: "Property Type", labelKey: "Property Type" },
 
       { labelName: "Usage Category", labelKey: "Usage Category" },
       {
@@ -67,11 +72,11 @@ export const searchResults = {
               const ownerName = row[1] || "";
               const ownerMobile = row[2] || "";
               const landArea = row[3] || "";
-
-              const usageCategory = row[4] || "";
-              const locality = row[5] || "";
-              const address = row[6] || "";
-              const rowdatacomplete = row[7] || {};
+              // Indices shifted due to added columns
+              const usageCategory = row[8] || "";
+              const locality = row[9] || "";
+              const address = row[10] || "";
+              const rowdatacomplete = row[11] || {};
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 

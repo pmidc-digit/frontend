@@ -91,7 +91,7 @@ const onContinue = () => {
 
 
 // React wrapper component
-const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, usageCategory, address, onClose, prepared, dispatch }) => {
+const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, propertyType, usageCategory, address, onClose, prepared, dispatch }) => {
 
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [revenueData, setRevenueData] = React.useState(null);
@@ -797,7 +797,9 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     subSegmentId: subUsageCategoryState,
                     propertyId: propertiesId,
                     districtId: districtState,
-
+                    tehsilId: tehsilState,
+                    villageId: villageState,
+                    propertyType: propertyType,
                     locality: locality,
                     usageCategoryId: usageCategoryState,
                     tenantId: tenantIdValue,
@@ -907,6 +909,14 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     }}>
                         <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Land Area/build Area</div>
                         <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{landArea ? `${landArea} sq.ft` : "N/A"}</div>
+                    </div>
+
+
+                    <div style={{
+                        padding: "0"
+                    }}>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Property Type</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{propertyType || "N/A"}</div>
                     </div>
 
 

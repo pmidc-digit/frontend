@@ -957,14 +957,26 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         padding: "0"
                     }}>
                         <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Tehsil Name</div>
-                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{tehsilState ? (tehsils.find(t => t.code === tehsilState) || {}).name : "N/A"}</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>
+                            {(
+                                (rowdatacomplete && (rowdatacomplete.tehsil_name || rowdatacomplete.tehsilName)) ||
+                                (tehsilState && (tehsils.find(t => t.code === tehsilState) || {}).name) ||
+                                "N/A"
+                            )}
+                        </div>
                     </div>
 
                     <div style={{
                         padding: "0"
                     }}>
                         <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Village Name</div>
-                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{villageState ? (villages.find(v => v.code === villageState) || {}).name : "N/A"}</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>
+                            {(
+                                (rowdatacomplete && (rowdatacomplete.village_name || rowdatacomplete.villageName)) ||
+                                (villageState && (villages.find(v => v.code === villageState) || {}).name) ||
+                                "N/A"
+                            )}
+                        </div>
                     </div>
                     <div style={{
                         padding: "0"
