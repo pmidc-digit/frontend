@@ -167,12 +167,17 @@ const getMutlipleBillsData = transformedDataArray => {
 };
 //generateMutlipleBills PDF
 export const generateMultipleBill = async (state, dispatch, type) => {
+  debugger
   dispatch(toggleSpinner());
   let allBills = get(
     state.screenConfiguration,
     "preparedFinalObject.searchScreenMdmsData.billSearchResponse",
     []
   );
+  let integratedBills = get(state.screenConfiguration,
+    "preparedFinalObject.searchScreenMdmsData.intergratedBills",
+    []
+  )
 
   const commonPayDetails = get(
     state.screenConfiguration,
@@ -194,21 +199,30 @@ export const generateMultipleBill = async (state, dispatch, type) => {
     "preparedFinalObject.searchCriteria.tenantId",
     ''
   );
-
+   let batchtype = get(
+      state.screenConfiguration,
+      "preparedFinalObject.generateBillScreen.batchtype",
+      ''
+    );
   let billkey = ''
   const index = commonPayDetails && commonPayDetails.findIndex((item) => {
     return item.code == businessService;
   });
-  if (index > -1) {
+  if(batchtype === "Integrated Bill"){
+    billkey = 'wsn-integrated'
+  }else{
+     if (index > -1) {
     billkey = get(commonPayDetails[index], 'billKey', '');
-  } else {
-    const details = commonPayDetails && commonPayDetails.filter(item => item.code === "DEFAULT");
-    billkey = get(details, 'billKey', '');
+    } else {
+      const details = commonPayDetails && commonPayDetails.filter(item => item.code === "DEFAULT");
+      billkey = get(details, 'billKey', '');
+    }
   }
+ 
   // allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount >0 && bill.connection.status=="Active");
-  allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount > 0);
+  //allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount > 0);
   if (
-    locality &&
+    batchtype == 'Locality' && locality &&
     !Array.isArray(locality) &&
     typeof locality === "string" &&
     locality.trim() !== ""

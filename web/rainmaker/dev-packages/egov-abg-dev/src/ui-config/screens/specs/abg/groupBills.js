@@ -7,7 +7,7 @@ import {
   abgSearchCard,
   mergeDownloadButton, resetFields
 } from "./groupBillResource/groupBillSearch";
-import { searchResults } from "./groupBillResource/searchResults";
+import { searchResults, searchResultsIntergrated } from "./groupBillResource/searchResults";
 import "./index.css";
 
 const tenantId = getTenantId();
@@ -153,6 +153,7 @@ const abgSearchAndResult = {
       breakAfterSearch: getBreak(),
       // progressStatus,
       searchResults,
+      searchResultsIntergrated,
       breakAfterSearchResults: getBreak(),
       mergeDownloadButton
     }
