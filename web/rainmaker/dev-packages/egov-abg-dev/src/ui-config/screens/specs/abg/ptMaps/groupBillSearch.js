@@ -102,6 +102,42 @@ export const resetFields = (state, dispatch) => {
 export const abgSearchCard = getCommonCard({
   searchContainer: getCommonContainer(
     {
+      // ulb: {
+      //   uiFramework: "custom-containers-local",
+      //   moduleName: "egov-abg",
+      //   componentPath: "AutosuggestContainer",
+      //   props: {
+      //     label: {
+      //       labelName: "ULB",
+      //       labelKey: "ABG_ULB_LABEL"
+      //     },
+      //     localePrefix: {
+      //       moduleName: "TENANT",
+      //       masterName: "TENANTS"
+      //     },
+      //     optionLabel: "name",
+      //     placeholder: {
+      //       labelName: "Select ULB",
+      //       labelKey: "ABG_ULB_PLACEHOLDER"
+      //     },
+
+      //     required: true,
+      //     value: tenantId,
+      //     disabled: true,
+      //     isClearable: true,
+      //     labelsFromLocalisation: true,
+      //     className: "autocomplete-dropdown",
+      //     jsonPath: "searchCriteria.tenantId",
+      //     sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
+      //   },
+      //   required: true,
+      //   jsonPath: "searchCriteria.tenantId",
+
+      //   gridDefination: {
+      //     xs: 12,
+      //     sm: 4
+      //   }
+      // },
       ulb: {
         uiFramework: "custom-containers-local",
         moduleName: "egov-abg",
@@ -111,10 +147,6 @@ export const abgSearchCard = getCommonCard({
             labelName: "ULB",
             labelKey: "ABG_ULB_LABEL"
           },
-          localePrefix: {
-            moduleName: "TENANT",
-            masterName: "TENANTS"
-          },
           optionLabel: "name",
           placeholder: {
             labelName: "Select ULB",
@@ -123,21 +155,18 @@ export const abgSearchCard = getCommonCard({
           required: true,
           value: tenantId,
           disabled: true,
-          isClearable: true,
+          isClearable: false,
           labelsFromLocalisation: true,
           className: "autocomplete-dropdown",
           jsonPath: "searchCriteria.tenantId",
           sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
         },
-        required: true,
         jsonPath: "searchCriteria.tenantId",
-        disabled: false,
         gridDefination: {
           xs: 12,
           sm: 4
         }
       },
-
       locMohalla: {
         uiFramework: "custom-containers-local",
         moduleName: "egov-abg",
@@ -232,7 +261,6 @@ export const abgSearchCard = getCommonCard({
         gridDefination: {
           xs: 12,
           sm: 3
-          // align: "center"
         },
         props: {
           variant: "contained",

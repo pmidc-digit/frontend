@@ -170,6 +170,40 @@ export const searchApiCall = async (state, dispatch) => {
   const hasPropertyId = !!(searchScreenObject && searchScreenObject.propertyId);
 
   if (!hasLocality && !hasPropertyId) {
+    // Highlight both Location/Mohalla and Property ID as error
+    dispatch(
+      handleField(
+        "ptreve",
+        "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.locMohalla",
+        "props.error",
+        true
+      )
+    );
+    dispatch(
+      handleField(
+        "ptreve",
+        "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.locMohalla",
+        "props.helperText",
+        "Please fill Location/Mohalla or Property ID"
+      )
+    );
+    dispatch(
+      handleField(
+        "ptreve",
+        "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.propertyId",
+        "props.error",
+        true
+      )
+    );
+    dispatch(
+      handleField(
+        "ptreve",
+        "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.propertyId",
+        "props.helperText",
+        "Please fill Location/Mohalla or Property ID"
+      )
+    );
+
     dispatch(
       toggleSnackbar(
         true,

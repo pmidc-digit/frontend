@@ -162,6 +162,19 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
                     setDistricts(propertydisits);
                     console.log('Districts extracted:', propertydisits);
+
+                    // If no persisted district, auto-select based on login/tenant (first available)
+                    const persistedDistrict = localStorage.getItem("ptmap_district") || "";
+                    if (!persistedDistrict) {
+                        const defaultDistrict = propertydisits[0];
+                        const defaultCode =
+                            defaultDistrict &&
+                            (defaultDistrict.code || defaultDistrict.districtId || defaultDistrict.id);
+                        if (defaultCode) {
+                            setDistrictState(String(defaultCode));
+                            localStorage.setItem("ptmap_district", String(defaultCode));
+                        }
+                    }
                 } else {
                     console.warn('No property rates found in response. Full response:', response);
                     setDistricts([]);
@@ -1041,16 +1054,17 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             value={districtState}
                             onChange={handleDistrictChange}
                             onClick={(e) => e.stopPropagation()}
+                            disabled
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
                                 border: "1px solid #ccc",
                                 borderRadius: "4px",
                                 fontSize: "14px",
-                                backgroundColor: "#fff",
-                                color: "#333",
+                                backgroundColor: "#f5f5f5",
+                                color: "#777",
                                 boxSizing: "border-box",
-                                cursor: "pointer"
+                                cursor: "not-allowed"
                             }}
                         >
                             <option value="">Select District</option>
