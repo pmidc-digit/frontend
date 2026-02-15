@@ -8,31 +8,10 @@ import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import { generateMultipleBill } from "../../utils/receiptPdf";
 import { searchApiCall, updatesingleReading } from "./functions";
 
-// const wsBillinData = [
-//   {
-//     code: "JAN 2018 - MAR 2018",
-//     label: "Jan 2018 - Mar 2018"
-//   },
-//   {
-//     code: "APRIL 2018 - JUL 2018",
-//     label: "April 2018 - Jul 2018"
-//   },
-//   {
-//     code: "AUG 2018 - NOV 2018",
-//     label: "Aug 2018 - Nov 2018"
-//   }
-// ]
-
+const tenantvalueid = [{ name: getTenantId(), code: getTenantId() }];
 const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
 export const resetFields = (state, dispatch) => {
-  // dispatch(
-  //   handleField(
-  //     "ptreve",
-  //     "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.billingPeriod",
-  //     "props.value",
-  //     ""
-  //   )
-  // );
+
   dispatch(
     handleField(
       "ptreve",
@@ -131,15 +110,16 @@ export const abgSearchCard = getCommonCard({
           required: true,
           value: tenantId,
           disabled: true,
-          isClearable: true,
+          isClearable: false,
           labelsFromLocalisation: true,
           className: "autocomplete-dropdown",
           jsonPath: "searchCriteria.tenantId",
-          sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
+          data: tenantvalueid,
+
         },
         required: true,
         jsonPath: "searchCriteria.tenantId",
-        disabled: false,
+        disabled: true,
         gridDefination: {
           xs: 12,
           sm: 4
