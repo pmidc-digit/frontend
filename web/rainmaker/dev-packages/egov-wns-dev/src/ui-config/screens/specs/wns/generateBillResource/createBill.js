@@ -20,15 +20,16 @@ let arr = [
     code: "Batch",
     value: "Batch",
   },
+  { code: "Group", value: "Group" },
   {
     code: "Locality",
     value: "Locality",
   }
 
 ];
-if (getTenantIdCommon() == "pb.patiala") {
-  arr.push({ code: "Group", value: "Group" });
-}
+// if (getTenantIdCommon() == "pb.patiala") {
+//   arr.push({ code: "Group", value: "Group" });
+// }
 // const createBills = (dispatch) => 
 //    {
 // Dispatch(
@@ -217,7 +218,7 @@ export const createBill = getCommonCard({
         }
         else {
           //locality
-          
+
           let response = await httpRequest(
             "post",
             "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",

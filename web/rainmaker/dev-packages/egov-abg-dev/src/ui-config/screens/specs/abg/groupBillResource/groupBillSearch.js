@@ -11,11 +11,11 @@ import { generateMultipleBill } from "../../utils/receiptPdf";
 import { searchApiCall } from "./functions";
 import { httpRequest } from "../../../../../ui-utils";
 import get from 'lodash/get';
-let arr =[
+let arr = [
   {
     code: "Batch",
     value: "Batch",
-  },
+  }, { code: "Group", value: "Group" },
   {
     code: "Locality",
     value: "Locality",
@@ -26,23 +26,9 @@ let arr =[
   }
 
 ];
-if(getTenantIdCommon() == "pb.patiala"){
-  arr.push({code: "Group",value: "Group"});
-}
-// const wsBillinData = [
-//   {
-//     code: "JAN 2018 - MAR 2018",
-//     label: "Jan 2018 - Mar 2018"
-//   },
-//   {
-//     code: "APRIL 2018 - JUL 2018",
-//     label: "April 2018 - Jul 2018"
-//   },
-//   {
-//     code: "AUG 2018 - NOV 2018",
-//     label: "Aug 2018 - Nov 2018"
-//   }
-// ]
+// if (getTenantIdCommon() == "pb.patiala" || getTenantIdCommon() == "pb.mohali" || getTenantIdCommon() == "pb.pathankot") {
+//   arr.push({ code: "Group", value: "Group" });
+// }
 
 const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
 export const resetFields = (state, dispatch) => {
@@ -146,7 +132,7 @@ export const abgSearchCard = getCommonCard({
           disabled: true,
           isClearable: true,
           labelsFromLocalisation: true,
-          className:"autocomplete-dropdown",
+          className: "autocomplete-dropdown",
           jsonPath: "searchCriteria.tenantId",
           sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
         },
@@ -172,13 +158,13 @@ export const abgSearchCard = getCommonCard({
             labelKey: "ABG_SERVICE_CATEGORY_PLACEHOLDER"
           },
           required: true,
-          localePrefix : {
-            moduleName : "BillingService",
-            masterName : "BusinessService"
+          localePrefix: {
+            moduleName: "BillingService",
+            masterName: "BusinessService"
           },
           labelsFromLocalisation: true,
           isClearable: true,
-          className:"autocomplete-dropdown",
+          className: "autocomplete-dropdown",
           jsonPath: "searchCriteria.businesService",
           sourceJsonPath: "searchScreenMdmsData.BillingService.BusinessService",
         },
@@ -234,132 +220,132 @@ export const abgSearchCard = getCommonCard({
           },
           labelsFromLocalisation: true,
           required: true,
-          isClearable:true,
+          isClearable: true,
           data: arr,
-  
+
           className: "autocomplete-dropdown",
           jsonPath: "generateBillScreen.batchtype",
-  
+
         },
         afterFieldChange: async (action, state, dispatch) => {
-       
-       
+
+
           let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.generateBillScreen.batchtype");
-          if(ConectionCategory=="Batch"){
-          try {
-            let payload = await httpRequest(
+          if (ConectionCategory == "Batch") {
+            try {
+              let payload = await httpRequest(
+                "post",
+                "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Block",
+                "_search",
+                [{ key: "tenantId", value: getTenantIdCommon() }],
+                {}
+              );
+              let batchar = [];
+              const batches =
+                payload &&
+                payload.TenantBoundary[0] &&
+                payload.TenantBoundary[0].boundary &&
+                payload.TenantBoundary[0].boundary.filter((item) => {
+                  batchar.push({ item });
+                  return batchar;
+                }, []);
+              dispatch(
+                prepareFinalObject(
+                  "applyScreenMdmsData.tenant.batchs",
+                  batches
+                )
+              );
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.groups", ""));
+
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          else if (ConectionCategory == "Group") {
+            let mdmsBody = {
+              MdmsCriteria: {
+                tenantId: getTenantIdCommon(),
+                moduleDetails: [
+                  {
+                    moduleName: "ws-services-masters",
+                    masterDetails: [{ name: "groups" }]
+                  }
+                ]
+              }
+            };
+            try {
+              let payload = await httpRequest(
+                "post",
+                "/egov-mdms-service/v1/_search",
+                "_search",
+                [],
+                mdmsBody
+
+              );
+              payload = payload.MdmsRes['ws-services-masters'];
+              let groupsar = [];
+              const batches =
+                payload &&
+                payload.groups.filter((item) => {
+                  groupsar.push({ item });
+                  return groupsar;
+                }, []);
+              dispatch(
+                prepareFinalObject(
+                  "applyScreenMdmsData.tenant.groups",
+                  batches
+                )
+              );
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs", ""));
+
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          else {
+            //locality
+
+            let response = await httpRequest(
               "post",
-              "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Block",
+              "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
               "_search",
               [{ key: "tenantId", value: getTenantIdCommon() }],
               {}
             );
-            let batchar = [];
-            const batches =
-              payload &&
-              payload.TenantBoundary[0] &&
-              payload.TenantBoundary[0].boundary &&
-              payload.TenantBoundary[0].boundary.filter((item) => {
-                batchar.push({ item });
-                return batchar;
+            let mohallaDataArray = [];
+            let localitysar = [];
+            let mohallaDataRow = null;
+            let name, code;
+            // response.TenantBoundary[0].boundary.map((element,index) => {
+            //  // name = element.name + "( "+element.code+" )";
+            //  // code=element.code;
+            //   mohallaDataRow={"code":element.code};
+            //  mohallaDataArray.push(mohallaDataRow);
+
+            // });
+            mohallaDataArray =
+              response &&
+              response.TenantBoundary[0].boundary.filter((item) => {
+                localitysar.push({ item });
+                return localitysar;
               }, []);
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", mohallaDataArray));
             dispatch(
               prepareFinalObject(
                 "applyScreenMdmsData.tenant.batchs",
-                batches
+                ""
               )
+
             );
-            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
-            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.groups",""));
-  
-          } catch (e) {
-            console.log(e);
-          }
-        }
-        else if(ConectionCategory=="Group"){
-          let mdmsBody = {
-            MdmsCriteria: {
-              tenantId: getTenantIdCommon(),
-              moduleDetails: [
-                {
-                  moduleName: "ws-services-masters",
-                  masterDetails: [{ name: "groups"}]
-                }
-              ]
-            }
-          };
-          try {
-            let payload = await httpRequest(
-              "post",
-              "/egov-mdms-service/v1/_search",
-              "_search",
-              [],
-              mdmsBody
-             
-            );
-            payload = payload.MdmsRes['ws-services-masters'];
-            let groupsar = [];
-            const batches =
-              payload &&
-              payload.groups.filter((item) => {
-                groupsar.push({ item });
-                return groupsar;
-              }, []);
             dispatch(
               prepareFinalObject(
                 "applyScreenMdmsData.tenant.groups",
-                batches
+                ""
               )
             );
-            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
-            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs",""));
-  
-          } catch (e) {
-            console.log(e);
           }
-        }
-        else{
-  //locality
-  
-  let response = await httpRequest(
-    "post",
-    "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
-    "_search",
-    [{ key: "tenantId", value: getTenantIdCommon() }],
-    {}
-  );
-  let mohallaDataArray = [];
-  let localitysar = [];
-  let mohallaDataRow=null;
-  let name,code;
-  // response.TenantBoundary[0].boundary.map((element,index) => {
-  //  // name = element.name + "( "+element.code+" )";
-  //  // code=element.code;
-  //   mohallaDataRow={"code":element.code};
-  //  mohallaDataArray.push(mohallaDataRow);
-  
-  // });
-  mohallaDataArray =
-  response &&
-  response.TenantBoundary[0].boundary.filter((item) => {
-    localitysar.push({ item });
-    return localitysar;
-  }, []);
-  dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", mohallaDataArray));
-  dispatch(
-    prepareFinalObject(
-      "applyScreenMdmsData.tenant.batchs",
-      ""
-    )
-    
-  );
-  dispatch(
-    prepareFinalObject(
-      "applyScreenMdmsData.tenant.groups",
-      ""
-    )  
-  );
-        }
         },
         required: true,
         labelsFromLocalisation: true,
@@ -412,7 +398,7 @@ export const abgSearchCard = getCommonCard({
           //sourceJsonPath: mohallaDataArray,
           labelsFromLocalisation: false,
           required: false,
-          isClearable:true,
+          isClearable: true,
         }
       },
       batch: {
@@ -431,7 +417,7 @@ export const abgSearchCard = getCommonCard({
           className: "autocomplete-dropdown",
           sourceJsonPath: "applyScreenMdmsData.tenant.batchs",
           jsonPath: "searchCriteria.locality",
-  
+
         },
         required: false,
         gridDefination: {
@@ -454,7 +440,7 @@ export const abgSearchCard = getCommonCard({
           className: "autocomplete-dropdown",
           sourceJsonPath: "applyScreenMdmsData.tenant.groups",
           jsonPath: "searchCriteria.group",
-  
+
         },
         required: false,
         gridDefination: {
