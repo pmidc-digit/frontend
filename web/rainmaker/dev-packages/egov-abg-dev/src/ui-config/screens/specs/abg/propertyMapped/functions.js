@@ -352,10 +352,12 @@ export const searchApiCall = async (state, dispatch) => {
 
       // Handle both camelCase and lowercase field names
       const propertyId = item.propertyId || item.propertyid;
-      const ownerName = item.owners && item.owners[0] ? item.owners[0].name : item.ownername;
-      const ownerMobile = item.owners && item.owners[0] ? item.owners[0].mobileNumber : item.ownermobile || "";
+      const ownerName = item.owners.map(owner => owner.name).join(", ") || item.ownername || "";
+      const ownerMobile = item.owners.map(owner => owner.mobileNumber).join(", ") || item.ownermobile || "";
+      "";
       const landArea = item.landArea || item.landarea;
       const superbuiltuparea = item.superBuiltUpArea || item.superbuiltuparea;
+      const noOfFloors = item.noOfFloors || item.nooffloors || "";
       const buildingName = item.buildingName || item.buildingname;
       const usageCategory = item.usageCategory || item.usagecategory;
       const localityCode = item.localityCode || item.localitycode;
@@ -434,6 +436,7 @@ export const searchApiCall = async (state, dispatch) => {
         ownerMobile: ownerMobile,
         landArea: landArea,
         superbuiltuparea: superbuiltuparea,
+        noOfFloors: noOfFloors,
         buildingName: buildingName,
         usageCategory: usageCategory,
         tehsilName: tehsilName,
@@ -459,6 +462,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["District Name"]: item.districtName || "-",
         ["Property Type"]: item.propertyType || "-",
         ["Usage Category"]: item.usageCategory || "-",
+        ["No of Floors"]: item.noOfFloors || "-",
         ["Locality"]: item.locality || "-",
         ["Address"]: item.address || "-",
         ["Row Data Complete"]: item.rowdatacomplete || {},

@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import get from "lodash/get";
 
-const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, locality,
+const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors, locality,
     usageCategory, district, tehsil, village, segment, address, rate, rateId, segmentName, onClose, onSubmit }) => {
     return (
         <div style={{
@@ -91,7 +91,10 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, locality,
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{usageCategory || "N/A"}</div>
                     </div>
 
-
+                    <div>
+                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>No of Floors</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{noOfFloors || "N/A"}</div>
+                    </div>
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Rate ID</div>

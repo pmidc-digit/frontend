@@ -35,6 +35,7 @@ export const searchResults = {
       { labelName: "Property Type", labelKey: "Property Type" },
 
       { labelName: "Usage Category", labelKey: "Usage Category" },
+      { labelName: "No of Floors", labelKey: "No of Floors" },
       {
         labelName: "Locality",
         labelKey: "Locality",
@@ -62,8 +63,9 @@ export const searchResults = {
               const landArea = row[3] || "";
               const propertyType = row[4] || "";
               const usageCategory = row[5] || "";
-              const locality = row[6] || "";
-              const address = row[7] || "";
+              const noOfFloors = row[6] || "";
+              const locality = row[7] || "";
+              const address = row[8] || "";
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
@@ -102,6 +104,7 @@ export const searchResults = {
                       landArea={landArea}
                       propertyType={propertyType}
                       usageCategory={usageCategory}
+                      noOfFloors={noOfFloors}
                       locality={locality}
                       address={address}
                       onClose={handleClose}

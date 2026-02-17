@@ -38,6 +38,7 @@ export const searchResults = {
       { labelName: "Property Type", labelKey: "Property Type" },
 
       { labelName: "Usage Category", labelKey: "Usage Category" },
+      { labelName: "No of Floors", labelKey: "No of Floors" },
       {
         labelName: "Locality",
         labelKey: "Locality",
@@ -74,9 +75,10 @@ export const searchResults = {
               const landArea = row[3] || "";
               // Indices shifted due to added columns
               const usageCategory = row[8] || "";
-              const locality = row[9] || "";
-              const address = row[10] || "";
-              const rowdatacomplete = row[11] || {};
+              const noOfFloors = row[9] || "";
+              const locality = row[10] || "";
+              const address = row[11] || "";
+              const rowdatacomplete = row[12] || {};
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
@@ -209,6 +211,7 @@ export const searchResults = {
                       ownerMobile={ownerMobile}
                       landArea={landArea}
                       usageCategory={usageCategory}
+                      noOfFloors={noOfFloors}
                       locality={locality}
                       address={address}
                       rowdatacomplete={rowdatacomplete}
