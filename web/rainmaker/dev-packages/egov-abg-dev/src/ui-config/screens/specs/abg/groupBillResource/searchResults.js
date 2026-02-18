@@ -171,3 +171,98 @@ export const searchResults = {
   }
 };
 
+export const searchResultsIntergrated = {
+  uiFramework: "custom-molecules",
+  componentPath: "Table",
+  visible: false,
+  props: {
+    columns: [
+      {
+        labelName: "Property ID",
+        labelKey: "ABG_COMMON_TABLE_COL_PROPERTYID",
+        options: {
+          filter: false,
+        }
+      },
+      {
+        labelName: "Water Consumer Code",
+        labelKey: "ABG_COMMON_TABLE_COL_WATER_CONSUMER_ID",
+      },
+      {
+        labelName: "Water Bill No",
+        labelKey: "ABG_COMMON_TABLE_COL_WATER_BILLNO"
+      },
+      {
+        labelName: "Sewerage Consumer Code",
+        labelKey: "ABG_COMMON_TABLE_COL_SEWERAGE_CONSUMER_ID"
+      },
+      {
+        labelName: "Sewerage Bill No",
+        labelKey: "ABG_COMMON_TABLE_COL_SEWERAGE_BILLNO"
+      },
+      {
+        labelName: "Total Amount",
+        labelKey: "ABG_COMMON_TABLE_COL_TOTAL_AMOUNT"
+      }, 
+      {
+        labelName: "Bill Key",
+        labelKey: "BILL_KEY",
+        options: {
+          display: false
+        }
+      },
+      {
+        labelName: "Bill Date",
+        labelKey: "BILL_DATE",
+        options: {
+          display: false
+        }
+      },
+      {
+        labelName: "Tenant Id",
+        labelKey: "TENANT_ID",
+        options: {
+          display: false
+        }
+      },
+      {
+        labelName: "Bill Search Url",
+        labelKey: "BILL_SEARCH_URL",
+        options: {
+          display: false
+        }
+      },
+     
+    ],
+    title: {
+      labelName: "Search Results for Bill",
+      labelKey: "BILL_GENIE_SEARCH_TABLE_HEADER"
+    },
+    rows : "",
+    options: {
+      filter: false,
+      download: false,
+      responsive: "stacked",
+      selectableRows: false,
+      hover: true,
+      rowsPerPageOptions: [10, 15, 20]
+    },
+    customSortColumn: {
+      column: "Bill Date",
+      sortingFn: (data, i, sortDateOrder) => {
+        const epochDates = data.reduce((acc, curr) => {
+          acc.push([...curr, getEpochForDate(curr[4], "dayend")]);
+          return acc;
+        }, []);
+        const order = sortDateOrder === "asc" ? true : false;
+        const finalData = sortByEpoch(epochDates, !order).map(item => {
+          item.pop();
+          return item;
+        });
+        return { data: finalData, currentOrder: !order ? "asc" : "desc" };
+      }
+    }
+  }
+};
+
+

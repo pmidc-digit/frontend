@@ -133,7 +133,7 @@ export const downloadMultipleBill = async (
       { key: "tenantId", value: commonConfig.tenantId },
     ];
     var addDetail = null;
-
+debugger
     addDetail = {
       penaltyRate: rate,
       latePaymentc: ''
@@ -144,10 +144,10 @@ export const downloadMultipleBill = async (
     else if (businesService == "WS") {
       addDetail.latePaymentc = (bills[0].tenantId == "pb.patiala" || bills[0].tenantId == "pb.nabha") ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
     }
-    bills = bills.filter((item) => item.totalAmount > 0);
-    bills.map((item) => {
-      item.additionalDetails = addDetail;
-    });
+    // bills = bills.filter((item) => item.totalAmount > 0);
+    // bills.map((item) => {
+    //   item.additionalDetails = addDetail;
+    // });
 
     var actualBills = [], size = 20;
     for (let i = 0; bills.length > 0; i++) {
@@ -628,3 +628,31 @@ export const setServiceCategory = (businessServiceData, dispatch) => {
 export const checkValueForNA = (value) => {
   return value == null || value == undefined || value == "" ? "NA" : value;
 };
+
+export const batchMergeAndDownload = async (billkey, locality, businesService, tenantId, isConsolidated = false)=>{
+
+      const DOWNLOADRECEIPT = {
+      GET: {
+        URL: "egov-pdf/download/WNS/wnsgroupbill",
+        ACTION: "",
+      },
+    };
+    
+    const queryStr = [
+      { key: "key", value: billkey },
+      { key: "tenantId", value: tenantId },
+      {key : "locality", value : locality},
+      {key : "isConsolidated", value : isConsolidated},
+      {key : "bussinessService", value : businesService}
+    ];
+
+     const egovPdfResponse = await httpRequest(
+    "post",
+    DOWNLOADRECEIPT.GET.URL,
+    DOWNLOADRECEIPT.GET.ACTION,
+    queryStr,
+   
+  );
+
+  return egovPdfResponse
+}

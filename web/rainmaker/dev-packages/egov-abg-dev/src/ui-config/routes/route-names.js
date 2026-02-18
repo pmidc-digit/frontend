@@ -4,3 +4,4 @@ export const SCREEN_INTERFACE =
 export const PLAYGROUND = "/ui-framework/playground";
 export const REDIRECT = "/egov-ui-framework/abg/billSearch";
 export const PROPERTYREDIRECT = "/egov-ui-framework/abg/billSearchproperty";
+export const BILLDOWNLOAD = "/egov-ui-framework/abg/groupBillDownloads"
