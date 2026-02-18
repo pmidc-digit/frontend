@@ -40,6 +40,10 @@ const mainRoutes = [
   {
     isRedirect:true,
     to:mainRouteConstants.PROPERTYREDIRECT
+  },
+  {
+    isRedirect:true,
+    to:mainRouteConstants.BILLDOWNLOAD
   }
 ];
 
