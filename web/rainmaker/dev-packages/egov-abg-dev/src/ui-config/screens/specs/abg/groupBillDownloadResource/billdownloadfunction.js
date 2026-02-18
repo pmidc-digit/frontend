@@ -5,7 +5,7 @@ import { httpRequest } from "../../../../../ui-utils";
 import { validateFields } from "../../utils";
 import { convertEpochToDate } from "../../utils/index";
 import { result } from "lodash";
-
+import { getLocaleLabels } from "egov-ui-framework/ui-utils/commons.js";
 
 
 export var searchApiCall = function (state, dispatch, limit, offset) {
@@ -35,9 +35,9 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
     );
     return;
   }
-
+ 
   var params = [{ key: "tenantId", value: tenantId }];
-
+  
   return httpRequest(
     "post",
     "/pdf-service/v1/_getBulkPdfRecordsDetails",
@@ -76,7 +76,7 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
                ["ABG_FILESTORE_ID"]: item.filestoreid || "-",
               ["ABG_TOTAL_RECORDS"]: item.totalrecords || "-",
               ["ABG_RECORDS_COMPLETED"]:item.recordscompleted || "-",
-              ["ABG_LOCALITY_NAME"]: item.locality|| "-",
+              ["ABG_LOCALITY_NAME"]: generateLocalityKey(state, item.locality)|| "-",
               ["ABG_BUSINESS_SERVICE"]: item.bussinessService|| "-",
             }));
       
@@ -136,7 +136,16 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
       );
     });
 };
-
+const  generateLocalityKey=(state,localityCode) =>{
+  debugger
+  const localitiesData = get(
+    state,
+    "screenConfiguration.preparedFinalObject.localitiesData",
+    {}
+  );
+  let localityName = localitiesData.find((item=> item.code === localityCode));
+  return localityName.name;
+}
 const showHideTable = (booleanHideOrShow, dispatch) => {
   dispatch(
     handleField(

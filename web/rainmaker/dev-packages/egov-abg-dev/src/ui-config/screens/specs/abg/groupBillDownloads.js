@@ -13,7 +13,22 @@ const header = getCommonHeader({
   labelName: "Bill Download",
   labelKey: "ABG_BILL_DOWNLOAD"
 });
+const getLocalityData = async(action, state, dispatch)=>{
+   const tenantId = getTenantId();
+   try{
+       let payload = await httpRequest(
+                    "post",
+                    "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+                    "_search",
+                    [{ key: "tenantId", value: tenantId }],
+                    {}
+                  );
 
+      dispatch(prepareFinalObject("localitiesData",payload.TenantBoundary[0].boundary));
+   }catch (e){
+    console.log(console.log(e));
+   }
+}
 const getMDMSData = async (action, state, dispatch) => {
   const tenantId = getTenantId();
   let mdmsBody = {
@@ -68,6 +83,7 @@ const getMDMSData = async (action, state, dispatch) => {
 
 const getData = async (action, state, dispatch) => {
   await getMDMSData(action, state, dispatch);
+  await getLocalityData(action,state,dispatch);
 };
 
 const billSearchAndResult = {
