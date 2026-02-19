@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import get from "lodash/get";
 
 const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors, locality,
-    usageCategory, district, tehsil, village, segment, address, rate, rateId, segmentName, onClose, onSubmit }) => {
+    usageCategory, subSegmentValue, district, tehsil, village, segment, address, rate, unit, rateId, segmentName, onClose, onSubmit }) => {
     return (
         <div style={{
             padding: "28px",
@@ -79,6 +79,11 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                     </div>
 
                     <div>
+                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Sub Segment Value</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{subSegmentValue || "N/A"}</div>
+                    </div>
+
+                    <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Land Area</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>
                             {landArea ? `${landArea} sq.ft` : "N/A"}
@@ -104,8 +109,13 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Collect Rate</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>
-                            {rate ? `₹${rate.toLocaleString()}` : "N/A"}
+                            {rate ? `₹${rate.toLocaleString()}${unit ? ` / ${unit}` : ''}` : "N/A"}
                         </div>
+                    </div>
+
+                    <div>
+                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Unit</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{unit || "N/A"}</div>
                     </div>
 
                     <div style={{ gridColumn: "1 / -1" }}>

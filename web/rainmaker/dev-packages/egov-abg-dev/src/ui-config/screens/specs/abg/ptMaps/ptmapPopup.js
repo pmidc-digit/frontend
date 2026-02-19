@@ -118,6 +118,56 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const [mappedRateId, setMappedRateId] = React.useState(null);
     const [mappedSegmentName, setMappedSegmentName] = React.useState(null);
 
+    // Define usage categories as a constant
+    const usageCategoryOptions = [
+        {
+            "code": "109",
+            "name": "Agriculture",
+            "isUrban": false
+        },
+        {
+            "code": "111",
+            "name": "Commercial",
+            "isUrban": false
+        },
+        {
+            "code": "112",
+            "name": "Industrial",
+            "isUrban": false
+        },
+
+        {
+            "code": "114",
+            "name": "Open Land",
+            "isUrban": false
+        },
+        {
+            "code": "113",
+            "name": "Other",
+            "isUrban": false
+        },
+        {
+            "code": "110",
+            "name": "Residential",
+            "isUrban": false
+        }
+    ];
+
+    // Auto-select usage category based on property's existing usage category
+    React.useEffect(() => {
+        if (usageCategory) {
+            // Match the usage category name (case-insensitive)
+            const matchingCategory = usageCategoryOptions.find(
+                cat => cat.name.toUpperCase() === usageCategory.toUpperCase()
+            );
+            if (matchingCategory && matchingCategory.code) {
+                console.log('Auto-selecting usage category:', matchingCategory);
+                setUsageCategoryState(matchingCategory.code);
+                localStorage.setItem("ptmap_usageCategory", matchingCategory.code);
+            }
+        }
+    }, [usageCategory]);
+
     // Fetch revenue data when popup opens (component mounts)
     React.useEffect(() => {
         const fetchRevenueData = async () => {
@@ -576,9 +626,9 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         e.stopPropagation();
         const selectedSegment = e.target.value;
         setSegmentState(selectedSegment);
-        setUsageCategoryState("");
+
         setSubUsageCategoryState("");
-        setUsageCategories([]);
+
         setSubSegments([]);
 
         if (!selectedSegment) {
@@ -654,13 +704,12 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     };
 
     const handleSubUsageCategoryChange = async (e) => {
-        e.stopPropagation();
+
         const selectedSubSegment = e.target.value;
         setSubUsageCategoryState(selectedSubSegment);
 
         // Reset usage category when sub segment changes
-        setUsageCategoryState("");
-        setUsageCategories([]);
+
 
         if (!selectedSubSegment) {
             return;
@@ -689,33 +738,11 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
             console.log("Usage categories fetched for sub-segment:", response);
 
-            const usageData = (response && (
-                response.usageCategories ||
-                response.usageCategoryList ||
-                response.usageCategory ||
-                response.categories ||
-                response.data
-            )) || [];
-
-            let usageOptions = [];
-            if (Array.isArray(usageData) && usageData.length > 0) {
-                usageOptions = usageData.map((u, idx) => ({
-                    code: String(u.code || u.categoryId || u.id || u.value || idx + 1),
-                    name: u.name || u.label || u.display || (u.code || u.categoryId || `Option ${idx + 1}`)
-                }));
-            }
-
-            if (usageOptions.length) {
-                setUsageCategories(usageOptions);
-            } else {
-                setUsageCategories([]);
-            }
-
             setIsSubmitting(false);
+
         } catch (error) {
             console.error("Error fetching usage categories for sub-segment:", error);
             setIsSubmitting(false);
-            setUsageCategories([]);
         }
     };
 
@@ -847,11 +874,11 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 if (response.rates[0].segmentName) {
                     setMappedSegmentName(response.rates[0].segmentName);
                 }
-                if (response.rates[0].unit) {
-                    setMappedSegmentName(response.rates[0].unit);
+                if (response.rates[0].unit && response.rates[0].unit.name) {
+                    setMappedSegmentName(response.rates[0].unit.name);
                 }
-                if (response.rates[0].unit) {
-                    setMappedunit(response.rates[0].unit);
+                if (response.rates[0].unit && response.rates[0].unit.code) {
+                    setMappedunit(response.rates[0].unit.code);
                 }
                 setDialogOpen(true);
             } else {
@@ -1131,7 +1158,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         <select
                             value={subUsageCategoryState}
                             onChange={handleSubUsageCategoryChange}
-                            onClick={(e) => e.stopPropagation()}
+
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
@@ -1182,11 +1209,13 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             }}
                         >
                             <option value="">Select Usage Category</option>
-                            {usageCategories && usageCategories.length > 0 ? (
-                                usageCategories.map((uc, idx) => (
-                                    <option key={idx} value={uc.code}>{uc.name}</option>
-                                ))
-                            ) : ''}
+                            {usageCategoryOptions.map((category, idx) => (
+                                <option key={idx} value={category.code}>
+                                    {category.name}
+                                </option>
+                            ))}
+
+
                         </select>
                     </div>
 
@@ -1262,7 +1291,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     tehsil={(tehsils.find(t => t.code === tehsilState) || {}).name || tehsilState}
                     village={(villages.find(v => v.code === villageState) || {}).name || villageState}
                     segment={(segments.find(s => s.code === segmentState) || {}).name || segmentState}
-
+                    subSegmentValue={(subSegments.find(ss => ss.code === subUsageCategoryState) || {}).name || subUsageCategoryState}
                     rate={mappedRate}
                     unit={mappedunit}
                     rateId={mappedRateId}
