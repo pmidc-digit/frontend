@@ -875,10 +875,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     setMappedSegmentName(response.rates[0].segmentName);
                 }
                 if (response.rates[0].unit && response.rates[0].unit.name) {
-                    setMappedSegmentName(response.rates[0].unit.name);
-                }
-                if (response.rates[0].unit && response.rates[0].unit.code) {
-                    setMappedunit(response.rates[0].unit.code);
+                    setMappedunit(response.rates[0].unit.name);
                 }
                 setDialogOpen(true);
             } else {
@@ -1285,7 +1282,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     landArea={landArea}
                     noOfFloors={noOfFloors}
                     locality={locality}
-                    usageCategory={(usageCategories.find(u => u.code === usageCategoryState) || {}).name || usageCategoryState}
+                    usageCategory={(usageCategoryOptions.find(u => u.code === usageCategoryState) || {}).name || usageCategoryState}
                     address={address}
                     district={(districts.find(d => d.code === districtState) || {}).name || districtState}
                     tehsil={(tehsils.find(t => t.code === tehsilState) || {}).name || tehsilState}

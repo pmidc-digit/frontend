@@ -1352,7 +1352,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     landArea={landArea}
                     noOfFloors={noOfFloors}
                     locality={locality}
-                    usageCategory={usageCategory}
+                    usageCategory={(usageCategoryOptions.find(u => u.code === usageCategoryState || u.name.toUpperCase() === (usageCategory || '').toUpperCase()) || {}).name || usageCategory}
                     address={address}
                     district={(districts.find(d => d.code === districtState) || {}).name || districtState}
                     tehsil={(tehsils.find(t => t.code === tehsilState) || {}).name || tehsilState}
