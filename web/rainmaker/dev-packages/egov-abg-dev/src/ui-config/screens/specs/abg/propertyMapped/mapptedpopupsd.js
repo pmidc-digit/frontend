@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import get from "lodash/get";
 
 const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors, locality,
-    usageCategory, subSegmentValue, district, tehsil, village, segment, address, rate, unit, rateId, segmentName, onClose, onSubmit }) => {
+    usageCategory, subSegmentValue, district, tehsil, village, segment, address, rate, unit, rateId, segmentName, onClose, rowdatacomplete, onSubmit }) => {
+    debugger;
     return (
         <div style={{
             padding: "28px",
@@ -60,22 +61,22 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>District</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{district || "N/A"}</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.district_name || "N/A"}</div>
                     </div>
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Tehsil</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{tehsil || "N/A"}</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.tehsil_name || "N/A"}</div>
                     </div>
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Village</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{village || "N/A"}</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.village_name || "N/A"}</div>
                     </div>
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Segment</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{segment || "N/A"}</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.segment_name || "N/A"}</div>
                     </div>
 
                     <div>
@@ -101,31 +102,27 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{noOfFloors || "N/A"}</div>
                     </div>
 
-                    <div>
-                        <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Rate ID</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rateId || "N/A"}</div>
-                    </div>
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Collect Rate</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>
-                            {rate ? `₹${rate.toLocaleString()}${unit ? ` / ${unit}` : ''}` : "N/A"}
+                            {rowdatacomplete.rate ? `₹${rowdatacomplete.rate.toLocaleString()}${rowdatacomplete.unit ? ` / ${rowdatacomplete.unit}` : ''}` : "N/A"}
                         </div>
                     </div>
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Unit</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{unit || "N/A"}</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.unit || "N/A"}</div>
                     </div>
 
                     <div style={{ gridColumn: "1 / -1" }}>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Segment Name</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{segmentName || "N/A"}</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.segment_name || "N/A"}</div>
                     </div>
 
                     <div style={{ gridColumn: "1 / -1" }}>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Address</div>
-                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{address || "N/A"}</div>
+                        <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.address || "N/A"}</div>
                     </div>
                 </div>
             </div>
@@ -152,24 +149,7 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                 >
                     Close
                 </button>
-                <button
-                    type="button"
-                    onClick={() => {
-                        if (onSubmit) onSubmit();
-                    }}
-                    style={{
-                        backgroundColor: "#FF5722",
-                        color: "#fff",
-                        border: "none",
-                        padding: "10px 20px",
-                        borderRadius: "6px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        minWidth: "100px"
-                    }}
-                >
-                    Submit
-                </button>
+
             </div>
         </div>
     );
