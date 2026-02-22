@@ -128,6 +128,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         const raw = String(rawUsageCategory || "").trim().toUpperCase();
         // exact-only match
         if (raw === "RESIDENTIAL" || raw === "110") return "110";
+        if (raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "111") return "111";
+        if (raw === "NONRESIDENTIAL.INDUSTRIAL" || raw === "112") return "112";
         return "";
     };
 
@@ -145,8 +147,10 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     React.useEffect(() => {
         const raw = String(usageCategory || "").trim().toUpperCase();
 
-        // only exact RESIDENTIAL (or code 110) should auto-select
+        // exact match for RESIDENTIAL, COMMERCIAL, INDUSTRIAL, or OTHERS
         const isResidentialExact = raw === "RESIDENTIAL" || raw === "110";
+        const isCommercialExact = raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "NONRESIDENTIAL" || raw === "111";
+        const isIndustrialExact = raw === "NONRESIDENTIAL.INDUSTRIAL" || raw === "112";
 
         if (isResidentialExact) {
             const residential = USAGE_CATEGORY_OPTIONS.find(
@@ -154,6 +158,18 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             );
 
             setUsageCategoryState((residential && residential.code) || "110");
+        } else if (isCommercialExact) {
+            const commercial = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "COMMERCIAL"
+            );
+
+            setUsageCategoryState((commercial && commercial.code) || "111");
+        } else if (isIndustrialExact) {
+            const industrial = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "INDUSTRIAL"
+            );
+
+            setUsageCategoryState((industrial && industrial.code) || "112");
         } else {
             // anything else => show placeholder "Select Usage Category"
             setUsageCategoryState("");
@@ -770,9 +786,9 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         "subSegmentId": subUsageCategoryState,
                         "categoryId": usageCategoryState,
                         "locality": locality || "",
-                        "rate": mappedRate || 0,
+                        "rate": mappedRate || -1,
                         "unit": mappedunit || "",
-                        "rateId": mappedRateId || 0,
+                        "rateId": mappedRateId || -1,
                         "isActive": true,
                         "isProrataCal": false
                     }
@@ -1194,16 +1210,17 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             value={usageCategoryState}
                             onChange={handleUsageCategoryChange}
                             onClick={(e) => e.stopPropagation()}
+                            disabled={String(usageCategory || "").trim().toUpperCase() !== "MIXED"}
                             style={{
                                 width: "100%",
                                 padding: "10px 12px",
                                 border: "1px solid #ccc",
                                 borderRadius: "4px",
                                 fontSize: "14px",
-                                backgroundColor: "#fff",
-                                color: "#333",
+                                backgroundColor: String(usageCategory || "").trim().toUpperCase() === "MIXED" ? "#fff" : "#f5f5f5",
+                                color: String(usageCategory || "").trim().toUpperCase() === "MIXED" ? "#333" : "#777",
                                 boxSizing: "border-box",
-                                cursor: "pointer"
+                                cursor: String(usageCategory || "").trim().toUpperCase() === "MIXED" ? "pointer" : "not-allowed"
                             }}
                         >
                             <option value="">Select Usage Category</option>
