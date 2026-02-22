@@ -56,8 +56,8 @@ const ptmapedPopup = Loadable({
   loader: () => import("../ui-config/screens/specs/abg/propertyMapped/ptmapedPopup"),
   loading: () => <Loading />
 });
-const mapptedpopup = Loadable({
-  loader: () => import("../ui-config/screens/specs/abg/propertyMapped/mapptedpopup"),
+const mapptedpopupsd = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/propertyMapped/mapptedpopupsd"),
   loading: () => <Loading />
 });
 export {
@@ -72,5 +72,5 @@ export {
   ptmapPopup,
   mapptpopup,
   ptmapedPopup,
-  mapptedpopup,
+  mapptedpopupsd,
 };
