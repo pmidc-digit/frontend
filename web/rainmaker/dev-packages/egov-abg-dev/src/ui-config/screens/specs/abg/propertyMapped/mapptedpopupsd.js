@@ -79,10 +79,10 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.segment_name || "N/A"}</div>
                     </div>
 
-                    <div>
+                    {/* <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Sub Segment Value</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{subSegmentValue || "N/A"}</div>
-                    </div>
+                    </div> */}
 
                     <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Land Area</div>
@@ -110,20 +110,20 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                         </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Unit</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.unit || "N/A"}</div>
-                    </div>
+                    </div> */}
 
-                    <div style={{ gridColumn: "1 / -1" }}>
+                    {/* <div style={{ gridColumn: "1 / -1" }}>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Segment Name</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.segment_name || "N/A"}</div>
-                    </div>
+                    </div> */}
 
-                    <div style={{ gridColumn: "1 / -1" }}>
+                    {/* <div style={{ gridColumn: "1 / -1" }}>
                         <div style={{ fontSize: "12px", color: "#757575", fontWeight: 600 }}>Address</div>
                         <div style={{ fontSize: "15px", color: "#222", fontWeight: 600 }}>{rowdatacomplete.address || "N/A"}</div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
