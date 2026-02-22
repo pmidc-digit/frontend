@@ -10,7 +10,18 @@ import React from "react";
 import { connect } from "react-redux";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { Dialog } from "components";
-import MapPTPopup from "./mapptedpopup";
+import MapPTPopup from "./mapptedpopupsd";
+
+// Define usage category options as constant outside the component to prevent recreation on every render
+const USAGE_CATEGORY_OPTIONS = [
+    { code: "109", name: "Agriculture", isUrban: false },
+    { code: "111", name: "Commercial", isUrban: false },
+    { code: "112", name: "Industrial", isUrban: false },
+    { code: "114", name: "Open Land", isUrban: false },
+    { code: "113", name: "Other", isUrban: false },
+    { code: "110", name: "Residential", isUrban: false }
+];
+
 // safe store getter to avoid "Cannot read properties of undefined (reading 'getState'"
 const getSafeStore = () => {
     if (typeof store !== "undefined" && store) return store;
@@ -93,17 +104,6 @@ const onContinue = () => {
 // React wrapper component
 const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, usageCategory, noOfFloors, address, onClose, prepared, rowdatacomplete, dispatch }) => {
 
-    // Define usage category options as constant
-    const usageCategoryOptions = [
-        { code: "AGRICULTURE", name: "Agriculture" },
-        { code: "COMMERCIAL", name: "Commercial" },
-        { code: "INDUSTRIAL", name: "Industrial" },
-        { code: "MIXED", name: "Mixed" },
-        { code: "OPENLAND", name: "Open Land" },
-        { code: "OTHER", name: "Other" },
-        { code: "RESIDENTIAL", name: "Residential" }
-    ];
-
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [revenueData, setRevenueData] = React.useState(null);
     const [districts, setDistricts] = React.useState([]);
@@ -118,21 +118,36 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const [tehsilState, setTehsilState] = React.useState(() => localStorage.getItem("ptmap_tehsil") || "");
     const [villageState, setVillageState] = React.useState(() => localStorage.getItem("ptmap_village") || "");
     const [segmentState, setSegmentState] = React.useState(() => localStorage.getItem("ptmap_segment") || "");
-    const [usageCategoryState, setUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_usageCategory") || "");
-    const [subUsageCategoryState, setSubUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_subUsageCategory") || "");
-    const [usageCategories, setUsageCategories] = React.useState([]);
+    const [usageCategoryState, setUsageCategoryState] = React.useState("");
+    const [subUsageCategoryState, setSubUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_subSegment") || "");
+    const [subUsageCategoryValue, setSubUsageCategoryValue] = React.useState("");
     const [subUsageCategories, setSubUsageCategories] = React.useState([]);
-    const [subUsageCategoryValue, setSubUsageCategoryValue] = React.useState(() => localStorage.getItem("ptmap_subUsageCategoryValue") || "");
-
+    const [usageCategories, setUsageCategories] = React.useState([]);
     const [mappedRate, setMappedRate] = React.useState(null);
-    const [mappedunit, setMappedunit] = React.useState(null);
+    const [mappedunit, setMappedunit] = React.useState("");
     const [mappedRateId, setMappedRateId] = React.useState(null);
     const [mappedSegmentName, setMappedSegmentName] = React.useState(null);
 
-    // Auto-select usage category based on property's existing value
     React.useEffect(() => {
-        if (usageCategory && usageCategoryOptions) {
-            const matchingCategory = usageCategoryOptions.find(
+        const raw = String(usageCategory || "").trim().toUpperCase();
+        const isResidentialExact = raw === "RESIDENTIAL" || raw === "110";
+
+        if (isResidentialExact) {
+            const residential = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "RESIDENTIAL"
+            );
+
+            setUsageCategoryState((residential && residential.code) || "110");
+        } else {
+            setUsageCategoryState("");
+        }
+
+        localStorage.removeItem("ptmap_usageCategory");
+    }, [usageCategory]);
+
+    React.useEffect(() => {
+        if (usageCategory) {
+            const matchingCategory = USAGE_CATEGORY_OPTIONS.find(
                 cat => cat.name.toUpperCase() === usageCategory.toUpperCase()
             );
             if (matchingCategory) {
@@ -1279,7 +1294,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             }}
                         >
                             <option value="">Select Usage Category</option>
-                            {usageCategoryOptions.map((uc, idx) => (
+                            {USAGE_CATEGORY_OPTIONS.map((uc, idx) => (
                                 <option key={idx} value={uc.code}>{uc.name}</option>
                             ))}
                         </select>
@@ -1352,7 +1367,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     landArea={landArea}
                     noOfFloors={noOfFloors}
                     locality={locality}
-                    usageCategory={(usageCategoryOptions.find(u => u.code === usageCategoryState || u.name.toUpperCase() === (usageCategory || '').toUpperCase()) || {}).name || usageCategory}
+                    usageCategory={(USAGE_CATEGORY_OPTIONS.find(u => u.code === usageCategoryState || u.name.toUpperCase() === (usageCategory || '').toUpperCase()) || {}).name || usageCategory}
                     address={address}
                     district={(districts.find(d => d.code === districtState) || {}).name || districtState}
                     tehsil={(tehsils.find(t => t.code === tehsilState) || {}).name || tehsilState}
