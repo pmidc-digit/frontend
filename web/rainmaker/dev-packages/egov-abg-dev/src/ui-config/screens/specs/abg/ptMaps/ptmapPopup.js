@@ -11,6 +11,17 @@ import { connect } from "react-redux";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { Dialog } from "components";
 import MapPTPopup from "./mapptpopup";
+
+// Define usage categories as a constant outside the component to prevent recreation on every render
+const USAGE_CATEGORY_OPTIONS = [
+    { code: "109", name: "Agriculture", isUrban: false },
+    { code: "111", name: "Commercial", isUrban: false },
+    { code: "112", name: "Industrial", isUrban: false },
+    { code: "114", name: "Open Land", isUrban: false },
+    { code: "113", name: "Other", isUrban: false },
+    { code: "110", name: "Residential", isUrban: false }
+];
+
 // safe store getter to avoid "Cannot read properties of undefined (reading 'getState'"
 const getSafeStore = () => {
     if (typeof store !== "undefined" && store) return store;
@@ -107,65 +118,49 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const [tehsilState, setTehsilState] = React.useState(() => localStorage.getItem("ptmap_tehsil") || "");
     const [villageState, setVillageState] = React.useState(() => localStorage.getItem("ptmap_village") || "");
     const [segmentState, setSegmentState] = React.useState(() => localStorage.getItem("ptmap_segment") || "");
-    const [usageCategoryState, setUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_usageCategory") || "");
-    const [subUsageCategoryState, setSubUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_subUsageCategory") || "");
-    const [usageCategories, setUsageCategories] = React.useState([]);
+    const [usageCategoryState, setUsageCategoryState] = React.useState("");
+    const [subUsageCategoryState, setSubUsageCategoryState] = React.useState(() => localStorage.getItem("ptmap_subSegment") || "");
+    const [subUsageCategoryValue, setSubUsageCategoryValue] = React.useState("");
     const [subUsageCategories, setSubUsageCategories] = React.useState([]);
-    const [subUsageCategoryValue, setSubUsageCategoryValue] = React.useState(() => localStorage.getItem("ptmap_subUsageCategoryValue") || "");
+    const [usageCategories, setUsageCategories] = React.useState([]);
+
+    const getAutoUsageCategoryCode = (rawUsageCategory) => {
+        const raw = String(rawUsageCategory || "").trim().toUpperCase();
+        // exact-only match
+        if (raw === "RESIDENTIAL" || raw === "110") return "110";
+        return "";
+    };
+
+    React.useEffect(() => {
+        setUsageCategoryState(getAutoUsageCategoryCode(usageCategory));
+        // prevent stale carry-forward
+        localStorage.removeItem("ptmap_usageCategory");
+    }, [usageCategory, propertiesId]);
 
     const [mappedRate, setMappedRate] = React.useState(null);
     const [mappedunit, setMappedunit] = React.useState(null);
     const [mappedRateId, setMappedRateId] = React.useState(null);
     const [mappedSegmentName, setMappedSegmentName] = React.useState(null);
 
-    // Define usage categories as a constant
-    const usageCategoryOptions = [
-        {
-            "code": "109",
-            "name": "Agriculture",
-            "isUrban": false
-        },
-        {
-            "code": "111",
-            "name": "Commercial",
-            "isUrban": false
-        },
-        {
-            "code": "112",
-            "name": "Industrial",
-            "isUrban": false
-        },
-
-        {
-            "code": "114",
-            "name": "Open Land",
-            "isUrban": false
-        },
-        {
-            "code": "113",
-            "name": "Other",
-            "isUrban": false
-        },
-        {
-            "code": "110",
-            "name": "Residential",
-            "isUrban": false
-        }
-    ];
-
-    // Auto-select usage category based on property's existing usage category
     React.useEffect(() => {
-        if (usageCategory) {
-            // Match the usage category name (case-insensitive)
-            const matchingCategory = usageCategoryOptions.find(
-                cat => cat.name.toUpperCase() === usageCategory.toUpperCase()
+        const raw = String(usageCategory || "").trim().toUpperCase();
+
+        // only exact RESIDENTIAL (or code 110) should auto-select
+        const isResidentialExact = raw === "RESIDENTIAL" || raw === "110";
+
+        if (isResidentialExact) {
+            const residential = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "RESIDENTIAL"
             );
-            if (matchingCategory && matchingCategory.code) {
-                console.log('Auto-selecting usage category:', matchingCategory);
-                setUsageCategoryState(matchingCategory.code);
-                localStorage.setItem("ptmap_usageCategory", matchingCategory.code);
-            }
+
+            setUsageCategoryState((residential && residential.code) || "110");
+        } else {
+            // anything else => show placeholder "Select Usage Category"
+            setUsageCategoryState("");
         }
+
+        // prevent stale persisted value
+        localStorage.removeItem("ptmap_usageCategory");
     }, [usageCategory]);
 
     // Fetch revenue data when popup opens (component mounts)
@@ -777,7 +772,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         "locality": locality || "",
                         "rate": mappedRate || 0,
                         "unit": mappedunit || "",
-                        "rateId": mappedRateId,
+                        "rateId": mappedRateId || 0,
                         "isActive": true,
                         "isProrataCal": false
                     }
@@ -886,8 +881,14 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         } catch (error) {
             console.error('Error mapping property:', error);
             setIsSubmitting(false);
+            // Set default values when no rate is found
+            setMappedRate(0);
+            setMappedRateId(null);
+            setMappedSegmentName(null);
+            setMappedunit("");
             alert("No rate found for this property ID with the given criteria. Please try different criteria or check the property details.");
-            //alert("Failed to map property: " + (error.message || "Unknown error"));
+            // Open dialog even when no rate is found
+            setDialogOpen(true);
         }
     };
 
@@ -1206,7 +1207,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                             }}
                         >
                             <option value="">Select Usage Category</option>
-                            {usageCategoryOptions.map((category, idx) => (
+                            {USAGE_CATEGORY_OPTIONS.map((category, idx) => (
                                 <option key={idx} value={category.code}>
                                     {category.name}
                                 </option>
@@ -1282,16 +1283,16 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     landArea={landArea}
                     noOfFloors={noOfFloors}
                     locality={locality}
-                    usageCategory={(usageCategoryOptions.find(u => u.code === usageCategoryState) || {}).name || usageCategoryState}
+                    usageCategory={(USAGE_CATEGORY_OPTIONS.find(u => u.code === usageCategoryState) || {}).name || usageCategoryState}
                     address={address}
                     district={(districts.find(d => d.code === districtState) || {}).name || districtState}
                     tehsil={(tehsils.find(t => t.code === tehsilState) || {}).name || tehsilState}
                     village={(villages.find(v => v.code === villageState) || {}).name || villageState}
                     segment={(segments.find(s => s.code === segmentState) || {}).name || segmentState}
                     subSegmentValue={(subSegments.find(ss => ss.code === subUsageCategoryState) || {}).name || subUsageCategoryState}
-                    rate={mappedRate}
-                    unit={mappedunit}
-                    rateId={mappedRateId}
+                    rate={mappedRate || 0}
+                    unit={mappedunit || ""}
+                    rateId={mappedRateId || 0}
                     segmentName={mappedSegmentName}
                     onClose={handleDialogClose}
                     onSubmit={handleSubmit}

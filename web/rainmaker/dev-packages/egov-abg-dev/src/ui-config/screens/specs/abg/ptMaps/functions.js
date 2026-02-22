@@ -412,7 +412,6 @@ export const searchApiCall = async (state, dispatch) => {
         ["Owner Name"]: item.ownerName || "-",
         ["Owner Mobile"]: item.ownerMobile || "",
         ["Land Area"]: item.landArea || item.superbuiltuparea || "-",
-        ["Building Name"]: item.buildingName || "-",
         ["Property Type"]: item.propertyType || "-",
         ["Usage Category"]: item.usageCategory || "-",
         ["No of Floors"]: item.noOfFloors || "-",

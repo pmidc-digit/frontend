@@ -10,6 +10,7 @@ import { actions } from "egov-ui-framework/ui-redux/screen-configuration/actions
 import { store } from "egov-ui-framework/ui-redux/store";
 import { Dialog } from "components";
 import PTmapPopup from "./ptmapedPopup";
+import MApptedpopupsd from "./mapptedpopupsd";
 
 const popdata = () => {
 
@@ -25,7 +26,77 @@ export const searchResults = {
   props: {
     data: [],
     columns: [
-      { labelName: "Property ID", labelKey: "Property ID" },
+      {
+        labelName: "Property ID",
+        labelKey: "Property ID",
+        options: {
+          filter: true,
+          customBodyRender: (value, tableMeta) => {
+            const PropertyIDCell = () => {
+              const [open, setOpen] = React.useState(false);
+              const row = tableMeta.rowData || [];
+              const propertiesId = row[0] || "";
+              const ownerName = row[1] || "";
+              const ownerMobile = row[2] || "";
+              const landArea = row[3] || "";
+              const districtName = row[4] || "";
+              const tehsilName = row[5] || "";
+              const villageName = row[6] || "";
+              const propertyType = row[7] || "";
+              const usageCategory = row[8] || "";
+              const noOfFloors = row[9] || "";
+              const locality = row[10] || "";
+              const address = row[11] || "";
+              const rowdatacomplete = row[12] || {};
+
+              const handleOpen = () => setOpen(true);
+              const handleClose = () => setOpen(false);
+
+              return (
+                <React.Fragment>
+                  <span
+                    style={{
+                      color: "#FE7A51",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      fontWeight: 600
+                    }}
+                    onClick={handleOpen}
+                  >
+                    {value || "-"}
+                  </span>
+
+                  <Dialog
+                    open={open}
+                    isClose={true}
+                    handleClose={handleClose}
+                    bodyStyle={{ padding: 0, maxHeight: "90vh", overflowY: "auto" }}
+                    contentStyle={{ width: "1200px", maxWidth: "95%", maxHeight: "90vh" }}
+                  >
+                    <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
+                      Property Revenue Mapped Details
+                    </div>
+                    <MApptedpopupsd
+                      propertiesId={propertiesId}
+                      ownerName={ownerName}
+                      ownerMobile={ownerMobile}
+                      landArea={landArea}
+                      usageCategory={usageCategory}
+                      noOfFloors={noOfFloors}
+                      locality={locality}
+                      address={address}
+                      rowdatacomplete={rowdatacomplete}
+                      onClose={handleClose}
+                    />
+                  </Dialog>
+                </React.Fragment>
+              );
+            };
+
+            return <PropertyIDCell />;
+          }
+        }
+      },
 
       { labelName: "Owner Name", labelKey: "Owner Name" },
 
@@ -36,8 +107,16 @@ export const searchResults = {
       { labelName: "Village Name", labelKey: "Village Name" },
 
       { labelName: "Property Type", labelKey: "Property Type" },
+      {
+        labelName: "Usage Category",
+        labelKey: "Usage Category",
+        options: {
+          display: false,
+          viewColumns: false,
+          filter: false
+        }
+      },
 
-      { labelName: "Usage Category", labelKey: "Usage Category" },
       { labelName: "No of Floors", labelKey: "No of Floors" },
       {
         labelName: "Locality",
@@ -65,15 +144,16 @@ export const searchResults = {
           filter: false,
           customBodyRender: (value, tableMeta) => {
             const RowAction = () => {
-              debugger;
               const [open, setOpen] = React.useState(false);
-              debugger;
               const row = tableMeta.rowData || [];
               const propertiesId = row[0] || "";
               const ownerName = row[1] || "";
               const ownerMobile = row[2] || "";
               const landArea = row[3] || "";
-              // Indices shifted due to added columns
+              const districtName = row[4] || "";
+              const tehsilName = row[5] || "";
+              const villageName = row[6] || "";
+              const propertyType = row[7] || "";
               const usageCategory = row[8] || "";
               const noOfFloors = row[9] || "";
               const locality = row[10] || "";
@@ -187,7 +267,10 @@ export const searchResults = {
                         cursor: "pointer"
                       }}
                       title="Mark as INcorrect"
-                      onClick={handleOpen}
+                      onClick={() => {
+                        console.log("rowdatacomplete:", rowdatacomplete);
+                        handleOpen();
+                      }}
                     >
                       ✗
                     </button>
