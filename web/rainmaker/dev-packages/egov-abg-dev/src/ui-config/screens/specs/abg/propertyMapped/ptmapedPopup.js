@@ -130,6 +130,48 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
     React.useEffect(() => {
         const raw = String(usageCategory || "").trim().toUpperCase();
+        const normalizeUsageCategory = (value) => {
+            const raw = String(value || "").trim().toUpperCase();
+            if (raw === "RESIDENTIAL" || raw === "110") return "110";
+            if (raw === "COMMERCIAL" || raw === "COMMERCIALS" || raw === "111") return "111";
+            if (raw === "INDUSTRIAL" || raw === "112") return "112";
+            if (raw === "OTHERS" || raw === "113") return "113";
+            if (raw === "AGRICULTURE" || raw === "109") return "109";
+            if (raw === "OPEN LAND" || raw === "114") return "114";
+            return raw;
+        };
+
+        const normalized = normalizeUsageCategory(usageCategory);
+        setUsageCategoryState("");
+
+
+        const isCommercialExact = raw === "COMMERCIAL" || raw === "111";
+        const isIndustrialExact = raw === "INDUSTRIAL" || raw === "112";
+        const isOthersExact = raw === "OTHERS" || raw === "113";
+
+        if (isResidentialExact) {
+            const residential = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "RESIDENTIAL"
+            );
+            setUsageCategoryState((residential && residential.code) || "110");
+        } else if (isCommercialExact) {
+            const commercial = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "COMMERCIAL"
+            );
+            setUsageCategoryState((commercial && commercial.code) || "111");
+        } else if (isIndustrialExact) {
+            const industrial = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "INDUSTRIAL"
+            );
+            setUsageCategoryState((industrial && industrial.code) || "112");
+        } else if (isOthersExact) {
+            const other = USAGE_CATEGORY_OPTIONS.find(
+                (x) => String(x.name).trim().toUpperCase() === "OTHERS"
+            );
+            setUsageCategoryState((other && other.code) || "113");
+        } else {
+            setUsageCategoryState("");
+        }
         const isResidentialExact = raw === "RESIDENTIAL" || raw === "110";
 
         if (isResidentialExact) {
