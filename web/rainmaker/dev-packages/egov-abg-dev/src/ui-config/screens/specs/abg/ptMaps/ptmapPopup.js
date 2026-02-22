@@ -902,7 +902,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             setMappedRateId(null);
             setMappedSegmentName(null);
             setMappedunit("");
-            alert("No rate found for this property ID with the given criteria. Please try different criteria or check the property details.");
+            alert("No Collector Rate has been notified for this usage-type in this Revenue Segment. ");
             // Open dialog even when no rate is found
             setDialogOpen(true);
         }
