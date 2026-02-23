@@ -86,7 +86,7 @@ export const getAddressItems = (properties, OldProperty) => {
 }
 
 const PropertyAddressInfo = ({ properties, editIcon, OldProperty }) => {
-  console.log("propertiesproperties",properties)
+ 
   let surveyid = properties.surveyId;
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [surveyId, setSurveyId] = useState(properties ? properties.surveyId : "");
