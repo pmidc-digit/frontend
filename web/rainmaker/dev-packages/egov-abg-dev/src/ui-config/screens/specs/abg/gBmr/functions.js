@@ -126,8 +126,8 @@ export const searchApiCall = async (state, dispatch) => {
           locality: "ALOC2",
           offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
         };
-        const url = `ws-calculator/meterConnection/_search?tenantId=${encodeURIComponent(requestBody.tenantId)}&locality=${encodeURIComponent(requestBody.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
-        const response = await httpRequest("post", url, "_search", []);
+        const url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(requestBody.tenantId)}&locality=${encodeURIComponent(requestBody.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        const response = await httpRequest("post", url, "_searchV2", []);
         // dispatch(toggleSpinner(false));
         // return response;
 
