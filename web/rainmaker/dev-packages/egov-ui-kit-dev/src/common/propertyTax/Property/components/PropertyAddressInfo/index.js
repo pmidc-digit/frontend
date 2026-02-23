@@ -18,7 +18,6 @@ export const getAddressItems = (properties, OldProperty) => {
   const cityId = tenantInfo && tenantInfo.length === 2 && tenantInfo[1] ? tenantInfo[1].toUpperCase() : 'NA';
   const localityCode = address.locality && address.locality.code ? address.locality.code : 'NA';
   const propertyId = properties.propertyId;
-  const existingPropertyID = properties.oldPropertyId;
   const surveyid = properties.surveyId;
   const yearConsTruction = properties.additionalDetails && properties.additionalDetails.yearConstruction || 'NA';
   if (OldProperty) {
