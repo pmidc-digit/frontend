@@ -241,20 +241,20 @@ export const searchResults = {
                       type="button"
                       style={{
                         minWidth: "40px",
-                        marginLeft: "8px",
+
                         padding: "4px 10px",
-                        background: "#4CAF50",
+                        background: "#fe7a51",
                         border: "none",
                         color: "#fff",
-                        borderRadius: "2px",
+                        borderRadius: "10px",
                         cursor: "pointer"
                       }}
-                      title="Mark as correct"
-                      onClick={handleMarkCorrect}
+                      title="Verify property details"
+                      onClick={handleOpen}
                     >
-                      ✓
+                      Verify
                     </button>
-                    <button
+                    {/* <button
                       type="button"
                       style={{
                         minWidth: "40px",
@@ -273,7 +273,7 @@ export const searchResults = {
                       }}
                     >
                       ✗
-                    </button>
+                    </button> */}
 
 
                   </div>
@@ -288,7 +288,7 @@ export const searchResults = {
                     <div style={{ padding: "16px 20px 0", fontSize: "18px", fontWeight: 600 }}>
                       Property Revenue Mapped Details
                     </div>
-                    <PTmapPopup
+                    <MApptedpopupsd
                       propertiesId={propertiesId}
                       ownerName={ownerName}
                       ownerMobile={ownerMobile}
