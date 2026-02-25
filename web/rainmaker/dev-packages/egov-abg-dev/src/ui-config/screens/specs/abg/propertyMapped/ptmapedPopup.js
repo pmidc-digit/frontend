@@ -147,7 +147,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const [error, setError] = React.useState(null);
     const [fullAddressss, setFullAddressss] = React.useState(address || "-");
     React.useEffect(() => {
-        debugger;
+
         const fetchPropertyDetails = async () => {
             if (!propertiesId) {
                 setLoading(false);
@@ -162,8 +162,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 const url = `/property-services/property/_search?tenantId=${tenantId}&propertyIds=${propertiesId}`;
 
                 const response = await httpRequest("post", url, "", [], {});
-
-                console.log("Property API Response:", response);
 
                 if (response && response.Properties && response.Properties.length > 0) {
                     const property = response.Properties[0];
@@ -245,7 +243,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         const fetchRevenueData = async () => {
             try {
                 setIsSubmitting(true);
-                console.log("Fetching revenue data on popup open");
+               
                 console.log("Prepared object:", prepared);
 
                 // Try multiple paths to get tenantId
@@ -273,9 +271,9 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     requestBody
                 );
 
-                console.log('Revenue data fetched on mount:', response);
+                
                 setRevenueData(response);
-                debugger;
+
                 const propertydisits = (response && response.districts) || [];
 
 
@@ -283,7 +281,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 if (Array.isArray(propertydisits) && propertydisits.length > 0) {
 
                     setDistricts(propertydisits);
-                    console.log('Districts extracted:', propertydisits);
+                   
 
                     // If no persisted district, auto-select based on login/tenant (first available)
                     const persistedDistrict = localStorage.getItem("ptmap_district") || "";
@@ -298,7 +296,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         }
                     }
                 } else {
-                    console.warn('No property rates found in response. Full response:', response);
+                   
                     setDistricts([]);
                 }
 
@@ -628,14 +626,13 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     requestBody
                 );
 
-                console.log('Tehsils fetched for district:', response);
+              
 
                 // Extract tehsils from response
                 const tehsilsData = (response && response.tehsils) || [];
 
                 if (Array.isArray(tehsilsData) && tehsilsData.length > 0) {
                     setTehsils(tehsilsData);
-                    console.log('Tehsils set:', tehsilsData);
                 } else {
                     console.warn('No tehsils found for district');
                     setTehsils([]);
@@ -665,7 +662,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         if (selectedTehsil) {
             try {
                 setIsSubmitting(true);
-                console.log("Fetching villages for tehsil:", selectedTehsil);
+              
 
                 const requestBody = {
                     searchCriteria: {
@@ -673,8 +670,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         locality: locality || ""
                     }
                 };
-
-                console.log("Request body for villages:", requestBody);
 
                 const url = "/egov-property-rate/property-rate/_search";
 
@@ -686,9 +681,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     requestBody
                 );
 
-                console.log('Villages fetched for tehsil:', response);
-                console.log('Response structure:', Object.keys(response || {}));
-
                 // Extract villages from response
                 const villagesData = (response && (
                     response.villages ||
@@ -697,11 +689,11 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     response.data
                 )) || [];
 
-                console.log('Villages data extracted:', villagesData);
+              
 
                 if (Array.isArray(villagesData) && villagesData.length > 0) {
                     setVillages(villagesData);
-                    console.log('Villages set:', villagesData);
+                  
                 } else {
                     console.warn('No villages found for tehsil');
                     setVillages([]);
@@ -728,16 +720,13 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         if (selectedVillage) {
             try {
                 setIsSubmitting(true);
-                console.log("Fetching segments for village:", selectedVillage);
-
+              
                 const requestBody = {
                     searchCriteria: {
                         villageId: selectedVillage,
                         locality: locality || ""
                     }
                 };
-
-                console.log("Request body for segments:", JSON.stringify(requestBody));
 
                 const url = "/egov-property-rate/property-rate/_search";
 
@@ -749,9 +738,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     requestBody
                 );
 
-                console.log('Segments fetched for village:', response);
-                console.log('Response structure:', Object.keys(response || {}));
-
                 // Extract segments from response
                 const segmentsData = (response && (
                     response.segments ||
@@ -759,11 +745,10 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     response.segmentList ||
                     response.data
                 )) || [];
-                console.log('Segments data extracted:', segmentsData);
+             
 
                 if (Array.isArray(segmentsData) && segmentsData.length > 0) {
                     setSegments(segmentsData);
-                    console.log('Segments set:', segmentsData);
                 } else {
                     console.warn('No segments found for village');
                     setSegments([]);
@@ -794,8 +779,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         // Fetch sub-segments for selected segment
         try {
             setIsSubmitting(true);
-            console.log("Fetching sub-segments for segment:", selectedSegment);
-
+       
             const subSegRequestBody = {
                 searchCriteria: {
                     segmentId: selectedSegment,
@@ -804,7 +788,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 }
             };
 
-            console.log("Request body for sub-segments:", JSON.stringify(subSegRequestBody));
+    
 
             const subSegResponse = await httpRequest(
                 "post",
@@ -814,7 +798,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 subSegRequestBody
             );
 
-            console.log('Sub-segments fetched for segment:', subSegResponse);
+            
 
             const subSegmentsData = (subSegResponse && (
                 subSegResponse.subSegments ||
@@ -828,7 +812,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     code: String(s.code || s.subSegmentId || s.id || s.value || idx + 1),
                     name: s.name || s.label || s.display || s.subSegmentName || (s.code || `Sub-Segment ${idx + 1}`)
                 }));
-                console.log('Sub-segments available (normalized):', subSegmentOptions);
+               
                 setSubSegments(subSegmentOptions);
             } else {
                 console.warn('No sub-segments found for segment');
@@ -859,20 +843,10 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             setMappedunit(null);
             return;
         }
-        debugger;
+
         try {
             setIsSubmitting(true);
-            console.log("Fetching rates for usage category:", selectedUsageCategory);
-            console.log("Current state values:", {
-                segmentState,
-                subUsageCategoryState,
-                propertiesId,
-                districtState,
-                tehsilState,
-                villageState,
-                locality,
-                tenantIdValue
-            });
+         
 
             const requestBody = {
                 searchCriteria: {
@@ -889,7 +863,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 }
             };
 
-            console.log("Rate check request body:", JSON.stringify(requestBody, null, 2));
+         
 
             const url = "/egov-property-rate/property-rate/_search";
 
@@ -901,8 +875,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 requestBody
             );
 
-            console.log('Property rate response:', response.rates);
-            console.log('Response structure:', Object.keys(response || {}));
 
             // Extract and set rate information from response
             if (response && response.rates && Array.isArray(response.rates) && response.rates.length > 0) {
@@ -911,7 +883,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 setMappedunit(rateData.unit || "");
                 setMappedRateId(rateData.id || rateData.rateId || null);
                 setMappedSegmentName(rateData.segmentName || null);
-                console.log('Rate information set:', { rate: rateData.rate, unit: rateData.unit, rateId: rateData.id });
             } else {
                 alert('Failed to fetch rate information. Please check console for details.');
                 setMappedRate(0);
@@ -921,8 +892,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
             setIsSubmitting(false);
         } catch (error) {
-            console.error('Error fetching rates for usage category:', error);
-            console.error('Error details:', error.message, error.response);
+           
             setIsSubmitting(false);
             setMappedRate(0);
             setMappedRateId(0);
@@ -949,7 +919,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         try {
             setIsSubmitting(true);
-            console.log("Fetching usage categories for sub-segment:", selectedSubSegment);
+        
 
             const requestBody = {
                 searchCriteria: {
@@ -970,7 +940,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 requestBody
             );
 
-            console.log("Usage categories fetched for sub-segment:", response);
+         
 
             const usageData = (response && (
                 response.usageCategories ||
@@ -1010,18 +980,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 setIsSubmitting(true);
                 const tenantIdValue = get(prepared, "searchCriteria.tenantId", "") || localStorage.getItem("tenant-id") || "pb.amritsar";
 
-                console.log("Checking rate with data:", {
-                    propertiesId,
-                    district: districtState,
-                    tehsil: tehsilState,
-                    locality: locality,
-                    village: villageState,
-                    segment: segmentState,
-                    subSegment: subSegmentId,
-                    usageCategory: usageCategoryState,
-                    tenantId: tenantIdValue
-                });
-
                 const requestBody = {
                     searchCriteria: {
                         segmentId: segmentState,
@@ -1037,12 +995,9 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     }
                 };
 
-                console.log("Rate check request body:", JSON.stringify(requestBody));
-
                 const url = "/egov-property-rate/property-rate/_search";
                 const response = await httpRequest("post", url, "", [], requestBody);
 
-                console.log('Rate check response:', response);
 
                 if (response) {
                     if (response.rates !== undefined && response.rates.length > 0) {
@@ -1100,7 +1055,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const handleSubmit = async () => {
         try {
             setIsSubmitting(true);
-            debugger;
+
             // Prepare request body
             const requestBody = {
                 "PropertyRates": [
@@ -1126,8 +1081,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 ]
             };
 
-            console.log("Submit request body:", JSON.stringify(requestBody));
-
             const url = "/egov-property-rate/property-rate/_update";
 
             const response = await httpRequest(
@@ -1137,8 +1090,6 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 [],
                 requestBody
             );
-
-            console.log("Submit response:", response);
 
             alert("Property rate mapping submitted successfully!");
             setDialogOpen(false);
@@ -1165,19 +1116,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         try {
             setIsSubmitting(true);
-            console.log("Mapping properties with data:", {
-                propertiesId,
-                district: districtState,
-                tehsil: tehsilState,
-                locality: locality,
-                village: villageState,
-                segment: segmentState,
-                subSegments: subUsageCategoryState,
-                usageCategory: usageCategoryState,
-                rowdatacomplete: rowdatacomplete,
-                tenantId: tenantIdValue
-            });
-            debugger;
+            
             const requestBody = {
                 PropertyRates: [{
                     id: rowdatacomplete.integration_id,
@@ -1198,7 +1137,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
                 }]
             };
-            console.log("Request body for mapping:", JSON.stringify(requestBody, null, 2));
+          
 
             const url = "/egov-property-rate/property-rate/_update";
 
@@ -1210,8 +1149,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 requestBody
             );
 
-            console.log('Property mapping response:', response);
-            debugger;
+         
+
             // Close all popups first, then show success message
             if (response) {
                 setDialogOpen(false);

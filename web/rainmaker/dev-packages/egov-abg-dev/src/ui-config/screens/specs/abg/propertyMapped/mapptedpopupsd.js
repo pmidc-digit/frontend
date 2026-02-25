@@ -22,8 +22,7 @@ const getUsageCategoryName = (categoryId) => {
 
 const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors, locality,
     usageCategory, subSegmentValue, district, tehsil, village, segment, address, rate, unit, rateId, segmentName, onClose, rowdatacomplete, onSubmit }) => {
-    debugger;
-    console.log("rowdatacomplete:", rowdatacomplete);
+   
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -33,7 +32,7 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
     const [fullAddressss, setFullAddressss] = React.useState(address || "-");
 
     React.useEffect(() => {
-        debugger;
+    
         const fetchPropertyDetails = async () => {
             if (!propertiesId) {
                 setLoading(false);
@@ -48,8 +47,6 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                 const url = `/property-services/property/_search?tenantId=${tenantId}&propertyIds=${propertiesId}`;
 
                 const response = await httpRequest("post", url, "", [], {});
-
-                console.log("Property API Response:", response);
 
                 if (response && response.Properties && response.Properties.length > 0) {
                     const property = response.Properties[0];
@@ -119,14 +116,14 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                 requestBody
             );
             if (response) {
-                console.log("Submit response:", response);
+                
                 alert("Property rate mapping submitted successfully!");
                 if (onClose) {
                     onClose();
                 }
             }
         } catch (error) {
-            console.error("Error submitting property rate:", error);
+           
             alert("Failed to submit property rate: " + (error.message || "Unknown error"));
         }
     };
@@ -382,7 +379,7 @@ const MapPTPopup = ({ propertiesId, ownerName, ownerMobile, landArea, noOfFloors
                 <button
                     type="button"
                     onClick={() => {
-                        console.log("rowdatacomplete:", rowdatacomplete);
+                       
                         handleOpen();
                     }}
                     style={{

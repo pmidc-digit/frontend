@@ -163,23 +163,7 @@ export const searchResults = {
               const handleClose = () => setOpen(false);
 
               const handleMarkCorrect = async () => {
-                console.log("Marked as correct:", {
-                  propertiesId,
-                  ownerName,
-                  ownerMobile,
-                  landArea,
-                  usageCategory,
-                  locality,
-                  address,
-                  rowdatacomplete,
-                  segmentId: rowdatacomplete.segmentid,
-                  subSegmentId: rowdatacomplete.subsegmentid,
-                  tehsil_name: rowdatacomplete.tehsil_name,
-                  tehsilid: rowdatacomplete.tehsilid,
-                  village_id: rowdatacomplete.village_id,
-                  village_name: rowdatacomplete.village_name,
 
-                });
                 try {
                   const requestBody = {
                     "PropertyRates": [
@@ -215,8 +199,6 @@ export const searchResults = {
                     [],
                     requestBody
                   );
-
-                  console.log("Submit response:", response);
 
                   alert("Property rate mapping submitted successfully!");
 
@@ -254,27 +236,6 @@ export const searchResults = {
                     >
                       Verify
                     </button>
-                    {/* <button
-                      type="button"
-                      style={{
-                        minWidth: "40px",
-                        marginLeft: "8px",
-                        padding: "4px 10px",
-                        background: "#c51414",
-                        border: "none",
-                        color: "#fff",
-                        borderRadius: "2px",
-                        cursor: "pointer"
-                      }}
-                      title="Mark as INcorrect"
-                      onClick={() => {
-                        console.log("rowdatacomplete:", rowdatacomplete);
-                        handleOpen();
-                      }}
-                    >
-                      ✗
-                    </button> */}
-
 
                   </div>
 

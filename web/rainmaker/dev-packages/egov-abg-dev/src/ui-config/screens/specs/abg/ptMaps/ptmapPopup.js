@@ -214,7 +214,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
                 console.log('Revenue data fetched on mount:', response);
                 setRevenueData(response);
-                debugger;
+
                 const propertydisits = (response && response.districts) || [];
 
 
@@ -771,7 +771,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const handleSubmit = async () => {
         try {
             setIsSubmitting(true);
-            debugger;
+
             // Prepare request body
             const requestBody = {
                 "PropertyRates": [
@@ -873,7 +873,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             );
 
             console.log('Property mapping response:', response);
-            debugger;
+
             // Show success message
             if (response) {
                 // Store the rate data from API response

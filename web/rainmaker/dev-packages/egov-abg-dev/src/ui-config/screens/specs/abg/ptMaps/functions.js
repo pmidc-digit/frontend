@@ -192,7 +192,7 @@ export const searchApiCall = async (state, dispatch) => {
     }
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
-      debugger;
+
 
       try {
         dispatch(toggleSpinner(true));
@@ -216,7 +216,7 @@ export const searchApiCall = async (state, dispatch) => {
         const response = await httpRequest("post", url, "_search", []);
         // dispatch(toggleSpinner(false));
         // return response;
-        debugger;
+
         const ptreveresponce = (response && response) || [];
         dispatch(
           prepareFinalObject("searchScreenMdmsData.ptreveresponce", ptreveresponce)
