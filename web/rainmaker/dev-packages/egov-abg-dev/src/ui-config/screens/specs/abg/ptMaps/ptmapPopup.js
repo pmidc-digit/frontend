@@ -214,7 +214,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
                 console.log('Revenue data fetched on mount:', response);
                 setRevenueData(response);
-                debugger;
+
                 const propertydisits = (response && response.districts) || [];
 
 
@@ -771,7 +771,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
     const handleSubmit = async () => {
         try {
             setIsSubmitting(true);
-            debugger;
+
             // Prepare request body
             const requestBody = {
                 "PropertyRates": [
@@ -790,7 +790,8 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         "unit": mappedunit || "",
                         "rateId": mappedRateId || -1,
                         "isActive": true,
-                        "isProrataCal": false
+                        "isProrataCal": false,
+                        "isModified": false
                     }
                 ]
             };
@@ -872,7 +873,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
             );
 
             console.log('Property mapping response:', response);
-            debugger;
+
             // Show success message
             if (response) {
                 // Store the rate data from API response
@@ -962,7 +963,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         padding: "0"
                     }}>
                         <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Land Area/build Area</div>
-                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{landArea ? `${landArea} sq.ft` : "N/A"}</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{landArea ? `${landArea} sq.yards` : "N/A"}</div>
                     </div>
 
 
