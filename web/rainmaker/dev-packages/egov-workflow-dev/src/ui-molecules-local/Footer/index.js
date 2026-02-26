@@ -131,6 +131,11 @@ class Footer extends React.Component {
           item.showEmployeeList = false;
         }
       }
+
+      if (item.buttonLabel === "PAY_FEE" || item.buttonLabel === "PAY_DEMAND") {
+        item.isLast = true;
+        item.showEmployeeList = false;
+      }
       
       if (dataPath === "BPA") {
         handleFieldChange(`${dataPath}.comment`, "");
@@ -239,6 +244,12 @@ class Footer extends React.Component {
           item.showEmployeeList = false;
         }
       }
+
+      if (item.buttonLabel === "PAY_FEE" || item.buttonLabel === "PAY_DEMAND") {
+        item.isLast = true;
+        item.showEmployeeList = false;
+      }
+
       if (dataPath === "BPA") {
         handleFieldChange(`${dataPath}.comment`, "");
         handleFieldChange(`${dataPath}.assignees`, "");
