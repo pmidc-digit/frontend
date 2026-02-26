@@ -26,6 +26,12 @@ export default defineConfig(({ mode }) => {
           secure: false,
           rewrite: (path) => path.replace(/^\/api/, ""),
         },
+        "/property-services": {
+          target: env.VITE_API_HOST,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, ""),
+        },
       },
     },
   };

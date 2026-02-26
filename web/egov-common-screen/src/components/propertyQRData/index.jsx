@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
 import OtpInput from './otpInput';
 import { useSearchParams } from 'react-router-dom';
-import { checkMobileNumber, loginWithOtp } from './function.jsx'
+import { checkMobileNumber, loginWithOtp, searchPropertyBySurvey } from './function.jsx'
 import { statetenantId } from "./constant.jsx"
 //URL : propertyQRData?surveyid=123&tenantid=pb.amritsar&mobileno=9335130557
 import { showLoading } from "../../utils/toast.jsx"
@@ -40,8 +40,15 @@ const ProppertyQRData = () => {
             storage.set("user-info", result.data.UserRequest);
             storage.set("token", result.data.access_token);
             storage.set("tenant-id", statetenantId);
-            setDisplaypage(false)
-            setLoader(true)
+            setDisplaypage(false);
+            setLoader(true);
+            try {
+                const data = await searchPropertyBySurvey({tenantId: tenantId, surveyId: surveyID});
+
+                console.log(data);
+            } catch (err) {
+                console.error("API Failed:", err);
+            }
         } else {
             console.error(result.message);
         }
@@ -68,6 +75,9 @@ const ProppertyQRData = () => {
                 </div>
 
             )}
+
+
+
         </div>
 
 
