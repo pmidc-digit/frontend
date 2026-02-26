@@ -84,12 +84,36 @@ export const loginWithOtp = async (mobileNumber, otp, userType='CITIZEN') => {
     };
 
   } catch (error) {
-    return {
-      success: false,
-      message:
-        error?.response?.data?.error_description ||
-        "Invalid OTP or login failed",
-    };
-  }
+    showError(error?.response?.data?.error_description ||
+          "Invalid OTP or login failed")
+  //   return {
+  //     success: false,
+  //     message:
+  //       error?.response?.data?.error_description ||
+  //       "Invalid OTP or login failed",
+  //   };
+  //     
+   }
 };
 
+
+export const searchPropertyBySurvey = async ({ tenantId, surveyId }) => {
+  try {
+    const query = new URLSearchParams({
+      tenantId,
+      surveyId,
+    }).toString();
+
+    const response = await API.post(
+      `/property-services/property/_search?${query}`
+    );
+
+    return response?.data;
+  } catch (error) {
+    console.error(
+      "Property Search API Error:",
+      error?.response?.data || error.message
+    );
+    throw error;
+  }
+};
