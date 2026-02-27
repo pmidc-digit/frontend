@@ -27,7 +27,7 @@ const getUlbGradeLabel = (ulbGrade) => {
 const withoutAuthorization = (redirectionUrl) => (Component) => {
   class Wrapper extends React.Component {
     state = {
-      languageSelected: getLocale()||"en_IN",
+      languageSelected: getLocale() || "en_IN",
     };
     style = {
       baseStyle: {
@@ -73,7 +73,7 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
 
     componentDidMount() {
       if (this.props.authenticated && !isPublicSearch()) {
-        if(!this.props.isOpenLink){
+        if (!this.props.isOpenLink) {
           this.props.history.push(redirectionUrl);
         }
       }
@@ -83,6 +83,11 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
         setLocale(locale);
         this.onLanguageChange(locale);
       }
+      const script = document.createElement("script");
+      script.id = "bhashini-translation-script";
+      script.src = "https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js";
+      script.async = true;
+      document.body.appendChild(script);
     }
 
     onLanguageChange = (event, index, value) => {
@@ -96,11 +101,11 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
         tenantId = userInfo && userInfo.permanentCity;
         tenantId = tenantInfo ? tenantInfo : tenantId;
       }
-      var resetList=[];
-      var newList =JSON.stringify(resetList);
+      var resetList = [];
+      var newList = JSON.stringify(resetList);
       setStoredModulesList(newList);
-      let locale= getLocale();
-      let resultArray=[];
+      let locale = getLocale();
+      let resultArray = [];
       setLocalizationLabels(locale, resultArray);
       this.props.fetchLocalizationLabel(value, tenantId, tenantId);
     };
@@ -117,62 +122,65 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
       const { style } = this;
       return (
         <div>
+          <div className="language-plugin">
+            <div className="bhashini-plugin-container"></div>
+          </div>
           {/* FIXME need to move appbar as new component */}
           {isOpenLink ? (
-            <div className="rainmaker-header-cont" style={isPublicSearch ? style.headerStyle : { position: "relative" }}>
-              <div style={{ lineHeight: "64px" }}>
-                <AppBar
-                  className="rainmaker-header"
-                  title={
-                    <div className="citizen-header-logo-label">
-                      <div className={logoClassName}>
-                        <img src={ulbLogo ? ulbLogo : pbLogo} onError={(event) => event.target.setAttribute("src", pbLogo)} />
+              <div className="rainmaker-header-cont" style={isPublicSearch ? style.headerStyle : { position: "relative" }}>
+                <div style={{ lineHeight: "64px" }}>
+                  <AppBar
+                    className="rainmaker-header"
+                    title={
+                      <div className="citizen-header-logo-label">
+                        <div className={logoClassName}>
+                          <img src={ulbLogo ? ulbLogo : pbLogo} onError={(event) => event.target.setAttribute("src", pbLogo)} />
+                        </div>
+                        {!isPublicSearch && <div className="rainmaker-displayInline">
+                          <Label
+                            containerStyle={{ marginLeft: "10px" }}
+                            className="screenHeaderLabelStyle appbar-municipal-label"
+                            label={ulbName && `TENANT_TENANTS_${ulbName.toUpperCase().replace(/[.]/g, "_")}`}
+                          />
+                          <Label
+                            containerStyle={{ marginLeft: "4px" }}
+                            className="screenHeaderLabelStyle appbar-municipal-label"
+                            label={defaultTitle}
+                          />
+                        </div>}
                       </div>
-                      {!isPublicSearch && <div className="rainmaker-displayInline">
-                        <Label
-                          containerStyle={{ marginLeft: "10px" }}
-                          className="screenHeaderLabelStyle appbar-municipal-label"
-                          label={ulbName && `TENANT_TENANTS_${ulbName.toUpperCase().replace(/[.]/g, "_")}`}
-                        />
-                        <Label
-                          containerStyle={{ marginLeft: "4px" }}
-                          className="screenHeaderLabelStyle appbar-municipal-label"
-                          label={defaultTitle}
-                        />
-                      </div>}
+                    }
+                    titleStyle={style.titleStyle}
+                    {...rest}
+                  >
+                    <Toolbar className="app-toolbar" style={{ padding: "0px", height: "64px", background: "#ffffff" }}>
+                      {hasLocalisation && (
+                        <div className="userSettingsContainer">
+                          <DropDown
+                            onChange={this.onLanguageChange}
+                            listStyle={style.listStyle}
+                            style={style.baseStyle}
+                            labelStyle={style.label}
+                            dropDownData={languages}
+                            value={languageSelected}
+                            underlineStyle={{ borderBottom: "none" }}
+                          />
+                        </div>
+                      )}
+                    </Toolbar>
+                    <div className="appbar-right-logo">
+                      <img src={digitLogo} />
                     </div>
-                  }
-                  titleStyle={style.titleStyle}
-                  {...rest}
-                >
-                  <Toolbar className="app-toolbar" style={{ padding: "0px", height: "64px", background: "#ffffff" }}>
-                    {hasLocalisation && (
-                      <div className="userSettingsContainer">
-                        <DropDown
-                          onChange={this.onLanguageChange}
-                          listStyle={style.listStyle}
-                          style={style.baseStyle}
-                          labelStyle={style.label}
-                          dropDownData={languages}
-                          value={languageSelected}
-                          underlineStyle={{ borderBottom: "none" }}
-                        />
-                      </div>
-                    )}
-                  </Toolbar>
-                  <div className="appbar-right-logo">
-                    <img src={digitLogo} />
-                  </div>
-                </AppBar>
+                  </AppBar>
+                </div>
+                <div>
+                  <Component {...this.props} />
+                </div>
               </div>
-              <div>
-                <Component {...this.props} />
-              </div>
-            </div>
           ) : (
             <Component {...this.props} />
           )}
-          
+
         </div>
       );
     }
