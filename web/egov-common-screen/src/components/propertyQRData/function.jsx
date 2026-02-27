@@ -117,3 +117,22 @@ export const searchPropertyBySurvey = async ({ tenantId, surveyId }) => {
     throw error;
   }
 };
+
+export const getAddressArray = (propertyaddress) => {
+  if (!propertyaddress) return [];
+
+  const addressParts = [
+    propertyaddress.buildingName,
+    propertyaddress.doorNo !== propertyaddress.buildingName ? propertyaddress.doorNo : null,
+    propertyaddress.street,
+    propertyaddress.locality?.name,
+    propertyaddress.city,
+    propertyaddress.district,
+    propertyaddress.state,
+    propertyaddress.country,
+    propertyaddress.pincode,
+  ];
+
+  // Remove null, undefined, empty string
+  return addressParts.filter(Boolean);
+};
