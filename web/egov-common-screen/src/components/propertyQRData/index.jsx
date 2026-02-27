@@ -2,22 +2,41 @@
 import { useEffect, useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
+import { useNavigate } from 'react-router-dom';
 import OtpInput from './otpInput';
 import { useSearchParams } from 'react-router-dom';
 import { checkMobileNumber, loginWithOtp, searchPropertyBySurvey } from './function.jsx'
 import { statetenantId } from "./constant.jsx"
 //URL : propertyQRData?surveyid=123&tenantid=pb.amritsar&mobileno=9335130557
-import { showLoading } from "../../utils/toast.jsx"
+import { showLoading, showError } from "../../utils/toast.jsx"
 import { storage } from '../../utils/localstorage.jsx';
+
 const ProppertyQRData = () => {
+    const Navigate = useNavigate();
     const [displaypage, setDisplaypage] = useState(false);
     const [loader, setLoader] = useState(false);
     const [searchParams] = useSearchParams();
+    const [missingParams, setMissingParams] = useState(false);
     const sentFor = useRef(null);
+    const errorShown = useRef(false);
     // Extract date from  query parameters
     const surveyID = searchParams.get('surveyid');
     const tenantId = searchParams.get('tenantid');
     const mobileNumber = searchParams.get('mobileno');
+    useEffect(() => {
+        storage.clear();
+    }, [])
+    useEffect(() => {
+        if (!surveyID || !tenantId || !mobileNumber) {
+            if (!errorShown.current) { // Show error only once
+                showError("Please scan the QR code again");
+                errorShown.current = true;
+            }
+            setMissingParams(true);
+            return;
+        }
+        setMissingParams(false);
+    }, [surveyID, tenantId, mobileNumber]);
     useEffect(() => {
         if (loader) {
             showLoading("Loading...");
@@ -27,6 +46,7 @@ const ProppertyQRData = () => {
         if (!mobileNumber) return;
         if (sentFor.current === mobileNumber) return;
         sentFor.current = mobileNumber
+
         checkMobileNumber(mobileNumber).finally(() => setLoader(false))
         setDisplaypage(true)
 
@@ -40,47 +60,52 @@ const ProppertyQRData = () => {
             storage.set("user-info", result.data.UserRequest);
             storage.set("token", result.data.access_token);
             storage.set("tenant-id", statetenantId);
-            setDisplaypage(false);
-            setLoader(true);
-            try {
-                const data = await searchPropertyBySurvey({tenantId: tenantId, surveyId: surveyID});
+            const qs = new URLSearchParams({
+                surveyid: surveyID,
+                tenantid: tenantId,
+                mobileno: mobileNumber,
+            }).toString();
+            Navigate(`/displayPropertyRecord?${qs}`, { replace: true });
+            // try {
+            //     const data = await searchPropertyBySurvey({ tenantId: tenantId, surveyId: surveyID });
 
-                console.log(data);
-            } catch (err) {
-                console.error("API Failed:", err);
-            }
+            //     console.log(data);
+            // } catch (err) {
+            //     console.error("API Failed:", err);
+            // }
         } else {
             console.error(result.message);
         }
     };
     return (
         <div className="otp-page">
-
-            {displaypage && !loader && (
-
+            {missingParams ? (
                 <div className="otp-card">
-                    <h2 className="otp-title">OTP Verification</h2>
-
-                    <div className="info-box">
-                        <span><strong>Survey ID:</strong> {surveyID}</span>
-                        <span><strong>Tenant ID:</strong> {tenantId}</span>
-                        <p><strong>Mobile:</strong> {mobileNumber}</p>
-                    </div>
-
-                    <p className="otp-subtext">
-                        Enter the 6-digit OTP sent to your mobile
-                    </p>
-
-                    <OtpInput onComplete={handleOtpComplete} />
+                    <h2 className="otp-title">Invalid QR Code</h2>
+                    <p className="otp-subtext">Please scan a valid QR code to proceed</p>
                 </div>
+            ) : (
+                <>
+                    {displaypage && !loader && (
+                        <div className="otp-card">
+                            <h2 className="otp-title">OTP Verification</h2>
 
+                            <div className="info-box">
+                                <span><strong>Survey ID:</strong> {surveyID}</span>
+                                <span><strong>Tenant ID:</strong> {tenantId}</span>
+                                <p><strong>Mobile:</strong> {mobileNumber}</p>
+                            </div>
+
+                            <p className="otp-subtext">
+                                Enter the 6-digit OTP sent to your mobile
+                            </p>
+
+                            <OtpInput onComplete={handleOtpComplete} />
+                        </div>
+                    )}
+                </>
             )}
-
-
-
         </div>
-
-
     )
 }
 export default ProppertyQRData;
