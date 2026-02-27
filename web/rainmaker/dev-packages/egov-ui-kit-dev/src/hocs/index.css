@@ -203,3 +203,50 @@
 .rainmaker-action-menu::-webkit-scrollbar-resizer {
   background-color: transparent;
 }
+.language-plugin{
+    position: fixed; 
+    bottom: 8rem; 
+    right: 20px;
+    z-index: 99999;
+    background: linear-gradient(135deg, rgb(37, 99, 235), rgb(124, 58, 237));
+    padding: 6px 10px;
+    border-radius:8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+}       
+.language-plugin svg path{
+  fill: #FFF;
+} 
+.language-plugin:hover{
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.25),
+    0 0 20px rgba(59, 130, 246, 0.5),
+    0 0 35px rgba(14, 165, 233, 0.4);
+}
+.language-plugin-landing{
+   position: fixed; 
+    top: 16px; 
+    right: 20px;
+    z-index: 99999;
+    background: #FFF;
+    padding: 6px 10px;
+    border-radius:8px;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+   box-shadow:0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+.language-plugin-landing:hover{
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.25),
+    0 0 20px rgba(59, 130, 246, 0.5),
+    0 0 35px rgba(14, 165, 233, 0.4);
+}
+.margin-right-50{
+  margin-right: 50px;
+}
