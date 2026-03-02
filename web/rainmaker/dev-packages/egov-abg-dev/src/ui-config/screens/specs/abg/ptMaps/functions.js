@@ -318,6 +318,7 @@ export const searchApiCall = async (state, dispatch) => {
       const landArea = item.landArea || item.landarea;
       const superbuiltuparea = item.superbuiltuparea || item.superbuiltuparea;
       const noOfFloors = item.noOfFloors || item.nooffloors || "";
+      const surveyId = item.surveyId || item.surveyid || "";
       const buildingName = item.buildingName || item.buildingname;
       const usageCategory = item.usageCategory || item.usagecategory;
       const propertyTypeCode =
@@ -404,6 +405,7 @@ export const searchApiCall = async (state, dispatch) => {
         usageCategory: usageCategory,
         propertyType: propertyType,
         noOfFloors: noOfFloors,
+        surveyId: surveyId,
         locality: localityCode,
         address: fullAddress,
         tenantId: tenantId
@@ -419,6 +421,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["Property Type"]: item.propertyType || "-",
         ["Usage Category"]: item.usageCategory || "-",
         ["No of Floors"]: item.noOfFloors || "-",
+        ["Survey ID"]: item.surveyId || "-",
         ["Locality"]: item.locality || "-",
         ["Address"]: item.address || "-",
         ["TENANT_ID"]: item.tenantId,
