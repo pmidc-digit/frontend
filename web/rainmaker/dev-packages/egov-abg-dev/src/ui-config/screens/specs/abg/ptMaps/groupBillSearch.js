@@ -1,13 +1,14 @@
+import get from "lodash/get";
 import {
   getCommonCard,
   getCommonContainer,
   getLabel, getTextField, getSelectField
 } from "egov-ui-framework/ui-config/screens/specs/utils";
-import { handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import { generateMultipleBill } from "../../utils/receiptPdf";
 import { searchApiCall, updatesingleReading } from "./functions";
-
+import { httpRequest } from "../../../../../ui-utils";
 const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
 const tenantvalueid = [{ name: getTenantId(), code: getTenantId() }];
 export const resetFields = (state, dispatch) => {
@@ -106,15 +107,94 @@ export const abgSearchCard = getCommonCard({
           },
           required: true,
           value: tenantId,
-          disabled: true,
+          isDisabled: getTenantId() === "pb.punjab" ? false : true,
+          readOnly: getTenantId() === "pb.punjab" ? false : true,
           isClearable: false,
           labelsFromLocalisation: true,
           className: "autocomplete-dropdown",
+          sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
           jsonPath: "searchCriteria.tenantId",
-          data: tenantvalueid,
-
         },
         jsonPath: "searchCriteria.tenantId",
+        afterFieldChange: async (action, state, dispatch) => {
+          let selecttetentid = await get(state, "screenConfiguration.preparedFinalObject.searchCriteria.tenantId");
+
+          if (true) {
+            try {
+              let response = await httpRequest(
+                "post",
+                "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+                "_search",
+                [{ key: "tenantId", value: selecttetentid }],
+                {}
+              );
+              let mohallaDataArray = [];
+              let localitysar = [];
+              let mohallaDataRow = null;
+              let name, code;
+              response.TenantBoundary[0].boundary.map((element, index) => {
+                // name = element.name + "( "+element.code+" )";
+                // code=element.code;
+                mohallaDataRow = { "code": element.code, "name": element.name };
+                mohallaDataArray.push(mohallaDataRow);
+
+              });
+              // mohallaDataArray =
+              //   response &&
+              //   response.TenantBoundary[0].boundary.filter((item) => {
+              //     localitysar.push({ item });
+              //     return localitysar;
+              //   }, []);
+              dispatch(prepareFinalObject("searchScreenMdmsData.localities", mohallaDataArray));
+
+            } catch (e) {
+              console.log(e);
+            }
+          }
+
+          else {
+            //locality
+
+            let response = await httpRequest(
+              "post",
+              "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+              "_search",
+              [{ key: "tenantId", value: getTenantIdCommon() }],
+              {}
+            );
+            let mohallaDataArray = [];
+            let localitysar = [];
+            let mohallaDataRow = null;
+            let name, code;
+            // response.TenantBoundary[0].boundary.map((element,index) => {
+            //  // name = element.name + "( "+element.code+" )";
+            //  // code=element.code;
+            //   mohallaDataRow={"code":element.code};
+            //  mohallaDataArray.push(mohallaDataRow);
+
+            // });
+            mohallaDataArray =
+              response &&
+              response.TenantBoundary[0].boundary.filter((item) => {
+                localitysar.push({ item });
+                return localitysar;
+              }, []);
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", mohallaDataArray));
+            dispatch(
+              prepareFinalObject(
+                "applyScreenMdmsData.tenant.batchs",
+                ""
+              )
+
+            );
+            dispatch(
+              prepareFinalObject(
+                "applyScreenMdmsData.tenant.groups",
+                ""
+              )
+            );
+          }
+        },
         gridDefination: {
           xs: 12,
           sm: 4
@@ -140,9 +220,10 @@ export const abgSearchCard = getCommonCard({
             labelName: "Select Location/Mohalla",
             labelKey: "ABG_LOCMOHALLA_PLACEHOLDER"
           },
+          //optionLabel: "name",
           jsonPath: "searchCriteria.locality",
           sourceJsonPath: "searchScreenMdmsData.localities",
-          labelsFromLocalisation: true,
+          labelsFromLocalisation: getTenantId() === "pb.punjab" ? false : true,
           required: false,
           isClearable: true,
         }

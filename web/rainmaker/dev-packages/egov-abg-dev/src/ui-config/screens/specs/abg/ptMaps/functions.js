@@ -143,7 +143,7 @@ export const showViewPopup = (state, dispatch, rowObject = {}) => {
   }
 };
 export const searchApiCall = async (state, dispatch) => {
-  debugger;
+
   showHideTable(false, dispatch);
   //showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -190,12 +190,16 @@ export const searchApiCall = async (state, dispatch) => {
     if (serviceObject[0] && serviceObject[0].billGineiURL) {
       searchScreenObject.url = serviceObject[0].billGineiURL;
     }
-    searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    if (getTenantId() != "pb.punjab") {
+      searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    }
+
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
 
 
       try {
         dispatch(toggleSpinner(true));
+
         const requestBody = {
           tenantId: searchScreenObject.tenantId || tenantId,
           locality: searchScreenObject.locality || "",
@@ -314,6 +318,7 @@ export const searchApiCall = async (state, dispatch) => {
       const landArea = item.landArea || item.landarea;
       const superbuiltuparea = item.superbuiltuparea || item.superbuiltuparea;
       const noOfFloors = item.noOfFloors || item.nooffloors || "";
+      const surveyId = item.surveyId || item.surveyid || "";
       const buildingName = item.buildingName || item.buildingname;
       const usageCategory = item.usageCategory || item.usagecategory;
       const propertyTypeCode =
@@ -400,6 +405,7 @@ export const searchApiCall = async (state, dispatch) => {
         usageCategory: usageCategory,
         propertyType: propertyType,
         noOfFloors: noOfFloors,
+        surveyId: surveyId,
         locality: localityCode,
         address: fullAddress,
         tenantId: tenantId
@@ -415,6 +421,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["Property Type"]: item.propertyType || "-",
         ["Usage Category"]: item.usageCategory || "-",
         ["No of Floors"]: item.noOfFloors || "-",
+        ["Survey ID"]: item.surveyId || "-",
         ["Locality"]: item.locality || "-",
         ["Address"]: item.address || "-",
         ["TENANT_ID"]: item.tenantId,

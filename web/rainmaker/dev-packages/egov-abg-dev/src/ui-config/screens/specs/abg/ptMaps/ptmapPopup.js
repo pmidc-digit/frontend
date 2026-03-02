@@ -102,7 +102,7 @@ const onContinue = () => {
 
 
 // React wrapper component
-const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, propertyType, usageCategory, noOfFloors, address, onClose, prepared, dispatch }) => {
+const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, propertyType, usageCategory, noOfFloors, surveyId, address, onClose, prepared, dispatch }) => {
 
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [revenueData, setRevenueData] = React.useState(null);
@@ -994,6 +994,12 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     <div style={{
                         padding: "0"
                     }}>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Survey Id</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{surveyId || "N/A"}</div>
+                    </div>
+                    <div style={{
+                        padding: "0"
+                    }}>
                         <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Address</div>
                         <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{address || "N/A"}</div>
                     </div>
@@ -1304,6 +1310,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     ownerMobile={ownerMobile}
                     landArea={landArea}
                     noOfFloors={noOfFloors}
+                    surveyId={surveyId}
                     locality={locality}
                     usageCategory={(USAGE_CATEGORY_OPTIONS.find(u => u.code === usageCategoryState) || {}).name || usageCategoryState}
                     address={address}
