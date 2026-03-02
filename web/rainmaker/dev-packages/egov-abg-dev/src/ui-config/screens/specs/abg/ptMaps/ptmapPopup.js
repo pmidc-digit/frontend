@@ -5,12 +5,12 @@ import {
     getTextField
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { handleScreenConfigurationFieldChange } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { store } from "egov-ui-framework/ui-redux/store";
 import React from "react";
 import { connect } from "react-redux";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { Dialog } from "components";
 import MapPTPopup from "./mapptpopup";
+import { removeTableRowByPropertyId } from "./functions";
 
 // Define usage categories as a constant outside the component to prevent recreation on every render
 const USAGE_CATEGORY_OPTIONS = [
@@ -787,7 +787,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         "categoryId": usageCategoryState,
                         "locality": locality || "",
                         "rate": mappedRate || -1,
-                        "unit": mappedunit || "",
+                        "unit": mappedunit || -1,
                         "rateId": mappedRateId || -1,
                         "isActive": true,
                         "isProrataCal": false,
@@ -810,7 +810,11 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
             console.log("Submit response:", response);
 
-            alert("Property rate mapping submitted successfully!");
+            //  alert("Property rate mapping submitted successfully!");
+
+            // Remove the row from the table after successful submission
+            dispatch(removeTableRowByPropertyId(propertiesId));
+
             setDialogOpen(false);
             onClose();
             setIsSubmitting(false);

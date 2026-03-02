@@ -45,7 +45,7 @@ export const updatesingleReading = async (consumerId, tenantId, currentReading, 
     // return response;
 
     // Fallback: no-op resolve so UI can proceed
-    console.log("Mock update for", payload);
+
     return Promise.resolve({ success: true, data: payload });
   } catch (e) {
     console.error(e);
@@ -301,7 +301,7 @@ export const searchApiCall = async (state, dispatch) => {
       const item = ptreveresponce[i];
 
       // Log to see actual structure
-      console.log("Property item:", item);
+
 
       // Handle both camelCase and lowercase field names
       const propertyId = item.propertyId || item.propertyid;
@@ -359,7 +359,7 @@ export const searchApiCall = async (state, dispatch) => {
         get(item, "propertyAddress") ||
         get(item, "propertyDetails.address") || {};
 
-      console.log("Address object:", addressObj);
+
 
       // Resolve locality display name using MDMS + localisation, falling back to code
       const localityMdms =
@@ -387,7 +387,7 @@ export const searchApiCall = async (state, dispatch) => {
         city || addressObj.city || addressObj.cityName
       ].filter(Boolean).join(", ") || "-";
 
-      console.log("Full address:", fullAddress);
+
 
       response.push({
         propertyId: propertyId,
@@ -421,8 +421,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["OWNERS_DATA"]: JSON.stringify(item.owners || [])
       }));
 
-      console.log("searchApiCall: prepared table data length:", data.length);
-      console.log("searchApiCall: sample row:", data[0]);
+
       dispatch(
         handleField(
           "ptreve",
@@ -445,8 +444,8 @@ export const searchApiCall = async (state, dispatch) => {
         const store = require("egov-ui-framework/ui-redux/store").default;
         const current = store.getState();
         const cfg = (current && current.screenConfiguration && current.screenConfiguration.screenConfig && current.screenConfiguration.screenConfig.ptreve && current.screenConfiguration.screenConfig.ptreve.components && current.screenConfiguration.screenConfig.ptreve.components.div && current.screenConfiguration.screenConfig.ptreve.components.div.children && current.screenConfiguration.screenConfig.ptreve.components.div.children.searchResults) || {};
-        console.log("searchApiCall: store.searchResults.props.data length:", (cfg.props && cfg.props.data && cfg.props.data.length) || 0);
-        console.log("searchApiCall: store.searchResults.visible:", cfg.visible);
+
+
       } catch (e) {
         console.warn("searchApiCall: could not read store for debug:", e);
       }
@@ -470,6 +469,71 @@ const showHideTable = (booleanHideOrShow, dispatch) => {
       booleanHideOrShow
     )
   );
+};
+
+// Function to remove a row from search results table by property ID (Thunk action)
+export const removeTableRowByPropertyId = (propertyId) => {
+  return (dispatch, getState) => {
+    try {
+      const state = getState();
+      const tableData = get(
+        state,
+        "screenConfiguration.screenConfig.ptreve.components.div.children.searchResults.props.data",
+        []
+      );
+
+      if (!tableData || tableData.length === 0) {
+        console.warn("No table data found to remove row from");
+        return;
+      }
+
+      // Filter out the row with matching property ID
+      const updatedTableData = tableData.filter(row => {
+        const rowPropertyId = row["Property ID"];
+        return rowPropertyId !== propertyId;
+      });
+
+
+      // Update the table data in Redux state
+      dispatch(
+        handleField(
+          "ptreve",
+          "components.div.children.searchResults",
+          "props.data",
+          updatedTableData
+        )
+      );
+
+      // Update the row count
+      dispatch(
+        handleField(
+          "ptreve",
+          "components.div.children.searchResults",
+          "props.rows",
+          updatedTableData.length
+        )
+      );
+
+      // If no rows left, hide the table
+      if (updatedTableData.length === 0) {
+        showHideTable(false, dispatch);
+      }
+
+      // Show success message
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Property rate mapping submitted successfully!",
+            labelKey: "ABG_PROPERTY_RATE_MAPPING_SUBMITTED_SUCCESSFULLY"
+          },
+          "success"
+        )
+      );
+    } catch (error) {
+      console.error("Error removing table row:", error);
+    }
+  };
 };
 
 
