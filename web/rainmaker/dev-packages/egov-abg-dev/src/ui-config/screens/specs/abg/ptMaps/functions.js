@@ -472,4 +472,70 @@ const showHideTable = (booleanHideOrShow, dispatch) => {
   );
 };
 
+// Function to remove a row from search results table by property ID (Thunk action)
+export const removeTableRowByPropertyId = (propertyId) => {
+  return (dispatch, getState) => {
+    try {
+      const state = getState();
+      const tableData = get(
+        state,
+        "screenConfiguration.screenConfig.ptreve.components.div.children.searchResults.props.data",
+        []
+      );
+
+      if (!tableData || tableData.length === 0) {
+        console.warn("No table data found to remove row from");
+        return;
+      }
+
+      // Filter out the row with matching property ID
+      const updatedTableData = tableData.filter(row => {
+        const rowPropertyId = row["Property ID"];
+        return rowPropertyId !== propertyId;
+      });
+
+      console.log(`Removed row with propertyId: ${propertyId}. Original count: ${tableData.length}, New count: ${updatedTableData.length}`);
+
+      // Update the table data in Redux state
+      dispatch(
+        handleField(
+          "ptreve",
+          "components.div.children.searchResults",
+          "props.data",
+          updatedTableData
+        )
+      );
+
+      // Update the row count
+      dispatch(
+        handleField(
+          "ptreve",
+          "components.div.children.searchResults",
+          "props.rows",
+          updatedTableData.length
+        )
+      );
+
+      // If no rows left, hide the table
+      if (updatedTableData.length === 0) {
+        showHideTable(false, dispatch);
+      }
+
+      // Show success message
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Property rate mapping submitted successfully!",
+            labelKey: "ABG_PROPERTY_RATE_MAPPING_SUBMITTED_SUCCESSFULLY"
+          },
+          "success"
+        )
+      );
+    } catch (error) {
+      console.error("Error removing table row:", error);
+    }
+  };
+};
+
 
