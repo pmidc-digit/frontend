@@ -45,7 +45,7 @@ export const updatesingleReading = async (consumerId, tenantId, currentReading, 
     // return response;
 
     // Fallback: no-op resolve so UI can proceed
-    console.log("Mock update for", payload);
+
     return Promise.resolve({ success: true, data: payload });
   } catch (e) {
     console.error(e);
@@ -301,7 +301,7 @@ export const searchApiCall = async (state, dispatch) => {
       const item = ptreveresponce[i];
 
       // Log to see actual structure
-      console.log("Property item:", item);
+
 
       // Handle both camelCase and lowercase field names
       const propertyId = item.propertyId || item.propertyid;
@@ -359,7 +359,7 @@ export const searchApiCall = async (state, dispatch) => {
         get(item, "propertyAddress") ||
         get(item, "propertyDetails.address") || {};
 
-      console.log("Address object:", addressObj);
+
 
       // Resolve locality display name using MDMS + localisation, falling back to code
       const localityMdms =
@@ -387,7 +387,7 @@ export const searchApiCall = async (state, dispatch) => {
         city || addressObj.city || addressObj.cityName
       ].filter(Boolean).join(", ") || "-";
 
-      console.log("Full address:", fullAddress);
+
 
       response.push({
         propertyId: propertyId,
@@ -421,8 +421,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["OWNERS_DATA"]: JSON.stringify(item.owners || [])
       }));
 
-      console.log("searchApiCall: prepared table data length:", data.length);
-      console.log("searchApiCall: sample row:", data[0]);
+
       dispatch(
         handleField(
           "ptreve",
@@ -445,8 +444,8 @@ export const searchApiCall = async (state, dispatch) => {
         const store = require("egov-ui-framework/ui-redux/store").default;
         const current = store.getState();
         const cfg = (current && current.screenConfiguration && current.screenConfiguration.screenConfig && current.screenConfiguration.screenConfig.ptreve && current.screenConfiguration.screenConfig.ptreve.components && current.screenConfiguration.screenConfig.ptreve.components.div && current.screenConfiguration.screenConfig.ptreve.components.div.children && current.screenConfiguration.screenConfig.ptreve.components.div.children.searchResults) || {};
-        console.log("searchApiCall: store.searchResults.props.data length:", (cfg.props && cfg.props.data && cfg.props.data.length) || 0);
-        console.log("searchApiCall: store.searchResults.visible:", cfg.visible);
+
+
       } catch (e) {
         console.warn("searchApiCall: could not read store for debug:", e);
       }
@@ -494,7 +493,6 @@ export const removeTableRowByPropertyId = (propertyId) => {
         return rowPropertyId !== propertyId;
       });
 
-      console.log(`Removed row with propertyId: ${propertyId}. Original count: ${tableData.length}, New count: ${updatedTableData.length}`);
 
       // Update the table data in Redux state
       dispatch(
