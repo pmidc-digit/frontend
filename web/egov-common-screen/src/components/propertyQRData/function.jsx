@@ -1,5 +1,5 @@
 import API from "./api";
-import { statetenantId } from "./constant";
+import { statetenantId, AUTHORIZATION_TOKEN} from "./constant";
 import { showSuccess, showError } from "../../utils/toast";
 import { use } from "react";
 import axios from "axios";
@@ -9,7 +9,7 @@ export const checkMobileNumber = async (number) => {
     const isMobileValid = mobileNumberPattern.test(number);
     if(isMobileValid){
        const data =  await sendOtp(number);
-       console.log("data",data)
+       //console.log("data",data)
     }
 }
 export const sendOtp = async (mobileNumber) => {
@@ -20,7 +20,7 @@ export const sendOtp = async (mobileNumber) => {
       "/user-otp/v1/_send?tenantId=pb",
       payload
     );
-    console.log("response",response.data)
+   // console.log("response",response.data)
      showSuccess("Enter OTP");
 
   } catch (error) {
@@ -48,7 +48,7 @@ const createOtpPayload = (mobileNumber, tenantId, userType='CITIZEN') => ({
 
 export const loginWithOtp = async (mobileNumber, otp, userType='CITIZEN') => {
   try {
-    debugger
+    //debugger
     // Create form-urlencoded body
     const params = new URLSearchParams();
     params.append("username", mobileNumber);
@@ -64,8 +64,7 @@ export const loginWithOtp = async (mobileNumber, otp, userType='CITIZEN') => {
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization:
-            "Basic ZWdvdi11c2VyLWNsaWVudDplZ292LXVzZXItc2VjcmV0",
+          Authorization: AUTHORIZATION_TOKEN,
         },
       }
     );
