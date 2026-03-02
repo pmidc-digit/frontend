@@ -143,7 +143,7 @@ export const showViewPopup = (state, dispatch, rowObject = {}) => {
   }
 };
 export const searchApiCall = async (state, dispatch) => {
-  debugger;
+
   showHideTable(false, dispatch);
   //showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -190,12 +190,16 @@ export const searchApiCall = async (state, dispatch) => {
     if (serviceObject[0] && serviceObject[0].billGineiURL) {
       searchScreenObject.url = serviceObject[0].billGineiURL;
     }
-    searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    if (getTenantId() != "pb.punjab") {
+      searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    }
+
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
 
 
       try {
         dispatch(toggleSpinner(true));
+
         const requestBody = {
           tenantId: searchScreenObject.tenantId || tenantId,
           locality: searchScreenObject.locality || "",
