@@ -34,6 +34,7 @@ const DisplayPropertyRecord = () => {
     }, [surveyID, tenantId, mobileNumber]);
    // console.log("propertyData", propertyData)
    const editPropertyurl = (propertyID, tenantid)=>{
+    debugger
     let url = `/citizen/property-tax/assessment-form?assessmentId=0&purpose=update&propertyId=${propertyID}&tenantId=${tenantid}`;
     window.location.replace(url);   
    }
