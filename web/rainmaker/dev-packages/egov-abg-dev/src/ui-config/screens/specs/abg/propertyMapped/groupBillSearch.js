@@ -113,7 +113,7 @@ export const abgSearchCard = getCommonCard({
           isDisabled: getTenantId() === "pb.punjab" ? false : true,
           readOnly: getTenantId() === "pb.punjab" ? false : true,
           isClearable: false,
-          labelsFromLocalisation: true,
+          labelsFromLocalisation: getTenantId() === "pb.punjab" ? false : true,
           className: "autocomplete-dropdown",
           jsonPath: "searchCriteria.tenantId",
           sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
