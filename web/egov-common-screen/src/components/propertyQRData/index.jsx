@@ -5,7 +5,7 @@ import './index.css'
 import { useNavigate } from 'react-router-dom';
 import OtpInput from './otpInput';
 import { useSearchParams } from 'react-router-dom';
-import { checkMobileNumber, loginWithOtp, searchPropertyBySurvey } from './function.jsx'
+import { checkMobileNumber, loginWithOtp, setUserDetails } from './function.jsx'
 import { statetenantId } from "./constant.jsx"
 //URL : propertyQRData?surveyid=123&tenantid=pb.amritsar&mobileno=9335130557
 import { showLoading, showError } from "../../utils/toast.jsx"
@@ -57,9 +57,10 @@ const ProppertyQRData = () => {
         const result = await loginWithOtp(mobileNumber, otp);
         if (result.success) {
             console.log("Access Token:", result);
-            storage.set("user-info", result.data.UserRequest);
-            storage.set("token", result.data.access_token);
-            storage.set("tenant-id", statetenantId);
+            // storage.set("user-info", result.data.UserRequest);
+            // storage.set("token", result.data.access_token);
+            // storage.set("tenant-id", statetenantId);
+            setUserDetails(result.data, statetenantId)
             const qs = new URLSearchParams({
                 surveyid: surveyID,
                 tenantid: tenantId,

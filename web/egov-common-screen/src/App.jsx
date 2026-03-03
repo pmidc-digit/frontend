@@ -30,7 +30,7 @@ function App() {
     <>
 
       {/* //basename="/common" */}
-      <BrowserRouter basename="/common">
+      <BrowserRouter basename="/">
 
 
         <Layout>

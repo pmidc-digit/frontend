@@ -1,6 +1,7 @@
 import API from "./api";
 import { statetenantId, AUTHORIZATION_TOKEN} from "./constant";
 import { showSuccess, showError } from "../../utils/toast";
+import { storage } from "../../utils/localstorage";
 import { use } from "react";
 import axios from "axios";
 export const checkMobileNumber = async (number) => {
@@ -135,3 +136,30 @@ export const getAddressArray = (propertyaddress) => {
   // Remove null, undefined, empty string
   return addressParts.filter(Boolean);
 };
+
+export const setUserDetails = (userData, statetenantId)=>{
+      storage.set("user-info", userData.UserRequest);
+      storage.set("token", userData.access_token);
+      storage.set("tenant-id",statetenantId);
+      storage.set("refresh-token", userData.refresh_token);
+      storage.set("module", "rainmaker-common");
+      storage.set("locale", "en_IN");
+      storage.set("isNative",false);
+      storage.set("expires-in",userData.expires_in);
+      storage.set("CITIZEN.CITY",userData.UserRequest.permanentCity);
+      storage.set("path","");
+      storage.set("menuPath","");
+      storage.set("menuName","");
+      storage.set("Citizen.user-info", userData.UserRequest);
+      storage.set("Citizen.token", userData.access_token);
+      storage.set("Citizen.tenant-id",statetenantId);
+      storage.set("Citizen.refresh-token", userData.refresh_token);
+      storage.set("Citizen.module", "rainmaker-common");
+      storage.set("Citizen.locale", "en_IN");
+      storage.set("Citizen.isNative",false);
+      storage.set("Citizen.expires-in",userData.expires_in);
+      storage.set("Citizen.CITIZEN.CITY",userData.UserRequest.permanentCity);
+      storage.set("Citizen.path","");
+      storage.set("Citizen.menuPath","");
+      storage.set("Citizen.menuName","");
+}
