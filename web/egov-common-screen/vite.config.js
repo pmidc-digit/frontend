@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    base: "/",
+    base: "/common",
 
     server: {
       host: "localhost",
