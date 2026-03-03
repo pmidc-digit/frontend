@@ -55,7 +55,7 @@ export const searchResults = {
           customBodyRender: (value, tableMeta) => {
             const RowAction = () => {
               const [open, setOpen] = React.useState(false);
-              debugger;
+
               const row = tableMeta.rowData || [];
               const propertiesId = row[0] || "";
               const ownerName = row[1] || "";
