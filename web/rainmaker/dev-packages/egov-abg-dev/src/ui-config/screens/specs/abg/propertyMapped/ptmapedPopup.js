@@ -123,7 +123,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         // Map usageCategory to category code
         const raw = String(usageCategory || "").trim().toUpperCase();
         if (raw.includes("RESIDENTIAL") && !raw.includes("NONRESIDENTIAL")) return "110";
-        if (raw.includes("COMMERCIAL") || raw.includes("NONRESIDENTIAL")) return "111";
+        if (raw.includes("COMMERCIAL") || raw.includes("NONRESIDENTIAL") || raw.includes("INSTITUTIONAL")) return "111";
         if (raw.includes("INDUSTRIAL")) return "112";
         if (raw.includes("OTHERS")) return "113";
         if (raw.includes("AGRICULTURE")) return "109";
@@ -204,7 +204,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 (x) => String(x.name).trim().toUpperCase() === "RESIDENTIAL"
             );
             setUsageCategoryState((residential && residential.code) || "110");
-        } else if (raw.includes("COMMERCIAL") || raw.includes("NONRESIDENTIAL")) {
+        } else if (raw.includes("COMMERCIAL") || raw.includes("NONRESIDENTIAL") || raw.includes("INSTITUTIONAL")) {
             const commercial = USAGE_CATEGORY_OPTIONS.find(
                 (x) => String(x.name).trim().toUpperCase() === "COMMERCIAL"
             );
@@ -243,7 +243,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         const fetchRevenueData = async () => {
             try {
                 setIsSubmitting(true);
-               
+
                 console.log("Prepared object:", prepared);
 
                 // Try multiple paths to get tenantId
@@ -271,7 +271,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     requestBody
                 );
 
-                
+
                 setRevenueData(response);
 
                 const propertydisits = (response && response.districts) || [];
@@ -281,7 +281,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 if (Array.isArray(propertydisits) && propertydisits.length > 0) {
 
                     setDistricts(propertydisits);
-                   
+
 
                     // If no persisted district, auto-select based on login/tenant (first available)
                     const persistedDistrict = localStorage.getItem("ptmap_district") || "";
@@ -296,7 +296,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         }
                     }
                 } else {
-                   
+
                     setDistricts([]);
                 }
 
@@ -626,7 +626,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     requestBody
                 );
 
-              
+
 
                 // Extract tehsils from response
                 const tehsilsData = (response && response.tehsils) || [];
@@ -662,7 +662,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         if (selectedTehsil) {
             try {
                 setIsSubmitting(true);
-              
+
 
                 const requestBody = {
                     searchCriteria: {
@@ -689,11 +689,11 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     response.data
                 )) || [];
 
-              
+
 
                 if (Array.isArray(villagesData) && villagesData.length > 0) {
                     setVillages(villagesData);
-                  
+
                 } else {
                     console.warn('No villages found for tehsil');
                     setVillages([]);
@@ -720,7 +720,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         if (selectedVillage) {
             try {
                 setIsSubmitting(true);
-              
+
                 const requestBody = {
                     searchCriteria: {
                         villageId: selectedVillage,
@@ -745,7 +745,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     response.segmentList ||
                     response.data
                 )) || [];
-             
+
 
                 if (Array.isArray(segmentsData) && segmentsData.length > 0) {
                     setSegments(segmentsData);
@@ -779,7 +779,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         // Fetch sub-segments for selected segment
         try {
             setIsSubmitting(true);
-       
+
             const subSegRequestBody = {
                 searchCriteria: {
                     segmentId: selectedSegment,
@@ -788,7 +788,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 }
             };
 
-    
+
 
             const subSegResponse = await httpRequest(
                 "post",
@@ -798,7 +798,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 subSegRequestBody
             );
 
-            
+
 
             const subSegmentsData = (subSegResponse && (
                 subSegResponse.subSegments ||
@@ -812,7 +812,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     code: String(s.code || s.subSegmentId || s.id || s.value || idx + 1),
                     name: s.name || s.label || s.display || s.subSegmentName || (s.code || `Sub-Segment ${idx + 1}`)
                 }));
-               
+
                 setSubSegments(subSegmentOptions);
             } else {
                 console.warn('No sub-segments found for segment');
@@ -846,7 +846,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         try {
             setIsSubmitting(true);
-         
+
 
             const requestBody = {
                 searchCriteria: {
@@ -863,7 +863,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 }
             };
 
-         
+
 
             const url = "/egov-property-rate/property-rate/_search";
 
@@ -892,7 +892,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
             setIsSubmitting(false);
         } catch (error) {
-           
+
             setIsSubmitting(false);
             setMappedRate(0);
             setMappedRateId(0);
@@ -919,7 +919,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         try {
             setIsSubmitting(true);
-        
+
 
             const requestBody = {
                 searchCriteria: {
@@ -940,7 +940,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 requestBody
             );
 
-         
+
 
             const usageData = (response && (
                 response.usageCategories ||
@@ -1116,7 +1116,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         try {
             setIsSubmitting(true);
-            
+
             const requestBody = {
                 PropertyRates: [{
                     id: rowdatacomplete.integration_id,
@@ -1137,7 +1137,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
                 }]
             };
-          
+
 
             const url = "/egov-property-rate/property-rate/_update";
 
@@ -1149,7 +1149,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                 requestBody
             );
 
-         
+
 
             // Close all popups first, then show success message
             if (response) {
