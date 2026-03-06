@@ -3,7 +3,7 @@ import Loadable from 'react-loadable';
 import LoadingIndicator from 'egov-ui-framework/ui-molecules/LoadingIndicator';
 import * as mainRouteConstants from "./route-names";
 
-const Loading = () => <LoadingIndicator/>;
+const Loading = () => <LoadingIndicator />;
 
 const Landing = Loadable({
   loader: () => import('ui-views/Landing'),
@@ -15,9 +15,9 @@ const Playground = Loadable({
   loading: Loading,
 });
 
-const ScreenInterface=Loadable({
-  loader:()=>import ('ui-views/ScreenInterface'),
-  loading:Loading
+const ScreenInterface = Loadable({
+  loader: () => import('ui-views/ScreenInterface'),
+  loading: Loading
 })
 
 const mainRoutes = [
@@ -26,16 +26,20 @@ const mainRoutes = [
     component: Landing
   },
   {
-    path:mainRouteConstants.SCREEN_INTERFACE,
-    component:ScreenInterface
+    path: mainRouteConstants.SCREEN_INTERFACE,
+    component: ScreenInterface
   },
   {
     path: mainRouteConstants.PLAYGROUND,
     component: Playground
   },
   {
-    isRedirect:true,
-    to:mainRouteConstants.REDIRECT
+    isRedirect: true,
+    to: mainRouteConstants.REDIRECT
+  },
+  {
+    isRedirect: true,
+    to: mainRouteConstants.PROPERTYREDIRECT
   }
 ];
 

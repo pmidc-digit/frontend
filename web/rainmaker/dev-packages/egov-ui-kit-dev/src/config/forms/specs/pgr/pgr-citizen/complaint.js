@@ -65,7 +65,7 @@ const formConfig = {
         }
         return action;
       },
-      labelsFromLocalisation: true,
+      labelsFromLocalisation: false,
       dataFetchConfig: {
         dependants: [
           {

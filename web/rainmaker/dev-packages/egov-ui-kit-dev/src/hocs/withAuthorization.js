@@ -49,6 +49,11 @@ const withAuthorization = (options = {}) => (Component) => {
       // This component is wrapped by multiple HOCs and would cause duplicate API calls
       // Only fetch on navigation via componentDidUpdate
       console.log('[withAuthorization] componentDidMount - Skipping initial fetch (handled by App.js)');
+        const script = document.createElement("script");
+        script.id = "bhashini-translation-script";
+        script.src = "https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js";
+        script.async = true;
+        document.body.appendChild(script);
     }
 
     citizenTenantId = () => {
@@ -102,7 +107,7 @@ const withAuthorization = (options = {}) => (Component) => {
       // FIX: Use componentDidUpdate instead of deprecated componentWillReceiveProps
       // Only fetch locale if the route actually changed (not on every prop change)
       if (this.props.location && prevProps.location &&
-          this.props.location.pathname !== prevProps.location.pathname) {
+        this.props.location.pathname !== prevProps.location.pathname) {
         this.fetchLocale();
       }
     }
@@ -198,119 +203,124 @@ const withAuthorization = (options = {}) => (Component) => {
       let drawerClsName = menuDrawerOpen ? "full-menu-drawer" : "icon-menu-drawer";
       let screencls = menuDrawerOpen ? "with-full-menu" : "with-icon-menu";
       return (
-        <div className="rainmaker-header-cont" style={{ position: "relative" }}>
-          {!hideHeader && authenticated ? (
-            <Header
-              title={title}
-              titleAddon={role !== hideFor && titleAddon && titleAddon}
-              //titleObject={role !== hideFor && titleObject && titleObject}
-              hasLocalisation={hasLocalisation}
-              userInfo={userInfo}
-              role={role}
-              options={options}
-              history={history}
-              refreshButton={refreshButton}
-              sortButton={sortButton}
-              searchButton={searchButton}
-              helpButton={helpButton}
-              notificationButton={notificationButton}
-              //className={isHomeScreen&&process.env.REACT_APP_NAME==="Citizen" ? "rainmaker-header-home-small-screen" : "rainmaker-header"}
-              className={"rainmaker-header"}
-            />
-          ) : null}
-          <div className=" col-xs-12" style={{ padding: 0 }}>
-            {!hideActionMenu && authenticated && (
-              <div>
-                <div className={`col-xs-2 action-menu-drawer show-action-menu ${drawerClsName}`} id="menu-container">
-                  <div className="rainmaker-action-menu">
-                    <ActionMenu
-                      role={role}
-                      toggleDrawer={(menuItmeClick = true) => {
-                        this.toggleDrawer(menuItmeClick);
-                      }}
-                      menuDrawerOpen={menuDrawerOpen}
-                    />
-                  </div>
-                </div>
-                <div className="col-xs-2  show-action-menu" /> {/*Dummy div for proper alignment - fixed positioning drawbacks*/}
-              </div>
-            )}
-
-            <div className={`col-xs-12 col-sm-10 ${screencls}`} style={{ padding: 0 }}>
-              {authenticated ? (
+        <div>
+          <div className="rainmaker-header-cont" style={{ position: "relative" }}>
+            {!hideHeader && authenticated ? (
+              <Header
+                title={title}
+                titleAddon={role !== hideFor && titleAddon && titleAddon}
+                //titleObject={role !== hideFor && titleObject && titleObject}
+                hasLocalisation={hasLocalisation}
+                userInfo={userInfo}
+                role={role}
+                options={options}
+                history={history}
+                refreshButton={refreshButton}
+                sortButton={sortButton}
+                searchButton={searchButton}
+                helpButton={helpButton}
+                notificationButton={notificationButton}
+                //className={isHomeScreen&&process.env.REACT_APP_NAME==="Citizen" ? "rainmaker-header-home-small-screen" : "rainmaker-header"}
+                className={"rainmaker-header"}
+              />
+            ) : null}
+            <div className=" col-xs-12" style={{ padding: 0 }}>
+              {!hideActionMenu && authenticated && (
                 <div>
-                  {!hideTitle && role !== hideFor && (
-                    <div>
-                      <div className={"screen-title-label col-xs-8"} style={{ padding: "24px 0 8px 16px" }}>
-                        <Label
-                          className={titleBackground ? "title-white-background screen-title-label" : "screen-title-label"}
-                          label={role === customFor ? customTitle : title}
-                          containerStyle={{ marginRight: 3 }}
-                          dark={true}
-                          bold={true}
-                          fontSize={20}
-                        />
-                        {titleAddon && (
+                  <div className={`col-xs-2 action-menu-drawer show-action-menu ${drawerClsName}`} id="menu-container">
+                    <div className="rainmaker-action-menu">
+                      <ActionMenu
+                        role={role}
+                        toggleDrawer={(menuItmeClick = true) => {
+                          this.toggleDrawer(menuItmeClick);
+                        }}
+                        menuDrawerOpen={menuDrawerOpen}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xs-2  show-action-menu" /> {/*Dummy div for proper alignment - fixed positioning drawbacks*/}
+                </div>
+              )}
+
+              <div className={`col-xs-12 col-sm-10 ${screencls}`} style={{ padding: 0 }}>
+                {authenticated ? (
+                  <div>
+                    {!hideTitle && role !== hideFor && (
+                      <div>
+                        <div className={"screen-title-label col-xs-8"} style={{ padding: "24px 0 8px 16px" }}>
                           <Label
                             className={titleBackground ? "title-white-background screen-title-label" : "screen-title-label"}
-                            label={titleAddon}
+                            label={role === customFor ? customTitle : title}
+                            containerStyle={{ marginRight: 3 }}
                             dark={true}
                             bold={true}
                             fontSize={20}
                           />
-                        )}
-                        {titleObject && (
-                          <div className="rainmaker-displayInline">
-                            {titleObject.map((item) => {
-                              return (
-                                <Label
-                                  className={titleBackground ? "title-white-background screen-title-label" : "screen-title-label"}
-                                  label={item}
-                                  dark={true}
-                                  bold={true}
-                                  fontSize={20}
-                                  containerStyle={{ marginRight: 5 }}
-                                />
-                              );
-                            })}
+                          {titleAddon && (
+                            <Label
+                              className={titleBackground ? "title-white-background screen-title-label" : "screen-title-label"}
+                              label={titleAddon}
+                              dark={true}
+                              bold={true}
+                              fontSize={20}
+                            />
+                          )}
+                          {titleObject && (
+                            <div className="rainmaker-displayInline">
+                              {titleObject.map((item) => {
+                                return (
+                                  <Label
+                                    className={titleBackground ? "title-white-background screen-title-label" : "screen-title-label"}
+                                    label={item}
+                                    dark={true}
+                                    bold={true}
+                                    fontSize={20}
+                                    containerStyle={{ marginRight: 5 }}
+                                  />
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                        {sortButton && (
+                          <div className="sort-button col-xs-4" style={{ padding: "20px 20px 0px 0px" }}>
+                            <div
+                              className="rainmaker-displayInline"
+                              style={{ cursor: "pointer", justifyContent: "flex-end" }}
+                              onClick={this.onSortClick}
+                            >
+                              <Label
+                                label="ES_SORT_BUTTON"
+                                color="rgba(0, 0, 0, 0.8700000047683716)"
+                                containerStyle={{ marginRight: 5 }}
+                                labelStyle={{ fontWeight: 500 }}
+                              />
+                              <Icon style={style.iconStyle} action="action" name="swap-vert" color="#484848" />
+                            </div>
+                            <SortDialog sortPopOpen={this.state.sortPopOpen} closeSortDialog={this.closeSortDialog} />
                           </div>
                         )}
                       </div>
-                      {sortButton && (
-                        <div className="sort-button col-xs-4" style={{ padding: "20px 20px 0px 0px" }}>
-                          <div
-                            className="rainmaker-displayInline"
-                            style={{ cursor: "pointer", justifyContent: "flex-end" }}
-                            onClick={this.onSortClick}
-                          >
-                            <Label
-                              label="ES_SORT_BUTTON"
-                              color="rgba(0, 0, 0, 0.8700000047683716)"
-                              containerStyle={{ marginRight: 5 }}
-                              labelStyle={{ fontWeight: 500 }}
-                            />
-                            <Icon style={style.iconStyle} action="action" name="swap-vert" color="#484848" />
-                          </div>
-                          <SortDialog sortPopOpen={this.state.sortPopOpen} closeSortDialog={this.closeSortDialog} />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  <Component
-                    {...this.props}
-                    title={title}
-                    renderCustomTitleForPt={this.renderCustomTitleForPt}
-                    renderCustomTitle={this.renderCustomTitle}
-                  />
-                </div>
-              ) : null}
+                    )}
+                    <Component
+                      {...this.props}
+                      title={title}
+                      renderCustomTitleForPt={this.renderCustomTitleForPt}
+                      renderCustomTitle={this.renderCustomTitle}
+                    />
+                  </div>
+                ) : null}
+              </div>
             </div>
-          </div>
-          {/* {!hideFooter && authenticated ? (
+            {/* {!hideFooter && authenticated ? (
             <div className="hidden-md hidden-sm hidden-lg">
               <Footer history={history} role={role} />
             </div>
           ) : null} */}
+          </div>
+          <div className="language-plugin">
+            <div className="bhashini-plugin-container"></div>
+          </div>
         </div>
       );
     }

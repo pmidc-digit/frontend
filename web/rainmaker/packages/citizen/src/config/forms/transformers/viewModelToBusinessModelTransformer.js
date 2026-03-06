@@ -147,13 +147,16 @@ const transformer = (formKey, form = {}, state = {}) => {
       const userInfo = getUserInfo();
       const isNative = JSON.parse(localStorageGet("isNative"));
       let userPhone = null;
+      let citizenName = null;
       try {
         userPhone = JSON.parse(userInfo).mobileNumber;
+        citizenName = JSON.parse(userInfo).name;
         const index = JSON.parse(userInfo).roles.findIndex((role) => {
           return role.code === "CITIZEN";
         });
         formData.services[0].source = index > -1 ? isNative ? "mobileapp" : "web" : "";
         formData.services[0].phone = userPhone;
+        formData.services[0].name = citizenName;
       } catch (error) {}
 
       try {

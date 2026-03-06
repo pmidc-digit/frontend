@@ -1,4 +1,4 @@
-import { getBreak, getCommonHeader } from "egov-ui-framework/ui-config/screens/specs/utils";
+import { getBreak, getCommonHeader, getLabel } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import { httpRequest } from "../../../../ui-utils";
@@ -7,7 +7,7 @@ import {
   abgSearchCard,
   mergeDownloadButton, resetFields
 } from "./groupBillResource/groupBillSearch";
-import { searchResults } from "./groupBillResource/searchResults";
+import { searchResults, searchResultsIntergrated } from "./groupBillResource/searchResults";
 import "./index.css";
 
 const tenantId = getTenantId();
@@ -113,18 +113,53 @@ const abgSearchAndResult = {
                 sm: 6
               },
               ...header
+            },
+            groupBillButton: {
+              componentPath: "Button",
+              gridDefination: {
+                xs: 12,
+                sm: 6,
+                align: "right"
+              },
+              visible: true,
+              props: {
+                variant: "contained",
+                color: "primary",
+                style: {
+                  color: "white",
+                  borderRadius: "2px",
+                  width: "250px",
+                  height: "48px"
+                }
+              },
+              children: {
+                ButtonLabel: getLabel({
+                  labelName: "Bill Download",
+                  labelKey: "ABG_BILL_DOWNLOAD"
+                })
+              },
+              onClickDefination: {
+                action: "page_change",
+                path:
+                  process.env.REACT_APP_SELF_RUNNING === "true"
+                    ? `/egov-ui-framework/abg/groupBillDownloads`
+                    : `/abg/groupBillDownloads`
+              },
+              //visible: (process.env.REACT_APP_NAME === "Citizen") ? false : true
+              visible: false 
             }
           }
         },
-        abgSearchCard,
-        breakAfterSearch: getBreak(),
-        // progressStatus,
-        searchResults,
-        breakAfterSearchResults: getBreak(),
-        mergeDownloadButton
-      }
+      abgSearchCard,
+      breakAfterSearch: getBreak(),
+      // progressStatus,
+      searchResults,
+      searchResultsIntergrated,
+      breakAfterSearchResults: getBreak(),
+      mergeDownloadButton
     }
   }
+}
 };
 
 export default abgSearchAndResult;

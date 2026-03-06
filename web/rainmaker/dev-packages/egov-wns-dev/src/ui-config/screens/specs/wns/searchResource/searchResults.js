@@ -147,8 +147,7 @@ export const searchResults = {
 };
 
 const getConnectionDetails = (data) => {
-  // 
-  console.log("data++", data);
+  
   let legacy;
   if (data.rowData[11] === true) {
     legacy = true;

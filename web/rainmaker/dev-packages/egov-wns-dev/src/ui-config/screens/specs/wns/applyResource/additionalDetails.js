@@ -885,24 +885,6 @@ export const additionDetails = getCommonCard({
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "applyScreen.additionalDetails.initialMeterReading"
       }),
-      relatedSWConnection: getTextField({
-        label: {
-          labelKey: "Related Sewerage Connection"
-        },
-        placeholder: {
-          labelKey: "Related Sewerage Connection"
-        },
-        gridDefination: {
-          xs: 12,
-          sm: 6
-        },
-        required: false,
-        //pattern: /^[a-z0-9]+$/i,
-        visible: getTenantId() == "pb.amritsar" ? true : false,
-        //visible: false,
-        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
-        jsonPath: "applyScreen.relatedSwConnection"
-      }),
       ...WSMeterMakes,
 
     })

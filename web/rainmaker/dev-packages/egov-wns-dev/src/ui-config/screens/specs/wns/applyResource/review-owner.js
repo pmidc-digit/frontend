@@ -384,6 +384,22 @@ export const activateDetailsMeter = {
       jsonPath: "WaterConnectionOld[0].additionalDetails.avarageMeterReading",
       callBack: handleNA
     }
+  ),
+  relatedSwConnection: getLabelWithValueForModifiedLabel(
+    {
+      labelName: "Related SW Connection",
+      labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION"
+    },
+    {
+      jsonPath: "WaterConnection[0].relatedSwConnection",
+      callBack: handleNA
+    }, {
+    labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION"
+  },
+    {
+      jsonPath: "WaterConnectionOld[0].relatedSwConnection",
+      callBack: handleNA
+    }
   )
 
 }
@@ -467,6 +483,21 @@ export const activationDetailsContainer = {
       pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
       errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
       jsonPath: "WaterConnection[0].additionalDetails.initialMeterReading"
+    }),
+    relatedSwConnection: getTextField({
+      label: {
+        labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION"
+      },
+      placeholder: {
+        labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION_PLACEHOLDER"
+      },
+      gridDefination: {
+        xs: 12,
+        sm: 6
+      },
+
+      errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      jsonPath: "applyScreen.relatedSwConnection"
     }),
     // ...WSMeterMakes,
     meterMake: getTextField({

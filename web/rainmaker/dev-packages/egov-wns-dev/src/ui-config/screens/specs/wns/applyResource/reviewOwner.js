@@ -266,7 +266,23 @@ export const reviewAverageMakeReading = getLabelWithValueForModifiedLabel(
     callBack: handleNA
   }
 );
-
+export const relatedSwConnection = getLabelWithValueForModifiedLabel(
+  {
+    labelName: "Related SW Connection",
+    labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION"
+  },
+  {
+    jsonPath: "applyScreen.relatedSwConnection",
+    callBack: handleNA
+  },
+  {
+    labelKey: "WS_OLD_LABEL_NAME"
+  },
+  {
+    jsonPath: "WaterConnectionOld[0].relatedSwConnection",
+    callBack: handleNA
+  }
+);
 export const reviewWaterSource = getLabelWithValueForModifiedLabel(
   {
     labelName: "Water Source",
@@ -834,4 +850,5 @@ const activationDetails = getCommonContainer({
   reviewInitialMeterReading,
   reviewMeterMakeReading,
   reviewAverageMakeReading,
+  relatedSwConnection,
 });

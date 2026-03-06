@@ -17,7 +17,8 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
-  
+  let bills;
+
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -85,21 +86,8 @@ export const searchApiCall = async (state, dispatch) => {
       "searchScreenMdmsData.BillingService.BusinessService"
     ).filter(item => item.code === searchScreenObject.businesService);
 
-    let batchlocality = get(
-      state.screenConfiguration.preparedFinalObject,
-      "applyScreenMdmsData.tenant.batchs");
-
     if (batchtype == 'Batch') {
-      batchlocality = (batchlocality || []).find(item => item.code === "W-1");
-
-      const codes = batchlocality.children.map(item => item.code);
-      console.log("batchlocality", codes);
-      searchScreenObject.locality = codes;
-      if (searchScreenObject.businesService == 'WS') {
-        searchScreenObject.url = "/egov-searcher/bill-genie/wsbatchbilling/_get";
-      } else {
-        searchScreenObject.url = "/egov-searcher/bill-genie/swbatchbilling/_get";
-      }
+      searchScreenObject.url = "/egov-searcher/bill-genie/batchbilling/_get";
     }
     else if (batchtype == 'Group' && searchScreenObject.businesService == 'SW') {
       searchScreenObject.url = "/egov-searcher/bill-genie/groupbillssw/_get";
@@ -113,46 +101,12 @@ export const searchApiCall = async (state, dispatch) => {
     else {
       searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     }
-    debugger;
+
     //console.log("serviceObject",serviceObject)
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
 
     const bills = (responseFromAPI && responseFromAPI.Bills) || [];
-
-    //integratedbills
-    if (batchtype == 'Integrated Bill') {
-      debugger;
-      // For Integrated Bill response flatten groups into a single bills array keyed by propertyId
-
-      const groups = responseFromAPI.Bills || [];
-      const aggregated = {};
-
-      groups.forEach(group => {
-        const groupBills = group.Bills || group.bills || [];
-        groupBills.forEach(b => {
-          const key = b.propertyId || b.consumerCode || (b.consumer && b.consumer.propertyId) || b.payerId;
-          if (!key) return;
-          if (!aggregated[key]) {
-            aggregated[key] = { ...b, totalAmount: Number(b.totalAmount) || 0, billNumber: b.billNumber || "" };
-          } else {
-            aggregated[key].totalAmount = (Number(aggregated[key].totalAmount) || 0) + (Number(b.totalAmount) || 0);
-            aggregated[key].billNumber = [aggregated[key].billNumber, b.billNumber].filter(Boolean).join(",");
-            if (b.billDate && (!aggregated[key].billDate || b.billDate < aggregated[key].billDate)) {
-              aggregated[key].billDate = b.billDate;
-            }
-          }
-        });
-      });
-
-      // Replace original bills array contents with aggregated results
-      const flattened = Object.values(aggregated);
-      bills.length = 0;
-      flattened.forEach(item => bills.push(item));
-
-
-    }
-    //integratedbills
     dispatch(
       prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
     );
@@ -230,6 +184,16 @@ const showHideTable = (booleanHideOrShow, dispatch) => {
     )
   );
 };
+const showHideIntegratedTable = (booleanHideOrShow, dispatch) => {
+  dispatch(
+    handleField(
+      "groupBills",
+      "components.div.children.searchResultsIntergrated",
+      "visible",
+      booleanHideOrShow
+    )
+  );
+};
 
 const showHideMergeButton = (booleanHideOrShow, dispatch) => {
   dispatch(
@@ -241,3 +205,6 @@ const showHideMergeButton = (booleanHideOrShow, dispatch) => {
     )
   );
 };
+
+
+

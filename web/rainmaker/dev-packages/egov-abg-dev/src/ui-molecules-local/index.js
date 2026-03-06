@@ -42,6 +42,24 @@ const FeesEstimateCard = Loadable({
   loading: () => <Loading />
 });
 
+
+const ptmapPopup = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/ptMaps/ptmapPopup"),
+  loading: () => <Loading />
+});
+const mapptpopup = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/ptMaps/mapptpopup"),
+  loading: () => <Loading />
+});
+
+const ptmapedPopup = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/propertyMapped/ptmapedPopup"),
+  loading: () => <Loading />
+});
+const mapptedpopupsd = Loadable({
+  loader: () => import("../ui-config/screens/specs/abg/propertyMapped/mapptedpopupsd"),
+  loading: () => <Loading />
+});
 export {
   TestMolecules,
   RadioButtonsGroup,
@@ -50,5 +68,9 @@ export {
   UploadSingleFile,
   MapLocator,
   FeesEstimateCard,
-  DividerWithLabel
+  DividerWithLabel,
+  ptmapPopup,
+  mapptpopup,
+  ptmapedPopup,
+  mapptedpopupsd,
 };

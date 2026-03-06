@@ -10,9 +10,29 @@ const LoginFormHOC = formHoc({ formKey: "employeeLogin" })(LoginForm);
 const Login = ({ bannerUrl, logoUrl }) => {
   return (
     <Banner hideBackButton={false} bannerUrl={bannerUrl} logoUrl={logoUrl}>
-      {/* <marquee style={{ color: "white", fontStyle: "italic", fontSize: "20px", margin: "20px 0" }}>
-         Planned Downtime Notice: The mSeva Punjab application will be unavailable from 15th August 2025 to 18th August 2025 due to scheduled maintenance. We regret the inconvenience and appreciate your understanding.
-      </marquee> */}
+      {<div
+        style={{
+          maxWidth: "1200px",
+          margin: "25px auto",
+          padding: "18px 28px",
+          borderRadius: "16px",
+          background: "rgba(255, 77, 79, 0.9)",
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+          display: "flex",
+          alignItems: "center",
+          gap: "16px",
+          color: "#ffffff",
+          fontSize: "18px",
+          fontWeight: "500",
+          transition: "all 0.3s ease-in-out",
+        }}
+      >
+        <span style={{ fontSize: "24px" }}>🔐</span>
+        <span>
+          Effective <strong>March 05, 2026</strong>, extra login security has been enabled. Please make sure your mobile number is updated to receive OTP verification.
+        </span>
+        <span>05 ਮਾਰਚ, 2026 ਤੋਂ, ਵਾਧੂ ਲੌਗਇਨ ਸੁਰੱਖਿਆ ਨੂੰ ਸਮਰੱਥ ਬਣਾਇਆ ਗਿਆ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਹ ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਹਾਡਾ ਮੋਬਾਈਲ ਨੰਬਰ OTP ਪੁਸ਼ਟੀਕਰਨ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ ਹੈ।</span>
+      </div>}
       <LoginFormHOC logoUrl={logoUrl} />
     </Banner>
   );
