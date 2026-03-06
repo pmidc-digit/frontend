@@ -128,7 +128,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         const raw = String(rawUsageCategory || "").trim().toUpperCase();
         // exact-only match
         if (raw === "RESIDENTIAL" || raw === "110") return "110";
-        if (raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "111") return "111";
+        if (raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "NONRESIDENTIAL.INSTITUTIONAL" || raw === "111") return "111";
         if (raw === "NONRESIDENTIAL.INDUSTRIAL" || raw === "112") return "112";
         return "";
     };
@@ -149,7 +149,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         // exact match for RESIDENTIAL, COMMERCIAL, INDUSTRIAL, or OTHERS
         const isResidentialExact = raw === "RESIDENTIAL" || raw === "110";
-        const isCommercialExact = raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "NONRESIDENTIAL" || raw === "111";
+        const isCommercialExact = raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "NONRESIDENTIAL.INSTITUTIONAL" || raw === "NONRESIDENTIAL" || raw === "111";
         const isIndustrialExact = raw === "NONRESIDENTIAL.INDUSTRIAL" || raw === "112";
 
         if (isResidentialExact) {
