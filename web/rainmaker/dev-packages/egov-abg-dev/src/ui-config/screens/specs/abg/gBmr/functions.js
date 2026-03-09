@@ -18,8 +18,8 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
-export const updatesingleReading = async (consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, tenantId) => {
-  debugger;
+export const updatesingleReading = async (consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId) => {
+
   const payload = {
     meterReadingslist: [
       {
@@ -29,7 +29,7 @@ export const updatesingleReading = async (consumerId, lastReading, currentReadin
         meterStatus: status,
         connectionNo: consumerId,
         lastReading: lastReading,
-        lastReadingDate: 1705343399000,
+        lastReadingDate: lastReadingDate,
         tenantId: tenantId,
         generateDemand: true
       }
@@ -52,7 +52,7 @@ export const updatesingleReading = async (consumerId, lastReading, currentReadin
 };
 
 export const searchApiCall = async (state, dispatch) => {
-  debugger;
+
   showHideTable(false, dispatch);
   //showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -116,7 +116,6 @@ export const searchApiCall = async (state, dispatch) => {
     searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
-      debugger;
 
       try {
         dispatch(toggleSpinner(true));

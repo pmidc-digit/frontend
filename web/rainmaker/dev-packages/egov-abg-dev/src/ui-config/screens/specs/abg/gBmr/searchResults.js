@@ -104,7 +104,6 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
-            debugger;
             let readingDatenew = tableMeta.rowData && tableMeta.rowData[3] ? tableMeta.rowData[3] : null;
             readingDatenew = readingDatenew ? readingDatenew.split("-").reverse().join("/") : null;
             const handleUpdate = async () => {
@@ -112,6 +111,7 @@ export const searchResults = {
               const lastReading = Number(tableMeta.rowData && tableMeta.rowData[1]) || 0;
               const currentReadingRaw = Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
               const currentReadingDate = tableMeta.rowData && tableMeta.rowData[4] ? getEpochForDate(tableMeta.rowData[4]) : null;
+              const lastReadingDate = tableMeta.rowData && tableMeta.rowData[4] ? getEpochForDate(tableMeta.rowData[4]) : null;
               const currentReading = Number(currentReadingRaw) || 0;
               const billingPeriod = readingDatenew ? `${tableMeta.rowData[4]} - ${readingDatenew}` : "";
               const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
@@ -135,7 +135,7 @@ export const searchResults = {
               }
 
               try {
-                const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, tenantId);
+                const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId);
                 // updatesingleReading may return response or throw on error
                 alert("Update successful for Consumer ID: " + (consumerId || ""));
               } catch (err) {
@@ -186,9 +186,7 @@ export const searchResults = {
   }
 };
 export const updateAllReadings = async (state, dispatch) => {
-  debugger;
 
-  // will contain only complete & valid rows
   let allarray = [];
 
   // get table data from screen config
@@ -218,6 +216,7 @@ export const updateAllReadings = async (state, dispatch) => {
     const newReadingDate = newReadingDateEl ? newReadingDateEl.value : "";
 
     const currentReadingDateDisplay = isArrayRow ? row[4] : row["Current Reading Date"];
+    const lastReadingDate = isArrayRow ? row[4] : row["Current Reading Date"];
     const status = isArrayRow ? row[6] : row["Status"];
     const tenantId = isArrayRow ? row[7] : row["TENANT_ID"];
 
@@ -258,6 +257,7 @@ export const updateAllReadings = async (state, dispatch) => {
       newReading: currentReadingRaw,
       newReadingDate,
       currentReadingDate: currentReadingDateDisplay,
+      lastReadingDate,
       billingPeriod,
       status,
       tenantId,
@@ -272,6 +272,7 @@ export const updateAllReadings = async (state, dispatch) => {
         currentReadingRaw,
         currentReading,
         billingPeriod,
+        lastReadingDate,
         status,
         readingDate,
         tenantId
