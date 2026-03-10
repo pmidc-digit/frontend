@@ -226,47 +226,47 @@ export const generateMultipleBill = async (state, dispatch, type) => {
 
    
 
-  //allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount > 0);
-  // if (
-  //   batchtype == 'Locality' && locality &&
-  //   !Array.isArray(locality) &&
-  //   typeof locality === "string" &&
-  //   locality.trim() !== ""
-  // ) {
-  //   try {
-  //           const egovPdfResponse = await batchMergeAndDownload(
-  //           billkey,
-  //           locality,
-  //           businessService,
-  //           tenantId
-  //         );
-  //         let labelKey = egovPdfResponse.message+" Job ID :"+egovPdfResponse.jobId
-  //           dispatch(
-  //             toggleSnackbar(
-  //               true,
-  //               {
-  //                 labelName: labelKey,
-  //                 labelKey: labelKey
-  //               },
-  //               "warning"
-  //             )
-  //           );
-  //       } catch (error) {
-  //         console.error("Error while batch merge and download:", error);
-  //          dispatch(
-  //             toggleSnackbar(
-  //               true,
-  //               {
-  //                 labelName: error,
-  //                 labelKey: error
-  //               },
-  //               "warning"
-  //             )
-  //           );
-  //       }
-  // } else {
+  allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount > 0);
+   if (
+     batchtype == 'Locality' && locality &&
+     !Array.isArray(locality) &&
+     typeof locality === "string" &&
+     locality.trim() !== ""
+   ) {
+     try {
+             const egovPdfResponse = await batchMergeAndDownload(
+             billkey,
+             locality,
+             businessService,
+             tenantId
+           );
+           let labelKey = egovPdfResponse.message+" Job ID :"+egovPdfResponse.jobId
+             dispatch(
+               toggleSnackbar(
+                 true,
+                 {
+                   labelName: labelKey,
+                   labelKey: labelKey
+                 },
+                 "warning"
+               )
+             );
+         } catch (error) {
+           console.error("Error while batch merge and download:", error);
+            dispatch(
+               toggleSnackbar(
+                 true,
+                 {
+                   labelName: error,
+                   labelKey: error
+                 },
+                 "warning"
+               )
+             );
+         }
+   } else {
     allBills && allBills.length > 0 && await downloadMultipleBill(allBills, billkey, businessService);
- // }
+  }
   /* 
 To Download Files based on Filestoreid logic
  
