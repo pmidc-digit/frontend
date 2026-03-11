@@ -1,20 +1,27 @@
-import { getBreak, getCommonHeader, getLabel } from "egov-ui-framework/ui-config/screens/specs/utils";
+import {
+  getBreak, getCommonHeader, getLabel, getCommonCard,
+  getCommonContainer,
+  getTextField, getSelectField
+} from "egov-ui-framework/ui-config/screens/specs/utils";
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getTenantId } from "egov-ui-kit/utils/localStorageUtils";
 import { httpRequest } from "../../../../ui-utils";
 import { getBoundaryData } from "../../../../ui-utils/commons";
 import {
   abgSearchCard,
-  mergeDownloadButton, resetFields
-} from "./groupBillResource/groupBillSearch";
-import { searchResults, searchResultsIntergrated } from "./groupBillResource/searchResults";
+  //mergeDownloadButton, 
+  resetFields
+} from "./gBmr/groupBillSearch";
+
+// import { updateAllReadings } from "./gBmr/functions";
+import { searchResults, brmeterReading, updateAllButton, updateAllReadings } from "./gBmr/searchResults";
 import "./index.css";
 
 const tenantId = getTenantId();
 
 const header = getCommonHeader({
-  labelName: "Group Bills",
-  labelKey: "ABG_COMMON_HEADER"
+  labelName: "Bulk Meter Reading",
+  labelKey: "Bulk Meter Reading"
 });
 
 const getMDMSData = async (action, state, dispatch) => {
@@ -84,7 +91,7 @@ const getData = async (action, state, dispatch) => {
 
 const abgSearchAndResult = {
   uiFramework: "material-ui",
-  name: "groupBills",
+  name: "bulkmeterreading",
   beforeInitScreen: (action, state, dispatch) => {
     resetFields(state, dispatch);
     getData(action, state, dispatch).then(responseAction => {
@@ -99,7 +106,7 @@ const abgSearchAndResult = {
       componentPath: "Form",
       props: {
         className: "common-div-css",
-        id: "groupBills"
+        id: "bulkmeterreading"
       },
       children: {
         headerDiv: {
@@ -113,53 +120,68 @@ const abgSearchAndResult = {
                 sm: 6
               },
               ...header
+            }
+          }
+        },
+        abgSearchCard,
+        breakAfterSearch: getBreak(),
+        // progressStatus,
+        searchResults,
+        breakAfterSearchResults: getBreak(),
+
+        button: getCommonContainer({
+          buttonContainer: getCommonContainer({
+            firstCont: {
+              uiFramework: "custom-atoms",
+              componentPath: "Div",
+              gridDefination: {
+                xs: 12,
+                sm: 3
+              }
             },
-            groupBillButton: {
+
+            updateAllButton: {
               componentPath: "Button",
               gridDefination: {
                 xs: 12,
-                sm: 6,
-                align: "right"
+                sm: 3
               },
-              visible: true,
               props: {
                 variant: "contained",
-                color: "primary",
                 style: {
                   color: "white",
+                  backgroundColor: "#FE7A51",
                   borderRadius: "2px",
-                  width: "250px",
+                  width: window.innerWidth > 480 ? "80%" : "100%",
                   height: "48px"
                 }
               },
               children: {
-                ButtonLabel: getLabel({
-                  labelName: "Bill Download",
-                  labelKey: "ABG_BILL_DOWNLOAD"
+                buttonLabel: getLabel({
+                  labelName: "Update All Readings",
+                  labelKey: "Update All Readings"
                 })
               },
               onClickDefination: {
-                action: "page_change",
-                path:
-                  process.env.REACT_APP_SELF_RUNNING === "true"
-                    ? `/egov-ui-framework/abg/groupBillDownloads`
-                    : `/abg/groupBillDownloads`
-              },
-              visible: (process.env.REACT_APP_NAME === "Citizen") ? false : true
-              //visible: false 
+                action: "condition",
+                callBack: updateAllReadings
+              }
+            },
+            lastCont: {
+              uiFramework: "custom-atoms",
+              componentPath: "Div",
+              gridDefination: {
+                xs: 12,
+                sm: 3
+              }
             }
-          }
-        },
-      abgSearchCard,
-      breakAfterSearch: getBreak(),
-      // progressStatus,
-      searchResults,
-      searchResultsIntergrated,
-      breakAfterSearchResults: getBreak(),
-      mergeDownloadButton
-    }
+          })
+        })
+
+      }
+    },
+    //mergeDownloadButton
   }
-}
 };
 
 export default abgSearchAndResult;

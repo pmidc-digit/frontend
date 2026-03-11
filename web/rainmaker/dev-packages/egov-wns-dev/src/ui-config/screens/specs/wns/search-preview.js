@@ -1213,7 +1213,7 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     set(
       action.screenConfig,
       "components.div.children.taskDetails.children.cardContent.children.estimate.visible",
-      false
+      true
     );
   }
 };
