@@ -11,7 +11,7 @@ export default function Header() {
     const hostname = typeof window !== "undefined" ? window.location.hostname : "";
 
     const baseUrl = `https://${hostname}/digit-ui`;
-    //const baseUrlMseva = `https://${hostname}`;
+    // const baseUrlMseva = `https://${hostname}`;
     return (
         <>
             <div>
