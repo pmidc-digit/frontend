@@ -11,7 +11,7 @@ export default function Header() {
     const hostname = typeof window !== "undefined" ? window.location.hostname : "";
 
     const baseUrl = `https://${hostname}/digit-ui`;
-    const baseUrlMseva = `https://${hostname}`;
+    // const baseUrlMseva = `https://${hostname}`;
     return (
         <>
             <div>
@@ -45,7 +45,7 @@ export default function Header() {
                         </div>
                         <div className="col-sm-12 col-md-6">
                             <div className="rightharder">
-                                <a href={`${baseUrlMseva}/employee`}target="_blank">
+                                <a href={`${baseUrl}/employee`} target="_blank">
                                     Employee Login
                                 </a>
                                 {" | "}
