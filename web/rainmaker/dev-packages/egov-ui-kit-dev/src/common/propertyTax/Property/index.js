@@ -208,9 +208,9 @@ class Property extends Component {
         dialogueOpen: true,
         urlToAppend: getPropertyLink(propertyId, tenantId, PROPERTY_FORM_PURPOSE.ASSESS, -1, assessmentNo),
       });
-      if (process.env.REACT_APP_NAME === "Citizen") {
-        alert("One-Time Settlement for Property Tax has been enabled in mSeva. Please review and re-assess your property details before proceeding with payment.");
-      }
+      // if (process.env.REACT_APP_NAME === "Citizen") {
+      //   alert("One-Time Settlement for Property Tax has been enabled in mSeva. Please review and re-assess your property details before proceeding with payment.");
+      // }
     }
   };
   onEditPropertyClick = () => {
