@@ -25,17 +25,21 @@ export const searchResults = {
           customBodyRender: (value, tableMeta, updateValue) => {
             // Last Reading is the second column (index 1)
             const lastReading = tableMeta.rowData && tableMeta.rowData[1];
+            const status = tableMeta.rowData && tableMeta.rowData[6];
+            const isEditable = ["Working", "Breakdown", "Locked"].includes(status);
             return (
               <input
                 type="number"
                 min={lastReading || 0}
                 className="bulk-new-reading"
                 style={{ width: "120px", padding: "6px", boxSizing: "border-box" }}
+                disabled={!isEditable}
                 // defaultValue={value || ""}
                 onInput={e => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, "");
                 }}
                 onBlur={e => {
+                  if (!isEditable) return;
                   const v = e.target.value.trim();
                   if (v === "") { updateValue(""); return; }
                   const numeric = Number(v);
@@ -63,6 +67,8 @@ export const searchResults = {
             // Disable dates earlier than Current Reading Date for that row
             const currentReadingDateDisplay =
               tableMeta.rowData && tableMeta.rowData[4]; // e.g. "05/02/2026"
+            const status = tableMeta.rowData && tableMeta.rowData[6];
+            const isEditable = ["Working", "Breakdown", "Locked"].includes(status);
 
             let minDate = "";
             if (
@@ -81,8 +87,12 @@ export const searchResults = {
                 min={minDate || undefined}
                 className="bulk-new-reading-date"
                 style={{ width: "160px", padding: "6px", boxSizing: "border-box" }}
+                disabled={!isEditable}
                 // defaultValue={value || today}
-                onChange={e => updateValue(e.target.value)}
+                onChange={e => {
+                  if (!isEditable) return;
+                  updateValue(e.target.value);
+                }}
               />
             );
           }
@@ -90,7 +100,43 @@ export const searchResults = {
       },
       { labelName: "Current Reading Date", labelKey: "Current Reading Date" },
       { labelName: "Billing Period", labelKey: "Billing Period" },
-      { labelName: "Status", labelKey: "Status" },
+      {
+        labelName: "Status",
+        labelKey: "Status",
+        options: {
+          filter: false,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            const statusOptions = [
+              "Working",
+              "Locked",
+              "No-meter",
+              "Breakdown",
+              "No_Meter",
+              "Reset",
+              "NULL",
+              "Replacement"
+            ];
+            const currentStatus = value || "";
+            return (
+              <select
+                className="bulk-status-select"
+                style={{ width: "140px", padding: "6px", boxSizing: "border-box" }}
+                value={currentStatus}
+                onChange={e => {
+                  updateValue(e.target.value);
+                }}
+              >
+                <option value="">Select status</option>
+                {statusOptions.map(option => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            );
+          }
+        }
+      },
       {
         labelName: "Tenant Id",
         labelKey: "TENANT_ID",
@@ -115,7 +161,9 @@ export const searchResults = {
               const currentReading = Number(currentReadingRaw) || 0;
               const billingPeriod = readingDatenew ? `${tableMeta.rowData[4]} - ${readingDatenew}` : "";
               const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
-              const status = tableMeta.rowData && tableMeta.rowData[6];
+              const statusSelects = document.querySelectorAll("select.bulk-status-select");
+              const statusFromSelect = statusSelects[tableMeta.rowIndex] && statusSelects[tableMeta.rowIndex].value;
+              const status = statusFromSelect || (tableMeta.rowData && tableMeta.rowData[6]) || "";
               const tenantId = tableMeta.rowData && tableMeta.rowData[7];
 
               if (!currentReadingRaw || !Number.isFinite(currentReading)) {
@@ -199,6 +247,7 @@ export const updateAllReadings = async (state, dispatch) => {
   // read the live values typed in the table inputs
   const readingInputs = document.querySelectorAll("input.bulk-new-reading");
   const dateInputs = document.querySelectorAll("input.bulk-new-reading-date");
+  const statusSelects = document.querySelectorAll("select.bulk-status-select");
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
@@ -217,7 +266,8 @@ export const updateAllReadings = async (state, dispatch) => {
 
     const currentReadingDateDisplay = isArrayRow ? row[4] : row["Current Reading Date"];
     const lastReadingDate = isArrayRow ? row[4] : row["Current Reading Date"];
-    const status = isArrayRow ? row[6] : row["Status"];
+    const statusFromRow = isArrayRow ? row[6] : row["Status"];
+    const status = statusSelects[i] && statusSelects[i].value ? statusSelects[i].value : statusFromRow;
     const tenantId = isArrayRow ? row[7] : row["TENANT_ID"];
 
     // only take complete rows (both value and date filled)
