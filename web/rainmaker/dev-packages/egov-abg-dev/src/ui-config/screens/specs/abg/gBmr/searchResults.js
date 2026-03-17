@@ -17,6 +17,7 @@ export const searchResults = {
       { labelName: "Consumer ID", labelKey: "Consumer ID" },
 
       { labelName: "Last Reading", labelKey: "Last Reading" },
+      { labelName: "Current Reading Date", labelKey: "Current Reading Date" },
       {
         labelName: "New Reading(in KL)",
         labelKey: "New Reading(in KL)",
@@ -66,7 +67,7 @@ export const searchResults = {
           customBodyRender: (value, tableMeta, updateValue) => {
             // Disable dates earlier than Current Reading Date for that row
             const currentReadingDateDisplay =
-              tableMeta.rowData && tableMeta.rowData[4]; // e.g. "05/02/2026"
+              tableMeta.rowData && tableMeta.rowData[2]; // e.g. "05/02/2026"
             const status = tableMeta.rowData && tableMeta.rowData[6];
             const isEditable = ["Working", "Breakdown", "Locked"].includes(status);
 
@@ -98,7 +99,7 @@ export const searchResults = {
           }
         }
       },
-      { labelName: "Current Reading Date", labelKey: "Current Reading Date" },
+
       { labelName: "Billing Period", labelKey: "Billing Period" },
       {
         labelName: "Status",
@@ -150,22 +151,21 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
-            let readingDatenew = tableMeta.rowData && tableMeta.rowData[3] ? tableMeta.rowData[3] : null;
+            let readingDatenew = tableMeta.rowData && tableMeta.rowData[4] ? tableMeta.rowData[4] : null;
             readingDatenew = readingDatenew ? readingDatenew.split("-").reverse().join("/") : null;
             const handleUpdate = async () => {
               const consumerId = tableMeta.rowData && tableMeta.rowData[0];
               const lastReading = Number(tableMeta.rowData && tableMeta.rowData[1]) || 0;
-              const currentReadingRaw = Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
+              const currentReadingRaw = Number(tableMeta.rowData && tableMeta.rowData[3]) || 0;
               const currentReadingDate = tableMeta.rowData && tableMeta.rowData[4] ? getEpochForDate(tableMeta.rowData[4]) : null;
-              const lastReadingDate = tableMeta.rowData && tableMeta.rowData[4] ? getEpochForDate(tableMeta.rowData[4]) : null;
+              const lastReadingDate = tableMeta.rowData && tableMeta.rowData[2] ? getEpochForDate(tableMeta.rowData[2]) : null;
               const currentReading = Number(currentReadingRaw) || 0;
-              const billingPeriod = readingDatenew ? `${tableMeta.rowData[4]} - ${readingDatenew}` : "";
+              const billingPeriod = readingDatenew ? `${tableMeta.rowData[2]} - ${readingDatenew}` : "";
               const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
               const statusSelects = document.querySelectorAll("select.bulk-status-select");
               const statusFromSelect = statusSelects[tableMeta.rowIndex] && statusSelects[tableMeta.rowIndex].value;
               const status = statusFromSelect || (tableMeta.rowData && tableMeta.rowData[6]) || "";
               const tenantId = tableMeta.rowData && tableMeta.rowData[7];
-
               if (!currentReadingRaw || !Number.isFinite(currentReading)) {
                 alert("Please enter a numeric Current Reading greater than or equal to Last Reading before updating");
                 return;
@@ -268,7 +268,7 @@ export const updateAllReadings = async (state, dispatch) => {
     const lastReadingDate = isArrayRow ? row[4] : row["Current Reading Date"];
     const statusFromRow = isArrayRow ? row[6] : row["Status"];
     const status = statusSelects[i] && statusSelects[i].value ? statusSelects[i].value : statusFromRow;
-    const tenantId = isArrayRow ? row[7] : row["TENANT_ID"];
+    const tenantId = isArrayRow ? row[6] : row["TENANT_ID"];
 
     // only take complete rows (both value and date filled)
     if (!currentReadingRaw || !newReadingDate) {
@@ -325,7 +325,8 @@ export const updateAllReadings = async (state, dispatch) => {
         lastReadingDate,
         status,
         readingDate,
-        tenantId
+        tenantId,
+
       );
     } catch (err) {
       console.error(`Failed to update Consumer ${consumerId}:`, err);
