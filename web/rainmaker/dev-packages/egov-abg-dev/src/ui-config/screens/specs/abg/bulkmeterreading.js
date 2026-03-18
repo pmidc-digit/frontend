@@ -14,7 +14,7 @@ import {
 } from "./gBmr/groupBillSearch";
 
 // import { updateAllReadings } from "./gBmr/functions";
-import { searchResults, brmeterReading, updateAllButton, updateAllReadings } from "./gBmr/searchResults";
+import { searchResults, updateAllReadings } from "./gBmr/searchResults";
 import "./index.css";
 
 const tenantId = getTenantId();
