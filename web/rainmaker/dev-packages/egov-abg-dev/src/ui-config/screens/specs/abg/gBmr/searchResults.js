@@ -156,9 +156,9 @@ export const searchResults = {
             const handleUpdate = async () => {
               const consumerId = tableMeta.rowData && tableMeta.rowData[0];
               const lastReading = Number(tableMeta.rowData && tableMeta.rowData[1]) || 0;
+              const currentReadingDate = tableMeta.rowData && tableMeta.rowData[2] ? getEpochForDate(tableMeta.rowData[2]) : null;
+              const lastReadingDate = currentReadingDate;
               const currentReadingRaw = Number(tableMeta.rowData && tableMeta.rowData[3]) || 0;
-              const currentReadingDate = tableMeta.rowData && tableMeta.rowData[4] ? getEpochForDate(tableMeta.rowData[4]) : null;
-              const lastReadingDate = tableMeta.rowData && tableMeta.rowData[2] ? getEpochForDate(tableMeta.rowData[2]) : null;
               const currentReading = Number(currentReadingRaw) || 0;
               const billingPeriod = readingDatenew ? `${tableMeta.rowData[2]} - ${readingDatenew}` : "";
               const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
@@ -220,7 +220,7 @@ export const searchResults = {
       column: "Date Created",
       sortingFn: (data, i, sortDateOrder) => {
         const epochDates = data.reduce((acc, curr) => {
-          acc.push([...curr, getEpochForDate(curr[4], "dayend")]);
+          acc.push([...curr, getEpochForDate(curr[2], "dayend")]);
           return acc;
         }, []);
         const order = sortDateOrder === "asc" ? true : false;
@@ -264,11 +264,17 @@ export const updateAllReadings = async (state, dispatch) => {
     const currentReadingRaw = currentReadingRawEl ? currentReadingRawEl.value : "";
     const newReadingDate = newReadingDateEl ? newReadingDateEl.value : "";
 
-    const currentReadingDateDisplay = isArrayRow ? row[4] : row["Current Reading Date"];
-    const lastReadingDate = isArrayRow ? row[4] : row["Current Reading Date"];
+    const currentReadingDateDisplay = isArrayRow ? row[2] : row["Current Reading Date"];
+    const lastReadingDate = getEpochForDate(currentReadingDateDisplay);
     const statusFromRow = isArrayRow ? row[6] : row["Status"];
     const status = statusSelects[i] && statusSelects[i].value ? statusSelects[i].value : statusFromRow;
-    const tenantId = isArrayRow ? row[6] : row["TENANT_ID"];
+    const tenantId = isArrayRow ? row[7] : row["TENANT_ID"];
+
+    // only allow bulk update for selected meter statuses
+    const isEditableStatus = ["Working", "Breakdown", "Locked"].includes(status);
+    if (!isEditableStatus) {
+      continue;
+    }
 
     // only take complete rows (both value and date filled)
     if (!currentReadingRaw || !newReadingDate) {
@@ -322,11 +328,10 @@ export const updateAllReadings = async (state, dispatch) => {
         currentReadingRaw,
         currentReading,
         billingPeriod,
-        lastReadingDate,
         status,
         readingDate,
-        tenantId,
-
+        lastReadingDate,
+        tenantId
       );
     } catch (err) {
       console.error(`Failed to update Consumer ${consumerId}:`, err);
