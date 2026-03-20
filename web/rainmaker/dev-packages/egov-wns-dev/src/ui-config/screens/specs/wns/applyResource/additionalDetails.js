@@ -420,6 +420,14 @@ export const additionDetails = getCommonCard({
             dispatch(
               handleField(
                 "apply",
+                `components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.relatedSwConnection`,
+                "visible",
+                false
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
                 "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
                 "visible",
                 true
@@ -433,7 +441,14 @@ export const additionDetails = getCommonCard({
                 true
               )
             );
-
+            dispatch(
+              handleField(
+                "apply",
+                `components.div.children.formwizardSecondStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.initialMeterReading`,
+                "visible",
+                false
+              )
+            );
           }
 
         }
