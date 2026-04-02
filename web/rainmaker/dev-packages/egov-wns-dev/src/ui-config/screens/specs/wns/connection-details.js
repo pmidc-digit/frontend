@@ -560,7 +560,7 @@ export const getDCBDetail = async (queryObject , dispatch) => {
       interestCollected=interestCollected+dd.collectionAmount;
       interestBalance=interestAmount-interestCollected;
     }
-    if(dd.taxHeadMasterCode=='WS_TIME_PENALTY' || dd.taxHeadMasterCode=='SW_TIME_PENALTY'){
+    if(dd.taxHeadMasterCode=='WS_TIME_PENALTY' || dd.taxHeadMasterCode=='SW_TIME_PENALTY' || dd.taxHeadMasterCode == 'WS_BREAKDOWN_PENALTY' || dd.taxHeadMasterCode == 'SW_BREAKDOWN_PENALTY'){
       penaltyAmount=penaltyAmount+dd.taxAmount;
       penaltyCollected=penaltyCollected+dd.collectionAmount;
       penaltyBalance=penaltyAmount-penaltyCollected;
