@@ -398,6 +398,16 @@ class FormWizard extends Component {
     if (isModify) {
       await setOldPropertyData(search, prepareFinalObject);
     }
+
+    // If financial year data is already in Redux store, set dropdown and value now
+    const existingFinancialYears = get(this.props, "common.dropDownData.FinancialYear", []);
+    if (existingFinancialYears.length > 0) {
+      this.props.setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", existingFinancialYears);
+      const yearValue = get(this.props, "prepareFormData.Properties[0].additionalDetails.yearConstruction", null);
+      if (yearValue) {
+        this.props.setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearValue);
+      }
+    }
     //---------------------------------------------
   };
 
@@ -1860,6 +1870,10 @@ componentDidUpdate(prevProps) {
   const prevFinancialYears = get(prevProps, "common.dropDownData.FinancialYear", []);
   if (financialYears.length > 0 && financialYears !== prevFinancialYears) {
     this.props.setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYears);
+    const yearValue = get(this.props, "prepareFormData.Properties[0].additionalDetails.yearConstruction", null);
+    if (yearValue) {
+      this.props.setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearValue);
+    }
   }
 }
 convertImgToDataURLviaCanvas = (url, callback, outputFormat) => {
