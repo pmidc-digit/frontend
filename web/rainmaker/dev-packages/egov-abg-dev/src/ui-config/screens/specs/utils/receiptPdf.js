@@ -1,4 +1,3 @@
-// import { downloadMultipleBill } from "egov-common/ui-utils/commons";
 import { toggleSpinner, toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -199,72 +198,69 @@ export const generateMultipleBill = async (state, dispatch, type) => {
     "preparedFinalObject.searchCriteria.tenantId",
     ''
   );
-   let batchtype = get(
-      state.screenConfiguration,
-      "preparedFinalObject.generateBillScreen.batchtype",
-      ''
-    );
+  let batchtype = get(
+    state.screenConfiguration,
+    "preparedFinalObject.generateBillScreen.batchtype",
+    ''
+  );
   let billkey = ''
   const index = commonPayDetails && commonPayDetails.findIndex((item) => {
     return item.code == businessService;
   });
-  if(batchtype === "Integrated Bill"){
+  if (batchtype === "Integrated Bill") {
     billkey = 'wsn-integrated'
-  }else{
-     if (index > -1) {
-    billkey = get(commonPayDetails[index], 'billKey', '');
+  } else {
+    if (index > -1) {
+      billkey = get(commonPayDetails[index], 'billKey', '');
     } else {
       const details = commonPayDetails && commonPayDetails.filter(item => item.code === "DEFAULT");
       billkey = get(details, 'billKey', '');
     }
   }
-  if(batchtype === "Integrated Bill"){
-    allBills = allBills.filter(bill => bill.connection.propertyTotalAmount >0);
-  }else{
-    allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount >0 && bill.connection.status=="Active");
+  if (batchtype === "Integrated Bill") {
+    allBills = allBills.filter(bill => bill.connection.propertyTotalAmount > 0);
+  } else {
+    allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount > 0 && bill.connection.status == "Active");
   }
-
-   
-
   allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount > 0);
-   if (
-     batchtype == 'Locality' && locality &&
-     !Array.isArray(locality) &&
-     typeof locality === "string" &&
-     locality.trim() !== ""
-   ) {
-     try {
-             const egovPdfResponse = await batchMergeAndDownload(
-             billkey,
-             locality,
-             businessService,
-             tenantId
-           );
-           let labelKey = egovPdfResponse.message+" Job ID :"+egovPdfResponse.jobId
-             dispatch(
-               toggleSnackbar(
-                 true,
-                 {
-                   labelName: labelKey,
-                   labelKey: labelKey
-                 },
-                 "warning"
-               )
-             );
-         } catch (error) {
-           console.error("Error while batch merge and download:", error);
-            dispatch(
-               toggleSnackbar(
-                 true,
-                 {
-                   labelName: error,
-                   labelKey: error
-                 },
-                 "warning"
-               )
-             );
-         }
-   } else {
+  if (
+    batchtype == 'Locality' && locality &&
+    !Array.isArray(locality) &&
+    typeof locality === "string" &&
+    locality.trim() !== ""
+  ) {
+    try {
+      const egovPdfResponse = await batchMergeAndDownload(
+        billkey,
+        locality,
+        businessService,
+        tenantId
+      );
+      let labelKey = egovPdfResponse.message + " Job ID :" + egovPdfResponse.jobId
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: labelKey,
+            labelKey: labelKey
+          },
+          "warning"
+        )
+      );
+    } catch (error) {
+      console.error("Error while batch merge and download:", error);
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: error,
+            labelKey: error
+          },
+          "warning"
+        )
+      );
+    }
+  } else {
     allBills && allBills.length > 0 && await downloadMultipleBill(allBills, billkey, businessService);
   }
   /* 
@@ -284,7 +280,7 @@ allBills.map(bill=>{
 bills&&bills.length>0&&await downloadMultipleBill(bills,billkey);
 filestoreids&&filestoreids.length>0&&downloadMultipleFileFromFilestoreIds(filestoreids,'download'); */
   dispatch(toggleSpinner());
-  
+
 };
 /* await loadMdmsData(tenant);
 // data1 is for ULB logo from loadUlbLogo
