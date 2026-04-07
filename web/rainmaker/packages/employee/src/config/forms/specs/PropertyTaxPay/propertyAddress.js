@@ -1,7 +1,7 @@
 import { pincode, mohalla, street, colony, houseNumber } from "egov-ui-kit/config/forms/specs/PropertyTaxPay/utils/reusableFields";
 import { handleFieldChange, setFieldProperty } from "egov-ui-kit/redux/form/actions";
 import { CITY } from "egov-ui-kit/utils/endPoints";
-import { prepareFormData } from "egov-ui-kit/redux/common/actions";
+import { prepareFormData, fetchFinancialYearData } from "egov-ui-kit/redux/common/actions";
 import set from "lodash/set";
 import get from "lodash/get";
 import { getLocale, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
@@ -12,11 +12,6 @@ import { httpRequest } from "egov-ui-kit/utils/api";
 
 // const Search = <Icon action="action" name="home" color="#30588c" />;
 var tenantIdcode = getTenantId();
-let floorDropDownData = [];
-
-floorDropDownData.push({ label: "2013-14", value: "2013-14" }, { label: "2014-15", value: "2014-15" }, { label: "2015-16", value: "2015-16" }, { label: "2016-17", value: "2016-17" }, { label: "2017-18", value: "2017-18" }, { label: "2018-19", value: "2018-19" },
-  { label: "2019-20", value: "2019-20" }, { label: "2020-21", value: "2020-21" },
-  { label: "2021-22", value: "2021-22" }, { label: "2022-23", value: "2022-23" }, { label: "2023-24", value: "2023-24" }, { label: "2024-25", value: "2024-25" }, { label: "2025-26", value: "2025-26" });
 
 
 const formConfig = {
@@ -192,7 +187,7 @@ const formConfig = {
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
 
       formName: "propertyAddress",
-      dropDownData: floorDropDownData,
+      dropDownData: [],
       updateDependentFields: ({ formKey, field, dispatch }) => {
         if (field.value && field.value.length > 0) {
           const mohalla = field.dropDownData.find((option) => {
@@ -212,6 +207,13 @@ const formConfig = {
     let tenantId = getTenantId();
     let state = store.getState();
     const { citiesByModule } = state.common;
+    // Load financial year dropdown from Redux
+    const financialYearData = get(state, "common.dropDownData.FinancialYear", []);
+    if (financialYearData.length > 0) {
+      set(action, "form.fields.YearcreationProperty.dropDownData", financialYearData);
+    } else {
+      dispatch(fetchFinancialYearData());
+    }
     const { PT } = citiesByModule || {};
     if (PT) {
       const tenants = PT.tenants;

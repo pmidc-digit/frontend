@@ -8,8 +8,8 @@ import { getHeaderDetails } from "egov-ui-kit/common/propertyTax/PaymentStatus/C
 import DocumentsUpload from "egov-ui-kit/common/propertyTax/Property/components/DocumentsUpload";
 import { createAssessmentPayload, getCreatePropertyResponse, prefillPTDocuments, setOldPropertyData } from "egov-ui-kit/config/forms/specs/PropertyTaxPay/propertyCreateUtils";
 import { setRoute, toggleSnackbarAndSetText, fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
-import { fetchGeneralMDMSData, generalMDMSFetchSuccess, hideSpinner, prepareFormData as prepareFormDataAction, showSpinner, toggleSpinner, updatePrepareFormDataFromDraft } from "egov-ui-kit/redux/common/actions";
-import { deleteForm, displayFormErrors, handleFieldChange, removeForm, updateForms } from "egov-ui-kit/redux/form/actions";
+import { fetchGeneralMDMSData, fetchFinancialYearData, generalMDMSFetchSuccess, hideSpinner, prepareFormData as prepareFormDataAction, showSpinner, toggleSpinner, updatePrepareFormDataFromDraft } from "egov-ui-kit/redux/common/actions";
+import { deleteForm, displayFormErrors, handleFieldChange, removeForm, setFieldProperty, updateForms } from "egov-ui-kit/redux/form/actions";
 import { validateForm } from "egov-ui-kit/redux/form/utils";
 import { fetchAssessments } from "egov-ui-kit/redux/properties/actions";
 import { httpRequest } from "egov-ui-kit/utils/api";
@@ -302,7 +302,7 @@ class FormWizard extends Component {
       renderCustomTitleForPt,
       showSpinner,
       hideSpinner,
-      fetchGeneralMDMSData, history,
+      fetchGeneralMDMSData, fetchFinancialYearData, history,
       prepareFinalObject,
       fetchLocalizationLabel
     } = this.props;
@@ -320,7 +320,9 @@ class FormWizard extends Component {
     const tenantId = getQueryValue(search, "tenantId");
     fetchLocalizationLabel(getLocale(), tenantId, tenantId);
     let requestBody = generalMDMSDataRequestObj(commonConfig.tenantId);
+    //console.log("sdghsgdsh")
     fetchGeneralMDMSData(requestBody, "PropertyTax", getGeneralMDMSDataDropdownName());
+    fetchFinancialYearData();
     this.loadUlbLogo(tenantId)
     const draftUuid = getQueryValue(search, "uuid");
     const assessmentId =
@@ -1837,7 +1839,7 @@ onPayButtonClick = async () => {
     hideSpinner();
   }
 };
-componentDidUpdate() {
+componentDidUpdate(prevProps) {
   const {
     selected,
     formValidIndexArray,
@@ -1851,6 +1853,13 @@ componentDidUpdate() {
       selected: 4,
       formValidIndexArray: [...formValidIndexArray, 3]
     });
+  }
+
+  // Set financial year dropdown when data arrives from Redux
+  const financialYears = get(this.props, "common.dropDownData.FinancialYear", []);
+  const prevFinancialYears = get(prevProps, "common.dropDownData.FinancialYear", []);
+  if (financialYears.length > 0 && financialYears !== prevFinancialYears) {
+    this.props.setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYears);
   }
 }
 convertImgToDataURLviaCanvas = (url, callback, outputFormat) => {
@@ -2003,6 +2012,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(prepareFinalObject(jsonPath, value)),
     toggleSpinner: () => dispatch(toggleSpinner()),
     fetchAssessments: (fetchAssessmentsQueryObject) => dispatch(fetchAssessments(fetchAssessmentsQueryObject)),
+    fetchFinancialYearData: () => dispatch(fetchFinancialYearData()),
+    setFieldProperty: (formKey, fieldKey, property, value) =>
+      dispatch(setFieldProperty(formKey, fieldKey, property, value)),
     fetchLocalizationLabel: (locale, moduleName, tenantId) => dispatch(fetchLocalizationLabel(locale, moduleName, tenantId))
   };
 };
