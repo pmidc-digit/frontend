@@ -1,17 +1,12 @@
 import { mohalla } from "egov-ui-kit/config/forms/specs/PropertyTaxPay/utils/reusableFields";
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
-import { fetchGeneralMDMSData, prepareFormData } from "egov-ui-kit/redux/common/actions";
+import { fetchGeneralMDMSData, fetchFinancialYearData, prepareFormData } from "egov-ui-kit/redux/common/actions";
 import { setFieldProperty } from "egov-ui-kit/redux/form/actions";
 import { fetchDropdownData, generalMDMSDataRequestObj, getGeneralMDMSDataDropdownName, getTranslatedLabel } from "egov-ui-kit/utils/commons";
 import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import filter from "lodash/filter";
 import get from "lodash/get";
 import sortBy from "lodash/sortBy";
-let floorDropDownData = [];
-
-floorDropDownData.push({ label: "2013-14", value: "2013-14" }, { label: "2014-15", value: "2014-15" }, { label: "2015-16", value: "2015-16" }, { label: "2016-17", value: "2016-17" }, { label: "2017-18", value: "2017-18" }, { label: "2018-19", value: "2018-19" },
-  { label: "2019-20", value: "2019-20" }, { label: "2020-21", value: "2020-21" },
-  { label: "2021-22", value: "2021-22" }, { label: "2022-23", value: "2022-23" }, { label: "2023-24", value: "2023-24" }, { label: "2024-25", value: "2024-25" }, { label: "2025-26", value: "2025-26" });
 const formConfig = {
   name: "propertyAddress",
   fields: {
@@ -144,7 +139,7 @@ const formConfig = {
     YearcreationProperty: {
       id: "YearcreationProperty",
       type: "AutocompleteDropdown",
-      className: "pt-old-pid-text-field",
+      //className: "pt-old-pid-text-field",
       // iconRedirectionURL: getTenantId()=='pb.amritsar'? "https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=8b678d4d5020448499054bf346843ea9": getTenantId()=='pb.hoshiarpur'?"https://arcserver.punjab.gov.in/portal/apps/webappviewer/index.html?id=9bc1b255320a49c590dd17d4d258e054": "https://gis.punjab.gov.in",
       jsonPath: "Properties[0].additionalDetails.yearConstruction",
       floatingLabelText: "Year of creation of Property",
@@ -158,7 +153,6 @@ const formConfig = {
       errorMessage: "PT_PROPERTY_DETAILS_PINCODE_ERRORMSG",
       errorStyle: { position: "absolute", bottom: -8, zIndex: 5 },
       formName: "propertyAddress",
-      dropDownData: floorDropDownData,
       updateDependentFields: ({ formKey, field, dispatch }) => {
         if (field.value && field.value.length > 0) {
           const mohalla = field.dropDownData.find((option) => {
@@ -199,6 +193,13 @@ const formConfig = {
     // if (yearConstructionValue) {
     //   dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearConstructionValue));
     // }
+
+      const financialYears = get(state, 'common.dropDownData.FinancialYear', []);
+      if (financialYears.length > 0) {
+        dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYears));
+      } else {
+        dispatch(fetchFinancialYearData());
+      }
 
       if (process.env.REACT_APP_NAME === "Citizen" && tenant && mohallaDropDownData.length == 0) {
         const dataFetchConfig = {
