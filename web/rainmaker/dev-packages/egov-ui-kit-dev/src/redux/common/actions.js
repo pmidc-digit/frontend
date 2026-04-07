@@ -191,7 +191,36 @@ export const fetchGeneralMDMSData = (requestBody, moduleName, masterArray, key, 
     }
   };
 };
-
+export const fetchFinancialYearData = () => {
+  return async (dispatch) => {
+    const requestBody = {
+      MdmsCriteria: {
+        tenantId: commonConfig.tenantId,
+        moduleDetails: [
+          {
+            moduleName: "egf-master",
+            masterDetails: [
+              {
+                name: "FinancialYear",
+                filter: "[?(@.module == 'PT')]",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    try {
+      const payload = await httpRequest(MDMS.GET.URL, MDMS.GET.ACTION, [], requestBody);
+      const financialYears = payload.MdmsRes["egf-master"].FinancialYear.map(fy => ({
+        label: fy.finYearRange,
+        value: fy.finYearRange,
+      }));
+      dispatch(setDropDownData("FinancialYear", financialYears));
+    } catch (error) {
+      dispatch(generalMDMSFetchError(error.message));
+    }
+  };
+};
 export const toggleSpinner = () => ({
   type: actionTypes.TOGGLE_SPINNER,
 });
