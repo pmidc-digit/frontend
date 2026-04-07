@@ -121,7 +121,7 @@ export const searchApiCall = async (state, dispatch) => {
         dispatch(toggleSpinner(true));
         const requestBody = {
           tenantId: searchScreenObject.tenantId || tenantId,
-          locality: "ALOC2",
+          locality: searchScreenObject.locality || "",
           offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
         };
         const url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(requestBody.tenantId)}&locality=${encodeURIComponent(requestBody.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
