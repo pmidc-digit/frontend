@@ -340,11 +340,11 @@ export const additionDetails = getCommonCard({
           // pattern: /^[0-9]*$/i,
           errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG"
         }),
-        
+
         afterFieldChange: async (action, state, dispatch) => {
           let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.connectionCategory");
           let connType = await get(state, "screenConfiguration.preparedFinalObject.applyScreen.connectionType");
-          
+
           if (ConectionCategory === "REGULARIZED" || ConectionCategory === 'DISCHARGE_CONNECTION') {
             dispatch(
               handleField(
@@ -420,6 +420,14 @@ export const additionDetails = getCommonCard({
             dispatch(
               handleField(
                 "apply",
+                `components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.relatedSwConnection`,
+                "visible",
+                false
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
                 "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw.children.cardContent",
                 "visible",
                 true
@@ -433,7 +441,14 @@ export const additionDetails = getCommonCard({
                 true
               )
             );
-
+            dispatch(
+              handleField(
+                "apply",
+                `components.div.children.formwizardSecondStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.initialMeterReading`,
+                "visible",
+                false
+              )
+            );
           }
 
         }
@@ -883,6 +898,21 @@ export const additionDetails = getCommonCard({
         pattern: /^[0-9]\d{0,9}(\.\d{1,3})?%?$/,
         errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
         jsonPath: "applyScreen.additionalDetails.initialMeterReading"
+      }),
+      relatedSwConnection: getTextField({
+        label: {
+          labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION"
+        },
+        placeholder: {
+          labelKey: "WS_ADDN_DETAILS_RELATED_SW_CONNECTION_PLACEHOLDER"
+        },
+        gridDefination: {
+          xs: 12,
+          sm: 6
+        },
+
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+        jsonPath: "applyScreen.relatedSwConnection"
       }),
       ...WSMeterMakes,
 

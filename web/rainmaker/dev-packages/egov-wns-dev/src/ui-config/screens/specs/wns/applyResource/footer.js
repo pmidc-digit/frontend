@@ -29,20 +29,20 @@ import commonConfig from "config/common.js";
 const isMode = isModifyMode();
 const isModeAction = isModifyModeAction();
 const setReviewPageRoute = (state, dispatch) => {
-  let serviceType = get (state, "screenConfiguration.preparedFinalObject.applyScreen.service");
-  let roadCuttingInfo ;
-  if(serviceType === "Sewerage"){
-     roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
-     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.userCharges", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.userChargessw")));
-     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.othersFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFeesw")));
-     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.compositionFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFeesw")));
-  }else{
-     roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
-     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.userCharges", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.userCharges")));
-     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.othersFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFee")));
-     dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.compositionFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFee")));
+  let serviceType = get(state, "screenConfiguration.preparedFinalObject.applyScreen.service");
+  let roadCuttingInfo;
+  if (serviceType === "Sewerage") {
+    roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
+    dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.userCharges", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.userChargessw")));
+    dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.othersFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFeesw")));
+    dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.compositionFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFeesw")));
+  } else {
+    roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
+    dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.userCharges", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.userCharges")));
+    dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.othersFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.othersFee")));
+    dispatch(prepareFinalObject("WaterConnection[0].additionalDetails.compositionFee", get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.compositionFee")));
   }
-  
+
   if (roadCuttingInfo && roadCuttingInfo.length > 0) {
     let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.isEmpty !== true);
     dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", formatedRoadCuttingInfo));
@@ -368,7 +368,7 @@ const callBackForNext = async (state, dispatch) => {
                   )
                 }
               } else if (sewerage) {
-                
+
                 if (validateFeildsForSewerage(applyScreenObject)) {
                   isFormValid = true;
                   hasFieldToaster = false;
@@ -499,9 +499,9 @@ const callBackForNext = async (state, dispatch) => {
         subUsageType && subUsageType.map(items => {
           if (items["parentUsageType"] === propertyUsageType) {
             let obj = {};
-             obj.code = items.code;  
-            obj.name = items.name; 
-              obj.parentUsageType = items.parentUsageType,
+            obj.code = items.code;
+            obj.name = items.name;
+            obj.parentUsageType = items.parentUsageType,
               obj.active = items.active
             usageTypes.push(obj);
             if (waterSubUsageType === items.name) {
@@ -539,7 +539,7 @@ const callBackForNext = async (state, dispatch) => {
         let connType = get(state.screenConfiguration.preparedFinalObject, "applyScreen.connectionType", "");
         let applicationNumber = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationNo", "");
         if (applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION" && window.location.href.includes("action=edit")) {
-          
+
           const sewerage = get(
             state.screenConfiguration.preparedFinalObject,
             "applyScreen.sewerage"
@@ -553,27 +553,27 @@ const callBackForNext = async (state, dispatch) => {
             state.screenConfiguration.preparedFinalObject,
             "applyScreen.discharge"
           );
-          
+
           // Show sewerage-specific field handling only for sewerage-only applications
-          if(sewerage && !water && !discharge){
-          // if(sewerage){
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", false));
+          if (sewerage && !water && !discharge) {
+            // if(sewerage){
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", false));
           }
           // For water or discharge applications, treat them the same way
           if (applicationNumber.includes("WS") || discharge) {
-          // if (applicationNumber.includes("WS")) {
+            // if (applicationNumber.includes("WS")) {
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "required", false));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "props.required", false));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "required", true));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "props.required", true));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "required", true));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", true));
-            
+
             // Only make subUsageType required if water service is selected (not for discharge-only)
             if (water) {
               dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", true));
@@ -597,7 +597,7 @@ const callBackForNext = async (state, dispatch) => {
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfWaterClosets", "required", false));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfWaterClosets", "props.required", false));
           } else if (sewerage && !water && !discharge) {
-          // } else {
+            // } else {
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfToilets", "required", true));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfToilets", "props.required", true));
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfWaterClosets", "required", true));
@@ -646,7 +646,7 @@ const callBackForNext = async (state, dispatch) => {
           dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "props.required", false));
           dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "required", false));
           dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "props.required", false));
-        } 
+        }
         else {
           const sewerage = get(
             state.screenConfiguration.preparedFinalObject,
@@ -660,61 +660,61 @@ const callBackForNext = async (state, dispatch) => {
             state.screenConfiguration.preparedFinalObject,
             "applyScreen.discharge"
           );
-          
+
           // Show sewerage fields only if sewerage is selected (and not water or discharge)
-          if(sewerage && !water && !discharge){
-          // if(sewerage){
+          if (sewerage && !water && !discharge) {
+            // if(sewerage){
             dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", false));
           }
-else{
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfToilets", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfToilets", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfWaterClosets", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfWaterClosets", "props.required", false));
+          else {
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfToilets", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfToilets", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfWaterClosets", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.noOfWaterClosets", "props.required", false));
 
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "required", true));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "props.required", true));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", false));
-          
-          // Only make subUsageType required if water service is selected (not for discharge-only or sewerage-only)
-          if (water) {
-            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", true));
-            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "props.required", true));
-          } else {
-            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", false));
-            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "required", true));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.connectionType", "props.required", true));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.numberOfTaps", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.pipeSize", "props.required", false));
+
+            // Only make subUsageType required if water service is selected (not for discharge-only or sewerage-only)
+            if (water) {
+              dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", true));
+              dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "props.required", true));
+            } else {
+              dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", false));
+              dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "props.required", false));
+            }
+            // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSourceType", "required", false ) ); 
+            // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSourceType", "props.required", false ) );
+            // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[0]", "isRequired", false) ); 
+            // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[0]", "requiredValue", false ) ); 
+            // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[1]", "isRequired", false ) ); 
+            // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[1]", "requiredValue", false ) );
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "props.required", false));
+
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "props.required", false));
+
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.initialMeterReading", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.initialMeterReading", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterID", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterID", "props.required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterInstallationDate", "required", false));
+            dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterInstallationDate", "props.required", false));
           }
-          // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSourceType", "required", false ) ); 
-          // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.waterSourceType", "props.required", false ) );
-          // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[0]", "isRequired", false) ); 
-          // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[0]", "requiredValue", false ) ); 
-          // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[1]", "isRequired", false ) ); 
-          // dispatch( handleField( "apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.dynamicMdmsWaterSource.props.dropdownFields[1]", "requiredValue", false ) );
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "props.required", false));
-
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.enterArea", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent.children.applicantTypeContainer.children.roadCuttingChargeInfoCard.children.multipleApplicantInfo.props.scheama.children.cardContent.children.roadDetails.children.roadType", "props.required", false));
-
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.connectionExecutionDate", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.initialMeterReading", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.initialMeterReading", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterID", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterID", "props.required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterInstallationDate", "required", false));
-          dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.meterInstallationDate", "props.required", false));
-}
         }
         if (connType === undefined || connType === "Non Metered" || connType === "Bulk-supply" || connType !== "Metered") {
           showHideFeilds(dispatch, false);
@@ -734,7 +734,7 @@ else{
         if (roadCuttingInfo && roadCuttingInfo.length > 0) {
           dispatch(prepareFinalObject("applyScreen.tempRoadCuttingInfo", roadCuttingInfo));
           let formatedRoadCuttingInfo = roadCuttingInfo.filter(value => value.emptyObj !== true);
-          if (applicationNumber.includes("SW")){
+          if (applicationNumber.includes("SW")) {
             dispatch(prepareFinalObject("applyScreen.roadCuttingInfosw", formatedRoadCuttingInfo));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.userChargessw", swUserCharges));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFeesw", swOthersFee));
@@ -743,7 +743,7 @@ else{
             dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFee", ""));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.compositionFee", ""));
             dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", []));
-          }else{
+          } else {
             dispatch(prepareFinalObject("applyScreen.roadCuttingInfo", formatedRoadCuttingInfo));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.userCharges", swUserCharges));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFee", swOthersFee));
@@ -752,7 +752,7 @@ else{
             dispatch(prepareFinalObject("applyScreen.additionalDetails.othersFeesw", ""));
             dispatch(prepareFinalObject("applyScreen.additionalDetails.compositionFeesw", ""));
             dispatch(prepareFinalObject("applyScreen.roadCuttingInfosw", []));
-          }          
+          }
         }
         let UsageType = get(state, "screenConfiguration.preparedFinalObject.applyScreen.property.usageCategory");
         if (UsageType === "MIXED") {
@@ -804,23 +804,23 @@ else{
   }
   /* validations for Additional /Docuemnts details screen */
   if (activeStep === 2 && process.env.REACT_APP_NAME !== "Citizen") {
-    
+
     // Get application type flags from Redux state
     const isDischargeApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.discharge", false);
     const isWaterApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.water", false);
-    const isSewerageApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage", false);   
+    const isSewerageApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.sewerage", false);
     let validate = true;
     // Special validation for discharge-only applications
     if (isDischargeApplication && !isWaterApplication && !isSewerageApplication) {
       // For discharge-only apps, check if discharge fee is entered
       let dischargeFee = get(state, "screenConfiguration.preparedFinalObject.applyScreen.additionalDetails.dischargeFee", null);
-       //validate = dischargeFee && dischargeFee > 0;
+      //validate = dischargeFee && dischargeFee > 0;
       validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
     } else {
       // For water/sewerage applications, use standard validation
       validate = validateFieldsNew("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
     }
-    
+
     if (validate) {
       isFormValid = true;
       hasFieldToaster = false;
@@ -854,11 +854,11 @@ else{
       // }
     }
     else {
-        
+
       let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
       let roadCuttingInfosw = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfosw", []);
-      if (roadCuttingInfo === 'NA') roadCuttingInfo =[]
-      if (roadCuttingInfosw === 'NA') roadCuttingInfosw =[]
+      if (roadCuttingInfo === 'NA') roadCuttingInfo = []
+      if (roadCuttingInfosw === 'NA') roadCuttingInfosw = []
       let applicationStatus = get(state.screenConfiguration.preparedFinalObject, "applyScreen.applicationStatus", "");
       if (applicationStatus === "PENDING_FOR_CONNECTION_ACTIVATION") {
         let waterSourceType = get(state.screenConfiguration.preparedFinalObject, "DynamicMdms.ws-services-masters.waterSource.selectedValues[0].waterSourceType", "");
@@ -1004,15 +1004,15 @@ else{
   if (activeStep === 3) {
     let waterId
     let sewerId
-    if (!isModifyMode()){
+    if (!isModifyMode()) {
       waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].id");
       sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].id");
-    }else{
+    } else {
       waterId = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].water");
       sewerId = get(state, "screenConfiguration.preparedFinalObject.SewerageConnection[0].sewerage");
     }
-     
-    
+
+
     let roadCuttingInfo = get(state, "screenConfiguration.preparedFinalObject.applyScreen.roadCuttingInfo", []);
     // Check application types
     const isDischargeApplication = get(state, "screenConfiguration.preparedFinalObject.applyScreen.discharge", false);
@@ -1062,46 +1062,61 @@ else{
   }
   let applyFor = get(state.screenConfiguration.preparedFinalObject, "applyScreen");
   if (!isModifyMode()) {
-    const waterVisible = applyFor.water ;
+    const waterVisible = applyFor.water;
     const sewerageVisible = applyFor.sewerage;
     const dischargeVisible = applyFor.discharge;
-  dispatch(
-    handleField(
-      "apply",
-      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-      "visible",
-      waterVisible
-    )
-  );
+    dispatch(
+      handleField(
+        "apply",
+        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+        "visible",
+        waterVisible
+      )
+    );
+    dispatch(
+      handleField(
+        "apply",
+        `components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.relatedSwConnection`,
+        "visible",
+        waterVisible
+      )
+    );
 
-  dispatch(
-    handleField(
-      "apply",
-      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-      "visible",
-      sewerageVisible
-    )
-  );
+    dispatch(
+      handleField(
+        "apply",
+        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+        "visible",
+        sewerageVisible
+      )
+    );
 
-}else{
-  dispatch(
-    handleField(
-      "apply",
-      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
-      "visible",
-      false
-    )
-  );
-
-  dispatch(
-    handleField(
-      "apply",
-      "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
-      "visible",
-      false
-    )
-  );
-}
+  } else {
+    dispatch(
+      handleField(
+        "apply",
+        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer",
+        "visible",
+        false
+      )
+    );
+    dispatch(
+      handleField(
+        "apply",
+        `components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.relatedSwConnection`,
+        "visible",
+        false
+      )
+    );
+    dispatch(
+      handleField(
+        "apply",
+        "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainersw",
+        "visible",
+        false
+      )
+    );
+  }
 };
 
 const moveToSuccess = (combinedArray, dispatch) => {

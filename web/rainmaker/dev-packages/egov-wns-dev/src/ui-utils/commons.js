@@ -610,7 +610,7 @@ export const prepareDocumentsUploadData = (state, dispatch) => {
 };
 
 const parserFunction = (state) => {
-    
+
     let queryObject = JSON.parse(JSON.stringify(get(state.screenConfiguration.preparedFinalObject, "applyScreen", {})));
     //console.log("Hello Test"+JSON.stringify(queryObject))
     let iPin = getIPin();
@@ -1125,6 +1125,14 @@ export const applyForSewerage = async (state, dispatch) => {
         dispatch(
             handleField(
                 "apply",
+                `components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.activationDetailsContainer.children.cardContent.children.activeDetails.children.relatedSwConnection`,
+                "visible",
+                false
+            )
+        );
+        dispatch(
+            handleField(
+                "apply",
                 "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.roadCuttingChargeContainer.children.cardContent",
                 "visible",
                 false
@@ -1151,7 +1159,7 @@ export const applyForSewerage = async (state, dispatch) => {
         //queryObject.tenantId = (queryObject && queryObject.property && queryObject.property.tenantId) ? queryObject.property.tenantId : null;
         queryObject.tenantId = parsedTenantId;
         if (method === "UPDATE") {
-            
+
             queryObject.additionalDetails.appCreatedDate = get(
                 state.screenConfiguration.preparedFinalObject,
                 "SewerageConnection[0].additionalDetails.appCreatedDate"
@@ -1197,7 +1205,7 @@ export const applyForSewerage = async (state, dispatch) => {
             }
             queryObject.additionalDetails.locality = queryObject.property.address.locality.code;
             today = convertDateToEpoch(today);
-            
+
             let today = new Date();
             let dd = String(today.getDate()).padStart(2, '0');
             let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -1233,7 +1241,7 @@ export const applyForSewerage = async (state, dispatch) => {
 }
 
 export const applyForBothWaterAndSewerage = async (state, dispatch) => {
-    
+
     let method;
 
     let queryObject = parserFunction(state);
@@ -1651,9 +1659,9 @@ export const getPastPaymentsForSewerage = async (dispatch) => {
 export const createMeterReading = async (dispatch, body, mode) => {
     dispatch(toggleSpinner());
     let url
-    if(mode === 'edit'){
+    if (mode === 'edit') {
         url = "/ws-calculator/meterConnection/_update"
-    }else{
+    } else {
         url = "/ws-calculator/meterConnection/_create"
     }
     try {

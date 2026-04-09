@@ -1,0 +1,213 @@
+.otp-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.otp-input {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  outline: none;
+  transition: 0.2s;
+}
+
+.otp-input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+.otp-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  padding: 14px;
+}
+
+.otp-card {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+/* Typography */
+
+.otp-title {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.otp-subtext {
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+/* Info Box */
+
+.info-box {
+ font-size: 14px;
+    padding: 10px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+/* Button */
+
+.verify-btn {
+  margin-top: 18px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+/* OTP Input Boxes */
+
+.otp-container {
+  gap: 8px;
+}
+
+.otp-input {
+  width: 42px;
+  height: 42px;
+  font-size: 18px;
+}
+
+/* Tablet */
+
+@media (min-width: 640px) {
+  .otp-card {
+    padding: 28px 24px;
+  }
+
+  .otp-title {
+    font-size: 24px;
+  }
+
+  .otp-input {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+/* Desktop */
+
+@media (min-width: 1024px) {
+  .otp-card {
+    max-width: 440px;
+  }
+}
+/* Container styling */
+.property_card-container {
+  display: flex;
+  flex-wrap: wrap;        /* Allows wrapping */
+  gap: 20px;
+  padding: 20px;
+  justify-content: flex-start;
+}
+
+
+.property-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.property-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Property ID */
+.property-id {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b2d42;
+  margin-bottom: 12px;
+}
+
+/* Label + Value row */
+.property-row {
+  margin-bottom: 8px;
+  font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.property-label {
+  font-weight: 600;
+  color: #6c757d;
+  margin-right: 6px;
+}
+
+.property-value {
+  color: #212529;
+  font-weight: 500;
+}
+
+/* Address */
+.property-address {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.5;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Status Colors */
+.status-active {
+  background: #e6f7ee;
+  color: #1b8a5a;
+}
+
+.status-inworkflow {
+  background: #fff4e5;
+  color: #d97706;
+}
+
+/* Button */
+.property-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.property-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
