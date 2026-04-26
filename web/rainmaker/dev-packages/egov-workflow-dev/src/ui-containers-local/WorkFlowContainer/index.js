@@ -109,6 +109,7 @@ class WorkFlowContainer extends React.Component {
       case "RESUBMIT":
       case "FORWARD_FOR_APPROVAL":
       case "FORWARD_FOR_FIELD_INSPECTION":
+      case "FORWARD_FOR_FEE":
         return "purpose=forward&status=success";
       case "MARK":
         return "purpose=mark&status=success";
@@ -144,6 +145,9 @@ class WorkFlowContainer extends React.Component {
         return "purpose=approve&status=success";
       case "ACTIVATE_CONNECTION":
         return "purpose=activate&status=success";
+      case "PAY_FEE":
+      case "PAY_DEMAND":
+        return "purpose=pay&status=success";
       case "REVOCATE":
         return "purpose=application&status=revocated";
       case "VOID":
@@ -446,7 +450,7 @@ class WorkFlowContainer extends React.Component {
         const PTStatus = get(preparedFinalObject,"Property.workflow.action", []);
         const WSassigneePresent = get(preparedFinalObject,"WaterConnection[0].assignee", []) ? get(preparedFinalObject,"WaterConnection[0].assignee", []).length > 0 : false;
         const WSassigneeAction = get(preparedFinalObject,"WaterConnection[0].action", "");
-        if(assigneePresent || FirenocassigneePresent || PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" ||  assigneeAction === "SENDBACKTOCITIZEN"|| FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || PTassigneeAction === "REJECT" || PTassigneeAction === "SENDBACKTOCITIZEN" ){
+        if(assigneePresent || FirenocassigneePresent || PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || WSassigneeAction === "FORWARD_FOR_FEE" || assigneeAction=== "REJECT" ||  assigneeAction === "SENDBACKTOCITIZEN"|| FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || PTassigneeAction === "REJECT" || PTassigneeAction === "SENDBACKTOCITIZEN" ){
             this.wfUpdate(label);
           }
       } else {
@@ -474,7 +478,7 @@ class WorkFlowContainer extends React.Component {
     const WSassigneePresent = get(preparedFinalObject,"WaterConnection[0].assignee", []) ? get(preparedFinalObject,"WaterConnection[0].assignee", []).length > 0 : false;
     const WSassigneeAction = get(preparedFinalObject,"WaterConnection[0].action", "");
     
-      if(assigneePresent || FirenocassigneePresent ||window.location.pathname.includes("bill-amend")|| PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "APPROVE_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" || assigneeAction ===  "CANCEL"|| assigneeAction ===  "RESUBMIT" || assigneeAction === "SENDBACKTOCITIZEN" ||WSassigneeAction ==="SEND_BACK_TO_CITIZEN"|| WSassigneeAction === "RESUBMIT_APPLICATION" || WSassigneeAction === "REJECT" || FireNOCassigneeAction ==="RESUBMIT" || FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || FireNOCassigneeAction === "CANCEL" || PTassigneeAction === "REJECT" ||PTassigneeAction === "SENDBACKTOCITIZEN" || assigneeStatus === "INITIATED"){
+      if(assigneePresent || FirenocassigneePresent ||window.location.pathname.includes("bill-amend")|| PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "APPROVE_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || WSassigneeAction === "FORWARD_FOR_FEE" || assigneeAction=== "REJECT" || assigneeAction ===  "CANCEL"|| assigneeAction ===  "RESUBMIT" || assigneeAction === "SENDBACKTOCITIZEN" ||WSassigneeAction ==="SEND_BACK_TO_CITIZEN"|| WSassigneeAction === "RESUBMIT_APPLICATION" || WSassigneeAction === "REJECT" || FireNOCassigneeAction ==="RESUBMIT" || FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || FireNOCassigneeAction === "CANCEL" || PTassigneeAction === "REJECT" ||PTassigneeAction === "SENDBACKTOCITIZEN" || assigneeStatus === "INITIATED"){
         this.wfUpdate(label);
       }
       
@@ -534,6 +538,8 @@ getRedirectUrl = (action, businessId, moduleName) => {
   }
   const payUrl = `/egov-common/pay?consumerCode=${businessId}&tenantId=${tenant}`;
   switch (action) {
+    case "PAY_FEE": return bservice ? `${payUrl}&businessService=${bservice}` : payUrl;
+    case "PAY_DEMAND": return bservice ? `${payUrl}&businessService=${bservice}` : payUrl;
     case "PAY": return bservice ? `${payUrl}&businessService=${bservice}` : payUrl;
     case "EDIT": return isAlreadyEdited
       ? `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit&edited=true`
@@ -706,12 +712,14 @@ prepareWorkflowContract = (data, moduleName) => {
         item.action !== "SEND_BACK_TO_CITIZEN" &&
         item.action !== "APPROVE_CONNECTION" &&
         item.action !== "APPROVE_FOR_CONNECTION" &&
-        item.action !== "RESUBMIT_APPLICATION";
+        item.action !== "RESUBMIT_APPLICATION" &&
+        item.action !== "PAY_FEE" &&
+        item.action !== "PAY_DEMAND";
       
       return {
         buttonLabel: item.action,
         moduleName: data[data.length - 1].businessService,
-        isLast: item.action === "PAY" ? true : false,
+        isLast: item.action === "PAY" || item.action === "PAY_FEE" || item.action === "PAY_DEMAND" ? true : false,
         buttonUrl: getRedirectUrl(item.action, businessId, businessService),
         dialogHeader: getHeaderName(item.action),
         showEmployeeList: showEmployeeListResult,
@@ -726,7 +734,7 @@ prepareWorkflowContract = (data, moduleName) => {
       return {
         buttonLabel: item.action,
         moduleName: data[data.length - 1].businessService,
-        isLast: item.action === "PAY" ? true : false,
+        isLast: item.action === "PAY" || item.action === "PAY_FEE" || item.action === "PAY_DEMAND" ? true : false,
         buttonUrl: getRedirectUrl(item.action, businessId, businessService),
         dialogHeader: getHeaderName(item.action),
         showEmployeeList: showEmployeeListResult,

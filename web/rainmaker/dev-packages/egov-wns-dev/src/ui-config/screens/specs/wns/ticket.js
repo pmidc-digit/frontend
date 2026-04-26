@@ -148,5 +148,6 @@ const ticket = {
 export default ticket
 
 const openTicketTool = (state, dispatch) => {
-  window.open("https://stvending.punjab.gov.in/ticket/", "_blank")
+  //window.open("https://stvending.punjab.gov.in/ticket/", "_blank")
+  window.open("https://mseva.lgpunjab.gov.in/ticket/", "_blank")
 };

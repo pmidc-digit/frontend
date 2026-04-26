@@ -13,6 +13,7 @@ import { httpRequest } from "../../../utils/api";
 import "./index.css";
 import { getTenantId, getUserInfo } from "../../../utils/localStorageUtils";
 //"egov-ui-kit/utils/localStorageUtils"
+
 var localityCode = null;
 var surveyIdcode = null;
 var editlocalityCode = null;
@@ -90,13 +91,13 @@ const breakYear = (financialYear)=>{
   }
   return parseInt(financialYear.split("-")[1]);
 }
-const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear) => {
-  console.log("assessmentArray",assessmentArray)
+const checkAssessmentStatus = (constructionYear, assessmentArray,tenantId,selectedYear, getYearList) => {
+  //console.log("assessmentArray",getYearList)
   let missingYears = [];
  // if(tenantId === "pb.testing" || tenantId === "pb.patiala"){
   let checkedYears;
  
-  const mFinancialYear = getCurrentFinancialYear()
+  const mFinancialYear =  getYearList[0];           //getCurrentFinancialYear()
   const currentFinancialYear = breakYear(mFinancialYear)
   const lastFifthFinancialYear = currentFinancialYear - 4;
   const newConstructionYear = constructionYear ==='NA' ? lastFifthFinancialYear : breakYear(constructionYear);
@@ -226,7 +227,7 @@ class YearDialog extends Component {
                //</div> let assessed = userType.toUpperCase() === 'CITIZEN' ? checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear)
                // : checkAssessmentStatus(constructionYear,assessment,tenantIdcode,this.state.selectedYear);
                  //console.log("assessed",assessed);
-                 let assessed = checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear);
+                 let assessed = checkAssessmentStatus(constructionYear,assessment,propertiestenantId,this.state.selectedYear, getYearList);
                  if(isLocMatch){
                     if (this.state.selectedYear !== '' && surveyIdcode != null) {
                       if(assessed.length > 0){
