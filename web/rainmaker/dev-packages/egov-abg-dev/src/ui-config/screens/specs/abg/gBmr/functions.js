@@ -207,7 +207,6 @@ export const searchApiCall = async (state, dispatch) => {
           convertEpochToDate(item.currentReadingDate) || "-",
         ["Billing Period"]: item.billingPeriod || "-",
         ["Status"]: item.meterStatus || "-",
-
         ["TENANT_ID"]: item.tenantId
       }));
       dispatch(
