@@ -18,7 +18,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
-export const updatesingleReading = async (consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId) => {
+export const updatesingleReading = async (state, dispatch, consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId) => {
 
   const payload = {
     meterReadingslist: [
@@ -38,14 +38,32 @@ export const updatesingleReading = async (consumerId, lastReading, currentReadin
 
   };
   try {
+    if (dispatch) {
+      dispatch(toggleSpinner(true));
+    }
     const url = "/ws-calculator/meterConnection/_createmultiple";
 
 
     const response = await httpRequest("post", url, "_update", [], payload);
 
-
+    if (dispatch) {
+      dispatch(toggleSpinner(false));
+    }
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Bulk update successful",
+          labelKey: "ABG_BULK_UPDATE_SUCCESS"
+        },
+        "success"
+      )
+    );
     return response;
   } catch (e) {
+    if (dispatch) {
+      dispatch(toggleSpinner(false));
+    }
     console.error("API error:", e);
     throw e;
   }
@@ -129,9 +147,9 @@ export const searchApiCall = async (state, dispatch) => {
         // dispatch(toggleSpinner(false));
         // return response;
 
-        const bills = (response && response.meterReadings) || [];
+        const bills = (response && response.bulkMeterReadings) || [];
         dispatch(
-          prepareFinalObject("searchScreenMdmsData.meterReadings", bills)
+          prepareFinalObject("searchScreenMdmsData.bulkMeterReadings", bills)
         );
         dispatch(toggleSpinner(false));
         return response;
@@ -152,7 +170,7 @@ export const searchApiCall = async (state, dispatch) => {
     const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
 
 
-    const bills = (responseFromAPI && responseFromAPI.meterReadings) || [];
+    const bills = (responseFromAPI && responseFromAPI.bulkMeterReadings) || [];
     dispatch(
       prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
     );
@@ -168,6 +186,7 @@ export const searchApiCall = async (state, dispatch) => {
         currentReadingDate: get(bills[i], "currentReadingDate"),
         billingPeriod: get(bills[i], "billingPeriod"),
         meterStatus: get(bills[i], "meterStatus"),
+        usageCategory: get(bills[i], "usageCategory") || "",
         tenantId: tenantId
       })
 
@@ -175,7 +194,7 @@ export const searchApiCall = async (state, dispatch) => {
     try {
       let data = response.map(item => ({
         ["Consumer ID"]: item.connectionNo || "-",
-
+        ["Usage Category"]: item.usageCategory || "-",
         // last confirmed reading from system
         ["Last Reading"]: item.currentReading || "-",
 
