@@ -18,7 +18,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
-export const updatesingleReading = async (consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, dispatch) => {
+export const updatesingleReading = async (state, dispatch, consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId) => {
 
   const payload = {
     meterReadingslist: [
