@@ -166,122 +166,142 @@ const getMutlipleBillsData = transformedDataArray => {
   return finalMultipleBillData;
 };
 //generateMutlipleBills PDF
-export const generateMultipleBill = async (state, dispatch, type) => {
-  debugger
-  dispatch(toggleSpinner());
-  let allBills = get(
-    state.screenConfiguration,
-    "preparedFinalObject.searchScreenMdmsData.billSearchResponse",
-    []
-  );
-  let integratedBills = get(state.screenConfiguration,
-    "preparedFinalObject.searchScreenMdmsData.intergratedBills",
-    []
-  )
+export const generateMultipleBill = async function (state, dispatch, type) {
+  try {
+    dispatch(toggleSpinner());
 
-  const commonPayDetails = get(
-    state.screenConfiguration,
-    "preparedFinalObject.searchScreenMdmsData.common-masters.uiCommonPay",
-    []
-  );
-  const businessService = get(
-    state.screenConfiguration,
-    "preparedFinalObject.searchCriteria.businesService",
-    ''
-  );
-  const locality = get(
-    state.screenConfiguration,
-    "preparedFinalObject.searchCriteria.locality",
-    ''
-  );
-  const tenantId = get(
-    state.screenConfiguration,
-    "preparedFinalObject.searchCriteria.tenantId",
-    ''
-  );
-   let batchtype = get(
-      state.screenConfiguration,
-      "preparedFinalObject.generateBillScreen.batchtype",
-      ''
-    );
-  let billkey = ''
-  const index = commonPayDetails && commonPayDetails.findIndex((item) => {
-    return item.code == businessService;
-  });
-  if(batchtype === "Integrated Bill"){
-    billkey = 'wsn-integrated'
-  }else{
-     if (index > -1) {
-    billkey = get(commonPayDetails[index], 'billKey', '');
-    } else {
-      const details = commonPayDetails && commonPayDetails.filter(item => item.code === "DEFAULT");
-      billkey = get(details, 'billKey', '');
+    var preparedData = get(state, "screenConfiguration.preparedFinalObject", {});
+
+    var allBills = get(preparedData, "searchScreenMdmsData.billSearchResponse", []);
+    var integratedBills = get(preparedData, "searchScreenMdmsData.intergratedBills", []);
+    var commonPayDetails = get(preparedData, "searchScreenMdmsData.common-masters.uiCommonPay", []);
+    var searchCriteria = get(preparedData, "searchCriteria");
+    var businessService = get(preparedData, "searchCriteria.businesService", "");
+    var locality = get(preparedData, "searchCriteria.locality", "");
+    var tenantId = get(preparedData, "searchCriteria.tenantId", "");
+    var batchType = get(preparedData, "generateBillScreen.batchtype", "");
+    var group = get(preparedData, "searchCriteria.group", "");
+
+    // ----------------------------
+    // Get Bill Key
+    // ----------------------------
+    function getBillKey() {
+      if (batchType === "Integrated Bill") {
+        return "wsn-integrated";
+      }
+
+      var match = null;
+      if (commonPayDetails && commonPayDetails.length) {
+        for (var i = 0; i < commonPayDetails.length; i++) {
+          if (commonPayDetails[i].code === businessService) {
+            match = commonPayDetails[i];
+            break;
+          }
+        }
+      }
+
+      if (match) {
+        return get(match, "billKey", "");
+      }
+
+      // fallback DEFAULT
+      if (commonPayDetails && commonPayDetails.length) {
+        for (var j = 0; j < commonPayDetails.length; j++) {
+          if (commonPayDetails[j].code === "DEFAULT") {
+            return get(commonPayDetails[j], "billKey", "");
+          }
+        }
+      }
+
+      return "";
     }
+
+    var billKey = getBillKey();
+
+    // ----------------------------
+    // Filter Bills
+    // ----------------------------
+    function filterBills(bills) {
+      if (!bills || !bills.length) return [];
+
+      var result = [];
+
+      for (var i = 0; i < bills.length; i++) {
+        var bill = bills[i];
+
+        if (batchType === "Integrated Bill") {
+          if (
+            bill &&
+            bill.connection &&
+            bill.connection.propertyTotalAmount > 0
+          ) {
+            result.push(bill);
+          }
+        } else {
+          if (
+            bill &&
+            bill.status === "ACTIVE" &&
+            bill.totalAmount > 0 &&
+            bill.connection &&
+            bill.connection.status === "Active"
+          ) {
+            result.push(bill);
+          }
+        }
+      }
+
+      return result;
+    }
+
+    var filteredBills = filterBills(allBills);
+
+    // ----------------------------
+    // Locality Batch Processing
+    // ----------------------------
+    var isValidLocalityOrGroup =
+      (batchType === "Locality" &&
+        typeof locality === "string" &&
+        locality.trim() !== "") ||
+      (batchType === "Group" &&
+        typeof group === "string" &&
+        group.trim() !== "") ||
+        Array.isArray(locality) && locality.length > 0
+
+    if (isValidLocalityOrGroup) {
+      try {
+        var response = await batchMergeAndDownload(
+          billKey,
+          batchType,
+          searchCriteria
+        );
+
+        var message = response.message + " Job ID: " + response.jobId;
+
+        dispatch(
+          toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
+        );
+      } catch (error) {
+        console.error("Batch download error:", error);
+
+        dispatch(
+          toggleSnackbar(
+            true,
+            { labelName: "Batch processing failed", labelKey: "Batch processing failed" },
+            "error"
+          )
+        );
+      }
+    } else {
+      if (filteredBills && filteredBills.length > 0) {
+        await downloadMultipleBill(filteredBills, billKey, businessService);
+      }
+    }
+
+  } catch (error) {
+    console.error("generateMultipleBill error:", error);
+  } finally {
+    dispatch(toggleSpinner());
   }
-  if(batchtype === "Integrated Bill"){
-    allBills = allBills.filter(bill => bill.connection.propertyTotalAmount >0);
-  }else{
-    allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount >0 && bill.connection.status=="Active");
-  }
-  allBills = allBills.filter(bill => bill.status === 'ACTIVE' && bill.totalAmount > 0);
-   if (
-     batchtype == 'Locality' && locality &&
-     !Array.isArray(locality) &&
-     typeof locality === "string" &&
-     locality.trim() !== ""
-   ) {
-     try {
-             const egovPdfResponse = await batchMergeAndDownload(
-             billkey,
-             locality,
-             businessService,
-             tenantId
-           );
-           let labelKey = egovPdfResponse.message+" Job ID :"+egovPdfResponse.jobId
-             dispatch(
-               toggleSnackbar(
-                 true,
-                 {
-                   labelName: labelKey,
-                   labelKey: labelKey
-               },
-               "warning"
-               )
-             );
-         } catch (error) {
-           console.error("Error while batch merge and download:", error);
-            dispatch(
-               toggleSnackbar(
-                 true,
-                 {
-                   labelName: error,
-                   labelKey: error
-                 },
-                 "warning"
-               )
-             );
-         }
-   } else {
-    allBills && allBills.length > 0 && await downloadMultipleBill(allBills, billkey, businessService);
-  }
-  /* 
-To Download Files based on Filestoreid logic
- 
-let filestoreids=[];
-let bills=[];
-allBills.map(bill=>{
-  if(bill.status==='ACTIVE'){
-    if(bill.fileStoreId==null){
-      bills.push(bill);
-    }else{
-      filestoreids.push(bill.fileStoreId)
-  }
-  }
-})
-bills&&bills.length>0&&await downloadMultipleBill(bills,billkey);
-filestoreids&&filestoreids.length>0&&downloadMultipleFileFromFilestoreIds(filestoreids,'download'); */
-  dispatch(toggleSpinner());
-  
 };
 /* await loadMdmsData(tenant);
 // data1 is for ULB logo from loadUlbLogo
