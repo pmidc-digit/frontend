@@ -35,9 +35,9 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
     );
     return;
   }
- 
+
   var params = [{ key: "tenantId", value: tenantId }];
-  
+
   return httpRequest(
     "post",
     "/pdf-service/v1/_getBulkPdfRecordsDetails",
@@ -70,17 +70,79 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
       //make table data
 
 
-      let tableData = filteredBillData.map(item => ({
-              ["ABG_JOB_ID"]: item.jobid || "-",
-              ["ABG_TENANT_ID"]: item.tenantId || "-",
-               ["ABG_FILESTORE_ID"]: item.filestoreid || "-",
-              ["ABG_TOTAL_RECORDS"]: item.totalrecords || "-",
-              ["ABG_RECORDS_COMPLETED"]:item.recordscompleted || "-",
-              ["ABG_LOCALITY_NAME"]: generateLocalityKey(state, item.locality)|| "-",
-              ["ABG_BUSINESS_SERVICE"]: item.bussinessService|| "-",
-            }));
-      
-      
+      const tableData = (filteredBillData || []).map(function (item) {
+
+        var localityNames = "-";
+
+        if (item && item.locality) {
+
+          var localityArray = [];
+
+          // Case 1: {"SC1","SC2"}
+          if (item.locality.indexOf("{") !== -1) {
+            localityArray = item.locality
+              .replace(/[{}"]/g, "")
+              .split(",")
+              .filter(function (value) {
+                return value && value.trim();
+              });
+          }
+          // Case 2: SC1
+          else {
+            localityArray = [item.locality];
+          }
+
+          localityNames = localityArray
+            .map(function (code) {
+              return generateLocalityKey(state, code.trim());
+            })
+            .filter(function (name) {
+              return name;
+            })
+            .join(", ");
+
+          if (!localityNames) {
+            localityNames = "-";
+          }
+        }
+
+        return {
+          ABG_JOB_ID:
+            item && item.jobid
+              ? item.jobid
+              : "-",
+
+          ABG_TENANT_ID:
+            item && item.tenantId
+              ? item.tenantId
+              : "-",
+
+          ABG_FILESTORE_ID:
+            item && item.filestoreid
+              ? item.filestoreid
+              : "-",
+
+          ABG_TOTAL_RECORDS:
+            item && item.totalrecords
+              ? item.totalrecords
+              : "-",
+
+          ABG_RECORDS_COMPLETED:
+            item && item.recordscompleted
+              ? item.recordscompleted
+              : "-",
+
+          ABG_LOCALITY_NAME:
+            localityNames,
+
+          ABG_BUSINESS_SERVICE:
+            item && item.bussinessService
+              ? item.bussinessService
+              : "-",
+        };
+      });
+
+
       dispatch(
         handleField(
           "groupBillDownloads",
@@ -136,14 +198,13 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
       );
     });
 };
-const  generateLocalityKey=(state,localityCode) =>{
-  debugger
+const generateLocalityKey = (state, localityCode) => {
   const localitiesData = get(
     state,
     "screenConfiguration.preparedFinalObject.localitiesData",
     {}
   );
-  let localityName = localitiesData.find((item=> item.code === localityCode));
+  let localityName = localitiesData.find((item => item.code === localityCode));
   return localityName.name;
 }
 const showHideTable = (booleanHideOrShow, dispatch) => {
