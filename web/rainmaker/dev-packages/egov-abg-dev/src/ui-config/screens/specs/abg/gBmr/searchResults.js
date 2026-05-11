@@ -18,21 +18,19 @@ export const searchResults = {
       { labelName: "Consumer ID", labelKey: "Consumer ID" },
       { labelName: "Usage Category", labelKey: "Usage Category" },
       { labelName: "Last Reading", labelKey: "Last Reading" },
-      { labelName: "Current Reading Date", labelKey: "Current Reading Date" },
+      { labelName: "Last Reading Date", labelKey: "Last Reading Date" },
       {
-        labelName: "Status",
-        labelKey: "Status",
+        labelName: "Meter Status",
+        labelKey: "Meter Status",
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             const statusOptions = [
               "Working",
               "Locked",
-              "No-meter",
               "Breakdown",
               "No_Meter",
               "Reset",
-              "NULL",
               "Replacement"
             ];
             const currentStatus = value || "";
@@ -65,7 +63,7 @@ export const searchResults = {
             // Last Reading is at index 2, Status is at index 4
             const lastReading = tableMeta.rowData && tableMeta.rowData[2];
             const status = tableMeta.rowData && tableMeta.rowData[4];
-            const isEditable = ["Working", "Breakdown", "Locked", "Reset", "Replacement"].includes(status);
+            const isEditable = ["Working", "Reset", "Replacement"].includes(status);
             const isReset = status === "Reset" || status === "Replacement";
             return (
               <input
@@ -118,11 +116,11 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
-            // Disable dates earlier than Current Reading Date for that row
+            // Disable dates earlier than Last Reading Date for that row
             const currentReadingDateDisplay =
-              tableMeta.rowData && tableMeta.rowData[3]; // Current Reading Date at index 3
+              tableMeta.rowData && tableMeta.rowData[3]; // Last Reading Date at index 3
             const status = tableMeta.rowData && tableMeta.rowData[4];
-            const isEditable = ["Working", "Breakdown", "Locked", "Reset", "Replacement"].includes(status);
+            const isEditable = ["Working", "Reset", "Replacement", "Locked", "No_Meter", "Breakdown"].includes(status);
 
             let minDate = "";
             if (
@@ -141,11 +139,28 @@ export const searchResults = {
                 min={minDate || undefined}
                 className="bulk-new-reading-date"
                 style={{ width: "160px", padding: "6px", boxSizing: "border-box" }}
-                disabled={!isEditable}
+                // disabled={!isEditable}
                 // defaultValue={value || today}
                 onChange={e => {
-                  if (!isEditable) return;
+                  // if (!isEditable) return;
                   updateValue(e.target.value);
+                }}
+                onBlur={e => {
+                  const dateValue = e.target.value;
+
+                  // Validate date is not empty
+                  if (!dateValue) {
+                    alert("Please enter a New Reading Date");
+                    return;
+                  }
+
+                  // Validate date is not earlier than Last Reading Date
+                  if (minDate && dateValue < minDate) {
+                    alert("New Reading Date cannot be earlier than Last Reading Date");
+                    e.target.value = "";
+                    updateValue("");
+                    return;
+                  }
                 }}
               />
             );
@@ -166,9 +181,12 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
-            let readingDatenew = tableMeta.rowData && tableMeta.rowData[5] ? tableMeta.rowData[6] : null;
+            let readingDatenew = tableMeta.rowData[6];
             readingDatenew = readingDatenew ? readingDatenew.split("-").reverse().join("/") : null;
             const handleUpdate = async () => {
+
+              const statusSelects = document.querySelectorAll("select.bulk-status-select");
+              const statusFromSelect = statusSelects[tableMeta.rowIndex] && statusSelects[tableMeta.rowIndex].value;
 
               const consumerId = tableMeta.rowData && tableMeta.rowData[0];
               const status = statusFromSelect || (tableMeta.rowData && tableMeta.rowData[4]) || "";
@@ -179,15 +197,31 @@ export const searchResults = {
               let currentReading = Number(currentReadingRaw) || 0;
               const billingPeriod = readingDatenew ? `${tableMeta.rowData[3]} - ${readingDatenew}` : "";
               const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
-              const statusSelects = document.querySelectorAll("select.bulk-status-select");
-              const statusFromSelect = statusSelects[tableMeta.rowIndex] && statusSelects[tableMeta.rowIndex].value;
 
               const tenantId = tableMeta.rowData && tableMeta.rowData[8];
+
+              // If status is Locked, No_Meter, or Breakdown, automatically set currentReading to lastReading
+              if (["Locked", "No_Meter", "Breakdown"].includes(status)) {
+                currentReading = lastReading;
+                try {
+                  const resp = await updatesingleReading(consumerId, lastReading, lastReading, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId);
+                  alert("Update successful for Consumer ID: " + (consumerId || ""));
+                } catch (err) {
+                  console.error(err);
+                  alert("Update failed: " + (err && err.message ? err.message : "Unknown error"));
+                }
+                return;
+              }
+
               if (!currentReadingRaw || !Number.isFinite(currentReading)) {
                 alert("Please enter a numeric Current Reading before updating");
                 return;
               }
 
+              if (!readingDate || !Number.isFinite(currentReading)) {
+                alert("Please enter a numeric Current date before updating");
+                return;
+              }
               if (currentReading > 10000) {
                 alert("Please enter a numeric Current Reading less than or equal to 10000 before updating");
                 return;
@@ -200,9 +234,9 @@ export const searchResults = {
 
               currentReading = status === "Reset" ? (10000 + currentReading - lastReading) : currentReading;
 
-              // New Reading Date must not be earlier than Current Reading Date
+              // New Reading Date must not be earlier than Last Reading Date
               if (readingDate && currentReadingDate && readingDate < currentReadingDate) {
-                alert("New Reading Date cannot be earlier than Current Reading Date");
+                alert("New Reading Date cannot be earlier than Last Reading Date");
                 return;
               }
 
@@ -281,7 +315,7 @@ export const updateAllReadings = async (state, dispatch) => {
     const consumerId = isArrayRow ? row[0] : row["Consumer ID"];
     const usageCategory = isArrayRow ? row[1] : row["Usage Category"];
     const lastReading = Number(isArrayRow ? row[2] : row["Last Reading"]) || 0;
-    const currentReadingDateDisplay = isArrayRow ? row[3] : row["Current Reading Date"];
+    const currentReadingDateDisplay = isArrayRow ? row[3] : row["Last Reading Date"];
     const lastReadingDate = getEpochForDate(currentReadingDateDisplay);
 
     // New reading / date: always take what user typed in the row inputs
@@ -290,17 +324,57 @@ export const updateAllReadings = async (state, dispatch) => {
     const currentReadingRaw = currentReadingRawEl ? currentReadingRawEl.value : "";
     const newReadingDate = newReadingDateEl ? newReadingDateEl.value : "";
 
-    const statusFromRow = isArrayRow ? row[7] : row["Status"];
+    const statusFromRow = isArrayRow ? row[7] : row["Meter Status"];
     const status = statusSelects[i] && statusSelects[i].value ? statusSelects[i].value : statusFromRow;
     const tenantId = isArrayRow ? row[8] : row["TENANT_ID"];
 
     // only allow bulk update for selected meter statuses
-    const isEditableStatus = ["Working", "Breakdown", "Locked", "Reset", "Replacement"].includes(status);
+    const isEditableStatus = ["Working", "Reset", "Replacement", "Locked", "No_Meter", "Breakdown"].includes(status);
     if (!isEditableStatus) {
       continue;
     }
 
-    // only take complete rows (both value and date filled)
+    // For Locked, No_Meter, Breakdown - automatically use lastReading and still require date
+    if (["Locked", "No_Meter", "Breakdown"].includes(status)) {
+      if (!newReadingDate) {
+        continue;
+      }
+      const readingDatenew = newReadingDate
+        ? newReadingDate.split("-").reverse().join("/")
+        : null;
+      const billingPeriod =
+        readingDatenew && currentReadingDateDisplay
+          ? `${currentReadingDateDisplay} - ${readingDatenew}`
+          : "";
+      const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
+
+      const currentReadingDateEpoch = currentReadingDateDisplay
+        ? getEpochForDate(currentReadingDateDisplay)
+        : null;
+      if (readingDate && currentReadingDateEpoch && readingDate < currentReadingDateEpoch) {
+        continue;
+      }
+
+      const payload = {
+        meterReadingslist: [
+          {
+            currentReadingDate: readingDate,
+            currentReading: lastReading,
+            billingPeriod: billingPeriod,
+            meterStatus: status,
+            connectionNo: consumerId,
+            lastReading: status === "Replacement" ? 0 : lastReading,
+            lastReadingDate: lastReadingDate,
+            tenantId: tenantId,
+            generateDemand: true
+          }
+        ]
+      };
+      allarray.push(payload.meterReadingslist[0]);
+      continue;
+    }
+
+    // only take complete rows (both value and date filled) for other statuses
     if (!currentReadingRaw || !newReadingDate) {
       continue;
     }
@@ -333,7 +407,7 @@ export const updateAllReadings = async (state, dispatch) => {
         : "";
     const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
 
-    // New Reading Date must not be earlier than Current Reading Date
+    // New Reading Date must not be earlier than Last Reading Date
     const currentReadingDateEpoch = currentReadingDateDisplay
       ? getEpochForDate(currentReadingDateDisplay)
       : null;
@@ -351,7 +425,7 @@ export const updateAllReadings = async (state, dispatch) => {
           billingPeriod: billingPeriod,
           meterStatus: status,
           connectionNo: consumerId,
-          lastReading: lastReading,
+          lastReading: status === "Replacement" ? 0 : lastReading,
           lastReadingDate: lastReadingDate,
           tenantId: tenantId,
           generateDemand: true

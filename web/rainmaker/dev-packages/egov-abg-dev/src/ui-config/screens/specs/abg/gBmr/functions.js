@@ -18,7 +18,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
-export const updatesingleReading = async (state, dispatch, consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId) => {
+export const updatesingleReading = async (consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, state = null, dispatch = null) => {
 
   const payload = {
     meterReadingslist: [
@@ -34,8 +34,6 @@ export const updatesingleReading = async (state, dispatch, consumerId, lastReadi
         generateDemand: true
       }
     ]
-
-
   };
   try {
     if (dispatch) {
@@ -43,22 +41,23 @@ export const updatesingleReading = async (state, dispatch, consumerId, lastReadi
     }
     const url = "/ws-calculator/meterConnection/_createmultiple";
 
-
     const response = await httpRequest("post", url, "_update", [], payload);
 
     if (dispatch) {
       dispatch(toggleSpinner(false));
     }
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Bulk update successful",
-          labelKey: "ABG_BULK_UPDATE_SUCCESS"
-        },
-        "success"
-      )
-    );
+    if (dispatch) {
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Bulk update successful",
+            labelKey: "ABG_BULK_UPDATE_SUCCESS"
+          },
+          "success"
+        )
+      );
+    }
     return response;
   } catch (e) {
     if (dispatch) {
@@ -103,7 +102,8 @@ export const searchApiCall = async (state, dispatch) => {
         "warning"
       )
     );
-  } else if (
+  }
+  else if (
     Object.keys(searchScreenObject).length == 0 ||
     Object.values(searchScreenObject).every(x => x === "")
   ) {
@@ -117,7 +117,9 @@ export const searchApiCall = async (state, dispatch) => {
         "warning"
       )
     );
-  } else {
+  }
+
+  else {
     for (var key in searchScreenObject) {
       if (
         searchScreenObject.hasOwnProperty(key) &&
@@ -138,7 +140,7 @@ export const searchApiCall = async (state, dispatch) => {
       try {
         dispatch(toggleSpinner(true));
         const requestBody = {
-          tenantId: searchScreenObject.tenantId || tenantId,
+          tenantId: getTenantId() || tenantId,
           locality: searchScreenObject.locality || "",
           offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
         };
@@ -203,10 +205,10 @@ export const searchApiCall = async (state, dispatch) => {
         ["New Reading Date"]: "",
 
         // existing reading date from system
-        ["Current Reading Date"]:
+        ["Last Reading Date"]:
           convertEpochToDate(item.currentReadingDate) || "-",
         ["Billing Period"]: item.billingPeriod || "-",
-        ["Status"]: item.meterStatus || "-",
+        ["Meter Status"]: item.meterStatus || "-",
         ["TENANT_ID"]: item.tenantId
       }));
       dispatch(

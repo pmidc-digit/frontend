@@ -99,18 +99,52 @@ export const abgSearchCard = getCommonCard({
             labelName: "Select ULB",
             labelKey: "ABG_ULB_PLACEHOLDER"
           },
-          required: true,
+          required: false,
           value: tenantId,
-          disabled: true,
-          isClearable: true,
-          labelsFromLocalisation: true,
+          isDisabled: getTenantId() === "pb.punjab" ? false : true,
+          readOnly: getTenantId() === "pb.punjab" ? false : true,
+          isClearable: false,
+          labelsFromLocalisation: getTenantId() === "pb.punjab" ? false : true,
           className: "autocomplete-dropdown",
           jsonPath: "searchCriteria.tenantId",
           sourceJsonPath: "searchScreenMdmsData.tenant.tenants",
+
         },
-        required: true,
+        afterFieldChange: async (action, state, dispatch) => {
+          let selecttetentid = await get(state, "screenConfiguration.preparedFinalObject.searchCriteria.tenantId");
+
+          if (true) {
+            try {
+              let response = await httpRequest(
+                "post",
+                "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+                "_search",
+                [{ key: "tenantId", value: selecttetentid }],
+                {}
+              );
+              let mohallaDataArray = [];
+              let localitysar = [];
+              let mohallaDataRow = null;
+              let name, code;
+              response.TenantBoundary[0].boundary.map((element, index) => {
+
+                mohallaDataRow = { "code": element.code, "name": element.name };
+                mohallaDataArray.push(mohallaDataRow);
+
+              });
+
+              dispatch(prepareFinalObject("searchScreenMdmsData.localities", mohallaDataArray));
+
+            } catch (e) {
+              console.log(e);
+            }
+          }
+
+
+        },
+        required: false,
         jsonPath: "searchCriteria.tenantId",
-        disabled: false,
+        disabled: true,
         gridDefination: {
           xs: 12,
           sm: 4
