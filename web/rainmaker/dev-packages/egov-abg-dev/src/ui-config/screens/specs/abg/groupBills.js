@@ -145,8 +145,8 @@ const abgSearchAndResult = {
                     ? `/egov-ui-framework/abg/groupBillDownloads`
                     : `/abg/groupBillDownloads`
               },
-              //visible: (process.env.REACT_APP_NAME === "Citizen") ? false : true
-              visible: false 
+              visible: (process.env.REACT_APP_NAME === "Citizen") ? false : true
+              //visible: false 
             }
           }
         },
