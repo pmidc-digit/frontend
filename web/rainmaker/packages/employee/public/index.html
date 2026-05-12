@@ -64,34 +64,78 @@
             var pathname = new URL(url).pathname;
             var path = pathname.replace(/^\/+|\/+$/g, '');
 
-            var pageTitleMap = {
-              "https://sdc-uat.lgpunjab.gov.in/digit-ui/citizen/select-location": "Citizen Select Location",
-              "https://sdc-uat.lgpunjab.gov.in/digit-ui/citizen/error": "Citizen Error",
-              "https://sdc-uat.lgpunjab.gov.in/digit-ui/employee/error": "Employee Error",
-              "citizen/tl": "Business License Citizen", "employee/tl": "Business License Employee",
-              "employee/dss/dashboard/tradelicense": "Business License Employee",
-              "citizen/pt": "Property Tax Citizen", "employee/pt": "Property Tax Employee",
-              "employee/dss/dashboard/propertytax": "Property Tax Employee",
-              "citizen/obps": "Building Permit Citizen", "employee/obps": "Building Permit Employee",
-              "employee/dss/dashboard/obps": "Building Permit Employee", "employee/noc": "Building Permit Employee",
-              "citizen/mcollect": "mCollect Citizen", "employee/mcollect": "mCollect Employee",
-              "employee/dss/dashboard/mcollect": "mCollect Employee", "employee/finance": "Finance Employee",
-              "citizen/ws": "WS Citizen", "employee/ws": "WS Employee",
-              "employee/dss/dashboard/ws": "WS Employee",
-              "citizen/birth": "Birth Citizen", "employee/birth": "Birth Employee",
-              "employee/dss/dashboard/birth-death": "Birth&Death Dashboard Employee",
-              "citizen/death": "Death Citizen", "employee/death": "Death Employee",
-              "citizen/fsm": "FSM Citizen", "employee/fsm": "FSM Administrator",
-              "employee/dss/dashboard/fsm": "FSM Administrator", "employee/tqm": "FSM Plant Operator",
-              "employee/dss/dashboard/pqm": "FSM Plant Operator",
-              "citizen/fire-noc": "FNOC Citizen", "employee/fire-noc": "FNOC Employee",
-              "citizen/engagement/surveys": "Survey Citizen", "employee/engagement/surveys": "Survey Employee"
+            var exactTitleMap = {
+              "": "mSeva Home",
+              "citizen": "Citizen Home",
+              "employee": "Employee Home",
+              "employee/inbox": "Employee Inbox",
+              "employee/landing-page": "Employee Landing Page",
+              "employee/user/login": "Login Employee",
+              "employee/user/otp": "OTP Employee",
+              "employee/user/profile": "Profile Employee",
+              "employee/language-selection": "Language Selection Employee",
+              "citizen/user/login": "Login Citizen",
+              "citizen/user/register": "Register Citizen",
+              "citizen/user/otp": "OTP Citizen",
+              "citizen/user/profile": "Profile Citizen",
+              "citizen/language-selection": "Language Selection Citizen"
             };
+            if (exactTitleMap[path] !== undefined) return exactTitleMap[path];
 
-            if (pageTitleMap[path]) return pageTitleMap[path];
-            for (var key in pageTitleMap) {
-              if (path.includes(key)) return pageTitleMap[key];
+            var prefixTitleMap = [
+              ["employee/dss/dashboard/propertytax", "Property Tax Dashboard Employee"],
+              ["employee/dss/dashboard/tradelicense", "Business License Dashboard Employee"],
+              ["employee/dss/dashboard/obps", "Building Permit Dashboard Employee"],
+              ["employee/dss/dashboard/ws", "Water & Sewerage Dashboard Employee"],
+              ["employee/dss/dashboard/mcollect", "mCollect Dashboard Employee"],
+              ["employee/dss/dashboard/fsm", "FSM Dashboard Employee"],
+              ["employee/dss/dashboard/pqm", "FSM Plant Operator Dashboard Employee"],
+              ["employee/dss/dashboard/birth-death", "Birth & Death Dashboard Employee"],
+              ["employee/dss", "DSS Dashboard Employee"],
+              ["citizen/engagement/surveys", "Survey Citizen"],
+              ["employee/engagement/surveys", "Survey Employee"],
+              ["citizen/property-tax", "Property Tax Citizen"],
+              ["citizen/propert-tax", "Property Tax Citizen"],
+              ["employee/property-tax", "Property Tax Employee"],
+              ["employee/pt-mutation", "Property Tax Employee"],
+              ["citizen/tradelicense-citizen", "Business License Citizen"],
+              ["citizen/tradelicence", "Business License Citizen"],
+              ["citizen/trade-license", "Business License Citizen"],
+              ["employee/tradelicence", "Business License Employee"],
+              ["employee/tradelicense", "Business License Employee"],
+              ["citizen/fire-noc", "FNOC Citizen"],
+              ["employee/fire-noc", "FNOC Employee"],
+              ["citizen/obps", "Building Permit Citizen"],
+              ["employee/obps", "Building Permit Employee"],
+              ["citizen/bpa", "Building Permit Citizen"],
+              ["employee/bpa", "Building Permit Employee"],
+              ["employee/noc", "Building Permit Employee"],
+              ["citizen/wns", "Water & Sewerage Citizen"],
+              ["employee/wns", "Water & Sewerage Employee"],
+              ["citizen/ws", "Water & Sewerage Citizen"],
+              ["employee/ws", "Water & Sewerage Employee"],
+              ["citizen/mcollect", "mCollect Citizen"],
+              ["employee/mcollect", "mCollect Employee"],
+              ["citizen/fsm", "FSM Citizen"],
+              ["employee/fsm", "FSM Administrator"],
+              ["employee/tqm", "FSM Plant Operator"],
+              ["citizen/birth", "Birth Citizen"],
+              ["employee/birth", "Birth Employee"],
+              ["citizen/death", "Death Citizen"],
+              ["employee/death", "Death Employee"],
+              ["employee/services", "Finance Employee"],
+              ["employee/finance", "Finance Employee"],
+              ["employee/hrms", "HRMS Employee"]
+            ];
+
+            for (var i = 0; i < prefixTitleMap.length; i++) {
+              if (path.indexOf(prefixTitleMap[i][0]) === 0) return prefixTitleMap[i][1];
             }
+
+            if (/(pgr-home|my-complaints|add-complaint|complaint-|create-complaint|all-complaints|search-complaint|closed-complaints|assign-complaint|reassign-complaint|request-reassign|reject-complaint|reopen-complaint|reopen-acknowledgement|feedback|resolve-success|reassign-success)/.test(path)) {
+              return path.indexOf("citizen") === 0 ? "Complaints Citizen" : "Complaints Employee";
+            }
+
             return "DIGIT";
           } catch (e) {
             console.error("Error getting page title:", e);
