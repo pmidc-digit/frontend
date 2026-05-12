@@ -294,6 +294,8 @@ export const searchResults = {
 export const updateAllReadings = async (state, dispatch) => {
 
   let allarray = [];
+  let skippedRows = 0;
+  let errorRows = [];
 
   const rows = get(
     state,
@@ -337,6 +339,7 @@ export const updateAllReadings = async (state, dispatch) => {
     // For Locked, No_Meter, Breakdown - automatically use lastReading and still require date
     if (["Locked", "No_Meter", "Breakdown"].includes(status)) {
       if (!newReadingDate) {
+        errorRows.push(consumerId);
         continue;
       }
       const readingDatenew = newReadingDate
@@ -352,6 +355,7 @@ export const updateAllReadings = async (state, dispatch) => {
         ? getEpochForDate(currentReadingDateDisplay)
         : null;
       if (readingDate && currentReadingDateEpoch && readingDate < currentReadingDateEpoch) {
+        errorRows.push(consumerId);
         continue;
       }
 
@@ -376,6 +380,9 @@ export const updateAllReadings = async (state, dispatch) => {
 
     // only take complete rows (both value and date filled) for other statuses
     if (!currentReadingRaw || !newReadingDate) {
+      if (!newReadingDate) {
+        errorRows.push(consumerId);
+      }
       continue;
     }
 
@@ -412,7 +419,7 @@ export const updateAllReadings = async (state, dispatch) => {
       ? getEpochForDate(currentReadingDateDisplay)
       : null;
     if (readingDate && currentReadingDateEpoch && readingDate < currentReadingDateEpoch) {
-      // skip this row if date is invalid
+      errorRows.push(consumerId);
       continue;
     }
 
@@ -434,6 +441,14 @@ export const updateAllReadings = async (state, dispatch) => {
     };
     allarray.push(payload.meterReadingslist[0]);
 
+  }
+
+  // Show validation error summary
+
+
+  if (allarray.length === 0) {
+    alert("No valid rows to update. Please fill in all required fields.");
+    return;
   }
 
   try {
