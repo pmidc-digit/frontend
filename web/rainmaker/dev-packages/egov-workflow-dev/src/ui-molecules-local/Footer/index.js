@@ -540,10 +540,10 @@ class Footer extends React.Component {
           }
         };
         if (responseLength > 1) {
-          if (applicationType !== "NEW") {
+          //if (applicationType !== "NEW") {
             downloadMenu && downloadMenu.push(editButton);
             downloadMenu && downloadMenu.push(submitButton);
-          }
+         // }
 
         }
         else if (responseLength === 1) {
