@@ -31,7 +31,8 @@ export const updatesingleReading = async (consumerId, lastReading, currentReadin
         lastReading: lastReading,
         lastReadingDate: lastReadingDate,
         tenantId: tenantId,
-        generateDemand: true
+        generateDemand: true,
+        isBulkMeter: lastReading > 10000 ? true : false
       }
     ]
   };
