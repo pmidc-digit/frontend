@@ -30,10 +30,6 @@ function parseDDMMYYYY(dateStr) {
 const saveData = async (state, dispatch) => {
     const mode = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.mode");
     let data = get(state, "screenConfiguration.preparedFinalObject.metereading");
-    let lastReading = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.lastReading");
-    let currentReading = Number(data.currentReading);
-    data.currentReading = data.meterStatus === "Reset" ? (10000 + currentReading - lastReading) : data.currentReading;
-    lastReading = data.meterStatus === "Replacement" ? 0 : lastReading;
 
     if (!data || data.length === 0) {
         dispatch(
@@ -87,8 +83,7 @@ const saveData = async (state, dispatch) => {
         data.meterStatus = get(state, "screenConfiguration.preparedFinalObject.meterMdmsData.['ws-services-calculation'].MeterStatus[0].code");
     }
     data.connectionNo = getQueryArg(window.location.href, "connectionNos")
-    // data.lastReading = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.lastReading");
-    data.lastReading = lastReading
+    data.lastReading = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.lastReading");
 
     // Set last reading date and ID based on mode (add vs edit)
     if (mode === 'edit') {
@@ -103,7 +98,7 @@ const saveData = async (state, dispatch) => {
         }
     }
 
-    if (data.meterStatus === 'Working') {
+    if (data.meterStatus === 'Working' || data.meterStatus === 'Reset' || data.meterStatus === 'Replacement') {
         validateFields(
             "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fourthContainer.children",
             state,
@@ -135,40 +130,6 @@ const saveData = async (state, dispatch) => {
             return;
         }
     }
-
-    else if (data.meterStatus === 'Reset' || data.meterStatus === 'Replacement' || data.meterStatus === 'No-meter') {
-        // For these statuses, consumption field is hidden. Validate currentReading and date fields instead.
-        validateFields(
-            "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fourthContainer.children",
-            state,
-            dispatch,
-            "meter-reading"
-        );
-        validateFields(
-            "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fifthContainer.children",
-            state,
-            dispatch,
-            "meter-reading"
-        );
-
-        // Ensure currentReading is present (for Reset/Replacement user should enter currentReading)
-        if (data.currentReading === null || data.currentReading === undefined || data.currentReading === "") {
-            return;
-        }
-
-        // If date not provided, set to today
-        if (!data.currentReadingDate) {
-            data.currentReadingDate = new Date().getTime();
-        }
-
-        // Apply Reset calculation if needed
-        if (data.meterStatus === 'Reset') {
-            const curr = Number(data.currentReading) || 0;
-            data.currentReading = 10000 + curr - lastReading;
-        }
-
-        // Replacement: ensure lastReading considered 0 (already handled above)
-    }
     else {
         const consumption = validateFields(
             "components.div.children.meterReadingEditable.children.card.children.cardContent.children.sixthContainer.children",
@@ -179,8 +140,8 @@ const saveData = async (state, dispatch) => {
         if (!data.consumption) {
             return;
         }
-        const previousreading = lastReading;
-        // data.currentReading = parseFloat(data.consumption) + previousreading;
+        const previousreading = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.lastReading");
+        data.currentReading = parseFloat(data.consumption) + previousreading;
         data.currentReadingDate = new Date().getTime();
     }
 
@@ -310,7 +271,7 @@ export const meterReadingEditable =
                     }),
                     afterFieldChange: async (action, state, dispatch) => {
                         let status = get(state, "screenConfiguration.preparedFinalObject.metereading.meterStatus");
-                        if (status == 'Working') {
+                        if (status == 'Working' || status == 'Reset' || status == 'Replacement') {
                             dispatch(
                                 handleField(
                                     "meter-reading",
@@ -468,13 +429,13 @@ export const meterReadingEditable =
                                 )
                             );
                         }
-                        else if (status == 'Reset' || status == 'Replacement' || status == 'No-meter') {
+                        else if (status == 'No-meter') {
                             dispatch(
                                 handleField(
                                     "meter-reading",
                                     "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fourthContainer.children.currentReading.props",
                                     "disabled",
-                                    false
+                                    true
                                 )
                             );
                             dispatch(
@@ -482,7 +443,7 @@ export const meterReadingEditable =
                                     "meter-reading",
                                     "components.div.children.meterReadingEditable.children.card.children.cardContent.children.fifthContainer.children.currentReadingDate.props",
                                     "disabled",
-                                    false
+                                    true
                                 )
                             );
                             dispatch(
@@ -498,7 +459,7 @@ export const meterReadingEditable =
                                     "meter-reading",
                                     "components.div.children.meterReadingEditable.children.card.children.cardContent.children.sixthContainer.children.thirdCont",
                                     "visible",
-                                    false
+                                    true
                                 )
                             );
                             dispatch(
@@ -506,7 +467,7 @@ export const meterReadingEditable =
                                     "meter-reading",
                                     "components.div.children.meterReadingEditable.children.card.children.cardContent.children.sixthContainer.children.thirdCont",
                                     "visible",
-                                    false
+                                    true
                                 )
                             );
                             dispatch(
@@ -765,14 +726,24 @@ export const meterReadingEditable =
                     afterFieldChange: async (action, state, dispatch) => {
                         let lastReading = get(state, "screenConfiguration.preparedFinalObject.autoPopulatedValues.lastReading");
                         let currentReading = get(state, "screenConfiguration.preparedFinalObject.metereading.currentReading");
+                        let newstatus = get(state, "screenConfiguration.preparedFinalObject.metereading.meterStatus");
                         let consumption;
-                        if (lastReading === 0) {
-                            consumption = currentReading
-                        } else {
-                            consumption = (currentReading - lastReading).toFixed(2);
+                        if (newstatus == "Reset") {
+                            consumption = (10000 + Number(currentReading) - lastReading).toFixed(2);
                         }
-                        if (currentReading == '' || consumption < 0) {
-                            consumption = ''
+                        else if (newstatus == "Replacement") {
+                            consumption = currentReading
+                        }
+                        else {
+
+                            if (lastReading === 0) {
+                                consumption = currentReading
+                            } else {
+                                consumption = (currentReading - lastReading).toFixed(2);
+                            }
+                            if (currentReading == '' || consumption < 0) {
+                                consumption = ''
+                            }
                         }
                         dispatch(
                             handleField(
@@ -960,6 +931,3 @@ export const meterReadingEditable =
     }
 
 }
-
-
-
