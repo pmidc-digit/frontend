@@ -29,7 +29,6 @@ export const searchResults = {
               "Working",
               "Locked",
               "Breakdown",
-              "No_Meter",
               "Reset",
               "Replacement"
             ];
