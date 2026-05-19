@@ -11,7 +11,7 @@ import get from "lodash/get";
 import LabelContainer from "egov-ui-framework/ui-containers/LabelContainer";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
 import { convertEpochToDate } from "../../ui-config/screens/specs/utils";
-import {addMeterReading} from "../../ui-config/screens/specs/wns/meter-reading"
+import { addMeterReading } from "../../ui-config/screens/specs/wns/meter-reading"
 const styles = {
   card: {
     marginLeft: 8,
@@ -151,7 +151,14 @@ class MeterReading extends React.Component {
                       </Grid>
                       <Grid item md={8} xs={6}>
                         <Label
-                          labelName={item.currentReading - item.lastReading}
+                          //labelName={item.currentReading - item.lastReading}
+                          labelName={
+                            item.meterStatus == 'Reset'
+                              ?
+                              item.currentReading + 10000 - item.lastReading
+                              : item.currentReading - item.lastReading
+                          }
+
                           fontSize={14}
                           style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.87" }}
                         />
@@ -161,7 +168,7 @@ class MeterReading extends React.Component {
                           <Button
                             variant="contained"
                             color="primary"
-                             onClick={() => this.props.addMeterReadingWithState(this.props.state)}
+                            onClick={() => this.props.addMeterReadingWithState(this.props.state)}
                           >
                             Update
                           </Button>

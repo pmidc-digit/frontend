@@ -29,7 +29,6 @@ export const searchResults = {
               "Working",
               "Locked",
               "Breakdown",
-              "No_Meter",
               "Reset",
               "Replacement"
             ];
@@ -69,7 +68,7 @@ export const searchResults = {
               <input
                 type="number"
                 min={isReset ? 0 : (lastReading || 0)}
-                max={10000}
+                max={status === "Reset" ? 100000 : 10000}
                 className="bulk-new-reading"
                 style={{ width: "120px", padding: "6px", boxSizing: "border-box" }}
                 disabled={!isEditable}
@@ -88,7 +87,7 @@ export const searchResults = {
                     alert("Please enter a valid numeric value");
                     return;
                   }
-                  if (numeric > 10000) {
+                  if (numeric > 10000 && status != "Reset") {
                     e.target.value = "";
                     updateValue("");
                     alert("Please enter a numeric value less than or equal to 10000");
@@ -107,6 +106,35 @@ export const searchResults = {
                 }}
               />
             );
+          }
+        }
+      },
+      {
+        labelName: "Consumption",
+        labelKey: "Consumption",
+        options: {
+          filter: false,
+          customBodyRender: (value, tableMeta) => {
+            const lastReading = Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
+            const status = tableMeta.rowData && tableMeta.rowData[4];
+            const inputs = (document.querySelectorAll && document.querySelectorAll("input.bulk-new-reading")) || [];
+            const inputEl = inputs[tableMeta.rowIndex];
+            const newReadingRaw = inputEl ? inputEl.value : (tableMeta.rowData && tableMeta.rowData[5]);
+
+            if (newReadingRaw === undefined || newReadingRaw === null || newReadingRaw === "") return "";
+            const newReading = Number(newReadingRaw) || 0;
+
+            if (["Locked", "No_Meter", "Breakdown"].includes(status)) return String(0);
+
+            if (status === "Replacement") {
+              return String(newReading - 0);
+            }
+
+            if (status === "Reset") {
+              return String(10000 + newReading - lastReading);
+            }
+
+            return String(newReading - lastReading);
           }
         }
       },
@@ -181,7 +209,8 @@ export const searchResults = {
         options: {
           filter: false,
           customBodyRender: (value, tableMeta, updateValue) => {
-            let readingDatenew = tableMeta.rowData[6];
+
+            let readingDatenew = tableMeta.rowData[7];
             readingDatenew = readingDatenew ? readingDatenew.split("-").reverse().join("/") : null;
             const handleUpdate = async () => {
 
@@ -195,16 +224,17 @@ export const searchResults = {
               const lastReadingDate = currentReadingDate;
               const currentReadingRaw = Number(tableMeta.rowData && tableMeta.rowData[5]) || 0;
               let currentReading = Number(currentReadingRaw) || 0;
+              let consumption = currentReading - lastReading;
               const billingPeriod = readingDatenew ? `${tableMeta.rowData[3]} - ${readingDatenew}` : "";
               const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
-
-              const tenantId = tableMeta.rowData && tableMeta.rowData[8];
+              let isBulkMeter = currentReading > 10000 ? false : true;
+              const tenantId = tableMeta.rowData && tableMeta.rowData[9];
 
               // If status is Locked, No_Meter, or Breakdown, automatically set currentReading to lastReading
               if (["Locked", "No_Meter", "Breakdown"].includes(status)) {
                 currentReading = lastReading;
                 try {
-                  const resp = await updatesingleReading(consumerId, lastReading, lastReading, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId);
+                  const resp = await updatesingleReading(consumerId, lastReading, lastReading, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, isBulkMeter);
                   alert("Update successful for Consumer ID: " + (consumerId || ""));
                 } catch (err) {
                   console.error(err);
@@ -213,7 +243,7 @@ export const searchResults = {
                 return;
               }
 
-              if (!currentReadingRaw || !Number.isFinite(currentReading)) {
+              if (!currentReadingRaw) {
                 alert("Please enter a numeric Current Reading before updating");
                 return;
               }
@@ -232,7 +262,7 @@ export const searchResults = {
                 return;
               }
 
-              currentReading = status === "Reset" ? (10000 + currentReading - lastReading) : currentReading;
+              consumption = status === "Reset" ? (10000 + currentReading - lastReading) : currentReading;
 
               // New Reading Date must not be earlier than Last Reading Date
               if (readingDate && currentReadingDate && readingDate < currentReadingDate) {
@@ -241,7 +271,7 @@ export const searchResults = {
               }
 
               try {
-                const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId);
+                const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, isBulkMeter);
                 // updatesingleReading may return response or throw on error
                 alert("Update successful for Consumer ID: " + (consumerId || ""));
               } catch (err) {
@@ -263,7 +293,7 @@ export const searchResults = {
         }
       },
     ],
-    title: { labelName: "Search Results for Group Bills", labelKey: "BILL_GENIE_GROUP_SEARCH_HEADER" },
+    title: { labelName: "Search Results for Water Connection", labelKey: "BILL_GENIE_GROUP_SEARCH_HEADER_Water-Connection" },
     rows: "",
     options: {
       filter: false,
@@ -370,7 +400,8 @@ export const updateAllReadings = async (state, dispatch) => {
             lastReading: status === "Replacement" ? 0 : lastReading,
             lastReadingDate: lastReadingDate,
             tenantId: tenantId,
-            generateDemand: true
+            generateDemand: true,
+            isBulkMeter: lastReading > 10000 ? true : false
           }
         ]
       };
@@ -402,7 +433,8 @@ export const updateAllReadings = async (state, dispatch) => {
 
     // Calculate actual reading for Reset status
     if (status === "Reset") {
-      currentReading = 10000 + currentReading - lastReading;
+      currentReading = currentReading;
+      //consumption = 10000 + currentReading - lastReading;
     }
 
     const readingDatenew = newReadingDate
@@ -435,7 +467,8 @@ export const updateAllReadings = async (state, dispatch) => {
           lastReading: status === "Replacement" ? 0 : lastReading,
           lastReadingDate: lastReadingDate,
           tenantId: tenantId,
-          generateDemand: true
+          generateDemand: true,
+          isBulkMeter: lastReading > 10000 ? true : false
         }
       ]
     };
