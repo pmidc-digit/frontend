@@ -27,6 +27,7 @@ export const waterDetails = () => {
       waterSource: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_WATER_SOURCE" }, { jsonPath: "WaterConnection[0].waterSource" }),
       ledgerId: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_LEDGER_ID" }, { jsonPath: "WaterConnection[0].additionalDetails.ledgerId", callBack: checkValueForNA }),
       averageMeterReading: getLabelWithValue({ labelKey: "AVERAGE METER READING" }, { jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading" }),
+      relatedSwConnection: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_RELATED_SW_CONNECTION" }, { jsonPath: "WaterConnection[0].relatedSwConnection", callBack: checkValueForNA }),
       group: getLabelWithValue({ labelKey: "Group" }, { jsonPath: "WaterConnection[0].additionalDetails.groups" }),
       oldConsumerNo: getLabelWithValue({ labelKey: "WS_OLD_CONSUMER_NO" }, { jsonPath: "WaterConnection[0].oldConnectionNo", callBack: checkValueForNA }),
     })
@@ -40,6 +41,7 @@ export const waterDetails = () => {
       waterSource: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_WATER_SOURCE" }, { jsonPath: "WaterConnection[0].waterSource" }),
       ledgerId: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_LEDGER_ID" }, { jsonPath: "WaterConnection[0].additionalDetails.ledgerId", callBack: checkValueForNA }),
       averageMeterReading: getLabelWithValue({ labelKey: "AVERAGE METER READING" }, { jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading" }),
+      relatedSwConnection: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_RELATED_SW_CONNECTION" }, { jsonPath: "WaterConnection[0].relatedSwConnection", callBack: checkValueForNA }),
       group: getLabelWithValue({ labelKey: "Group" }, { jsonPath: "WaterConnection[0].additionalDetails.groups" }),
       // waterSubSource: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_WATER_SUB_SOURCE" }, { jsonPath: "WaterConnection[0].waterSubSource" }),
       numberOfTaps: getLabelWithValue({ labelKey: "WS_SERV_DETAIL_NO_OF_TAPS" }, { jsonPath: "WaterConnection[0].noOfTaps" }),

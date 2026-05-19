@@ -201,6 +201,13 @@ const formConfig = {
         dispatch(fetchFinancialYearData());
       }
 
+      const financialYears = get(state, 'common.dropDownData.FinancialYear', []);
+      if (financialYears.length > 0) {
+        dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYears));
+      } else {
+        dispatch(fetchFinancialYearData());
+      }
+
       if (process.env.REACT_APP_NAME === "Citizen" && tenant && mohallaDropDownData.length == 0) {
         const dataFetchConfig = {
           url: "egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",

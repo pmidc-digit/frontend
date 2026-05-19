@@ -72,8 +72,8 @@ const formConfig = {
       id: "mohalla",
       jsonPath: "Properties[0].address.locality.code",
       type: "AutocompleteDropdown",
-      optionLabel: "label",  
-      optionValue: "value",   
+      optionLabel: "label",
+      optionValue: "value",
       floatingLabelText: "PT_PROPERTY_DETAILS_MOHALLA",
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       fullWidth: true,
@@ -211,12 +211,6 @@ const formConfig = {
     const financialYearData = get(state, "common.dropDownData.FinancialYear", []);
     if (financialYearData.length > 0) {
       set(action, "form.fields.YearcreationProperty.dropDownData", financialYearData);
-      dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYearData));
-      // Set value if present in preparedFinalObject
-      const yearValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
-      if (yearValue) {
-        dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearValue));
-      }
     } else {
       dispatch(fetchFinancialYearData());
     }

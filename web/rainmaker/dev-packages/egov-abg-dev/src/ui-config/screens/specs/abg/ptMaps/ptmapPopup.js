@@ -5,12 +5,12 @@ import {
     getTextField
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { handleScreenConfigurationFieldChange } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { store } from "egov-ui-framework/ui-redux/store";
 import React from "react";
 import { connect } from "react-redux";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { Dialog } from "components";
 import MapPTPopup from "./mapptpopup";
+import { removeTableRowByPropertyId } from "./functions";
 
 // Define usage categories as a constant outside the component to prevent recreation on every render
 const USAGE_CATEGORY_OPTIONS = [
@@ -102,7 +102,7 @@ const onContinue = () => {
 
 
 // React wrapper component
-const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, propertyType, usageCategory, noOfFloors, address, onClose, prepared, dispatch }) => {
+const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, propertyType, usageCategory, noOfFloors, surveyId, address, onClose, prepared, dispatch }) => {
 
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [revenueData, setRevenueData] = React.useState(null);
@@ -128,7 +128,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
         const raw = String(rawUsageCategory || "").trim().toUpperCase();
         // exact-only match
         if (raw === "RESIDENTIAL" || raw === "110") return "110";
-        if (raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "111") return "111";
+        if (raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "NONRESIDENTIAL.INSTITUTIONAL" || raw === "111") return "111";
         if (raw === "NONRESIDENTIAL.INDUSTRIAL" || raw === "112") return "112";
         return "";
     };
@@ -149,7 +149,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
         // exact match for RESIDENTIAL, COMMERCIAL, INDUSTRIAL, or OTHERS
         const isResidentialExact = raw === "RESIDENTIAL" || raw === "110";
-        const isCommercialExact = raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "NONRESIDENTIAL" || raw === "111";
+        const isCommercialExact = raw === "NONRESIDENTIAL.COMMERCIAL" || raw === "NONRESIDENTIAL.OTHERS" || raw === "NONRESIDENTIAL.INSTITUTIONAL" || raw === "NONRESIDENTIAL" || raw === "111";
         const isIndustrialExact = raw === "NONRESIDENTIAL.INDUSTRIAL" || raw === "112";
 
         if (isResidentialExact) {
@@ -787,7 +787,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                         "categoryId": usageCategoryState,
                         "locality": locality || "",
                         "rate": mappedRate || -1,
-                        "unit": mappedunit || "",
+                        "unit": mappedunit || -1,
                         "rateId": mappedRateId || -1,
                         "isActive": true,
                         "isProrataCal": false,
@@ -810,7 +810,11 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
 
             console.log("Submit response:", response);
 
-            alert("Property rate mapping submitted successfully!");
+            //  alert("Property rate mapping submitted successfully!");
+
+            // Remove the row from the table after successful submission
+            dispatch(removeTableRowByPropertyId(propertiesId));
+
             setDialogOpen(false);
             onClose();
             setIsSubmitting(false);
@@ -986,6 +990,12 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     }}>
                         <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>No of Floors</div>
                         <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{noOfFloors || "N/A"}</div>
+                    </div>
+                    <div style={{
+                        padding: "0"
+                    }}>
+                        <div style={{ fontSize: "13px", color: "#757575", marginBottom: "6px", fontWeight: 500 }}>Survey Id</div>
+                        <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>{surveyId || "N/A"}</div>
                     </div>
                     <div style={{
                         padding: "0"
@@ -1300,6 +1310,7 @@ const PTmapPopup = ({ propertiesId, ownerName, ownerMobile, locality, landArea, 
                     ownerMobile={ownerMobile}
                     landArea={landArea}
                     noOfFloors={noOfFloors}
+                    surveyId={surveyId}
                     locality={locality}
                     usageCategory={(USAGE_CATEGORY_OPTIONS.find(u => u.code === usageCategoryState) || {}).name || usageCategoryState}
                     address={address}
