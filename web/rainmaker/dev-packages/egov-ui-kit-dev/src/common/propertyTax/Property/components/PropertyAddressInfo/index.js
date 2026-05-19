@@ -13,7 +13,7 @@ const localizationLabelsData = initLocalizationLabels(locale);
 export const getAddressItems = (properties, OldProperty) => {
   let oldTenantInfo = [], oldStateId = "", oldCityId = "", oldLocality = "";
   const { address = {}, tenantId = '' } = properties;
-  const tenantInfo = tenantId.split('.') || [];
+  const tenantInfo = (tenantId && tenantId.split('.')) || [];
   const stateId = tenantInfo && tenantInfo.length === 2 && tenantInfo[0] ? tenantInfo[0].toUpperCase() : 'NA';
   const cityId = tenantInfo && tenantInfo.length === 2 && tenantInfo[1] ? tenantInfo[1].toUpperCase() : 'NA';
   const localityCode = address.locality && address.locality.code ? address.locality.code : 'NA';
@@ -22,7 +22,7 @@ export const getAddressItems = (properties, OldProperty) => {
   const surveyid = properties.surveyId;
   const yearConsTruction = properties.additionalDetails && properties.additionalDetails.yearConstruction || 'NA';
   if (OldProperty) {
-    oldTenantInfo = OldProperty.tenantId.split(".");
+    oldTenantInfo = (OldProperty.tenantId && OldProperty.tenantId.split(".")) || [];
     oldStateId = oldTenantInfo[0] && oldTenantInfo[0].toUpperCase();
     oldCityId = oldTenantInfo[1] && oldTenantInfo[1].toUpperCase();
     oldLocality = OldProperty.address && OldProperty.address.locality && OldProperty.address.locality.code || 'NA';
@@ -86,7 +86,7 @@ export const getAddressItems = (properties, OldProperty) => {
 }
 
 const PropertyAddressInfo = ({ properties, editIcon, OldProperty }) => {
- 
+
   let surveyid = properties.surveyId;
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [surveyId, setSurveyId] = useState(properties ? properties.surveyId : "");
