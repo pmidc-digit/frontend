@@ -31,6 +31,19 @@ const propertyLocationDetailsHeader = getHeader({
 });
 
 const propertyDetails = getCommonContainer({
+   propertyStatus: getLabelWithValue(
+    {
+      labelKey: "WS_PROPERTY_STATUS_LABEL"
+    },
+    {
+      jsonPath:
+      "WaterConnection[0].property.status",
+      localePrefix: {
+        moduleName: "WS",
+        masterName: "PROPTYPE"
+      }
+    }
+  ),
   propertyType: getLabelWithValue(
     {
       labelKey: "WS_PROPERTY_TYPE_LABEL"

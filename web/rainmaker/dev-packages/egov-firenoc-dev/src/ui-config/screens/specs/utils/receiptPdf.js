@@ -1390,9 +1390,11 @@ const getApplicationData = async (transformedData, ulbLogo, type) => {
         }
       ];
 
+      const qRvalidityYears = !isNaN(Number(transformedData.validityYears))  ? transformedData.validityYears   : 1;
+
       qrText = `Application: ${transformedData.applicationNumber
         }, NOC Number: ${transformedData.fireNOCNumber}, Date of Issue: ${transformedData.issuedDate
-        }, Valid Till: ${transformedData.validTo}, Buildings: ${transformedData.propertyType
+        }, Valid Years: ${qRvalidityYears}, Buildings: ${transformedData.propertyType
         },Applicant: ${transformedData.owners[0].name}`;
       break;
   }
@@ -1601,7 +1603,7 @@ const getApplicationData = async (transformedData, ulbLogo, type) => {
 };
 
 const newgetApplicationData = async (transformedData, ulbLogo, type) => {
-  
+  console.log("transformedData",transformedData);
   const ddi = transformedData.buildings[0].uoms;
   let buildingString = "";
   if (transformedData.buildings.length > 1) {
@@ -2527,11 +2529,14 @@ const newgetApplicationData = async (transformedData, ulbLogo, type) => {
         }
       ];
 
+     const qRvalidityYears = !isNaN(Number(transformedData.validityYears))  ? transformedData.validityYears   : 1;
+
       qrText = `Application: ${transformedData.applicationNumber
         }, NOC Number: ${transformedData.fireNOCNumber}, Date of Issue: ${transformedData.issuedDate
-        }, Valid Till: ${transformedData.validTo}, Buildings: ${transformedData.propertyType
-        }, Applicant: ${transformedData.owners[0].name}`;
+        }, Valid Years: ${qRvalidityYears}, Buildings: ${transformedData.propertyType
+        },Applicant: ${transformedData.owners[0].name}`;
       break;
+  
   }
 
   // Generate QR code base64 image
@@ -6054,11 +6059,14 @@ const provisionApplicationData = async (transformedData, ulbLogo, type) => {
         }
       ];
 
+     const qRvalidityYears = !isNaN(Number(transformedData.validityYears))  ? transformedData.validityYears   : 1;
+
       qrText = `Application: ${transformedData.applicationNumber
         }, NOC Number: ${transformedData.fireNOCNumber}, Date of Issue: ${transformedData.issuedDate
-        }, Valid Till: ${transformedData.validTo}, Buildings: ${transformedData.propertyType
-        }, Applicant: ${transformedData.owners[0].name}`;
+        }, Valid Years: ${qRvalidityYears}, Buildings: ${transformedData.propertyType
+        },Applicant: ${transformedData.owners[0].name}`;
       break;
+
   }
 
   // Generate QR code base64 image
