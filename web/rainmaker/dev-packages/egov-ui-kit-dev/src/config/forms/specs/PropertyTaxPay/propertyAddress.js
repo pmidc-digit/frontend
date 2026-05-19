@@ -186,13 +186,20 @@ const formConfig = {
         dispatch(setFieldProperty("propertyAddress", "city", "dropDownData", sortBy(dd, ["label"])));
       }
       const tenant = get(state, 'form.propertyAddress.fields.city.value', null);
-      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);    
-    // const yearConstructionValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
-    // get(state, 'Properties[0].additionalDetails.yearConstruction', null) ||  get(state, 'form.Properties[0].additionalDetails.yearConstruction', null) ||
-    
-    // if (yearConstructionValue) {
-    //   dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearConstructionValue));
-    // }
+      const mohallaDropDownData = get(state, 'form.propertyAddress.fields.mohalla.dropDownData', []);
+
+      // Set YearcreationProperty dropdown and value for update mode
+      const financialYears = get(state, 'common.dropDownData.FinancialYear', []);
+      if (financialYears.length > 0) {
+        dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYears));
+        // Set value if present in preparedFinalObject
+        const yearValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
+        if (yearValue) {
+          dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearValue));
+        }
+      } else {
+        dispatch(fetchFinancialYearData());
+      }
 
       const financialYears = get(state, 'common.dropDownData.FinancialYear', []);
       if (financialYears.length > 0) {

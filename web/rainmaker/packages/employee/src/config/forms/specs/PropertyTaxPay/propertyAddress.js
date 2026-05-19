@@ -72,8 +72,8 @@ const formConfig = {
       id: "mohalla",
       jsonPath: "Properties[0].address.locality.code",
       type: "AutocompleteDropdown",
-      optionLabel: "label",  
-      optionValue: "value",   
+      optionLabel: "label",
+      optionValue: "value",
       floatingLabelText: "PT_PROPERTY_DETAILS_MOHALLA",
       hintText: "PT_COMMONS_SELECT_PLACEHOLDER",
       fullWidth: true,
@@ -232,8 +232,6 @@ const formConfig = {
           cityName = tenantInfo.city.name;
 
         let surveyId = get(state.screenConfiguration.preparedFinalObject, "Properties[0].surveyId");
-        let year = get(state.screenConfiguration.preparedFinalObject, "Properties[0].additionalDetails.yearConstruction");
-        dispatch(handleFieldChange("propertyAddress", "YearcreationProperty", year));
         if (surveyId)
           dispatch(handleFieldChange("propertyAddress", "UID", surveyId));
 

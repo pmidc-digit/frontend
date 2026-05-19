@@ -265,7 +265,7 @@ export const generateMultipleBill = async function (state, dispatch, type) {
       (batchType === "Group" &&
         typeof group === "string" &&
         group.trim() !== "") ||
-        Array.isArray(locality) && locality.length > 0
+      Array.isArray(locality) && locality.length > 0
 
     if (isValidLocalityOrGroup) {
       try {
