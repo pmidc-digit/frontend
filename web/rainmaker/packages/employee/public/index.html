@@ -33,5 +33,249 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+
+    <!-- Matomo -->
+    <script>
+      (function () {
+        var _paq = window._paq = window._paq || [];
+
+        _paq.push(["setExcludedQueryParams", ["account", "accountnum", "address", "address1", "address2", "address3", "addressline1", "addressline2", "adres", "adresse", "age", "alter", "auth", "authpw", "bic", "billingaddress", "billingaddress1", "billingaddress2", "calle", "cardnumber", "cc", "ccc", "cccsc", "cccvc", "cccvv", "ccexpiry", "ccexpmonth", "ccexpyear", "ccname", "ccnumber", "cctype", "cell", "cellphone", "city", "clientid", "clientsecret", "company", "consumerkey", "consumersecret", "contrasenya", "contraseña", "creditcard", "creditcardnumber", "cvc", "cvv", "dateofbirth", "debitcard", "dirección", "dob", "domain", "ebost", "email", "emailaddress", "emailadresse", "epos", "epost", "eposta", "exp", "familyname", "firma", "firstname", "formlogin", "fullname", "gender", "geschlecht", "gst", "gstnumber", "handynummer", "hasło", "heslo", "iban", "ibanaccountnum", "ibanaccountnumber", "id", "identifier", "indirizzo", "kartakredytowa", "kennwort", "keyconsumerkey", "keyconsumersecret", "konto", "kontonr", "kontonummer", "kredietkaart", "kreditkarte", "kreditkort", "lastname", "login", "mail", "mobiili", "mobile", "mobilne", "nachname", "name", "nickname", "osoite", "parole", "pass", "passord", "password", "passwort", "pasword", "paswort", "paword", "phone", "pin", "plz", "postalcode", "postcode", "postleitzahl", "privatekey", "publickey", "pw", "pwd", "pword", "pwrd", "rue", "secret", "secretq", "secretquestion", "shippingaddress", "shippingaddress1", "shippingaddress2", "socialsec", "socialsecuritynumber", "socsec", "sokak", "ssn", "steuernummer", "strasse", "street", "surname", "swift", "tax", "taxnumber", "tel", "telefon", "telefonnr", "telefonnummer", "telefono", "telephone", "token", "token_auth", "tokenauth", "téléphone", "ulica", "user", "username", "vat", "vatnumber", "via", "vorname", "wachtwoord", "wagwoord", "webhooksecret", "website", "zip", "zipcode"]]);
+
+        function getPageTitle(url) {
+          try {
+            if (url.includes("auto-login")) {
+              var params = new URL(url).searchParams;
+              var module = params.get("module");
+              var userType = params.get("userType");
+
+              if (module && userType) {
+                var moduleMap = {
+                  PT: "Property Tax", WS: "Water & Sewerage", TL: "Trade License",
+                  PGR: "Complaints", OBPS: "Building Permit", mCollect: "mCollect",
+                  FSM: "FSM", SURVEY: "Survey", Firenoc: "FNOC", Finance: "Finance", BND: "Birth & Death"
+                };
+                var userTypeLabels = { citizen: "Citizen", employee: "Employee", stakeholder: "Stakeholder" };
+                var userTypeLabel = userTypeLabels[userType.toLowerCase()] || userType;
+                var moduleName = moduleMap[module] || module;
+                document.title = moduleName + " " + userTypeLabel;
+                return moduleName + " " + userTypeLabel;
+              }
+            }
+
+            var pathname = new URL(url).pathname;
+            var path = pathname.replace(/^\/+|\/+$/g, '');
+
+            var exactTitleMap = {
+              "": "mSeva Home",
+              "citizen": "Citizen Home",
+              "employee": "Employee Home",
+              "employee/inbox": "Employee Inbox",
+              "employee/landing-page": "Employee Landing Page",
+              "employee/user/login": "Login Employee",
+              "employee/user/otp": "OTP Employee",
+              "employee/user/profile": "Profile Employee",
+              "employee/language-selection": "Language Selection Employee",
+              "citizen/user/login": "Login Citizen",
+              "citizen/user/register": "Register Citizen",
+              "citizen/user/otp": "OTP Citizen",
+              "citizen/user/profile": "Profile Citizen",
+              "citizen/language-selection": "Language Selection Citizen"
+            };
+            if (exactTitleMap[path] !== undefined) return exactTitleMap[path];
+
+            var prefixTitleMap = [
+              ["employee/dss/dashboard/propertytax", "Property Tax Dashboard Employee"],
+              ["employee/dss/dashboard/tradelicense", "Business License Dashboard Employee"],
+              ["employee/dss/dashboard/obps", "Building Permit Dashboard Employee"],
+              ["employee/dss/dashboard/ws", "Water & Sewerage Dashboard Employee"],
+              ["employee/dss/dashboard/mcollect", "mCollect Dashboard Employee"],
+              ["employee/dss/dashboard/fsm", "FSM Dashboard Employee"],
+              ["employee/dss/dashboard/pqm", "FSM Plant Operator Dashboard Employee"],
+              ["employee/dss/dashboard/birth-death", "Birth & Death Dashboard Employee"],
+              ["employee/dss", "DSS Dashboard Employee"],
+              ["citizen/engagement/surveys", "Survey Citizen"],
+              ["employee/engagement/surveys", "Survey Employee"],
+              ["citizen/property-tax", "Property Tax Citizen"],
+              ["citizen/propert-tax", "Property Tax Citizen"],
+              ["employee/property-tax", "Property Tax Employee"],
+              ["employee/pt-mutation", "Property Tax Employee"],
+              ["citizen/tradelicense-citizen", "Business License Citizen"],
+              ["citizen/tradelicence", "Business License Citizen"],
+              ["citizen/trade-license", "Business License Citizen"],
+              ["employee/tradelicence", "Business License Employee"],
+              ["employee/tradelicense", "Business License Employee"],
+              ["citizen/fire-noc", "FNOC Citizen"],
+              ["employee/fire-noc", "FNOC Employee"],
+              ["citizen/obps", "Building Permit Citizen"],
+              ["employee/obps", "Building Permit Employee"],
+              ["citizen/bpa", "Building Permit Citizen"],
+              ["employee/bpa", "Building Permit Employee"],
+              ["employee/noc", "Building Permit Employee"],
+              ["citizen/wns", "Water & Sewerage Citizen"],
+              ["employee/wns", "Water & Sewerage Employee"],
+              ["citizen/ws", "Water & Sewerage Citizen"],
+              ["employee/ws", "Water & Sewerage Employee"],
+              ["citizen/mcollect", "mCollect Citizen"],
+              ["employee/mcollect", "mCollect Employee"],
+              ["citizen/fsm", "FSM Citizen"],
+              ["employee/fsm", "FSM Administrator"],
+              ["employee/tqm", "FSM Plant Operator"],
+              ["citizen/birth", "Birth Citizen"],
+              ["employee/birth", "Birth Employee"],
+              ["citizen/death", "Death Citizen"],
+              ["employee/death", "Death Employee"],
+              ["employee/services", "Finance Employee"],
+              ["employee/finance", "Finance Employee"],
+              ["employee/hrms", "HRMS Employee"]
+            ];
+
+            for (var i = 0; i < prefixTitleMap.length; i++) {
+              if (path.indexOf(prefixTitleMap[i][0]) === 0) return prefixTitleMap[i][1];
+            }
+
+            if (/(pgr-home|my-complaints|add-complaint|complaint-|create-complaint|all-complaints|search-complaint|closed-complaints|assign-complaint|reassign-complaint|request-reassign|reject-complaint|reopen-complaint|reopen-acknowledgement|feedback|resolve-success|reassign-success)/.test(path)) {
+              return path.indexOf("citizen") === 0 ? "Complaints Citizen" : "Complaints Employee";
+            }
+
+            return "DIGIT";
+          } catch (e) {
+            console.error("Error getting page title:", e);
+            return "DIGIT";
+          }
+        }
+
+        var initialPageTitle = getPageTitle(location.href);
+        document.title = initialPageTitle;
+        _paq.push(['setDocumentTitle', initialPageTitle]);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+
+        (function () {
+          var u = "https://mseva.lgpunjab.gov.in/matomo/";
+          _paq.push(['setTrackerUrl', u + 'matomo.php']);
+          _paq.push(['setSiteId', '1']);
+          var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+          g.async = true; g.src = u + 'matomo.js';
+          s.parentNode.insertBefore(g, s);
+        })();
+
+        (function () {
+          var lastUrl = location.href;
+          var lastPageTitle = getPageTitle(location.href);
+          var userFlow = [];
+
+          function getUserFlow() {
+            try {
+              var flow = sessionStorage.getItem('matomoUserFlow');
+              return flow ? JSON.parse(flow) : [];
+            } catch (e) { return []; }
+          }
+
+          function saveUserFlow(flow) {
+            try {
+              userFlow = flow;
+              sessionStorage.setItem('matomoUserFlow', JSON.stringify(flow));
+            } catch (e) { console.error('Failed to save user flow:', e); }
+          }
+
+          function sendCompleteFlow(reason) {
+            if (userFlow.length > 1) {
+              var journeySummary = userFlow.join(' → ');
+              _paq.push(['trackEvent', 'User Journey', reason || 'Session End', journeySummary, userFlow.length]);
+              try {
+                sessionStorage.removeItem('matomoUserFlow');
+                userFlow = [];
+              } catch (e) { console.error('Failed to clear user flow:', e); }
+            } else {
+              console.error('[Matomo] Flow too short (length=' + userFlow.length + '), not sending.');
+            }
+          }
+
+          function trackUrlChange() {
+            var url = location.href;
+            if (url !== lastUrl) {
+              var pageTitle = getPageTitle(url);
+              var flow = getUserFlow();
+              flow.push(pageTitle);
+              saveUserFlow(flow);
+              _paq.push(['trackEvent', 'User Flow', 'Navigation', lastPageTitle + ' → ' + pageTitle]);
+              document.title = pageTitle;
+              _paq.push(['setCustomUrl', url]);
+              _paq.push(['setDocumentTitle', pageTitle]);
+              _paq.push(['deleteCustomVariables', 'page']);
+              _paq.push(['trackPageView']);
+              lastUrl = url;
+              lastPageTitle = pageTitle;
+            }
+          }
+
+          userFlow = getUserFlow();
+          if (userFlow.length === 0 || userFlow[userFlow.length - 1] !== lastPageTitle) {
+            userFlow.push(lastPageTitle);
+            saveUserFlow(userFlow);
+          } else {
+            console.error('[Matomo] Initial page already in flow:', userFlow);
+          }
+
+          window.sendMatomoUserFlow = function (reason) { sendCompleteFlow(reason || 'Manual Trigger'); };
+          window.clearMatomoUserFlow = function () {
+            try { sessionStorage.removeItem('matomoUserFlow'); }
+            catch (e) { console.error('[Matomo] Failed to clear user flow:', e); }
+          };
+
+          window.addEventListener('beforeunload', function () { sendCompleteFlow('Tab Close'); });
+
+          var lastAccessToken = null;
+          var isInitialCheck = true;
+          setInterval(function () {
+            try {
+              var digitService = window.Digit && window.Digit.UserService;
+              var user = digitService ? digitService.getUser() : null;
+              var currentToken = user ? user.access_token : null;
+              if (isInitialCheck) { lastAccessToken = currentToken; isInitialCheck = false; return; }
+              if (lastAccessToken && !currentToken) sendCompleteFlow('Logout - Token Removed');
+              else if (lastAccessToken && currentToken && lastAccessToken !== currentToken) sendCompleteFlow('Logout - Token Changed');
+              lastAccessToken = currentToken;
+            } catch (e) { console.error('[Matomo] Error checking access token:', e); }
+          }, 500);
+
+          history.pushState = (function (original) {
+            return function pushState() {
+              var result = original.apply(this, arguments);
+              trackUrlChange();
+              return result;
+            };
+          })(history.pushState);
+
+          history.replaceState = (function (original) {
+            return function replaceState() {
+              var result = original.apply(this, arguments);
+              trackUrlChange();
+              return result;
+            };
+          })(history.replaceState);
+
+          window.addEventListener('popstate', trackUrlChange);
+        })();
+
+        (function () {
+          document.addEventListener("click", function (e) {
+            var selector = 'button, input[type="button"], input[type="submit"], input[type="actionButton"], [role="button"], a[href]:not([href^="mailto:"]):not([href^="tel:"]):not([href^="#"]):not([href^="javascript:"])';
+            var target = e.target.closest(selector);
+            if (target) {
+              var elementType = target.tagName.toLowerCase();
+              var text = target.innerText.trim() || target.value || 'Unnamed';
+              var id = target.id || 'no-id';
+              var classes = target.className || 'no-class';
+              var href = target.getAttribute('href') || '';
+              var pageTitle = getPageTitle(location.href);
+              _paq.push(['trackEvent', 'UI Interaction', elementType + ' click',
+                'Text: ' + text + ', Page: ' + pageTitle + ', ID: ' + id + ', Class: ' + classes + ', Href: ' + href]);
+            }
+          });
+        })();
+      })();
+    </script>
+    <!-- End Matomo Code -->
   </body>
 </html>
