@@ -18,12 +18,22 @@ const styles = (theme) => ({
     justifyContent: "center",
     display: "flex",
     cursor: "pointer",
+    [theme.breakpoints.down("sm")]: {
+      height: 100,
+      marginBottom: 8,
+    },
   },
   icon: {
     color: "#fe7a51",
   },
   item: {
     padding: 8,
+    width: "100%",
+    [theme.breakpoints.down("xs")]: {
+      maxWidth: "100%",
+      flexBasis: "100%",
+      padding: 6,
+    },
   },
 });
 
@@ -31,10 +41,10 @@ class ModuleLandingPage extends React.Component {
   render() {
     const { classes, items, history } = this.props;
     return (
-      <Grid container>
+      <Grid container spacing={1}>
         {items.map((obj) => {
           return (
-            <Grid className={classes.item} item xs sm align="center">
+            <Grid className={classes.item} item xs={12} sm={6} md={4} align="center">
               <Card
                 className={`${classes.paper} module-card-style`}
                 onClick={(e) => {
