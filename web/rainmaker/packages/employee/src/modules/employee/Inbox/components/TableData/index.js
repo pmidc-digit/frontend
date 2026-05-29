@@ -411,8 +411,27 @@ class TableData extends Component {
         })
 
         if (endpoints.length > 0) {
-          const resp = await multiHttpRequest(endpoints, "search", queries, requestBodies)
-          resp && resp.map(res => {
+          let resp;
+          try {
+            resp = await multiHttpRequest(endpoints, "search", queries, requestBodies)
+          } catch (multiErr) {
+            console.warn('[multiHttpRequest failed, trying individual requests]', multiErr.message);
+            // Fallback: try each endpoint individually incase some endpoints fail
+            resp = await Promise.all(
+              endpoints.map((endpoint, idx) =>
+                httpRequest(endpoint, "search", queries[idx] || [], requestBodies[idx] || {})
+                  .catch(err => {
+                    console.warn(`[Endpoint ${idx}] ${endpoint} failed:`, err.message);
+                    return null; // Return null for failed endpoint, continue with others
+                  })
+              )
+            );
+          }
+          resp && resp.map((res, idx) => {
+            if (!res) {
+              console.warn(`[Skipping null response at index ${idx}]`);
+              return;
+            }
             if (res && res.Localities) {
               res.Localities.forEach(loc => {
                 this.localityCache[loc.referencenumber] = loc;
