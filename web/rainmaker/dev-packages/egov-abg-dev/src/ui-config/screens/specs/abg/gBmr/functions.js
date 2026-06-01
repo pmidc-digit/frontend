@@ -137,15 +137,29 @@ export const searchApiCall = async (state, dispatch) => {
     searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
-
       try {
         dispatch(toggleSpinner(true));
+        let url;
         const requestBody = {
           tenantId: getTenantId() || tenantId,
           locality: searchScreenObject.locality || "",
-          offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
+          offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 200
         };
-        const url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(requestBody.tenantId)}&locality=${encodeURIComponent(requestBody.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        if (searchScreenObject.batchtype === "Batch") {
+
+          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&block=${encodeURIComponent(searchScreenObject.batch)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        }
+        else if (searchScreenObject.batchtype === "Group") {
+
+          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&groups=${encodeURIComponent(searchScreenObject.group)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        }
+        else if (searchScreenObject.batchtype === "Zone") {
+
+          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&zone=${encodeURIComponent(searchScreenObject.zone)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        }
+        else {
+          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&locality=${encodeURIComponent(searchScreenObject.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        }
         const response = await httpRequest("post", url, "_searchV2", []);
         // dispatch(toggleSpinner(false));
         // return response;

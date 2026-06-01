@@ -162,7 +162,7 @@ class PaymentHistory extends Component {
         }
 
         if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-          
+
           let dcbRow = null, dcbArray = [];
           let installment, totalamount = 0;
           payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element, index) => {
@@ -219,6 +219,9 @@ class PaymentHistory extends Component {
 
                   } else if (dd.taxHeadCode == "WS_COMPOSITION_FEE" || dd.taxHeadCode == "SW_COMPOSITION_FEE") {
                     code = "Composition Fee"; amount = dd.adjustedAmount;
+
+                  } else if (dd.taxHeadCode == "WS_DOOR_TO_DOOR_COLLECTION_CHARGES" || dd.taxHeadCode == "SW_DOOR_TO_DOOR_COLLECTION_CHARGES") {
+                    code = "Door to Door Collection Charges"; amount = dd.adjustedAmount;
 
                   } else if (dd.taxHeadCode == "WS_FORM_FEE" || dd.taxHeadCode == "SW_FORM_FEE") {
                     code = "Form Fee"; amount = dd.adjustedAmount;
