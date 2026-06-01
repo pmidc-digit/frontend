@@ -143,7 +143,7 @@ export const searchApiCall = async (state, dispatch) => {
         const requestBody = {
           tenantId: getTenantId() || tenantId,
           locality: searchScreenObject.locality || "",
-          offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 0
+          offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 200
         };
         if (searchScreenObject.batchtype === "Batch") {
 
