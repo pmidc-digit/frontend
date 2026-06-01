@@ -21,6 +21,7 @@ export const resData = () => {
       status: getLabelWithValue({ label: "Status" }, { jsonPath: "createBillResponse[0].status", callBack: "" }),
       tenantId: getLabelWithValue({ label: "TenantId" }, { jsonPath: "createBillResponse[0].tenantId", callBack: "" }),
       service: getLabelWithValue({ label: "Connection Type" }, { jsonPath: "createBillResponse[0].service", callBack: "" }),
+      billGenerationDate: getLabelWithValue({ label: "Bill Generation Date" }, { jsonPath: "createBillResponse[0].billGenerationDate", callBack: "" }),
       // recourdcount: getLabelWithValue({ label: "Bill Count" }, { jsonPath: "createBillResponse[0].recordcount", callBack: "" }),
     })
   )
