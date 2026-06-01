@@ -883,7 +883,7 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 			}
 
 			if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-				
+
 				let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
 				let toTalDue = payloadReceiptDetails.Payments[0].totalDue
 				configKey = "ws-onetime-receipt";
@@ -942,6 +942,9 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 
 								} else if (dd.taxHeadCode == "WS_COMPOSITION_FEE" || dd.taxHeadCode == "SW_COMPOSITION_FEE") {
 									code = "Composition Fee"; amount = dd.adjustedAmount;
+
+								} else if (dd.taxHeadCode == "WS_DOOR_TO_DOOR_COLLECTION_CHARGES" || dd.taxHeadCode == "SW_DOOR_TO_DOOR_COLLECTION_CHARGES") {
+									code = "Door to Door Collection Charges"; amount = dd.adjustedAmount;
 
 								} else if (dd.taxHeadCode == "WS_FORM_FEE" || dd.taxHeadCode == "SW_FORM_FEE") {
 									code = "Form Fee"; amount = dd.adjustedAmount;
