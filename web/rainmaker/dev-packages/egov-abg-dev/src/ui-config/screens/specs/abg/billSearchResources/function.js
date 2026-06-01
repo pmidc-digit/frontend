@@ -105,6 +105,7 @@ export const searchApiCall = async (state, dispatch) => {
         consumerCode: get(item, "consumerCode"),
         consumerName: get(item, "payerName"),
         billDate: get(item, "billDate"),
+        billGenDate: get (item, "auditDetails.createdTime"),
         billAmount: get(item, "totalAmount"),
         status: get(item, "status"),
         action: getActionItem(get(item, "status")),
@@ -133,7 +134,9 @@ export const searchApiCall = async (state, dispatch) => {
         ["TENANT_ID"]: item.tenantId,
         ["BILL_ID"]: item.billId,
         ["BILL_SEARCH_URL"]: searchScreenObject.url,
-        ["ADVANCE_PAYMENT"]: isAdvancePayment
+        ["ADVANCE_PAYMENT"]: isAdvancePayment,
+        ['ABG_COMMON_TABLE_COL_BILL_GEN_DATE']:
+          convertEpochToDate(item.billGenDate) || "-",
       }));
       dispatch(
         handleField(
