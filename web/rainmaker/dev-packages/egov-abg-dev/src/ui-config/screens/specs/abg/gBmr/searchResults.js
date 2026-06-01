@@ -33,9 +33,12 @@ export const searchResults = {
               "Replacement"
             ];
             const currentStatus = value || "";
+            const consumerId = tableMeta.rowData && tableMeta.rowData[0];
             return (
               <select
+                key={`status-${consumerId}`}
                 className="bulk-status-select"
+                data-consumer-id={consumerId}
                 style={{ width: "140px", padding: "6px", boxSizing: "border-box" }}
                 value={currentStatus}
                 onChange={e => {
@@ -62,24 +65,32 @@ export const searchResults = {
             // Last Reading is at index 2, Status is at index 4
             const lastReading = tableMeta.rowData && tableMeta.rowData[2];
             const status = tableMeta.rowData && tableMeta.rowData[4];
+            const consumerId = tableMeta.rowData && tableMeta.rowData[0];
             const isEditable = ["Working", "Reset", "Replacement"].includes(status);
             const isReset = status === "Reset" || status === "Replacement";
             return (
               <input
+                key={`reading-${consumerId}`}
                 type="number"
                 min={isReset ? 0 : (lastReading || 0)}
                 max={status === "Reset" ? 100000 : 10000}
                 className="bulk-new-reading"
+                data-consumer-id={consumerId}
                 style={{ width: "120px", padding: "6px", boxSizing: "border-box" }}
                 disabled={!isEditable}
-                // defaultValue={value || ""}
+                value={value || ""}
+                onChange={e => {
+                  const cleanedValue = e.target.value.replace(/[^0-9]/g, "");
+                  updateValue(cleanedValue);
+                }}
                 onInput={e => {
                   e.target.value = e.target.value.replace(/[^0-9]/g, "");
                 }}
                 onBlur={e => {
                   if (!isEditable) return;
                   const v = e.target.value.trim();
-                  if (v === "") { updateValue(""); return; }
+                  if (v === "") return;
+
                   const numeric = Number(v);
                   if (!Number.isFinite(numeric)) {
                     e.target.value = "";
@@ -102,7 +113,6 @@ export const searchResults = {
                       return;
                     }
                   }
-                  updateValue(v);
                 }}
               />
             );
@@ -117,14 +127,14 @@ export const searchResults = {
           customBodyRender: (value, tableMeta) => {
             const lastReading = Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
             const status = tableMeta.rowData && tableMeta.rowData[4];
-            const inputs = (document.querySelectorAll && document.querySelectorAll("input.bulk-new-reading")) || [];
-            const inputEl = inputs[tableMeta.rowIndex];
+            const consumerId = tableMeta.rowData && tableMeta.rowData[0];
+            const inputEl = document.querySelector(`input.bulk-new-reading[data-consumer-id="${consumerId}"]`);
             const newReadingRaw = inputEl ? inputEl.value : (tableMeta.rowData && tableMeta.rowData[5]);
 
             if (newReadingRaw === undefined || newReadingRaw === null || newReadingRaw === "") return "";
             const newReading = Number(newReadingRaw) || 0;
 
-            if (["Locked", "No_Meter", "Breakdown"].includes(status)) return String(0);
+            if (["Locked", "Breakdown"].includes(status)) return String(0);
 
             if (status === "Replacement") {
               return String(newReading - 0);
@@ -148,7 +158,8 @@ export const searchResults = {
             const currentReadingDateDisplay =
               tableMeta.rowData && tableMeta.rowData[3]; // Last Reading Date at index 3
             const status = tableMeta.rowData && tableMeta.rowData[4];
-            const isEditable = ["Working", "Reset", "Replacement", "Locked", "No_Meter", "Breakdown"].includes(status);
+            const consumerId = tableMeta.rowData && tableMeta.rowData[0];
+            const isEditable = ["Working", "Reset", "Replacement", "Locked", "Breakdown"].includes(status);
 
             let minDate = "";
             if (
@@ -163,12 +174,13 @@ export const searchResults = {
             }
             return (
               <input
+                key={`date-${consumerId}`}
                 type="date"
                 min={minDate || undefined}
                 className="bulk-new-reading-date"
+                data-consumer-id={consumerId}
                 style={{ width: "160px", padding: "6px", boxSizing: "border-box" }}
-                // disabled={!isEditable}
-                // defaultValue={value || today}
+                value={value || ""}
                 onChange={e => {
                   // if (!isEditable) return;
                   updateValue(e.target.value);
@@ -212,26 +224,36 @@ export const searchResults = {
 
             let readingDatenew = tableMeta.rowData[7];
             readingDatenew = readingDatenew ? readingDatenew.split("-").reverse().join("/") : null;
+            const consumerId = tableMeta.rowData && tableMeta.rowData[0];
             const handleUpdate = async () => {
 
-              const statusSelects = document.querySelectorAll("select.bulk-status-select");
-              const statusFromSelect = statusSelects[tableMeta.rowIndex] && statusSelects[tableMeta.rowIndex].value;
+              // Get elements using Consumer ID attribute
+              const statusSelect = document.querySelector(`select.bulk-status-select[data-consumer-id="${consumerId}"]`);
+              const statusFromSelect = statusSelect && statusSelect.value;
 
-              const consumerId = tableMeta.rowData && tableMeta.rowData[0];
               const status = statusFromSelect || (tableMeta.rowData && tableMeta.rowData[4]) || "";
               const lastReading = status == "Replacement" ? 0 : Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
               const currentReadingDate = tableMeta.rowData && tableMeta.rowData[3] ? getEpochForDate(tableMeta.rowData[3]) : null;
               const lastReadingDate = currentReadingDate;
-              const currentReadingRaw = Number(tableMeta.rowData && tableMeta.rowData[5]) || 0;
+
+              // Get the input value using Consumer ID
+              const readingInput = document.querySelector(`input.bulk-new-reading[data-consumer-id="${consumerId}"]`);
+              const currentReadingRaw = readingInput ? Number(readingInput.value) : 0;
+
               let currentReading = Number(currentReadingRaw) || 0;
               let consumption = currentReading - lastReading;
               const billingPeriod = readingDatenew ? `${tableMeta.rowData[3]} - ${readingDatenew}` : "";
-              const readingDate = readingDatenew ? getEpochForDate(readingDatenew) : null;
+
+              // Get the date input value using Consumer ID
+              const dateInput = document.querySelector(`input.bulk-new-reading-date[data-consumer-id="${consumerId}"]`);
+              const dateValue = dateInput ? dateInput.value : "";
+              const readingDate = dateValue ? getEpochForDate(dateValue.split("-").reverse().join("/")) : null;
+
               let isBulkMeter = currentReading > 10000 ? false : true;
               const tenantId = tableMeta.rowData && tableMeta.rowData[9];
 
-              // If status is Locked, No_Meter, or Breakdown, automatically set currentReading to lastReading
-              if (["Locked", "No_Meter", "Breakdown"].includes(status)) {
+
+              if (["Locked", "Breakdown"].includes(status)) {
                 currentReading = lastReading;
                 try {
                   const resp = await updatesingleReading(consumerId, lastReading, lastReading, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, isBulkMeter);
@@ -283,7 +305,7 @@ export const searchResults = {
             return (
               <button
                 type="button"
-                style={{ padding: "6px 12px", cursor: "pointer" }}
+                style={{ backgroundColor: "#fe7a51", borderRadius: "5px", borderColor: "#fe7a51", color: "white", padding: "6px 12px", cursor: "pointer" }}
                 onClick={handleUpdate}
               >
                 Update
@@ -299,7 +321,8 @@ export const searchResults = {
       filter: false,
       download: false,
       responsive: "stacked",
-      pagination: false,
+      pagination: true,
+      rowsPerPage: 10,
       selectableRows: false,
       hover: true,
       rowsPerPageOptions: [10, 15, 20],
@@ -333,15 +356,34 @@ export const updateAllReadings = async (state, dispatch) => {
     []
   );
 
-  // read the live values typed in the table inputs
+  // Create a map of Consumer ID to input elements
   const readingInputs = document.querySelectorAll("input.bulk-new-reading");
   const dateInputs = document.querySelectorAll("input.bulk-new-reading-date");
   const statusSelects = document.querySelectorAll("select.bulk-status-select");
 
+  // Create maps for O(1) lookup by Consumer ID
+  const readingInputMap = {};
+  const dateInputMap = {};
+  const statusSelectMap = {};
+
+  readingInputs.forEach(el => {
+    const consumerId = el.getAttribute("data-consumer-id");
+    if (consumerId) readingInputMap[consumerId] = el;
+  });
+
+  dateInputs.forEach(el => {
+    const consumerId = el.getAttribute("data-consumer-id");
+    if (consumerId) dateInputMap[consumerId] = el;
+  });
+
+  statusSelects.forEach(el => {
+    const consumerId = el.getAttribute("data-consumer-id");
+    if (consumerId) statusSelectMap[consumerId] = el;
+  });
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
 
-    // Support both object-style rows and array-style rows
     const isArrayRow = Array.isArray(row);
 
     const consumerId = isArrayRow ? row[0] : row["Consumer ID"];
@@ -350,24 +392,22 @@ export const updateAllReadings = async (state, dispatch) => {
     const currentReadingDateDisplay = isArrayRow ? row[3] : row["Last Reading Date"];
     const lastReadingDate = getEpochForDate(currentReadingDateDisplay);
 
-    // New reading / date: always take what user typed in the row inputs
-    const currentReadingRawEl = readingInputs[i];
-    const newReadingDateEl = dateInputs[i];
+    const currentReadingRawEl = readingInputMap[consumerId];
+    const newReadingDateEl = dateInputMap[consumerId];
     const currentReadingRaw = currentReadingRawEl ? currentReadingRawEl.value : "";
     const newReadingDate = newReadingDateEl ? newReadingDateEl.value : "";
 
     const statusFromRow = isArrayRow ? row[7] : row["Meter Status"];
-    const status = statusSelects[i] && statusSelects[i].value ? statusSelects[i].value : statusFromRow;
+    const statusSelectEl = statusSelectMap[consumerId];
+    const status = statusSelectEl && statusSelectEl.value ? statusSelectEl.value : statusFromRow;
     const tenantId = isArrayRow ? row[8] : row["TENANT_ID"];
 
-    // only allow bulk update for selected meter statuses
-    const isEditableStatus = ["Working", "Reset", "Replacement", "Locked", "No_Meter", "Breakdown"].includes(status);
+    const isEditableStatus = ["Working", "Reset", "Replacement", "Locked", "Breakdown"].includes(status);
     if (!isEditableStatus) {
       continue;
     }
 
-    // For Locked, No_Meter, Breakdown - automatically use lastReading and still require date
-    if (["Locked", "No_Meter", "Breakdown"].includes(status)) {
+    if (["Locked", "Breakdown"].includes(status)) {
       if (!newReadingDate) {
         errorRows.push(consumerId);
         continue;
@@ -409,7 +449,6 @@ export const updateAllReadings = async (state, dispatch) => {
       continue;
     }
 
-    // only take complete rows (both value and date filled) for other statuses
     if (!currentReadingRaw || !newReadingDate) {
       if (!newReadingDate) {
         errorRows.push(consumerId);
@@ -419,7 +458,6 @@ export const updateAllReadings = async (state, dispatch) => {
 
     let currentReading = Number(currentReadingRaw) || 0;
 
-    // Validate input range
     if (!Number.isFinite(currentReading) || currentReading > 10000) {
       skippedRows++;
       continue;
@@ -475,9 +513,6 @@ export const updateAllReadings = async (state, dispatch) => {
     allarray.push(payload.meterReadingslist[0]);
 
   }
-
-  // Show validation error summary
-
 
   if (allarray.length === 0) {
     alert("No valid rows to update. Please fill in all required fields.");

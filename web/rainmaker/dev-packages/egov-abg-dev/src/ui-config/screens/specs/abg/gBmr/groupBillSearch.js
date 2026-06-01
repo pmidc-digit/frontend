@@ -3,11 +3,31 @@ import {
   getCommonContainer,
   getLabel, getTextField, getSelectField
 } from "egov-ui-framework/ui-config/screens/specs/utils";
-import { handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import { generateMultipleBill } from "../../utils/receiptPdf";
 import { searchApiCall, updatesingleReading } from "./functions";
+import { httpRequest } from "../../../../../ui-utils";
+import get from 'lodash/get';
+import { groupBy } from "lodash";
+let localityhide = false;
+let batchhide = false;
+let arr = [
+  {
+    code: "Batch",
+    value: "Batch",
+  },
+  { code: "Group", value: "Group" },
+  {
+    code: "Locality",
+    value: "Locality",
+  },
+  {
+    code: "Zone",
+    value: "Zone",
+  }
 
+];
 
 const tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
 export const resetFields = (state, dispatch) => {
@@ -147,53 +167,309 @@ export const abgSearchCard = getCommonCard({
         disabled: true,
         gridDefination: {
           xs: 12,
-          sm: 4
+          sm: 3
         }
       },
 
-      locMohalla: {
-        uiFramework: "custom-containers-local",
-        moduleName: "egov-abg",
-        componentPath: "AutosuggestContainer",
-        gridDefination: {
-          xs: 12,
-          sm: 4
-        },
-        jsonPath: "searchCriteria.locality",
-        required: true,
-        props: {
-          className: "autocomplete-dropdown",
-          label: {
-            labelName: "Location/Mohalla",
-            labelKey: "ABG_LOCMOHALLA_LABEL"
-          },
-          placeholder: {
-            labelName: "Select Location/Mohalla",
-            labelKey: "ABG_LOCMOHALLA_PLACEHOLDER"
-          },
-          jsonPath: "searchCriteria.locality",
-          sourceJsonPath: "searchScreenMdmsData.localities",
-          labelsFromLocalisation: true,
-          required: true,
-          isClearable: true,
-        }
-      },
-      // consumerId: getTextField({
-      //   label: {
-      //     labelName: "Consumer ID",
-      //     labelKey: "ABG_CONSUMER_ID_LABEL"
-      //   },
-      //   placeholder: {
-      //     labelName: "Enter Consumer ID",
-      //     labelKey: "ABG_CONSUMER_ID_PLACEHOLDER"
-      //   },
+      // locMohalla: {
+      //   uiFramework: "custom-containers-local",
+      //   moduleName: "egov-abg",
+      //   componentPath: "AutosuggestContainer",
       //   gridDefination: {
       //     xs: 12,
       //     sm: 4
       //   },
-      //   required: false,
-      //   jsonPath: "searchCriteria.consumerCode"
-      // })
+      //   jsonPath: "searchCriteria.locality",
+      //   required: true,
+      //   props: {
+      //     className: "autocomplete-dropdown",
+      //     label: {
+      //       labelName: "Location/Mohalla",
+      //       labelKey: "ABG_LOCMOHALLA_LABEL"
+      //     },
+      //     placeholder: {
+      //       labelName: "Select Location/Mohalla",
+      //       labelKey: "ABG_LOCMOHALLA_PLACEHOLDER"
+      //     },
+      //     jsonPath: "searchCriteria.locality",
+      //     sourceJsonPath: "searchScreenMdmsData.localities",
+      //     labelsFromLocalisation: true,
+      //     required: true,
+      //     isClearable: true,
+      //   }
+      // },
+      batchtype: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-abg",
+        componentPath: "AutosuggestContainer",
+        jsonPath: "searchCriteria.batchtype",
+        props: {
+          label: {
+            labelName: "select Batch or Locality",
+            labelKey: "select Batch or Locality"
+          },
+          labelPrefix: {
+            moduleName: "TENANT",
+            masterName: "TENANTS"
+          },
+          optionLabel: "name",
+          placeholder: {
+            labelName: "Select Batch or Locality",
+            labelKey: "Select Batch or Locality"
+          },
+          required: true,
+          labelsFromLocalisation: true,
+          data: arr,
+
+          className: "autocomplete-dropdown",
+          jsonPath: "searchCriteria.batchtype",
+
+        },
+        afterFieldChange: async (action, state, dispatch) => {
+
+
+          let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.searchCriteria.batchtype");
+          if (ConectionCategory == "Batch") {
+            try {
+              let payload = await httpRequest(
+                "post",
+                "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Block",
+                "_search",
+                [{ key: "tenantId", value: getTenantId() }],
+                {}
+              );
+              let batchar = [];
+              const batches =
+                payload &&
+                payload.TenantBoundary[0] &&
+                payload.TenantBoundary[0].boundary &&
+                payload.TenantBoundary[0].boundary.filter((item) => {
+                  batchar.push({ item });
+                  return batchar;
+                }, []);
+              dispatch(
+                prepareFinalObject(
+                  "applyScreenMdmsData.tenant.batchs",
+                  batches
+                )
+              );
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.groups", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.zone", ""));
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          else if (ConectionCategory == "Group") {
+            let mdmsBody = {
+              MdmsCriteria: {
+                tenantId: getTenantId(),
+                moduleDetails: [
+                  {
+                    moduleName: "ws-services-masters",
+                    masterDetails: [{ name: "groups" }]
+                  }
+                ]
+              }
+            };
+            try {
+              let payload = await httpRequest(
+                "post",
+                "/egov-mdms-service/v1/_search",
+                "_search",
+                [],
+                mdmsBody
+
+              );
+              payload = payload.MdmsRes['ws-services-masters'];
+              let groupsar = [];
+              const batches =
+                payload &&
+                payload.groups.filter((item) => {
+                  groupsar.push({ item });
+                  return groupsar;
+                }, []);
+              dispatch(
+                prepareFinalObject(
+                  "applyScreenMdmsData.tenant.groups",
+                  batches
+                )
+              );
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.zone", ""));
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          else if (ConectionCategory == "Zone") {
+            try {
+              let payload = await httpRequest(
+                "post",
+                "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Zone",
+                "_search",
+                [{ key: "tenantId", value: getTenantId() }],
+                {}
+              );
+              let batchar = [];
+              const Zones =
+                payload &&
+                payload.TenantBoundary[0] &&
+                payload.TenantBoundary[0].boundary &&
+                payload.TenantBoundary[0].boundary.filter((item) => {
+                  batchar.push({ item });
+                  return batchar;
+                }, []);
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.zone", Zones));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.groups", ""));
+              dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs", ""));
+
+            } catch (e) {
+              console.log(e);
+            }
+          }
+          else {
+            //locality
+
+            let response = await httpRequest(
+              "post",
+              "/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality",
+              "_search",
+              [{ key: "tenantId", value: getTenantId() }],
+              {}
+            );
+            let mohallaDataArray = [];
+            let mohallaDataRow = null;
+            let name, code;
+            response.TenantBoundary[0].boundary.map((element, index) => {
+              name = element.name + "( " + element.code + " )";
+              code = element.code;
+              mohallaDataRow = {
+                "code": code,
+                "name": name
+              };
+              mohallaDataArray.push(mohallaDataRow);
+
+            });
+
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", mohallaDataArray));
+            dispatch(
+              prepareFinalObject(
+                "applyScreenMdmsData.tenant.batchs",
+                ""
+              )
+
+            );
+            dispatch(
+              prepareFinalObject(
+                "applyScreenMdmsData.tenant.groups",
+                ""
+              )
+            );
+            dispatch(prepareFinalObject("applyScreenMdmsData.tenant.zone", ""));
+          }
+        },
+        required: false,
+
+        gridDefination: {
+          xs: 12,
+          sm: 3
+        }
+      },
+      //---------------------------------------------------------------------------------------
+      //             locality drop down
+      //-----------------------------------------------------------------------------------------
+      locality: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-abg",
+        componentPath: "AutosuggestContainer",
+        jsonPath: "searchCriteria.locality",
+        props: {
+          label: { labelName: "Locality", labelKey: "Locality" },
+          placeholder: { labelName: "Select maholla", labelKey: "WS_GENERATE_BILL_LOCALITY_PLACEHOLDER" },
+          optionLabel: "name",
+          required: false,
+          labelsFromLocalisation: true,
+          className: "autocomplete-dropdown",
+          sourceJsonPath: "applyScreenMdmsData.tenant.mohaladata",
+          jsonPath: "searchCriteria.locality",
+
+        },
+        required: false,
+        gridDefination: {
+          xs: 12,
+          sm: 3
+        }
+      },
+      batch: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-abg",
+        componentPath: "AutosuggestContainer",
+        sourceJsonPath: "applyScreenMdmsData.tenant.batchs",
+        jsonPath: "searchCriteria.batch",
+        props: {
+          label: { labelName: "Batch", labelKey: "Batch" },
+          placeholder: { labelName: "Select Batch", labelKey: "Select Batch" },
+          optionLabel: "name",
+          required: false,
+          labelsFromLocalisation: true,
+          className: "autocomplete-dropdown",
+          sourceJsonPath: "applyScreenMdmsData.tenant.batchs",
+          jsonPath: "searchCriteria.batch",
+
+        },
+        required: false,
+        gridDefination: {
+          xs: 12,
+          sm: 3
+        }
+      },
+      groUp: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-abg",
+        componentPath: "AutosuggestContainer",
+        sourceJsonPath: "applyScreenMdmsData.tenant.groups",
+        jsonPath: "searchCriteria.group",
+        props: {
+          label: { labelName: "Group", labelKey: "Group" },
+          placeholder: { labelName: "Select Group", labelKey: "Select Group" },
+          optionLabel: "name",
+          required: false,
+          labelsFromLocalisation: true,
+          className: "autocomplete-dropdown",
+          sourceJsonPath: "applyScreenMdmsData.tenant.groups",
+          jsonPath: "searchCriteria.group",
+
+        },
+        required: false,
+        gridDefination: {
+          xs: 12,
+          sm: 3
+        }
+      },
+      Zone: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-abg",
+        componentPath: "AutosuggestContainer",
+        jsonPath: "searchCriteria.zone",
+        props: {
+          label: { labelName: "Zone", labelKey: "Zone" },
+          placeholder: { labelName: "Select Zone", labelKey: "Select Zone" },
+          optionLabel: "name",
+          required: false,
+          labelsFromLocalisation: true,
+          className: "autocomplete-dropdown",
+          sourceJsonPath: "applyScreenMdmsData.tenant.zone",
+          jsonPath: "searchCriteria.zone",
+
+        },
+        required: false,
+        gridDefination: {
+          xs: 12,
+          sm: 3
+        }
+      },
 
     },
     {
