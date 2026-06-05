@@ -277,9 +277,9 @@ export const generateMultipleBill = async function (state, dispatch, type) {
 
         var message = response.message + " Job ID: " + response.jobId;
 
-        dispatch(
-          toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
-        );
+        // dispatch(
+        //   toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
+        // );
         dispatch(
           prepareFinalObject("batchJobModal", {
             open: true,
