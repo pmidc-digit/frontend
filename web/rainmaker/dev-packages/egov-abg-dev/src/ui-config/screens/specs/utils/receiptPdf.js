@@ -277,9 +277,17 @@ export const generateMultipleBill = async function (state, dispatch, type) {
 
         var message = response.message + " Job ID: " + response.jobId;
 
+        // dispatch(
+        //   toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
+        // );
         dispatch(
-          toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
+          prepareFinalObject("batchJobModal", {
+            open: true,
+            message: response.message,
+            jobId: response.jobId
+          })
         );
+
       } catch (error) {
         console.error("Batch download error:", error);
 
