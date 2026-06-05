@@ -9,13 +9,21 @@ import { generateKeyValue, generatePDF, getDocumentsCard, getMultiItems, getMult
 import get from "lodash/get";
 
 const getMessageFromLocalization = code => {
-    let messageObject = JSON.parse(getLocalization("localization_en_IN")).find(
-      item => {
-        return item.code == code;
-      }
-    );
+  const data = JSON.parse(getLocalization("localization_en_IN_common") || "[]");
+
+  let messageObject;
+
+  if (Array.isArray(data)) {
+    messageObject = data.find(item => item.code == code);
     return messageObject ? messageObject.message : code;
-  };
+  }
+
+  if (data && typeof data === "object") {
+    return data[code] || code;
+  }
+
+  return code;
+};
   
 const ifNotNull = value => {
     return !["", "NA", "null", null].includes(value);
