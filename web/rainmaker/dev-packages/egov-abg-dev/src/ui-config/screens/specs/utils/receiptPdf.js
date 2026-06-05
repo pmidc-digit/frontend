@@ -287,13 +287,6 @@ export const generateMultipleBill = async function (state, dispatch, type) {
             jobId: response.jobId
           })
         );
-        dispatch(
-          prepareFinalObject("batchJobModal", {
-            open: true,
-            message: response.message,
-            jobId: response.jobId
-          })
-        );
 
       } catch (error) {
         console.error("Batch download error:", error);
