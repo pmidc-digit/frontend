@@ -150,16 +150,24 @@ const abgSearchAndResult = {
             }
           }
         },
-      abgSearchCard,
-      breakAfterSearch: getBreak(),
-      // progressStatus,
-      searchResults,
-      searchResultsIntergrated,
-      breakAfterSearchResults: getBreak(),
-      mergeDownloadButton
+        abgSearchCard,
+        breakAfterSearch: getBreak(),
+        // progressStatus,
+        searchResults,
+        searchResultsIntergrated,
+        breakAfterSearchResults: getBreak(),
+        mergeDownloadButton
+      }
+    },
+    batchJobDialog: {
+      uiFramework: "custom-containers-local",
+      moduleName: "egov-abg",
+      componentPath: "DialogContainer",
+      props: {
+        screenKey: "groupBills"
+      }
     }
   }
-}
 };
 
 export default abgSearchAndResult;
