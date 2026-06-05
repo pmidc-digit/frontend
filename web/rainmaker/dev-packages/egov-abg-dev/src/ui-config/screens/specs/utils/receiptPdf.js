@@ -1,5 +1,5 @@
 // import { downloadMultipleBill } from "egov-common/ui-utils/commons";
-import { toggleSpinner, toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { toggleSpinner, toggleSnackbar, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -280,6 +280,13 @@ export const generateMultipleBill = async function (state, dispatch, type) {
         // dispatch(
         //   toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
         // );
+        dispatch(
+          prepareFinalObject("batchJobModal", {
+            open: true,
+            message: response.message,
+            jobId: response.jobId
+          })
+        );
         dispatch(
           prepareFinalObject("batchJobModal", {
             open: true,
