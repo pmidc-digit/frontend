@@ -123,7 +123,7 @@ export const generateBillApiCall = async (state, dispatch) => {
 
         let createBillArray = [];
         let billRow = null;
-        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId;
+        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billGenerationDate;
 
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
@@ -132,6 +132,7 @@ export const generateBillApiCall = async (state, dispatch) => {
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
           tenantId = element.tenantId;
+          billGenerationDate = element.auditDetails && element.auditDetails.createdTime ? convertEpochToDate(element.auditDetails.createdTime) : "NA";
 
           billRow = {
             "transactionType": transactionType,
@@ -140,6 +141,7 @@ export const generateBillApiCall = async (state, dispatch) => {
             "billingcycleEnddate": billingcycleEnddate,
             "status": status,
             "tenantId": tenantId,
+            "billGenerationDate": billGenerationDate
           };
           createBillArray.push(billRow);
         });
@@ -232,7 +234,7 @@ export const searchBillApiCall = async (state, dispatch) => {
 
         let searchBillArray = [];
         let billRow = null;
-        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billformDate;
+        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billformDate, billGenerationDate;
 
         response.billScheduler.map((element, index) => {
 
@@ -244,6 +246,7 @@ export const searchBillApiCall = async (state, dispatch) => {
           status = element.status;
           tenantId = element.tenantId;
           billformDate = element.billingcycleStartdate;
+          billGenerationDate = element.auditDetails && element.auditDetails.createdTime ? convertEpochToDate(element.auditDetails.createdTime) : "NA";
           billRow = {
             "transactionType": transactionType,
             "locality": locality,
@@ -251,7 +254,8 @@ export const searchBillApiCall = async (state, dispatch) => {
             "billingcycleEnddate": billingcycleEnddate,
             "status": status,
             "tenantId": tenantId,
-            "billformDate" : billformDate
+            "billformDate" : billformDate,
+            "billGenerationDate": billGenerationDate
           };
           searchBillArray.push(billRow);
         });

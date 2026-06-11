@@ -14,7 +14,7 @@ import {
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { httpRequest } from "../../../../ui-utils";
 import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { set } from "lodash";
+import { set, values } from "lodash";
 import { downloadReceiptFromFilestoreID } from "egov-common/ui-utils/commons";
 import commonConfig from "config/common.js";
 
@@ -629,30 +629,51 @@ export const checkValueForNA = (value) => {
   return value == null || value == undefined || value == "" ? "NA" : value;
 };
 
-export const batchMergeAndDownload = async (billkey, locality, businesService, tenantId, isConsolidated = false)=>{
+export const batchMergeAndDownload = async (
+  billkey,
+  batchType,
+  searchCriteria,
+  isConsolidated = false
+) => {
 
-      const DOWNLOADRECEIPT = {
-      GET: {
-        URL: "egov-pdf/download/WNS/wnsgroupbill",
-        ACTION: "",
-      },
-    };
-    
-    const queryStr = [
-      { key: "key", value: billkey },
-      { key: "tenantId", value: tenantId },
-      {key : "locality", value : locality},
-      {key : "isConsolidated", value : isConsolidated},
-      {key : "bussinessService", value : businesService}
-    ];
+  const DOWNLOADRECEIPT = {
+    GET: {
+      URL: "egov-pdf/download/WNS/wnsgroupbill",
+      ACTION: "",
+    },
+  };
 
-     const egovPdfResponse = await httpRequest(
+  const queryStr = [
+    { key: "key", value: billkey },
+    { key: "batchType", value: batchType },
+    { key: "isConsolidated", value: isConsolidated }
+  ];
+
+  // ✅ Append searchCriteria dynamically
+  if (searchCriteria) {
+    Object.keys(searchCriteria).forEach((key) => {
+      const value = searchCriteria[key];
+
+      // 🔹 Handle array (multiple locality case)
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          queryStr.push({ key, value: item });
+        });
+      }
+
+      // 🔹 Handle normal values (group / locality string / tenantId etc.)
+      else if (value !== undefined && value !== null && value !== "") {
+        queryStr.push({ key, value });
+      }
+    });
+  }
+
+  const egovPdfResponse = await httpRequest(
     "post",
     DOWNLOADRECEIPT.GET.URL,
     DOWNLOADRECEIPT.GET.ACTION,
-    queryStr,
-   
+    queryStr
   );
 
-  return egovPdfResponse
-}
+  return egovPdfResponse;
+};
