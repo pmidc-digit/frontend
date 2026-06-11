@@ -352,7 +352,7 @@ export const searchResults = {
     title: { labelName: "Search Results for Water Connection", labelKey: "BILL_GENIE_GROUP_SEARCH_HEADER_Water-Connection" },
     rows: "",
     options: {
-      filter: false,
+      filter: true,
       download: false,
       responsive: "stacked",
       pagination: true,
