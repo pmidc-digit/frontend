@@ -170,34 +170,6 @@ export const abgSearchCard = getCommonCard({
           sm: 3
         }
       },
-
-      // locMohalla: {
-      //   uiFramework: "custom-containers-local",
-      //   moduleName: "egov-abg",
-      //   componentPath: "AutosuggestContainer",
-      //   gridDefination: {
-      //     xs: 12,
-      //     sm: 4
-      //   },
-      //   jsonPath: "searchCriteria.locality",
-      //   required: true,
-      //   props: {
-      //     className: "autocomplete-dropdown",
-      //     label: {
-      //       labelName: "Location/Mohalla",
-      //       labelKey: "ABG_LOCMOHALLA_LABEL"
-      //     },
-      //     placeholder: {
-      //       labelName: "Select Location/Mohalla",
-      //       labelKey: "ABG_LOCMOHALLA_PLACEHOLDER"
-      //     },
-      //     jsonPath: "searchCriteria.locality",
-      //     sourceJsonPath: "searchScreenMdmsData.localities",
-      //     labelsFromLocalisation: true,
-      //     required: true,
-      //     isClearable: true,
-      //   }
-      // },
       batchtype: {
         uiFramework: "custom-containers-local",
         moduleName: "egov-abg",
@@ -380,23 +352,34 @@ export const abgSearchCard = getCommonCard({
       //---------------------------------------------------------------------------------------
       //             locality drop down
       //-----------------------------------------------------------------------------------------
-      locality: {
+      Zone: {
         uiFramework: "custom-containers-local",
         moduleName: "egov-abg",
         componentPath: "AutosuggestContainer",
-        jsonPath: "searchCriteria.locality",
+        jsonPath: "searchCriteria.zone",
         props: {
-          label: { labelName: "Locality", labelKey: "Locality" },
-          placeholder: { labelName: "Select maholla", labelKey: "WS_GENERATE_BILL_LOCALITY_PLACEHOLDER" },
+          label: { labelName: "Zone", labelKey: "Zone" },
+          placeholder: { labelName: "Select Zone", labelKey: "Select Zone" },
           optionLabel: "name",
           required: false,
           labelsFromLocalisation: true,
           className: "autocomplete-dropdown",
-          sourceJsonPath: "applyScreenMdmsData.tenant.mohaladata",
-          jsonPath: "searchCriteria.locality",
+          sourceJsonPath: "applyScreenMdmsData.tenant.zone",
+          jsonPath: "searchCriteria.zone",
 
         },
         required: false,
+        afterFieldChange: async (action, state, dispatch) => {
+          debugger;
+          let allzons = await get(state, "screenConfiguration.preparedFinalObject.applyScreenMdmsData.tenant.zone");
+          let selectzone = await get(state, "screenConfiguration.preparedFinalObject.searchCriteria.zone");
+          let zonecode = allzons.filter(item => {
+            if (item.code === selectzone) {
+              return item.children;
+            }
+          });
+          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs", zonecode[0].children));
+        },
         gridDefination: {
           xs: 12,
           sm: 3
@@ -420,11 +403,45 @@ export const abgSearchCard = getCommonCard({
 
         },
         required: false,
+        afterFieldChange: async (action, state, dispatch) => {
+
+          let allbatches = await get(state, "screenConfiguration.preparedFinalObject.applyScreenMdmsData.tenant.batchs");
+          let selectbatch = await get(state, "screenConfiguration.preparedFinalObject.searchCriteria.batch");
+          let localitycode = allbatches.filter(item => {
+            if (item.code === selectbatch) {
+              return item.children;
+            }
+          });
+          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", localitycode[0].children));
+        },
         gridDefination: {
           xs: 12,
           sm: 3
         }
       },
+      locality: {
+        uiFramework: "custom-containers-local",
+        moduleName: "egov-abg",
+        componentPath: "AutosuggestContainer",
+        jsonPath: "searchCriteria.locality",
+        props: {
+          label: { labelName: "Locality", labelKey: "Locality" },
+          placeholder: { labelName: "Select maholla", labelKey: "WS_GENERATE_BILL_LOCALITY_PLACEHOLDER" },
+          optionLabel: "name",
+          required: false,
+          labelsFromLocalisation: true,
+          className: "autocomplete-dropdown",
+          sourceJsonPath: "applyScreenMdmsData.tenant.mohaladata",
+          jsonPath: "searchCriteria.locality",
+
+        },
+        required: false,
+        gridDefination: {
+          xs: 12,
+          sm: 3
+        }
+      },
+
       groUp: {
         uiFramework: "custom-containers-local",
         moduleName: "egov-abg",
@@ -448,28 +465,7 @@ export const abgSearchCard = getCommonCard({
           sm: 3
         }
       },
-      Zone: {
-        uiFramework: "custom-containers-local",
-        moduleName: "egov-abg",
-        componentPath: "AutosuggestContainer",
-        jsonPath: "searchCriteria.zone",
-        props: {
-          label: { labelName: "Zone", labelKey: "Zone" },
-          placeholder: { labelName: "Select Zone", labelKey: "Select Zone" },
-          optionLabel: "name",
-          required: false,
-          labelsFromLocalisation: true,
-          className: "autocomplete-dropdown",
-          sourceJsonPath: "applyScreenMdmsData.tenant.zone",
-          jsonPath: "searchCriteria.zone",
 
-        },
-        required: false,
-        gridDefination: {
-          xs: 12,
-          sm: 3
-        }
-      },
 
     },
     {

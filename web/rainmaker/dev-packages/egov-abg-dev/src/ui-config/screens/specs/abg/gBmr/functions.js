@@ -139,27 +139,31 @@ export const searchApiCall = async (state, dispatch) => {
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
       try {
         dispatch(toggleSpinner(true));
-        let url;
+
         const requestBody = {
           tenantId: getTenantId() || tenantId,
           locality: searchScreenObject.locality || "",
           offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 200
         };
-        if (searchScreenObject.batchtype === "Batch") {
+        let url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}`;
 
-          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&block=${encodeURIComponent(searchScreenObject.batch)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        if (searchScreenObject.batch) {
+          url += `&block=${encodeURIComponent(searchScreenObject.batch)}`;
         }
-        else if (searchScreenObject.batchtype === "Group") {
 
-          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&groups=${encodeURIComponent(searchScreenObject.group)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        if (searchScreenObject.locality) {
+          url += `&locality=${encodeURIComponent(searchScreenObject.locality)}`;
         }
-        else if (searchScreenObject.batchtype === "Zone") {
 
-          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&zone=${encodeURIComponent(searchScreenObject.zone)}&offset=${encodeURIComponent(requestBody.offset)}`;
+        if (searchScreenObject.zone) {
+          url += `&zone=${encodeURIComponent(searchScreenObject.zone)}`;
         }
-        else {
-          url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}&locality=${encodeURIComponent(searchScreenObject.locality)}&offset=${encodeURIComponent(requestBody.offset)}`;
+
+        if (searchScreenObject.group) {
+          url += `&groups=${encodeURIComponent(searchScreenObject.group)}`;
         }
+
+        url += `&offset=${encodeURIComponent(requestBody.offset)}`;
         const response = await httpRequest("post", url, "_searchV2", []);
         // dispatch(toggleSpinner(false));
         // return response;

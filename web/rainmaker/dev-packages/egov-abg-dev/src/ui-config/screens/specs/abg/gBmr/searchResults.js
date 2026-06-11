@@ -8,6 +8,9 @@ import { download, downloadBill } from "egov-common/ui-utils/commons";
 import { toggleSpinner, toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { updatesingleReading } from "./functions";
 
+// Global persistent storage for edited readings across pagination changes
+const editedReadingsMap = {};
+
 
 export const searchResults = {
   uiFramework: "custom-molecules",
@@ -34,14 +37,21 @@ export const searchResults = {
             ];
             const currentStatus = value || "";
             const consumerId = tableMeta.rowData && tableMeta.rowData[0];
+
+            // Get value from persistent storage if available
+            const storedValue = editedReadingsMap[`${consumerId}-status`];
+            const displayValue = storedValue !== undefined ? storedValue : currentStatus;
+
             return (
               <select
                 key={`status-${consumerId}`}
                 className="bulk-status-select"
                 data-consumer-id={consumerId}
                 style={{ width: "140px", padding: "6px", boxSizing: "border-box" }}
-                value={currentStatus}
+                value={displayValue}
                 onChange={e => {
+                  // Store in persistent map
+                  editedReadingsMap[`${consumerId}-status`] = e.target.value;
                   updateValue(e.target.value);
                 }}
               >
@@ -68,6 +78,11 @@ export const searchResults = {
             const consumerId = tableMeta.rowData && tableMeta.rowData[0];
             const isEditable = ["Working", "Reset", "Replacement"].includes(status);
             const isReset = status === "Reset" || status === "Replacement";
+
+            // Get value from persistent storage if available
+            const storedValue = editedReadingsMap[`${consumerId}-reading`];
+            const displayValue = storedValue !== undefined ? storedValue : (value || "");
+
             return (
               <input
                 key={`reading-${consumerId}`}
@@ -78,9 +93,11 @@ export const searchResults = {
                 data-consumer-id={consumerId}
                 style={{ width: "120px", padding: "6px", boxSizing: "border-box" }}
                 disabled={!isEditable}
-                value={value || ""}
+                value={displayValue}
                 onChange={e => {
                   const cleanedValue = e.target.value.replace(/[^0-9]/g, "");
+                  // Store in persistent map
+                  editedReadingsMap[`${consumerId}-reading`] = cleanedValue;
                   updateValue(cleanedValue);
                 }}
                 onInput={e => {
@@ -95,12 +112,14 @@ export const searchResults = {
                   if (!Number.isFinite(numeric)) {
                     e.target.value = "";
                     updateValue("");
+                    delete editedReadingsMap[`${consumerId}-reading`];
                     alert("Please enter a valid numeric value");
                     return;
                   }
                   if (numeric > 10000 && status != "Reset") {
                     e.target.value = "";
                     updateValue("");
+                    delete editedReadingsMap[`${consumerId}-reading`];
                     alert("Please enter a numeric value less than or equal to 10000");
                     return;
                   }
@@ -109,6 +128,7 @@ export const searchResults = {
                     if (numeric < min) {
                       e.target.value = "";
                       updateValue("");
+                      delete editedReadingsMap[`${consumerId}-reading`];
                       alert("Please enter a numeric value greater than or equal to Last Reading");
                       return;
                     }
@@ -161,6 +181,10 @@ export const searchResults = {
             const consumerId = tableMeta.rowData && tableMeta.rowData[0];
             const isEditable = ["Working", "Reset", "Replacement", "Locked", "Breakdown"].includes(status);
 
+            // Get value from persistent storage if available
+            const storedValue = editedReadingsMap[`${consumerId}-date`];
+            const displayValue = storedValue !== undefined ? storedValue : (value || "");
+
             let minDate = "";
             if (
               currentReadingDateDisplay &&
@@ -180,9 +204,10 @@ export const searchResults = {
                 className="bulk-new-reading-date"
                 data-consumer-id={consumerId}
                 style={{ width: "160px", padding: "6px", boxSizing: "border-box" }}
-                value={value || ""}
+                value={displayValue}
                 onChange={e => {
-                  // if (!isEditable) return;
+                  // Store in persistent map
+                  editedReadingsMap[`${consumerId}-date`] = e.target.value;
                   updateValue(e.target.value);
                 }}
                 onBlur={e => {
@@ -199,6 +224,7 @@ export const searchResults = {
                     alert("New Reading Date cannot be earlier than Last Reading Date");
                     e.target.value = "";
                     updateValue("");
+                    delete editedReadingsMap[`${consumerId}-date`];
                     return;
                   }
                 }}
@@ -257,7 +283,11 @@ export const searchResults = {
                 currentReading = lastReading;
                 try {
                   const resp = await updatesingleReading(consumerId, lastReading, lastReading, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, isBulkMeter);
-                  alert("Update successful for Consumer ID: " + (consumerId || ""));
+                  if (resp.meterReadingslist[0].status == "FAILED") {
+                    alert("Update failed for Consumer ID: " + (consumerId || ""));
+                  } else {
+                    alert("Update successful for Consumer ID: " + (consumerId || ""));
+                  }
                 } catch (err) {
                   console.error(err);
                   alert("Update failed: " + (err && err.message ? err.message : "Unknown error"));
@@ -295,7 +325,11 @@ export const searchResults = {
               try {
                 const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, isBulkMeter);
                 // updatesingleReading may return response or throw on error
-                alert("Update successful for Consumer ID: " + (consumerId || ""));
+                if (resp.meterReadingslist[0].status == "FAILED") {
+                  alert("Update failed for Consumer ID: " + (consumerId || ""));
+                } else {
+                  alert("Update successful for Consumer ID: " + (consumerId || ""));
+                }
               } catch (err) {
                 console.error(err);
                 alert("Update failed: " + (err && err.message ? err.message : "Unknown error"));
@@ -318,7 +352,7 @@ export const searchResults = {
     title: { labelName: "Search Results for Water Connection", labelKey: "BILL_GENIE_GROUP_SEARCH_HEADER_Water-Connection" },
     rows: "",
     options: {
-      filter: false,
+      filter: true,
       download: false,
       responsive: "stacked",
       pagination: true,
@@ -356,31 +390,6 @@ export const updateAllReadings = async (state, dispatch) => {
     []
   );
 
-  // Create a map of Consumer ID to input elements
-  const readingInputs = document.querySelectorAll("input.bulk-new-reading");
-  const dateInputs = document.querySelectorAll("input.bulk-new-reading-date");
-  const statusSelects = document.querySelectorAll("select.bulk-status-select");
-
-  // Create maps for O(1) lookup by Consumer ID
-  const readingInputMap = {};
-  const dateInputMap = {};
-  const statusSelectMap = {};
-
-  readingInputs.forEach(el => {
-    const consumerId = el.getAttribute("data-consumer-id");
-    if (consumerId) readingInputMap[consumerId] = el;
-  });
-
-  dateInputs.forEach(el => {
-    const consumerId = el.getAttribute("data-consumer-id");
-    if (consumerId) dateInputMap[consumerId] = el;
-  });
-
-  statusSelects.forEach(el => {
-    const consumerId = el.getAttribute("data-consumer-id");
-    if (consumerId) statusSelectMap[consumerId] = el;
-  });
-
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
 
@@ -392,15 +401,13 @@ export const updateAllReadings = async (state, dispatch) => {
     const currentReadingDateDisplay = isArrayRow ? row[3] : row["Last Reading Date"];
     const lastReadingDate = getEpochForDate(currentReadingDateDisplay);
 
-    const currentReadingRawEl = readingInputMap[consumerId];
-    const newReadingDateEl = dateInputMap[consumerId];
-    const currentReadingRaw = currentReadingRawEl ? currentReadingRawEl.value : "";
-    const newReadingDate = newReadingDateEl ? newReadingDateEl.value : "";
-
-    const statusFromRow = isArrayRow ? row[7] : row["Meter Status"];
-    const statusSelectEl = statusSelectMap[consumerId];
-    const status = statusSelectEl && statusSelectEl.value ? statusSelectEl.value : statusFromRow;
-    const tenantId = isArrayRow ? row[8] : row["TENANT_ID"];
+    // Read from persistent storage first, then fall back to table data
+    const currentReadingRaw = editedReadingsMap[`${consumerId}-reading`] || "";
+    const newReadingDate = editedReadingsMap[`${consumerId}-date`] || "";
+    const statusFromStorage = editedReadingsMap[`${consumerId}-status`];
+    const statusFromRow = isArrayRow ? row[4] : row["Meter Status"];
+    const status = statusFromStorage || statusFromRow || "";
+    const tenantId = isArrayRow ? row[9] : row["TENANT_ID"];
 
     const isEditableStatus = ["Working", "Reset", "Replacement", "Locked", "Breakdown"].includes(status);
     if (!isEditableStatus) {
@@ -408,12 +415,26 @@ export const updateAllReadings = async (state, dispatch) => {
     }
 
     if (["Locked", "Breakdown"].includes(status)) {
-      if (!newReadingDate) {
-        errorRows.push(consumerId);
+      // For Locked/Breakdown meters, only generate payload if user explicitly entered something.
+      // Otherwise they should be skipped (fixes unwanted extra records).
+      const userEnteredReading = editedReadingsMap[`${consumerId}-reading`];
+      const userEnteredDate = editedReadingsMap[`${consumerId}-date`];
+      if ((userEnteredReading === undefined || userEnteredReading === "") && (!userEnteredDate || userEnteredDate === "")) {
         continue;
       }
-      const readingDatenew = newReadingDate
-        ? newReadingDate.split("-").reverse().join("/")
+
+      // Auto-fill date with today if missing, but only when user entered reading/date.
+      let finalDate = newReadingDate;
+      if (!finalDate) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        finalDate = `${yyyy}-${mm}-${dd}`;
+      }
+
+      const readingDatenew = finalDate
+        ? finalDate.split("-").reverse().join("/")
         : null;
       const billingPeriod =
         readingDatenew && currentReadingDateDisplay
@@ -449,34 +470,35 @@ export const updateAllReadings = async (state, dispatch) => {
       continue;
     }
 
-    if (!currentReadingRaw || !newReadingDate) {
-      if (!newReadingDate) {
-        errorRows.push(consumerId);
-      }
+    // For Working, Reset, Replacement - reading is required
+    if (!currentReadingRaw) {
       continue;
+    }
+
+    // Auto-fill date with today if reading is provided but date is missing
+    let finalDate = newReadingDate;
+    if (!finalDate) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      finalDate = `${yyyy}-${mm}-${dd}`;
     }
 
     let currentReading = Number(currentReadingRaw) || 0;
 
     if (!Number.isFinite(currentReading) || currentReading > 10000) {
-      skippedRows++;
+      errorRows.push(consumerId);
       continue;
     }
-
 
     if (status !== "Reset" && status !== "Replacement" && currentReading < lastReading) {
-      skippedRows++;
+      errorRows.push(consumerId);
       continue;
     }
 
-    // Calculate actual reading for Reset status
-    if (status === "Reset") {
-      currentReading = currentReading;
-      //consumption = 10000 + currentReading - lastReading;
-    }
-
-    const readingDatenew = newReadingDate
-      ? newReadingDate.split("-").reverse().join("/")
+    const readingDatenew = finalDate
+      ? finalDate.split("-").reverse().join("/")
       : null;
     const billingPeriod =
       readingDatenew && currentReadingDateDisplay
@@ -493,7 +515,7 @@ export const updateAllReadings = async (state, dispatch) => {
       continue;
     }
 
-    // push only complete row into array
+    // push row into array
     const payload = {
       meterReadingslist: [
         {
@@ -515,7 +537,11 @@ export const updateAllReadings = async (state, dispatch) => {
   }
 
   if (allarray.length === 0) {
-    alert("No valid rows to update. Please fill in all required fields.");
+    let errorMessage = "No valid records to update.";
+    if (errorRows.length > 0) {
+      errorMessage += `\n\nRecords with errors (${errorRows.length}): ${errorRows.join(", ")}`;
+    }
+    alert(errorMessage);
     return;
   }
 
@@ -523,20 +549,25 @@ export const updateAllReadings = async (state, dispatch) => {
     dispatch(toggleSpinner(true));
     const url = "/ws-calculator/meterConnection/_createmultiple";
 
-
     const response = await httpRequest("post", url, "_update", [], { meterReadingslist: allarray });
     if (response && response.meterReadingslist && response.meterReadingslist.length > 0) {
       dispatch(toggleSpinner(false));
+      let successMessage = `Bulk update successful! ${allarray.length} record(s) updated.`;
+      if (errorRows.length > 0) {
+        successMessage += `\n\n${errorRows.length} record(s) had errors and were skipped: ${errorRows.join(", ")}`;
+      }
       dispatch(
         toggleSnackbar(
           true,
           {
-            labelName: "Bulk update successful",
+            labelName: successMessage,
             labelKey: "ABG_BULK_UPDATE_SUCCESS"
           },
           "success"
         )
       );
+      // Clear persistent storage after successful update
+      Object.keys(editedReadingsMap).forEach(key => delete editedReadingsMap[key]);
     }
     return response;
   } catch (e) {
