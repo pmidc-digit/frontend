@@ -188,10 +188,10 @@ class PaymentHistory extends Component {
                     code = "Interest"; amount = dd.adjustedAmount;
 
                   }
-                  else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY") {
-                    code = "Penalty"; amount = dd.adjustedAmount;
+                  else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY" || dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") {
+                  code = (dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") ? "Breakdown Penalty" : "Penalty"; amount = dd.adjustedAmount;
 
-                  } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
+                 } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
                     code = "Scrutiny Fee"; amount = dd.adjustedAmount;
 
                   } else if (dd.taxHeadCode == "WS_ROAD_CUTTING_CHARGE" || dd.taxHeadCode == "SW_ROAD_CUTTING_CHARGE") {
