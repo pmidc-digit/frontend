@@ -92,171 +92,170 @@ export const searchApiCall = async (state, dispatch) => {
     "bulkmeterreading"
   );
 
-  if (!(isSearchBoxFirstRowValid && isSearchBoxSecondRowValid)) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill at least one field to start search",
-          labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
-        },
-        "warning"
-      )
-    );
-  }
-  else if (
-    Object.keys(searchScreenObject).length == 0 ||
-    Object.values(searchScreenObject).every(x => x === "")
-  ) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill at least one field to start search",
-          labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
-        },
-        "warning"
-      )
-    );
-  }
+  // if (!(isSearchBoxFirstRowValid && isSearchBoxSecondRowValid)) {
+  //   dispatch(
+  //     toggleSnackbar(
+  //       true,
+  //       {
+  //         labelName: "Please fill at least one field to start search",
+  //         labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
+  //       },
+  //       "warning"
+  //     )
+  //   );
+  // }
+  // else if (
+  //   Object.keys(searchScreenObject).length == 0 ||
+  //   Object.values(searchScreenObject).every(x => x === "")
+  // ) {
+  //   dispatch(
+  //     toggleSnackbar(
+  //       true,
+  //       {
+  //         labelName: "Please fill at least one field to start search",
+  //         labelKey: "ABG_SEARCH_SELECT_AT_LEAST_ONE_TOAST_MESSAGE"
+  //       },
+  //       "warning"
+  //     )
+  //   );
+  // }
 
-  else {
-    for (var key in searchScreenObject) {
-      if (
-        searchScreenObject.hasOwnProperty(key) &&
-        searchScreenObject[key] === ""
-      ) {
-        delete searchScreenObject[key];
-      }
+  // else {
+  for (var key in searchScreenObject) {
+    if (
+      searchScreenObject.hasOwnProperty(key) &&
+      searchScreenObject[key] === ""
+    ) {
+      delete searchScreenObject[key];
     }
-    let serviceObject = get(
-      state.screenConfiguration.preparedFinalObject,
-      "searchScreenMdmsData.BillingService.BusinessService"
-    ).filter(item => item.code === searchScreenObject.businesService);
+  }
+  let serviceObject = get(
+    state.screenConfiguration.preparedFinalObject,
+    "searchScreenMdmsData.BillingService.BusinessService"
+  ).filter(item => item.code === searchScreenObject.businesService);
 
-    searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
-    searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
-    const getGroupBillSearch = async (dispatch, searchScreenObject) => {
-      try {
-        dispatch(toggleSpinner(true));
-
-        const requestBody = {
-          tenantId: getTenantId() || tenantId,
-          locality: searchScreenObject.locality || "",
-          offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 200
-        };
-        let url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}`;
-
-        if (searchScreenObject.batch) {
-          url += `&block=${encodeURIComponent(searchScreenObject.batch)}`;
-        }
-
-        if (searchScreenObject.locality) {
-          url += `&locality=${encodeURIComponent(searchScreenObject.locality)}`;
-        }
-
-        if (searchScreenObject.zone) {
-          url += `&zone=${encodeURIComponent(searchScreenObject.zone)}`;
-        }
-
-        if (searchScreenObject.group) {
-          url += `&groups=${encodeURIComponent(searchScreenObject.group)}`;
-        }
-
-        url += `&offset=${encodeURIComponent(requestBody.offset)}`;
-        const response = await httpRequest("post", url, "_searchV2", []);
-        // dispatch(toggleSpinner(false));
-        // return response;
-
-        const bills = (response && response.bulkMeterReadings) || [];
-        dispatch(
-          prepareFinalObject("searchScreenMdmsData.bulkMeterReadings", bills)
-        );
-        dispatch(toggleSpinner(false));
-        return response;
-      } catch (error) {
-        dispatch(toggleSpinner(false));
-        dispatch(
-          toggleSnackbar(
-            true,
-            { labelName: error.message || "Something went wrong", labelKey: error.message || "ERROR" },
-            "error"
-          )
-        );
-        return {};
-      }
-
-
-    };
-    const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
-
-
-    const bills = (responseFromAPI && responseFromAPI.bulkMeterReadings) || [];
-    dispatch(
-      prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
-    );
-    const response = [];
-    for (let i = 0; i < bills.length; i++) {
-
-      response.push({
-        connectionNo: get(bills[i], "connectionNo"),
-
-        lastReading: get(bills[i], "currentReading"),
-        // currentReading may come from API (per consumer). Use existing field if present.
-        currentReading: get(bills[i], "currentReading") || "",
-        currentReadingDate: get(bills[i], "currentReadingDate"),
-        billingPeriod: get(bills[i], "billingPeriod"),
-        meterStatus: get(bills[i], "meterStatus"),
-        usageCategory: get(bills[i], "usageCategory") || "",
-        tenantId: tenantId
-      })
-
-    }
+  searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
+  searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+  const getGroupBillSearch = async (dispatch, searchScreenObject) => {
     try {
-      let data = response.map(item => ({
-        ["Consumer ID"]: item.connectionNo || "-",
-        ["Usage Category"]: item.usageCategory || "-",
-        // last confirmed reading from system
-        ["Last Reading"]: item.currentReading || "-",
+      dispatch(toggleSpinner(true));
 
-        // user will enter these for bulk update; keep empty initially
-        ["New Reading(in KL)"]: "",
-        ["New Reading Date"]: "",
-
-        // existing reading date from system
-        ["Last Reading Date"]:
-          convertEpochToDate(item.currentReadingDate) || "-",
-        ["Billing Period"]: item.billingPeriod || "-",
-        ["Meter Status"]: item.meterStatus || "-",
-        ["TENANT_ID"]: item.tenantId
-      }));
-      dispatch(
-        handleField(
-          "bulkmeterreading",
-          "components.div.children.searchResults",
-          "props.data",
-          data
-        )
-      );
-      dispatch(
-        handleField(
-          "bulkmeterreading",
-          "components.div.children.searchResults",
-          "props.rows",
-          data.length
-        )
-      );
-      showHideTable(true, dispatch);
-      if (!isEmpty(response)) {
-
-        loadUlbLogo(tenantId);
+      const requestBody = {
+        tenantId: getTenantId() || tenantId,
+        locality: searchScreenObject.locality || "",
+        offset: searchScreenObject.offset !== undefined ? searchScreenObject.offset : 200
       };
+      let url = `ws-calculator/meterConnection/_searchV2?tenantId=${encodeURIComponent(getTenantId())}`;
+
+      if (searchScreenObject.batch) {
+        url += `&block=${encodeURIComponent(searchScreenObject.batch)}`;
+      }
+
+      if (searchScreenObject.locality) {
+        url += `&locality=${encodeURIComponent(searchScreenObject.locality)}`;
+      }
+
+      if (searchScreenObject.zone) {
+        url += `&zone=${encodeURIComponent(searchScreenObject.zone)}`;
+      }
+
+      if (searchScreenObject.group) {
+        url += `&groups=${encodeURIComponent(searchScreenObject.group)}`;
+      }
+
+      url += `&offset=${encodeURIComponent(requestBody.offset)}`;
+      const response = await httpRequest("post", url, "_searchV2", []);
+      // dispatch(toggleSpinner(false));
+      // return response;
+
+      const bills = (response && response.bulkMeterReadings) || [];
+      dispatch(
+        prepareFinalObject("searchScreenMdmsData.bulkMeterReadings", bills)
+      );
+      dispatch(toggleSpinner(false));
+      return response;
     } catch (error) {
-      dispatch(toggleSnackbar(true, error.message, "error"));
-      console.log(error);
+      dispatch(toggleSpinner(false));
+      dispatch(
+        toggleSnackbar(
+          true,
+          { labelName: error.message || "Something went wrong", labelKey: error.message || "ERROR" },
+          "error"
+        )
+      );
+      return {};
     }
+
+
+  };
+  const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject);
+
+
+  const bills = (responseFromAPI && responseFromAPI.bulkMeterReadings) || [];
+  dispatch(
+    prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
+  );
+  const response = [];
+  for (let i = 0; i < bills.length; i++) {
+
+    response.push({
+      connectionNo: get(bills[i], "connectionNo"),
+
+      lastReading: get(bills[i], "currentReading"),
+      // currentReading may come from API (per consumer). Use existing field if present.
+      currentReading: get(bills[i], "currentReading") || "",
+      currentReadingDate: get(bills[i], "currentReadingDate"),
+      billingPeriod: get(bills[i], "billingPeriod"),
+      meterStatus: get(bills[i], "meterStatus"),
+      usageCategory: get(bills[i], "usageCategory") || "",
+      tenantId: tenantId
+    })
+
   }
-};
+  try {
+    let data = response.map(item => ({
+      ["Consumer ID"]: item.connectionNo || "-",
+      ["Usage Category"]: item.usageCategory || "-",
+      // last confirmed reading from system
+      ["Last Reading"]: item.currentReading || "-",
+
+      // user will enter these for bulk update; keep empty initially
+      ["New Reading(in KL)"]: "",
+      ["New Reading Date"]: "",
+
+      // existing reading date from system
+      ["Last Reading Date"]:
+        convertEpochToDate(item.currentReadingDate) || "-",
+      ["Billing Period"]: item.billingPeriod || "-",
+      ["Meter Status"]: item.meterStatus || "-",
+      ["TENANT_ID"]: item.tenantId
+    }));
+    dispatch(
+      handleField(
+        "bulkmeterreading",
+        "components.div.children.searchResults",
+        "props.data",
+        data
+      )
+    );
+    dispatch(
+      handleField(
+        "bulkmeterreading",
+        "components.div.children.searchResults",
+        "props.rows",
+        data.length
+      )
+    );
+    showHideTable(true, dispatch);
+    if (!isEmpty(response)) {
+
+      loadUlbLogo(tenantId);
+    };
+  } catch (error) {
+    dispatch(toggleSnackbar(true, error.message, "error"));
+    console.log(error);
+  }
+}//};
 
 const showHideTable = (booleanHideOrShow, dispatch) => {
   dispatch(

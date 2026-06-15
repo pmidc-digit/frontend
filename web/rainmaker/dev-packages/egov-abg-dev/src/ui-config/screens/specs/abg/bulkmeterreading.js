@@ -136,7 +136,7 @@ const abgSearchAndResult = {
               componentPath: "Div",
               gridDefination: {
                 xs: 12,
-                sm: 3
+                sm: 4
               }
             },
 
@@ -144,7 +144,7 @@ const abgSearchAndResult = {
               componentPath: "Button",
               gridDefination: {
                 xs: 12,
-                sm: 3
+                sm: 4
               },
               props: {
                 variant: "contained",

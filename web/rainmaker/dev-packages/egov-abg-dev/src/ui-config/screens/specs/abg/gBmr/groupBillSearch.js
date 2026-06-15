@@ -43,7 +43,47 @@ export const resetFields = (state, dispatch) => {
   dispatch(
     handleField(
       "bulkmeterreading",
-      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.consumerId",
+      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.batchtype",
+      "props.value",
+      ""
+    )
+  );
+  dispatch(
+    handleField(
+      "bulkmeterreading",
+      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.Zone",
+      "props.value",
+      ""
+    )
+  );
+  dispatch(
+    handleField(
+      "bulkmeterreading",
+      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.locality",
+      "props.value",
+      ""
+    )
+  );
+  dispatch(
+    handleField(
+      "bulkmeterreading",
+      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.batch",
+      "props.value",
+      ""
+    )
+  );
+  dispatch(
+    handleField(
+      "bulkmeterreading",
+      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.groUp",
+      "props.value",
+      ""
+    )
+  );
+  dispatch(
+    handleField(
+      "bulkmeterreading",
+      "components.div.children.abgSearchCard.children.cardContent.children.searchContainer.children.locMohalla",
       "props.value",
       ""
     )
@@ -96,6 +136,8 @@ export const resetFields = (state, dispatch) => {
       ""
     )
   );
+  //"applyScreenMdmsData.tenant.batchs", zonecode.children || []));
+  dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs", ""));
 };
 
 export const abgSearchCard = getCommonCard({
@@ -369,16 +411,33 @@ export const abgSearchCard = getCommonCard({
 
         },
         required: false,
+
         afterFieldChange: async (action, state, dispatch) => {
-          debugger;
-          let allzons = await get(state, "screenConfiguration.preparedFinalObject.applyScreenMdmsData.tenant.zone");
-          let selectzone = await get(state, "screenConfiguration.preparedFinalObject.searchCriteria.zone");
-          let zonecode = allzons.filter(item => {
-            if (item.code === selectzone) {
-              return item.children;
-            }
-          });
-          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.batchs", zonecode[0].children));
+          const allzons =
+            get(
+              state,
+              "screenConfiguration.preparedFinalObject.applyScreenMdmsData.tenant.zone",
+              []
+            ) || [];
+
+          const selectzone = get(
+            state,
+            "screenConfiguration.preparedFinalObject.searchCriteria.zone"
+          );
+
+          let zonecode = allzons.find(
+            item => item.code === selectzone
+
+
+          );
+          zonecode = zonecode ? zonecode.children : [];
+          dispatch(
+            prepareFinalObject(
+              "applyScreenMdmsData.tenant.batchs",
+              zonecode || []
+            )
+          );
+
         },
         gridDefination: {
           xs: 12,
@@ -412,7 +471,11 @@ export const abgSearchCard = getCommonCard({
               return item.children;
             }
           });
-          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", localitycode[0].children));
+          localitycode =
+            localitycode.length > 0
+              ? localitycode[0].children || []
+              : [];
+          dispatch(prepareFinalObject("applyScreenMdmsData.tenant.mohaladata", localitycode || []));
         },
         gridDefination: {
           xs: 12,
@@ -540,6 +603,7 @@ export const abgSearchCard = getCommonCard({
           callBack: searchApiCall
         }
       },
+
       lastCont: {
         uiFramework: "custom-atoms",
         componentPath: "Div",
