@@ -8,7 +8,7 @@ import get from "lodash/get";
 import set from "lodash/set";
 import { httpRequest } from "../../../../ui-utils";
 import { getSearchResults } from "../../../../ui-utils/commons";
-import { downloadCertificateForm, downloadReceitForm, getpayments, prepareDocumentsView, searchBill, showHideMutationDetailsCard } from "../utils/index";
+import { downloadCertificateForm, getpayments, prepareDocumentsView, searchBill, showHideMutationDetailsCard } from "../utils/index";
 import { loadPdfGenerationData } from "../utils/receiptTransformer";
 import { mutationSummary } from "./applyResourceMutation/mutationSummary";
 import { downloadPrintContainer } from "./functions";
@@ -61,20 +61,20 @@ const setDownloadMenu = (state, dispatch, tenantId, applicationNumber) => {
     },
     leftIcon: "book"
   };
-  let receiptDownloadObject = {
-    label: { labelName: "Receipt", labelKey: "MT_RECEIPT" },
-    link: () => {
-      downloadReceitForm(get(state, "screenConfiguration.preparedFinalObject.Payments"), "consolidatedreceipt", tenantId, applicationNumber);
-    },
-    leftIcon: "receipt"
-  };
-  let receiptPrintObject = {
-    label: { labelName: "Receipt", labelKey: "MT_RECEIPT" },
-    link: () => {
-      downloadReceitForm(get(state, "screenConfiguration.preparedFinalObject.Payments"), "consolidatedreceipt", tenantId, applicationNumber, 'print');
-    },
-    leftIcon: "receipt"
-  };
+  // let receiptDownloadObject = {
+  //   label: { labelName: "Receipt", labelKey: "MT_RECEIPT" },
+  //   link: () => {
+  //     downloadReceitForm(get(state, "screenConfiguration.preparedFinalObject.Payments"), "consolidatedreceipt", tenantId, applicationNumber);
+  //   },
+  //   leftIcon: "receipt"
+  // };
+  // let receiptPrintObject = {
+  //   label: { labelName: "Receipt", labelKey: "MT_RECEIPT" },
+  //   link: () => {
+  //     downloadReceitForm(get(state, "screenConfiguration.preparedFinalObject.Payments"), "consolidatedreceipt", tenantId, applicationNumber, 'print');
+  //   },
+  //   leftIcon: "receipt"
+  // };
   let applicationDownloadObject = {
     label: { labelName: "Application", labelKey: "MT_APPLICATION" },
     link: () => {
@@ -99,12 +99,12 @@ const setDownloadMenu = (state, dispatch, tenantId, applicationNumber) => {
     case "ACTIVE":
       downloadMenu = [
         certificateDownloadObject,
-        receiptDownloadObject,
+        // receiptDownloadObject,
         applicationDownloadObject
       ];
       printMenu = [
         certificatePrintObject,
-        receiptPrintObject,
+        // receiptPrintObject,
         applicationPrintObject
       ];
       break;
