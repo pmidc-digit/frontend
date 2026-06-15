@@ -72,7 +72,9 @@ export const updatesingleReading = async (consumerId, lastReading, currentReadin
 export const searchApiCall = async (state, dispatch) => {
 
   showHideTable(false, dispatch);
+  showHideUpdateAllButton(false, dispatch);
   //showHideMergeButton(false, dispatch);
+
   let searchScreenObject = get(
     state.screenConfiguration.preparedFinalObject,
     "searchCriteria",
@@ -247,7 +249,9 @@ export const searchApiCall = async (state, dispatch) => {
       )
     );
     showHideTable(true, dispatch);
+    showHideUpdateAllButton(!isEmpty(response), dispatch);
     if (!isEmpty(response)) {
+
 
       loadUlbLogo(tenantId);
     };
@@ -267,5 +271,22 @@ const showHideTable = (booleanHideOrShow, dispatch) => {
     )
   );
 };
+
+const showHideUpdateAllButton = (isVisible, dispatch) => {
+  dispatch(
+    handleField(
+      "bulkmeterreading",
+      "components.div.children.button.children.buttonContainer.children.updateAllButton.visible",
+      "props.visible",
+      isVisible
+    )
+  );
+};
+
+
+
+
+
+
 
 

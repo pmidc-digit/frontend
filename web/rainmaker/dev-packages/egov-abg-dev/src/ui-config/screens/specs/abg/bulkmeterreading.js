@@ -156,6 +156,7 @@ const abgSearchAndResult = {
                   height: "48px"
                 }
               },
+              visible: false,
               children: {
                 buttonLabel: getLabel({
                   labelName: "Update All Readings",
@@ -185,3 +186,4 @@ const abgSearchAndResult = {
 };
 
 export default abgSearchAndResult;
+
