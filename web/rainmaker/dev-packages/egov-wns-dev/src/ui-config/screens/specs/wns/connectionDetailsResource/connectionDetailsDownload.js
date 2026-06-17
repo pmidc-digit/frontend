@@ -158,8 +158,8 @@ const download = async (mode = "download", state, showConfirmation = false) => {
                   code = "Interest"; amount = dd.adjustedAmount;
 
                 }
-                else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY") {
-                  code = "Penalty"; amount = dd.adjustedAmount;
+                else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY" || dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") {
+                  code = (dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") ? "Breakdown Penalty" : "Penalty"; amount = dd.adjustedAmount;
 
                 } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
                   code = "Scrutiny Fee"; amount = dd.adjustedAmount;
