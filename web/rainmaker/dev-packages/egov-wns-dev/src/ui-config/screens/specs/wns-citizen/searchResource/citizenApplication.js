@@ -78,11 +78,11 @@ export const citizenApplication = getCommonCard({
                          "text-transform": "none",
                     }
                 },
-                children: {
-                    buttonLabel: getLabel({
-                        labelKey: "Towns other than Fazilka can click here to apply new water sewerage connection"
-                    })
-                },
+                // children: {
+                //     buttonLabel: getLabel({
+                //         labelKey: "Towns other than Fazilka can click here to apply new water sewerage connection"
+                //     })
+                // },
                 onClickDefination: {
                     action: "condition",
                     callBack: WSlink
