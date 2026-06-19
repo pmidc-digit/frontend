@@ -1,5 +1,5 @@
 // import { downloadMultipleBill } from "egov-common/ui-utils/commons";
-import { toggleSpinner, toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { toggleSpinner, toggleSnackbar, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -265,6 +265,7 @@ export const generateMultipleBill = async function (state, dispatch, type) {
       (batchType === "Group" &&
         typeof group === "string" &&
         group.trim() !== "") ||
+      (batchType === "Integrated Bill")  ||
         Array.isArray(locality) && locality.length > 0
 
     if (isValidLocalityOrGroup) {
@@ -277,9 +278,17 @@ export const generateMultipleBill = async function (state, dispatch, type) {
 
         var message = response.message + " Job ID: " + response.jobId;
 
+        // dispatch(
+        //   toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
+        // );
         dispatch(
-          toggleSnackbar(true, { labelName: message, labelKey: message }, "warning")
+          prepareFinalObject("batchJobModal", {
+            open: true,
+            message: response.message,
+            jobId: response.jobId
+          })
         );
+
       } catch (error) {
         console.error("Batch download error:", error);
 

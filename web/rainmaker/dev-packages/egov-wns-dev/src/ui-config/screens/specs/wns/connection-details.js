@@ -7,7 +7,7 @@ import {
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import {
   handleScreenConfigurationFieldChange as handleField,
-  prepareFinalObject,toggleSnackbar
+  prepareFinalObject, toggleSnackbar
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 import set from "lodash/set";
@@ -17,7 +17,7 @@ import {
   getSearchResultsForSewerage,
   serviceConst,
 } from "../../../../ui-utils/commons";
-import { ifUserRoleExists, getDemand} from "../utils";
+import { ifUserRoleExists, getDemand } from "../utils";
 import { connectionDetailsDownload } from "./connectionDetailsResource/connectionDetailsDownload";
 import { connectionDetailsFooter } from "./connectionDetailsResource/connectionDetailsFooter";
 import {
@@ -99,7 +99,7 @@ export const sortpayloadDataObj = (connectionObj) => {
 };
 
 const getActiveConnectionObj = (connectionsObj) => {
-  
+
   let getActiveConnectionObj = "";
   for (var i = 0; i < connectionsObj.length; i++) {
     if (
@@ -115,8 +115,8 @@ const getActiveConnectionObj = (connectionsObj) => {
 };
 
 const searchResults = async (action, state, dispatch, connectionNumber) => {
-    
- 
+
+
   /**
    * This methods holds the api calls and the responses of fetch bill and search connection for both water and sewerage service
    */
@@ -132,7 +132,7 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       "/sw-services/swc/_search",
       "_search",
       queryObject
-  );
+    );
 
     payloadData = await getSearchResultsForSewerage(
       queryObject,
@@ -144,16 +144,16 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       payloadData !== undefined &&
       payloadData.SewerageConnections.length > 0
     ) {
-       payloadData.SewerageConnections = sortpayloadDataObj(
-         payloadData.SewerageConnections
-       );
+      payloadData.SewerageConnections = sortpayloadDataObj(
+        payloadData.SewerageConnections
+      );
       const maxModifiedDate = Math.max(...payloadData.SewerageConnections.map(item => item.auditDetails.lastModifiedTime));
-      payloadData.SewerageConnections = payloadData.SewerageConnections.filter((element) =>  element.auditDetails.lastModifiedTime === maxModifiedDate);
+      payloadData.SewerageConnections = payloadData.SewerageConnections.filter((element) => element.auditDetails.lastModifiedTime === maxModifiedDate);
       let sewerageConnection = getActiveConnectionObj(
-         payloadData.SewerageConnections
-       );
-     let propTenantId = sewerageConnection.property.tenantId.split(".")[0];
-     
+        payloadData.SewerageConnections
+      );
+      let propTenantId = sewerageConnection.property.tenantId.split(".")[0];
+
       sewerageConnection.service = serviceUrl;
 
       if (sewerageConnection.property.propertyType !== undefined) {
@@ -182,7 +182,7 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
           mdmsPropertyType !== undefined &&
           mdmsPropertyType !== null &&
           mdmsPropertyType.MdmsRes.PropertyTax.PropertyType[0].name !==
-            undefined &&
+          undefined &&
           mdmsPropertyType.MdmsRes.PropertyTax.PropertyType[0].name !== null
         ) {
           sewerageConnection.property.propertyTypeData =
@@ -223,11 +223,11 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       const queryObjForBill = [
         {
           key: "tenantId",
-          value: tenantId ? tenantId :getTenantId(),
+          value: tenantId ? tenantId : getTenantId(),
         },
         {
           key: "consumerCode",
-          value:connectionNumber,
+          value: connectionNumber,
         },
         {
           key: "businessService",
@@ -235,13 +235,13 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
           ,
         },
       ];
-      const bill = await getDemand(queryObjForBill,dispatch);
+      const bill = await getDemand(queryObjForBill, dispatch);
       dispatch(prepareFinalObject("BILL_FOR_WNS", bill));
-      let billAMDSearch = process.env.REACT_APP_NAME !== "Citizen" ? await getBillAmdSearchResult(queryObjForBill, dispatch): [];
-      let amendments=get(billAMDSearch, "Amendments", []);
-      amendments=amendments&&Array.isArray(amendments)&&amendments.filter(amendment=>amendment.status==='INWORKFLOW');
+      let billAMDSearch = process.env.REACT_APP_NAME !== "Citizen" ? await getBillAmdSearchResult(queryObjForBill, dispatch) : [];
+      let amendments = get(billAMDSearch, "Amendments", []);
+      amendments = amendments && Array.isArray(amendments) && amendments.filter(amendment => amendment.status === 'INWORKFLOW');
       dispatch(prepareFinalObject("BILL_FOR_WNS", bill));
-      dispatch(prepareFinalObject("isAmendmentInWorkflow", amendments&&Array.isArray(amendments)&&amendments.length==0?true:false));
+      dispatch(prepareFinalObject("isAmendmentInWorkflow", amendments && Array.isArray(amendments) && amendments.length == 0 ? true : false));
       //dispatch(prepareFinalObject("WaterConnection[0]", sewerageConnection));
       dispatch(prepareFinalObject("WaterConnection[0]", sewerageConnection));
       getApplicationNumber(dispatch, payloadData.SewerageConnections);
@@ -261,7 +261,7 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
           false
         )
       );
-      if(sewerageConnection && sewerageConnection.length > 0 && sewerageConnection[0].uom) {
+      if (sewerageConnection && sewerageConnection.length > 0 && sewerageConnection[0].uom) {
         dispatch(
           handleField(
             "connection-details",
@@ -291,10 +291,10 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       payloadData.WaterConnection = sortpayloadDataObj(
         payloadData.WaterConnection
       );
-      
+
       const maxModifiedDate = Math.max(...payloadData.WaterConnection.map(item => item.auditDetails.lastModifiedTime));
-      payloadData.WaterConnection = payloadData.WaterConnection.filter((element) =>  element.auditDetails.lastModifiedTime === maxModifiedDate);
-      
+      payloadData.WaterConnection = payloadData.WaterConnection.filter((element) => element.auditDetails.lastModifiedTime === maxModifiedDate);
+
       let waterConnection = getActiveConnectionObj(payloadData.WaterConnection);
       waterConnection.service = serviceUrl;
       let propTenantId = waterConnection.property.tenantId.split(".")[0];
@@ -338,7 +338,7 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
         );
         waterConnection.property.propertyTypeData =
           mdmsPropertyType.MdmsRes.PropertyTax.PropertyType[0].name !==
-          undefined
+            undefined
             ? mdmsPropertyType.MdmsRes.PropertyTax.PropertyType[0].name
             : "NA"; //propertyType from Mdms
       }
@@ -359,11 +359,11 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
       const queryObjForBill = [
         {
           key: "tenantId",
-          value: tenantId ? tenantId :getTenantId(),
+          value: tenantId ? tenantId : getTenantId(),
         },
         {
           key: "consumerCode",
-          value:connectionNumber,
+          value: connectionNumber,
         },
         {
           key: "businessService",
@@ -371,11 +371,11 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
         },
       ];
       const bill = await getDemand(queryObjForBill, dispatch);
-      let billAMDSearch = process.env.REACT_APP_NAME !== "Citizen" ? await getBillAmdSearchResult(queryObjForBill, dispatch): [];
-      let amendments=get(billAMDSearch, "Amendments", []);
-      amendments=amendments&&Array.isArray(amendments)&&amendments.filter(amendment=>amendment.status==='INWORKFLOW');
+      let billAMDSearch = process.env.REACT_APP_NAME !== "Citizen" ? await getBillAmdSearchResult(queryObjForBill, dispatch) : [];
+      let amendments = get(billAMDSearch, "Amendments", []);
+      amendments = amendments && Array.isArray(amendments) && amendments.filter(amendment => amendment.status === 'INWORKFLOW');
       dispatch(prepareFinalObject("BILL_FOR_WNS", bill));
-      dispatch(prepareFinalObject("isAmendmentInWorkflow", amendments&&Array.isArray(amendments)&&amendments.length==0?true:false));
+      dispatch(prepareFinalObject("isAmendmentInWorkflow", amendments && Array.isArray(amendments) && amendments.length == 0 ? true : false));
       showHideConnectionHolder(dispatch, waterConnection.connectionHolders);
       dispatch(prepareFinalObject("WaterConnection[0]", waterConnection));
       getApplicationNumber(dispatch, payloadData.WaterConnection);
@@ -403,10 +403,10 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
         let tenant = getQueryArg(window.location.href, "tenantId");
         const connectionNumber = getQueryArg(window.location.href, "connectionNumber");
         const environment = process.env.NODE_ENV === "production" ? process.env.REACT_APP_NAME === "Citizen" ? "citizen" : "employee" : "";
-        const origin =  process.env.NODE_ENV === "production" ? window.location.origin + "/" : window.location.origin;
+        const origin = process.env.NODE_ENV === "production" ? window.location.origin + "/" : window.location.origin;
         window.location.assign(`${origin}${environment}/wns/meter-reading?connectionNos=${connectionNumber}&tenantId=${tenantId}`);
       };
-      const editSection= {
+      const editSection = {
         componentPath: "Button",
         props: { color: "primary", style: { margin: "-16px" } },
         visible: true,
@@ -417,15 +417,15 @@ const searchResults = async (action, state, dispatch, connectionNumber) => {
           callBack: getRedirectionURL
         }
       }
-      if( service === "WATER" && connectionType === "Metered") {
-      dispatch(
-        handleField(
-          "connection-details",
-          "components.div.children.connectionDetails.children.cardContent.children.serviceDetails.children.cardContent.children.waterDetails.children",
-          "editSection",
-          editSection
-        )
-      );
+      if (service === "WATER" && connectionType === "Metered") {
+        dispatch(
+          handleField(
+            "connection-details",
+            "components.div.children.connectionDetails.children.cardContent.children.serviceDetails.children.cardContent.children.waterDetails.children",
+            "editSection",
+            editSection
+          )
+        );
       }
     }
   }
@@ -437,11 +437,11 @@ const beforeInitFn = async (action, state, dispatch, connectionNumber) => {
     await searchResults(action, state, dispatch, connectionNumber);
   }
 
-  let serviceCode=null;
-  if(getQueryArg(window.location.href, "service") == "SEWERAGE") 
-  serviceCode="SW";
+  let serviceCode = null;
+  if (getQueryArg(window.location.href, "service") == "SEWERAGE")
+    serviceCode = "SW";
   else
-  serviceCode="WS";
+    serviceCode = "WS";
   const queryObjForPayment = [
     {
       key: "tenantId",
@@ -449,196 +449,208 @@ const beforeInitFn = async (action, state, dispatch, connectionNumber) => {
     },
     {
       key: "consumerCodes",
-      value:connectionNumber,
+      value: connectionNumber,
     },
     {
       key: "businessService",
-      value:serviceCode,
+      value: serviceCode,
     },
     {
       key: "consumerCode",
-      value:connectionNumber,
+      value: connectionNumber,
     },
-    
+
   ];
-  getPaymentHistory(queryObjForPayment, dispatch , serviceCode);
+  getPaymentHistory(queryObjForPayment, dispatch, serviceCode);
   getDCBDetail(queryObjForPayment, dispatch);
 };
 
-export const getPaymentHistory = async (queryObject , dispatch , serviceCode) => {
+export const getPaymentHistory = async (queryObject, dispatch, serviceCode) => {
   try {
 
     let response = await httpRequest(
       "post",
-      "collection-services/payments/"+serviceCode+"/_search",
-       "",
+      "collection-services/payments/" + serviceCode + "/_search",
+      "",
       queryObject
     );
-  
+
     let paymentArray = [];
-    let paymentRow=null;
-    let receiptNumber,receiptDate,totalAmountPaid,totalDue,paymentMode,service,tenant;
+    let paymentRow = null;
+    let receiptNumber, receiptDate, totalAmountPaid, totalDue, paymentMode, service, tenant;
 
-   // response=response.filter(i=> i.paymentStatus !='CANCELLED');
-    response.Payments.map((element,index) => {
-      if(element.paymentStatus != 'CANCELLED'){
-       paymentMode = element.paymentMode;
-       tenant = element.tenantId;
+    // response=response.filter(i=> i.paymentStatus !='CANCELLED');
+    response.Payments.map((element, index) => {
+      if (element.paymentStatus != 'CANCELLED') {
+        paymentMode = element.paymentMode;
+        tenant = element.tenantId;
 
-       element.paymentDetails.map((dd)=>{
-       receiptDate=convertEpochToDate(dd.receiptDate);
-       receiptNumber=dd.receiptNumber;
-       totalAmountPaid = dd.totalAmountPaid;
-       totalDue = dd.totalDue;
-       service=dd.bill.businessService;
-      });
-      paymentRow={
-        "paymentMode":paymentMode,
-        "receiptDate":receiptDate,
-        "receiptNumber":receiptNumber,
-        "totalAmountPaid":totalAmountPaid,
-        "totalDue":totalDue,
-        "service":service,
-        "tenant":tenant
-      };
-      paymentArray.push(paymentRow);
-    }
+        element.paymentDetails.map((dd) => {
+          receiptDate = convertEpochToDate(dd.receiptDate);
+          receiptNumber = dd.receiptNumber;
+          totalAmountPaid = dd.totalAmountPaid;
+          totalDue = dd.totalDue;
+          service = dd.bill.businessService;
+        });
+        paymentRow = {
+          "paymentMode": paymentMode,
+          "receiptDate": receiptDate,
+          "receiptNumber": receiptNumber,
+          "totalAmountPaid": totalAmountPaid,
+          "totalDue": totalDue,
+          "service": service,
+          "tenant": tenant
+        };
+        paymentArray.push(paymentRow);
+      }
     });
 
 
 
-   dispatch(prepareFinalObject("paymentHistory", paymentArray));
+    dispatch(prepareFinalObject("paymentHistory", paymentArray));
 
   } catch (error) {
-      dispatch(
-        toggleSnackbar(
-          true,
-          { labelName: error.message, labelKey: error.message },
+    dispatch(
+      toggleSnackbar(
+        true,
+        { labelName: error.message, labelKey: error.message },
         "warning"
-        )
-      );
+      )
+    );
   }
 }
 
 
-export const getDCBDetail = async (queryObject , dispatch) => {
+export const getDCBDetail = async (queryObject, dispatch) => {
   try {
 
     const response = await httpRequest(
       "post",
       "billing-service/demand/_search",
-       "",
+      "",
       queryObject
     );
     let dcbArray = [];
     let dcbtotalArray = [];
-    let dcbRow=null;
-    let dcbtotalRow=null;
-    
-    let installment,advance,taxAmount,taxCollected,taxBalance,interestAmount,interestCollected,interestBalance,penaltyBalance,penaltyCollected,penaltyAmount;
-    response.Demands.map((element,index) => {
-      taxAmount=0;taxCollected=0;taxBalance=0;interestAmount=0;
-      interestCollected=0;interestBalance=0;penaltyBalance=0;penaltyCollected=0;penaltyAmount=0;
-     advance=0;
-  if(element.status == "ACTIVE")
-  {
-  installment=convertEpochToDate(element.taxPeriodFrom) +"-"+convertEpochToDate(element.taxPeriodTo);
-  element.demandDetails.map((dd)=>{
-    if(dd.taxHeadMasterCode=='WS_CHARGE' || dd.taxHeadMasterCode=='SW_CHARGE' ){
-      taxAmount=taxAmount+dd.taxAmount;
-      taxCollected=taxCollected+dd.collectionAmount;
-      taxBalance=taxAmount-taxCollected;
-    }
-    if(dd.taxHeadMasterCode=='WS_DISCHARGE_CHARGES' || dd.taxHeadMasterCode=='SW_DISCHARGE_CHARGES' ){
-      taxAmount=taxAmount+dd.taxAmount;
-      taxCollected=taxCollected+dd.collectionAmount;
-      taxBalance=taxAmount-taxCollected;
-    }
-    if(dd.taxHeadMasterCode=='WS_TIME_INTEREST'  || dd.taxHeadMasterCode=='SW_TIME_INTEREST' ){
+    let dcbRow = null;
+    let dcbtotalRow = null;
 
-      interestAmount=interestAmount+dd.taxAmount;
-      interestCollected=interestCollected+dd.collectionAmount;
-      interestBalance=interestAmount-interestCollected;
-    }
-    if(dd.taxHeadMasterCode=='WS_TIME_PENALTY' || dd.taxHeadMasterCode=='SW_TIME_PENALTY' || dd.taxHeadMasterCode == 'WS_BREAKDOWN_PENALTY' || dd.taxHeadMasterCode == 'SW_BREAKDOWN_PENALTY'){
-      penaltyAmount=penaltyAmount+dd.taxAmount;
-      penaltyCollected=penaltyCollected+dd.collectionAmount;
-      penaltyBalance=penaltyAmount-penaltyCollected;
-     
-    } if(dd.taxHeadMasterCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadMasterCode == "WS_ADVANCE_CARRYFORWARD" )
-    {
-    advance=advance+dd.taxAmount;
-    }
+    let installment, advance, taxAmount, taxCollected, taxBalance, interestAmount, interestCollected, interestBalance, penaltyBalance, penaltyCollected, penaltyAmount, doorToDoorAmount, doorToDoorCollected, doorToDoorBalance;
+    response.Demands.map((element, index) => {
+      taxAmount = 0; taxCollected = 0; taxBalance = 0; interestAmount = 0;
+      interestCollected = 0; interestBalance = 0; penaltyBalance = 0; penaltyCollected = 0; penaltyAmount = 0;
+      doorToDoorAmount = 0; doorToDoorCollected = 0; doorToDoorBalance = 0;
+      advance = 0;
+      if (element.status == "ACTIVE") {
+        installment = convertEpochToDate(element.taxPeriodFrom) + "-" + convertEpochToDate(element.taxPeriodTo);
+        element.demandDetails.map((dd) => {
+          if (dd.taxHeadMasterCode == 'WS_CHARGE' || dd.taxHeadMasterCode == 'SW_CHARGE') {
+            taxAmount = taxAmount + dd.taxAmount;
+            taxCollected = taxCollected + dd.collectionAmount;
+            taxBalance = taxAmount - taxCollected;
+          }
+          if (dd.taxHeadMasterCode == 'WS_DISCHARGE_CHARGES' || dd.taxHeadMasterCode == 'SW_DISCHARGE_CHARGES') {
+            taxAmount = taxAmount + dd.taxAmount;
+            taxCollected = taxCollected + dd.collectionAmount;
+            taxBalance = taxAmount - taxCollected;
+          }
+          if (dd.taxHeadMasterCode == 'WS_DOOR_TO_DOOR_COLLECTION_CHARGES' || dd.taxHeadMasterCode == 'SW_DOOR_TO_DOOR_COLLECTION_CHARGES') {
+            doorToDoorAmount = doorToDoorAmount + dd.taxAmount;
+            doorToDoorCollected = doorToDoorCollected + dd.collectionAmount;
+            doorToDoorBalance = doorToDoorAmount - doorToDoorCollected;
+          }
+          if (dd.taxHeadMasterCode == 'WS_TIME_INTEREST' || dd.taxHeadMasterCode == 'SW_TIME_INTEREST') {
+
+            interestAmount = interestAmount + dd.taxAmount;
+            interestCollected = interestCollected + dd.collectionAmount;
+            interestBalance = interestAmount - interestCollected;
+          }
+          if (dd.taxHeadMasterCode == 'WS_TIME_PENALTY' || dd.taxHeadMasterCode == 'SW_TIME_PENALTY' || dd.taxHeadMasterCode == 'WS_BREAKDOWN_PENALTY' || dd.taxHeadMasterCode == 'SW_BREAKDOWN_PENALTY') {
+            penaltyAmount = penaltyAmount + dd.taxAmount;
+            penaltyCollected = penaltyCollected + dd.collectionAmount;
+            penaltyBalance = penaltyAmount - penaltyCollected;
+
+          } if (dd.taxHeadMasterCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadMasterCode == "WS_ADVANCE_CARRYFORWARD") {
+            advance = advance + dd.taxAmount;
+          }
+        });
+
+        dcbRow = {
+          "installment": installment,
+          "taxAmount": taxAmount ? taxAmount : 0,
+          "interestAmount": interestAmount ? interestAmount : 0,
+          "penaltyAmount": penaltyAmount ? penaltyAmount : 0,
+          "doorToDoorAmount": doorToDoorAmount ? doorToDoorAmount : 0,
+          "taxCollected": taxCollected ? taxCollected : 0,
+          "interestCollected": interestCollected ? interestCollected : 0,
+          "penaltyCollected": penaltyCollected ? penaltyCollected : 0,
+          "doorToDoorCollected": doorToDoorCollected ? doorToDoorCollected : 0,
+          "taxBalance": taxBalance ? taxBalance : 0,
+          "interestBalance": interestBalance ? interestBalance : 0,
+          "penaltyBalance": penaltyBalance ? penaltyBalance : 0,
+          "doorToDoorBalance": doorToDoorBalance ? doorToDoorBalance : 0,
+          "advance": advance ? advance : 0
+        };
+        dcbArray.push(dcbRow);
+      };
+
     });
-    
-  dcbRow={
-    "installment":installment,
-    "taxAmount":taxAmount?taxAmount:0,
-    "interestAmount":interestAmount?interestAmount:0,
-    "penaltyAmount":penaltyAmount?penaltyAmount:0,
-    "taxCollected":taxCollected?taxCollected:0,
-    "interestCollected":interestCollected?interestCollected:0,
-    "penaltyCollected":penaltyCollected?penaltyCollected:0,
-    "taxBalance":taxBalance?taxBalance:0,
-    "interestBalance":interestBalance?interestBalance:0,
-    "penaltyBalance":penaltyBalance?penaltyBalance:0,
-    "advance":advance?advance:0
-  };
-  dcbArray.push(dcbRow);
-  };
-  
+    let length = response.Demands.length;
+    let netAdvance = 0;
+    response.Demands[length - 1].demandDetails.map((dd) => {
+      if (dd.taxHeadMasterCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadMasterCode == "WS_ADVANCE_CARRYFORWARD") {
+        netAdvance = dd.taxAmount;
+      }
     });
-let length=response.Demands.length;
-let netAdvance=0;
-response.Demands[length-1].demandDetails.map((dd)=>{
-  if(dd.taxHeadMasterCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadMasterCode == "WS_ADVANCE_CARRYFORWARD" )
-  {
-    netAdvance=dd.taxAmount;
-  }
-});
-  const totalTaxDemand = dcbArray.reduce((tax, item) => tax + parseInt(item.taxAmount, 10), 0);
-  const totalInterestDemand = dcbArray.reduce((interest, item) => interest + parseInt(item.interestAmount, 10), 0);
-  const totalPenaltyDemand = dcbArray.reduce((penalty, item) => penalty + parseInt(item.penaltyAmount, 10), 0);
- 
-  const totalTaxCollected = dcbArray.reduce((tax, item) => tax + parseInt(item.taxCollected, 10), 0);
-  const totalInterestCollected = dcbArray.reduce((interest, item) => interest + parseInt(item.interestCollected, 10), 0);
-  const totalPenaltyCollected = dcbArray.reduce((penalty, item) => penalty + parseInt(item.penaltyCollected, 10), 0);
+    const totalTaxDemand = dcbArray.reduce((tax, item) => tax + parseInt(item.taxAmount, 10), 0);
+    const totalInterestDemand = dcbArray.reduce((interest, item) => interest + parseInt(item.interestAmount, 10), 0);
+    const totalPenaltyDemand = dcbArray.reduce((penalty, item) => penalty + parseInt(item.penaltyAmount, 10), 0);
+    const totalDoorToDoorDemand = dcbArray.reduce((doorToDoor, item) => doorToDoor + parseInt(item.doorToDoorAmount, 10), 0);
 
-  const totalTaxBalance = dcbArray.reduce((tax, item) => tax + parseInt(item.taxBalance, 10), 0);
-  const totalInterestBalance = dcbArray.reduce((interest, item) => interest + parseInt(item.interestBalance, 10), 0);
-  const totalPenaltyBalance = dcbArray.reduce((penalty, item) => penalty + parseInt(item.penaltyBalance, 10), 0);
- const totalAdvance=netAdvance;
-  const totalBalance = parseInt(totalTaxBalance) + parseInt(totalInterestBalance) + parseInt(totalPenaltyBalance)+parseInt(totalAdvance);  
+    const totalTaxCollected = dcbArray.reduce((tax, item) => tax + parseInt(item.taxCollected, 10), 0);
+    const totalInterestCollected = dcbArray.reduce((interest, item) => interest + parseInt(item.interestCollected, 10), 0);
+    const totalPenaltyCollected = dcbArray.reduce((penalty, item) => penalty + parseInt(item.penaltyCollected, 10), 0);
+    const totalDoorToDoorCollected = dcbArray.reduce((doorToDoor, item) => doorToDoor + parseInt(item.doorToDoorCollected, 10), 0);
+
+    const totalTaxBalance = dcbArray.reduce((tax, item) => tax + parseInt(item.taxBalance, 10), 0);
+    const totalInterestBalance = dcbArray.reduce((interest, item) => interest + parseInt(item.interestBalance, 10), 0);
+    const totalPenaltyBalance = dcbArray.reduce((penalty, item) => penalty + parseInt(item.penaltyBalance, 10), 0);
+    const totalDoorToDoorBalance = dcbArray.reduce((doorToDoor, item) => doorToDoor + parseInt(item.doorToDoorBalance, 10), 0);
+    const totalAdvance = netAdvance;
+    const totalBalance = parseInt(totalTaxBalance) + parseInt(totalInterestBalance) + parseInt(totalPenaltyBalance) + parseInt(totalDoorToDoorBalance) + parseInt(totalAdvance);
 
 
 
 
-  dcbtotalRow={
-             
-              "totalTaxDemand":totalTaxDemand,
-              "totalInterestDemand":totalInterestDemand,
-              "totalPenaltyDemand":totalPenaltyDemand,
-              "totalTaxCollected":totalTaxCollected,
-              "totalInterestCollected":totalInterestCollected,
-              "totalPenaltyCollected":totalPenaltyCollected,
-              "totalTaxBalance":totalTaxBalance,
-              "totalInterestBalance":totalInterestBalance,
-              "totalPenaltyBalance":totalPenaltyBalance,
-              "totalBalance":totalBalance,
-              "totalAdvance":totalAdvance
-   };
-   dcbtotalArray.push(dcbtotalRow);
-   dispatch(prepareFinalObject("dcbDetails", dcbArray));
-   dispatch(prepareFinalObject("dcbtotalDetails", dcbtotalArray));
-  
+    dcbtotalRow = {
+
+      "totalTaxDemand": totalTaxDemand,
+      "totalInterestDemand": totalInterestDemand,
+      "totalPenaltyDemand": totalPenaltyDemand,
+      "totalDoorToDoorDemand": totalDoorToDoorDemand,
+      "totalTaxCollected": totalTaxCollected,
+      "totalInterestCollected": totalInterestCollected,
+      "totalPenaltyCollected": totalPenaltyCollected,
+      "totalDoorToDoorCollected": totalDoorToDoorCollected,
+      "totalTaxBalance": totalTaxBalance,
+      "totalInterestBalance": totalInterestBalance,
+      "totalPenaltyBalance": totalPenaltyBalance,
+      "totalDoorToDoorBalance": totalDoorToDoorBalance,
+      "totalBalance": totalBalance,
+      "totalAdvance": totalAdvance
+    };
+    dcbtotalArray.push(dcbtotalRow);
+    dispatch(prepareFinalObject("dcbDetails", dcbArray));
+    dispatch(prepareFinalObject("dcbtotalDetails", dcbtotalArray));
+
   } catch (error) {
-      dispatch(
-        toggleSnackbar(
-          true,
-          { labelName: error.message, labelKey: error.message },
+    dispatch(
+      toggleSnackbar(
+        true,
+        { labelName: error.message, labelKey: error.message },
         "warning"
-        )
-      );
+      )
+    );
   }
 }
 
@@ -664,8 +676,8 @@ const connectionHolders = connHolderDetailsSummary();
 
 const connectionHoldersSameAsOwner = connHolderDetailsSameAsOwnerSummary();
 
-const getConnectionDetailsFooterAction =  (ifUserRoleExists('WS_CEMP')) ? connectionDetailsFooter : {};
- 
+const getConnectionDetailsFooterAction = (ifUserRoleExists('WS_CEMP')) ? connectionDetailsFooter : {};
+
 const paymentDetails = getPaymentDetails(true);
 
 const DCBDetails = getDCBDetails(true);
@@ -733,7 +745,7 @@ const getMDMSData = async (action, state, dispatch) => {
     payload.MdmsRes.BillingService.BusinessService = payload.MdmsRes.BillingService.BusinessService.filter(
       (service) => service.billGineiURL
     );
-    
+
     dispatch(prepareFinalObject("connectDetailsData", payload.MdmsRes));
   } catch (e) {
     console.log(e);
@@ -800,7 +812,7 @@ const screenConfig = {
               gridDefination: {
                 xs: 12,
                 sm: 5,
-              //  align: "right",
+                //  align: "right",
               },
               children: {
                 connectionDetailsDownload,

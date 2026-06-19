@@ -162,7 +162,7 @@ class PaymentHistory extends Component {
         }
 
         if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-          
+
           let dcbRow = null, dcbArray = [];
           let installment, totalamount = 0;
           payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails.map((element, index) => {
@@ -188,10 +188,10 @@ class PaymentHistory extends Component {
                     code = "Interest"; amount = dd.adjustedAmount;
 
                   }
-                  else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY") {
-                    code = "Penalty"; amount = dd.adjustedAmount;
+                  else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY" || dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") {
+                  code = (dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") ? "Breakdown Penalty" : "Penalty"; amount = dd.adjustedAmount;
 
-                  } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
+                 } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
                     code = "Scrutiny Fee"; amount = dd.adjustedAmount;
 
                   } else if (dd.taxHeadCode == "WS_ROAD_CUTTING_CHARGE" || dd.taxHeadCode == "SW_ROAD_CUTTING_CHARGE") {
@@ -219,6 +219,9 @@ class PaymentHistory extends Component {
 
                   } else if (dd.taxHeadCode == "WS_COMPOSITION_FEE" || dd.taxHeadCode == "SW_COMPOSITION_FEE") {
                     code = "Composition Fee"; amount = dd.adjustedAmount;
+
+                  } else if (dd.taxHeadCode == "WS_DOOR_TO_DOOR_COLLECTION_CHARGES" || dd.taxHeadCode == "SW_DOOR_TO_DOOR_COLLECTION_CHARGES") {
+                    code = "Door to Door Collection Charges"; amount = dd.adjustedAmount;
 
                   } else if (dd.taxHeadCode == "WS_FORM_FEE" || dd.taxHeadCode == "SW_FORM_FEE") {
                     code = "Form Fee"; amount = dd.adjustedAmount;
