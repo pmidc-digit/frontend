@@ -25,7 +25,7 @@ const withAuthorization = (options = {}) => (Component) => {
       titleAddon: "",
       titleObject: [],
       sortPopOpen: false,
-      menuDrawerOpen: true,
+      menuDrawerOpen: false,
       localeFetched: false
     };
     style = {
@@ -150,9 +150,7 @@ const withAuthorization = (options = {}) => (Component) => {
       }
     };
     toggleDrawer(menuClick) {
-      this.setState({
-        menuDrawerOpen: menuClick ? true : !this.state.menuDrawerOpen,
-      });
+      // Controlled via hover on desktop
     }
     render() {
       const {
@@ -201,7 +199,7 @@ const withAuthorization = (options = {}) => (Component) => {
         return (userInfo && userInfo.roles && userInfo.roles.length > 0 && userInfo.roles[0].code.toUpperCase()) || null;
       };
       let drawerClsName = menuDrawerOpen ? "full-menu-drawer" : "icon-menu-drawer";
-      let screencls = menuDrawerOpen ? "with-full-menu" : "with-icon-menu";
+      let screencls = "with-icon-menu";
       return (
         <div>
           <div className="rainmaker-header-cont" style={{ position: "relative" }}>
@@ -227,7 +225,12 @@ const withAuthorization = (options = {}) => (Component) => {
             <div className=" col-xs-12" style={{ padding: 0 }}>
               {!hideActionMenu && authenticated && (
                 <div>
-                  <div className={`col-xs-2 action-menu-drawer show-action-menu ${drawerClsName}`} id="menu-container">
+                  <div
+                    className={`col-xs-2 action-menu-drawer show-action-menu ${drawerClsName}`}
+                    id="menu-container"
+                    onMouseEnter={() => this.setState({ menuDrawerOpen: true })}
+                    onMouseLeave={() => this.setState({ menuDrawerOpen: false })}
+                  >
                     <div className="rainmaker-action-menu">
                       <ActionMenu
                         role={role}
@@ -238,7 +241,7 @@ const withAuthorization = (options = {}) => (Component) => {
                       />
                     </div>
                   </div>
-                  <div className="col-xs-2  show-action-menu" /> {/*Dummy div for proper alignment - fixed positioning drawbacks*/}
+                  <div className="col-xs-2  show-action-menu" style={{ display: "none" }} /> {/*Dummy div for proper alignment - fixed positioning drawbacks*/}
                 </div>
               )}
 

@@ -546,8 +546,22 @@ body.employee-user-profile {
 
 //menu drawer chnages
 
-.icon-menu-drawer{
-  width:50px;
+@media only screen and (min-width: 768px) {
+  .action-menu-drawer {
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  .icon-menu-drawer {
+    width: 50px !important;
+  }
+  
+  .full-menu-drawer {
+    width: 240px !important;
+  }
+  
+  .icon-menu-drawer .menu-search-container {
+    display: none !important;
+  }
 }
 
 .icon-menu-drawer .menuStyle,.icon-menu-drawer .menu-right-icon,.icon-menu-drawer .textfield .label-container,.icon-menu-drawer .menu-item-title{
@@ -561,9 +575,7 @@ body.employee-user-profile {
   width: 100%
 }
 .icon-menu-drawer .pull-left,.icon-menu-drawer .pull-right {
-  text-align: center;
-  float: none !important;
-
+  display: none !important;
 }
 .icon-menu-drawer .iconClassHover{
   margin: auto !important;
