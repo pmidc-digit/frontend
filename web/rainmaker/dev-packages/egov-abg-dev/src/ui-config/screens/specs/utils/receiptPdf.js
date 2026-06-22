@@ -1,5 +1,5 @@
 // import { downloadMultipleBill } from "egov-common/ui-utils/commons";
-import { toggleSpinner, toggleSnackbar, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { toggleSpinner, toggleSnackbar, prepareFinalObject, prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -254,8 +254,7 @@ export const generateMultipleBill = async function (state, dispatch, type) {
     }
 
     var filteredBills = filterBills(allBills);
-    console.log("batchType",batchType)
-    console.log("integratedBills",integratedBills)
+
     // ----------------------------
     // Locality Batch Processing
     // ----------------------------
@@ -266,10 +265,8 @@ export const generateMultipleBill = async function (state, dispatch, type) {
       (batchType === "Group" &&
         typeof group === "string" &&
         group.trim() !== "") ||
-      (batchType === "Integrated Bill")  ||
         Array.isArray(locality) && locality.length > 0
 
-      console.log("isValidLocalityOrGroup", isValidLocalityOrGroup)
     if (isValidLocalityOrGroup) {
       try {
         var response = await batchMergeAndDownload(

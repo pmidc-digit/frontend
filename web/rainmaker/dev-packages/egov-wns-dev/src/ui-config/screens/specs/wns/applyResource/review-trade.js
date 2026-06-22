@@ -193,6 +193,20 @@ const propertyLocationDetails = {
 };
 
 export const propertyDetails={
+   reviewPropertystatus: getLabelWithValueForModifiedLabel(
+    {
+      labelName: "Property Status",
+      labelKey: "WS_PROPERTY_STATUS_LABEL"
+    },
+    {
+      jsonPath: "WaterConnection[0].property.status",
+      callBack: handleNA
+    },
+    {
+      labelKey: "WS_OLD_LABEL_NAME"
+    },
+    { jsonPath: "WaterConnectionOld[0].property.status", callBack: handleNA },
+  ),
   reviewPropertyId: getLabelWithValueForModifiedLabel(
     {
       labelName: "Property Id",

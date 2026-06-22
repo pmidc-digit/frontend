@@ -148,5 +148,6 @@ const legacyPta = {
 export default legacyPta
 
 const openlegacyPtaTool = (state, dispatch) => {
-  window.open("https://stvending.punjab.gov.in/search-api/patiala", "_blank")
+ // window.open("https://stvending.punjab.gov.in/search-api/patiala", "_blank")
+ window.open("https://mseva.lgpunjab.gov.in/search-api/patiala", "_blank")
 };
