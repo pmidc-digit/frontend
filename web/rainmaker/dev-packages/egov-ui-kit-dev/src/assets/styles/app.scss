@@ -183,8 +183,6 @@ body.employee-user-profile {
   .menu-search-container {
     background-color: #ffffff;
     margin: 0 5px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
   }
 
   .icon-menu-drawer {
@@ -604,19 +602,39 @@ body.employee-user-profile {
 .icon-menu-drawer .menuStyle,
 .icon-menu-drawer .menu-right-icon,
 .icon-menu-drawer .textfield .label-container,
-.icon-menu-drawer .menu-item-title {
+.icon-menu-drawer .menu-item-title,
+.icon-menu-drawer .submenu-item {
   display: none !important;
+}
+
+.icon-menu-drawer .sideMenuItem {
+  position: relative !important;
+  width: auto !important;
+}
+
+.icon-menu-drawer .sideMenuItem>div {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .icon-menu-drawer .sideMenuItem>div>span {
   display: flex !important;
-  align-items: center;
+  align-items: center !important;
   justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .icon-menu-drawer .sideMenuItem>div>span>div {
-  width: 100%;
-  display: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
 }
 
 .icon-menu-drawer .pull-left,
@@ -625,9 +643,9 @@ body.employee-user-profile {
 }
 
 .icon-menu-drawer .iconClassHover {
-  margin: auto !important;
-  left: unset !important;
-
+  position: static !important;
+  margin: 0 !important;
+  transform: none !important;
 }
 
 .drawer-toggle-button {
