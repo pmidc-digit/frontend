@@ -668,6 +668,7 @@ const parserFunction = (state) => {
             dischargeConnection: dischargeConnection ? dischargeConnection : (queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : false),
             dischargeFee: dischargeFee ? dischargeFee : (queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : null),
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
+            isMigrated: queryObject && queryObject.additionalDetails && queryObject.additionalDetails.isMigrated && queryObject.additionalDetails.isMigrated !== true ? queryObject.additionalDetails.isMigrated : false,
             billingAmount: queryObject && queryObject.additionalDetails && queryObject.additionalDetails.billingAmount ? parseFloat(queryObject.additionalDetails.billingAmount) : null,
             connectionCategory: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.connectionCategory : null,
             ledgerId: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.ledgerId : null,
