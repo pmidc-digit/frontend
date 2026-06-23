@@ -30,6 +30,9 @@
 
 
 @media only screen and (min-width: 768px) {
+  .iconClassHover {
+    fill: rgba(255, 255, 255, 0.87) !important;
+  }
   .sideMenuItem:hover,
   .sideMenuItem.selected {
     background-color: #486480;
@@ -90,3 +93,71 @@
 .menuStyle.with-childs {
   margin-right: 15px;
 }
+
+/* Compact layout for menus to avoid vertical scrolling */
+.sideMenuItem {
+  height: 40px !important;
+
+  > div {
+    height: 40px !important;
+    line-height: 40px !important;
+  }
+
+  .left-icon-color {
+    height: 20px !important;
+    width: 20px !important;
+    margin: 0 !important;
+  }
+}
+
+/* Submenu Visual Hierarchy Styles */
+.submenu-item {
+  background-color: #fafafa !important;
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+  height: 36px !important;
+
+  > div {
+    height: 36px !important;
+    line-height: 36px !important;
+  }
+
+  .menuStyle > .label-text {
+    font-size: 13px !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+  }
+
+  &:hover {
+    background-color: #f0f0f0 !important;
+    .menuStyle > .label-text {
+      color: #fe7a51 !important;
+    }
+  }
+
+  &.selected {
+    background-color: #f5f5f5 !important;
+    border-left: 3px solid #fe7a51 !important;
+    .menuStyle > .label-text {
+      color: #fe7a51 !important;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .submenu-item {
+    background-color: #2c3e50 !important;
+
+    .menuStyle > .label-text {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    &:hover {
+      background-color: #3d566e !important;
+    }
+
+    &.selected {
+      background-color: #486480 !important;
+    }
+  }
+}
+
