@@ -51,7 +51,7 @@ const styles = {
   },
   inputStyle: {
     //    color: "white",
-    color: window.innerWidth > 768 ? "white" : "black",
+    color: window.innerWidth > 768 ? "#757575" : "black",
     bottom: "5px",
     height: "auto",
     paddingLeft: "5px",
