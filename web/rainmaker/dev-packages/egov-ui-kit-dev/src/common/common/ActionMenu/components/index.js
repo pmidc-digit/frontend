@@ -29,7 +29,7 @@ const styles = {
     position: "relative",
   },
   arrowIconStyle: {
-    right: "-10px",
+    right: "12px",
   },
   defaultMenuItemStyle: {
     display: "flex",
@@ -51,7 +51,7 @@ const styles = {
   },
   inputStyle: {
     //    color: "white",
-    color: window.innerWidth > 768 ? "white" : "black",
+    color: window.innerWidth > 768 ? "#757575" : "black",
     bottom: "5px",
     height: "auto",
     paddingLeft: "5px",
@@ -450,12 +450,14 @@ class ActionMenuComp extends Component {
                       />
                     }
                     rightIcon={
-                      <Icon
-                        name={isExpanded ? "arrow-drop-down" : "chevron-right"}
-                        action="navigation"
-                        className="iconClassHover material-icons"
-                        style={styles.arrowIconStyle}
-                      />
+                      menuDrawerOpen ? (
+                        <Icon
+                          name={isExpanded ? "arrow-drop-down" : "chevron-right"}
+                          action="navigation"
+                          className="iconClassHover material-icons"
+                          style={styles.arrowIconStyle}
+                        />
+                      ) : null
                     }
                     onClick={() => {
                       this.toggleMenuExpansion(item.name);
@@ -469,7 +471,7 @@ class ActionMenuComp extends Component {
                       <MenuItem
                         innerDivStyle={{
                           ...styles.defaultMenuItemStyle,
-                          paddingLeft: "80px"
+                          paddingLeft: "72px"
                         }}
                         style={{ whiteSpace: "initial" }}
                         id={child.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index + "-" + childIndex}
@@ -483,13 +485,10 @@ class ActionMenuComp extends Component {
                           this.toRedirect(child);
                         }}
                         primaryText={
-                          <div style={{ display: "flex", alignItems: "center" }}>
-                            <span className="submenu-indicator" />
-                            <Label
-                              className="menuStyle submenu-label"
-                              label={child.name ? `ACTION_TEST_${child.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                            />
-                          </div>
+                          <Label
+                            className="menuStyle submenu-label"
+                            label={child.name ? `ACTION_TEST_${child.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                          />
                         }
                       />
                     </div>
