@@ -5,39 +5,6 @@ import {
   getCommonContainer
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 
-const style = {
-  bodyBox: {
-    marginLeft: 16,
-    flex: 2
-  },
-  tailText: {
-    color: "rgba(0, 0, 0, 0.6000000238418579)",
-    fontSize: 16,
-    fontWeight: 400
-  },
-  tailNumber: {
-    fontSize: 24,
-    fontWeight: 500
-  },
-  tailBox: {
-    textAlign: "right",
-    justifyContent: "center",
-    flex: 1
-  },
-  bodySub: {
-    marginTop: "8px",
-    marginBottom: "0px",
-    color: "rgba(0, 0, 0, 0.60)",
-    fontFamily: "Roboto"
-  },
-  container: {
-    display: "flex",
-    minHeight: "106px",
-    justifyContent: "center",
-    alignItems: "center"
-  }
-};
-
 const acknowledgementCard = ({
   icon = "done",
   backgroundColor = "#39CB74",
@@ -52,16 +19,16 @@ const acknowledgementCard = ({
           uiFramework: "custom-atoms",
           componentPath: "Div",
           children: {
-            text: getCommonHeader(tailText, { style: style.tailText }),
+            text: getCommonHeader(tailText, { className: "abg-ack-tail-text" }),
             paragraph: getCommonHeader(
               {
                 labelName: number
               },
-              { style: style.tailNumber }
+              { className: "abg-ack-tail-number" }
             )
           },
           props: {
-            style: style.tailBox
+            className: "abg-ack-tail-box"
           }
         }
       : {};
@@ -99,18 +66,18 @@ const acknowledgementCard = ({
             header: getCommonHeader(header),
             paragraph: body
               ? getCommonParagraph(body, {
-                  style: style.bodySub
+                  className: "abg-ack-body-sub"
                 })
               : {}
           },
           props: {
-            style: style.bodyBox
+            className: "abg-ack-body-box"
           }
         },
         tail: tail
       },
       {
-        style: style.container
+        className: "abg-ack-container"
       }
     )
   });
