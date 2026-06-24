@@ -217,3 +217,83 @@ body {
     max-height: 150px;
     overflow: auto;
   } 
+
+
+/* ========================================
+   CONSOLIDATED INLINE & COMPONENT STYLES
+   ======================================== */
+
+/* BreadCrumbs Component */
+.wns-breadcrumb-icon {
+  margin-left: 10px;
+  margin-top: 2px;
+  cursor: pointer;
+  margin-right: 10px; }
+
+.wns-breadcrumb-path {
+  padding-left: 15px; }
+
+/* Icon Positioning */
+.wns-textfield-icon {
+  position: relative;
+  top: 25px;
+  left: -249%; }
+
+.wns-header-icon {
+  position: relative;
+  bottom: 2px; }
+
+/* ViewBreakupDialog Styles */
+.viewbreakup-label-style {
+  color: rgba(0, 0, 0, 0.6000000238418579);
+  font-size: 14px;
+  font-weight: 400;
+  line-spacing: 17px;
+  margin-right: 10px; }
+
+.viewbreakup-amount-label {
+  color: rgba(0, 0, 0, 0.8700000047683716);
+  font-size: 14px;
+  font-weight: 400;
+  line-spacing: 17px; }
+
+.viewbreakup-tax-label {
+  color: rgba(0, 0, 0, 0.8700000047683716);
+  font-size: 16px;
+  font-weight: 400;
+  line-spacing: 19px;
+  margin-right: 10px; }
+
+.viewbreakup-tax-amount {
+  color: rgba(0, 0, 0, 0.8700000047683716);
+  font-size: 14px;
+  font-weight: 400;
+  line-spacing: 17px; }
+
+.viewbreakup-container {
+  padding-bottom: 10px; }
+
+.viewbreakup-right-align {
+  text-align: right; }
+
+.viewbreakup-root {
+  margin-bottom: 8px; }
+
+/* Material-UI Icon & Button Styles */
+.close-button-style {
+  width: 25px;
+  height: 25px;
+  color: #767676; }
+
+/* WnsWSmyLink Component */
+.how-it-works-card {
+  padding: 0 16px !important; }
+
+.btnApply {
+  padding: 20px 0px 20px 25px; }
+
+.generic-inner-div-style {
+  padding-left: 0; }
+
+.video-card-style {
+  min-height: 270px; }
