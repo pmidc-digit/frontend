@@ -34,23 +34,13 @@ const getMultiItem = (billingslabData, classes, style) => {
         <Grid sm={10}>
           <LabelContainer
             labelKey={`TL_${item.category}`}
-            style={{
-              color: "rgba(0, 0, 0, 0.6000000238418579)",
-              fontSize: "14px",
-              fontWeigt: 400,
-              lineSpacing: "17px"
-            }}
+            className="viewbreakup-label-style"
           />
         </Grid>
         <Grid sm={2}>
           <Label
             label={`Rs ${item.rate}`}
-            style={{
-              color: "rgba(0, 0, 0, 0.8700000047683716)",
-              fontSize: "14px",
-              fontWeigt: 400,
-              lineSpacing: "17px"
-            }}
+            className="viewbreakup-amount-label"
           />
         </Grid>
       </Grid>
