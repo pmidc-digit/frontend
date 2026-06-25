@@ -88,7 +88,7 @@ const getPayButton = (tableMeta) => {
   return (
     <a href="javascript:void(0)"
       onClick={() => payAmount(tableMeta)}
-      style={{ color: "#FE7A51" }}
+      style={{ color: "#2947a3" }}
     >
       <LabelContainer labelKey="PT_TOTALDUES_PAY" labelName="PAY" />
     </a>

@@ -258,7 +258,7 @@ const beforeInitFn = async (action, state, dispatch, applicationNumber) => {
           {
             style: {
               marginRight: "10px",
-              color: "rgba(0, 0, 0, 0.6000000238418579)"
+              color: "#2947a3"
             }
           }
         )

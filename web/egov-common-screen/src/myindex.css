@@ -261,10 +261,12 @@ div.cardservice img {
 }
 
 a.custom-btn {
-    background: #f47738;
+    background: #2947a3;
     color: white;
     padding: 5px 60px;
-    border-radius: 20px;
+    border-radius: 0.375rem;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 500;
 }
 
 .message {
@@ -373,4 +375,158 @@ button.btn.btn-link:hover {
     h5.card-title {
         font-size: 18px;
     }
+}
+
+/* Selector Button Styles */
+.selector-button, .selector-button-primary, .selector-button-secondary {
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  height: auto;
+  width: 100%;
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .selector-button, .selector-button-primary, .selector-button-secondary {
+    width: 30%;
+  }
+}
+.selector-button:hover, .selector-button-primary:hover, .selector-button-secondary:hover {
+  opacity: 0.9;
+}
+.selector-button h2, .selector-button-primary h2, .selector-button-secondary h2 {
+  color: #ffffff !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+}
+
+.selector-button-primary {
+  background-color: #2947a3 !important;
+  width: 100%;
+}
+.selector-button-primary:hover {
+  background-color: #1e3a8a !important;
+}
+
+.selector-button-secondary {
+  background-color: #ffffff !important;
+  color: #2947a3 !important;
+}
+.selector-button-secondary h2 {
+  color: #2947a3 !important;
+}
+
+.selector-button-border {
+  background-color: #2947a3 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  min-height: 40px;
+  margin: 0;
+  width: 100%;
+}
+.selector-button-border:hover {
+  background-color: #1e3a8a !important;
+  opacity: 0.9;
+}
+.selector-button-border h2 {
+  color: #ffffff !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  width: 100%;
+}
+
+.input-mirror-selector-button {
+  height: 4rem !important;
+  background-color: #f2f2f2 !important;
+  text-align: center !important;
+  border-bottom: 2px solid #e0e0e0 !important;
+  outline: none !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+.input-mirror-selector-button:focus {
+  outline: none !important;
+}
+.input-mirror-selector-button h2 {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #484848;
+}
+
+.selector-button-primary-disabled {
+  height: 2rem !important;
+  background-color: #2947a3 !important;
+  text-align: center !important;
+  border-bottom: 2px solid #e0e0e0 !important;
+  outline: none !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+  opacity: 0.5 !important;
+}
+.selector-button-primary-disabled:focus {
+  outline: none !important;
+}
+.selector-button-primary-disabled h2 {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #ffffff;
+}
+
+.submit-bar:focus {
+  outline: none !important;
+}
+
+.go-back-footer-button {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid !important;
+  margin-right: 10px !important;
+}
+
+.action-button-myapplication {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }

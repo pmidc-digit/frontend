@@ -5,8 +5,8 @@ const themeObject = {
   },
   palette: {
     primary: {
-      main: "#FE7A51",
-      dark: "#DB6844",
+      main: "#2947a3",
+      dark: "#1e3a8a",
       contrastText: "#fff",
     },
     secondary: {

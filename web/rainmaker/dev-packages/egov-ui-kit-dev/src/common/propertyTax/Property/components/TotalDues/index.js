@@ -82,7 +82,7 @@ if(tenantIdcode == "pb.jalandhar" || tenantIdcode == "pb.testing" ){
   getUserDataFromUuid();
 }
 const labelStyle = {
-  color: "rgba(0, 0, 0, 0.6)",
+  color: "#2947a3",
   fontWeight: 400,
   letterSpacing: "0.58px",
   lineHeight: "17px",

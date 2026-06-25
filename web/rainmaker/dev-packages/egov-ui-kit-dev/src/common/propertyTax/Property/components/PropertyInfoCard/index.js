@@ -65,7 +65,7 @@ class PropertyInfoCard extends Component {
                                   style={{
                                     backgroundColor: "transparent",
                                     border: "none",
-                                    color: "#fe7a51",
+                                    color: "#2947a3",
                                     cursor: "pointer",
                                     padding: 0,
                                     fontSize: "14px",

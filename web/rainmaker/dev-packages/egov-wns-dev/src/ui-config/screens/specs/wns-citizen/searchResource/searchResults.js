@@ -52,11 +52,11 @@ export const searchResults = {
           customBodyRender: (value, data) => {
             if (data.rowData[4] !== undefined && typeof data.rowData[4] === 'number' && data.rowData[4] > 0) {
               return (
-                <div className="linkStyle" onClick={() => getViewBillDetails(data)} style={{ color: '#fe7a51', textTransform: 'uppercase' }}>
+                <div className="linkStyle" onClick={() => getViewBillDetails(data)} style={{ color: '#2947a3', textTransform: 'uppercase' }}>
                   <LabelContainer
                     labelKey="CS_COMMON_PAY"
                     style={{
-                      color: "#fe7a51",
+                      color: "#2947a3",
                       fontSize: 14,
                     }}
                   />
