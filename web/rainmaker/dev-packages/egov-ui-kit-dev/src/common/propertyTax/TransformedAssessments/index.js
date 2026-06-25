@@ -79,7 +79,7 @@ export const getCompletedTransformedItems = (assessmentsByStatus = [], cities, l
                   /></div>
                 <div className="pt-assessment-value">
                   <Label
-                    labelStyle={{ letterSpacing: "0.67px", color: "rgba(0, 0, 0, 1.87)", fontWeight: "400", lineHeight: "19px" }}
+                    labelStyle={{ letterSpacing: "0.67px", color: "#2947a3", fontWeight: "400", lineHeight: "19px" }}
                     label={`  ${item && item.financialYear}`}
                     fontSize="15px"
                   />
@@ -95,7 +95,7 @@ export const getCompletedTransformedItems = (assessmentsByStatus = [], cities, l
                 </div>
                 <div className="pt-assessment-value">
                   <Label
-                    labelStyle={{ letterSpacing: "0.67px", color: "rgba(0, 0, 0, 1.87)", fontWeight: "400", lineHeight: "19px" }}
+                    labelStyle={{ letterSpacing: "0.67px", color: "#2947a3", fontWeight: "400", lineHeight: "19px" }}
                     label={` Rs ${get(item, "receiptInfo.totalAmount")}`}
                     fontSize="15px"
                   />
@@ -110,7 +110,7 @@ export const getCompletedTransformedItems = (assessmentsByStatus = [], cities, l
                   /></div>
                 <div className="pt-assessment-value">
                   <Label
-                    labelStyle={{ letterSpacing: "0.67px", color: "rgba(0, 0, 0, 1.87)", fontWeight: "400", lineHeight: "19px" }}
+                    labelStyle={{ letterSpacing: "0.67px", color: "#2947a3", fontWeight: "400", lineHeight: "19px" }}
                     label={`  ${item.assessmentNumber}`}
                     fontSize="15px"
                   />
@@ -127,7 +127,7 @@ export const getCompletedTransformedItems = (assessmentsByStatus = [], cities, l
                   /></div>
                 <div className="pt-assessment-value">
                   <Label
-                    labelStyle={{ letterSpacing: "0.67px", color: "rgba(0, 0, 0, 1.87)", fontWeight: "400", lineHeight: "19px" }}
+                    labelStyle={{ letterSpacing: "0.67px", color: "#2947a3", fontWeight: "400", lineHeight: "19px" }}
                     label={`  ${getDateFromEpoch(item.assessmentDate)}`}
                     fontSize="15px"
                   />

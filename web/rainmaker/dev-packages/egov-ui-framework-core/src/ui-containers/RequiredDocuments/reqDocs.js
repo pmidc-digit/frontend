@@ -21,7 +21,7 @@ const styles = {
     paddingLeft: "5px"
   },
   ptheader: {
-    color: "red",
+    color: "#2947a3",
     fontFamily: "Roboto",
     fontSize: "20px",
     fontWeight: 500,

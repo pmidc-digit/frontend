@@ -81,15 +81,19 @@ a:active,
 }
 
 .rainmaker-card label,
-.rainmaker-card .label-text,
 .rainmaker-card [class*="MuiFormLabel-root"],
 .rainmaker-card [class*="MuiInputLabel-root"],
 [class*="MuiCard-root"] label,
-[class*="MuiCard-root"] .label-text,
 [class*="MuiCard-root"] [class*="MuiFormLabel-root"],
 [class*="MuiCard-root"] [class*="MuiInputLabel-root"] {
   font-size: 16px !important;
-  color: #0f172a !important;
+  color: #0f172a;
+}
+
+.rainmaker-card .label-text,
+[class*="MuiCard-root"] .label-text {
+  font-size: 16px !important;
+  color: #0f172a;
 }
 
 .rainmaker-card [class*="MuiInputLabel-shrink"],
