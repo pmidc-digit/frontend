@@ -40,6 +40,7 @@ export const getCommonHeader = (header, props) => {
     componentPath: "Typography",
     props: {
       variant: "headline",
+      color: "primary",
       ...props
     },
     children: {
@@ -84,11 +85,13 @@ export const getCommonParagraph = (paragraph, props = {}) => {
 };
 
 export const getCommonCaption = (paragraph, props = {}) => {
-  return getCommonHeader(paragraph, { variant: "caption", ...props });
+  const mergedStyle = props.style ? { color: "#374151", ...props.style } : { color: "#374151" };
+  return getCommonHeader(paragraph, { variant: "caption", ...props, style: mergedStyle });
 };
 
 export const getCommonValue = (value, props = {}) => {
-  return getCommonHeader(value, { variant: "body2", ...props });
+  const mergedStyle = props.style ? { color: "#2947a3", ...props.style } : { color: "#2947a3" };
+  return getCommonHeader(value, { variant: "body2", ...props, style: mergedStyle });
 };
 
 
