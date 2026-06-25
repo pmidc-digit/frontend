@@ -25,7 +25,7 @@ body {
 button,
 input[type="button"],
 input[type="submit"] {
-  font-family: "Noto Sans", sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   border-radius: 8px !important;
 }
 
@@ -37,7 +37,7 @@ input[type="submit"] {
   border: none !important;
   border-radius: 8px !important;
   padding: 0.5rem 1rem !important;
-  font-family: "Noto Sans", sans-serif !important;
+  font-family: Roboto, sans-serif !important;
   font-weight: 500 !important;
   font-size: 0.875rem !important;
   line-height: 1.25rem !important;
@@ -69,4 +69,45 @@ a:active,
 .link,
 [class*="link"] {
   color: #5b68f0 !important;
+}
+
+/* Card Styles */
+.rainmaker-card,
+[class*="MuiCard-root"] {
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #fff, #f8fafb) !important;
+  border: 1px solid #e1e8f0 !important;
+  box-shadow: 0 12px 32px rgba(30, 58, 138, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+.rainmaker-card label,
+.rainmaker-card .label-text,
+.rainmaker-card [class*="MuiFormLabel-root"],
+.rainmaker-card [class*="MuiInputLabel-root"],
+[class*="MuiCard-root"] label,
+[class*="MuiCard-root"] .label-text,
+[class*="MuiCard-root"] [class*="MuiFormLabel-root"],
+[class*="MuiCard-root"] [class*="MuiInputLabel-root"] {
+  font-size: 16px !important;
+  color: #0f172a !important;
+}
+
+.rainmaker-card [class*="MuiInputLabel-shrink"],
+[class*="MuiCard-root"] [class*="MuiInputLabel-shrink"] {
+  transform: translate(0, 1.5px) scale(1) !important;
+}
+
+[class*="MuiButton-root"] label,
+[class*="MuiButton-root"] .label-text,
+button label,
+button .label-text {
+  color: inherit !important;
+  font-size: inherit !important;
+}
+
+[class*="MuiButton-contained"] label,
+[class*="MuiButton-contained"] .label-text,
+[class*="MuiButton-raised"] label,
+[class*="MuiButton-raised"] .label-text {
+  color: #ffffff !important;
 }

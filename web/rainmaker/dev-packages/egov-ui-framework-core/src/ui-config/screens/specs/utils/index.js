@@ -168,7 +168,8 @@ export const getCommonGrayCard = children => {
       backgroundColor: "rgb(242, 242, 242)",
       boxShadow: "none",
       borderRadius: 0,
-      overflow: "visible"
+      overflow: "visible",
+      padding: "12px"
     }
   });
 };
