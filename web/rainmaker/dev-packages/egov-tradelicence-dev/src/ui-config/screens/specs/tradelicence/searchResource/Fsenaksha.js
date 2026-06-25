@@ -68,7 +68,7 @@ export const Fsenaksha = getCommonCard(
             style: {
               color: "white",
 
-              backgroundColor: "#FE7A51",
+              backgroundColor: "#2947a3",
               borderRadius: "2px",
               width: "80%",
               height: "48px",

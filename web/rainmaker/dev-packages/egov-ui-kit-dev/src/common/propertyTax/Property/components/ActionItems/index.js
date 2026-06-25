@@ -21,7 +21,7 @@ const buttonStyle = {
 };
 
 const viewHistoryLabel = {
-  color: "rgba(0, 0, 0, 0.6)",
+  color: "#2947a3",
   fontFamily: "Roboto",
   fontSize: "14px",
   fontWeight: 500,
@@ -53,7 +53,7 @@ export const TransferOwnership = ({ ownershipTransfer, openDialog }) => {
       <Button
         className="transfer-ownership"
         label={
-          <Label buttonLabel={true} label="PT_OWNERSHIP_TRANSFER" color="rgb(254, 122, 81)" fontSize="16px" height="40px" labelStyle={labelStyle} />
+          <Label buttonLabel={true} label="PT_OWNERSHIP_TRANSFER" color="rgb(41, 71, 163)" fontSize="16px" height="40px" labelStyle={labelStyle} />
         }
         buttonStyle={buttonStyle}
         onClick={() => {

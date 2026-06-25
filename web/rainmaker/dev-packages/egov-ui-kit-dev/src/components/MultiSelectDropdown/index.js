@@ -11,7 +11,7 @@ import "./index.css";
 
 const floatingLabelStyle = {
   fontSize: "12px",
-  color: "rgba(0, 0, 0, 0.6000000238418579)",
+  color: "#2947a3",
   fontWeight: 500,
   transform: "scale(1) translate(0px, -16px)",
   top: 30,
@@ -40,7 +40,7 @@ class MultiSelectDropDown extends React.Component {
           value={option.value}
           primaryText={ <Label label={value} />}
           >
-          <Checkbox checked={value.indexOf(option.value) > -1} style={{color:'rgb(254, 122, 81)'}}/>
+          <Checkbox checked={value.indexOf(option.value) > -1} style={{color:'rgb(41, 71, 163)'}}/>
           <ListItemText primary={ <Label label={option.label} color="rgba(0,0,0,0.87)" /> }/>
         </MenuItem>
       );

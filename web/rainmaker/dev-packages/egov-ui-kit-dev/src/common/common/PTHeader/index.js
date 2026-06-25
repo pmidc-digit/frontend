@@ -55,7 +55,7 @@ download?download():generatePdfFromDiv("download", subHeaderValue, "#property-re
           label={`${getTranslatedLabel(subHeaderTitle, localizationLabelsData)} ${subHeaderValue}`}
           containerStyle={{ marginLeft: "13px", display: "inline-block" }}
           labelStyle={{
-            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            backgroundColor: "#2947a3",
             color: "rgba(255, 255, 255, 0.87)",
             marginLeft: "8px",
             paddingLeft: "19px",
@@ -78,7 +78,7 @@ download?download():generatePdfFromDiv("download", subHeaderValue, "#property-re
             },
             leftIcon: "print",
             rightIcon: "arrow_drop_down",
-            props: { variant: "outlined", style: { height: 65, marginRight: 20, color: "#FE7A51" } },
+            props: { variant: "outlined", style: { height: 65, marginRight: 20, color: "#2947a3" } },
             menu: downloadButton.menu,
           }}
         />
@@ -90,7 +90,7 @@ download?download():generatePdfFromDiv("download", subHeaderValue, "#property-re
             },
             leftIcon: "print",
             rightIcon: "arrow_drop_down",
-            props: { variant: "outlined", style: { height: 65, marginLeft: 10, color: "#FE7A51" } },
+            props: { variant: "outlined", style: { height: 65, marginLeft: 10, color: "#2947a3" } },
             menu: printButton.menu,
           }}
         />

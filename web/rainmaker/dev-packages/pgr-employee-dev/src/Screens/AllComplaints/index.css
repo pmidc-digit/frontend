@@ -39,9 +39,9 @@
   .employee-complaints-tab > div:nth-child(2) > div:first-child {
     position: relative !important; }
   .selected-tab-label-text {
-    color: #fe7a51; }
+    color: #2947a3; }
   .unselected-tab-label-text {
-    color: rgba(0, 0, 0, 0.6); } }
+    color: #2947a3; } }
 
 @media only screen and (max-width: 768px) {
   .csr-action-buttons {

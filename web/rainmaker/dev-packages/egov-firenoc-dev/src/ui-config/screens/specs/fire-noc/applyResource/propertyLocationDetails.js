@@ -716,7 +716,7 @@ export const propertyLocationDetails = getCommonCard(
         // iconObj: {
         //   iconName: "search",
         //   position: "end",
-        //   color: "#FE7A51",
+        //   color: "#2947a3",
         //   onClickDefination: {
         //     action: "condition",
         //     callBack: (state, dispatch) => {

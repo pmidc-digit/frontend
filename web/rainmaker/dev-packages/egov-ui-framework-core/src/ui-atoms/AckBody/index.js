@@ -7,7 +7,7 @@ import { Icon } from "../../ui-atoms";
 
 const styles = {
 	tailText: {
-		color: "rgba(0, 0, 0, 0.6000000238418579)",
+		color: "#2947a3",
 		fontSize: 16,
 		fontWeight: 400
 	},

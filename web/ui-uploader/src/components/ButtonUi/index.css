@@ -1,3 +1,5 @@
 .uploader-primary-button button {
-  background-color: #fe7a51 !important;
+  background-color: #2947a3 !important;
+  font-family: "Noto Sans", sans-serif;
+  border-radius: 0.375rem;
 }

@@ -432,9 +432,9 @@ export default class UpdateMobileDialog extends React.Component {
             </div>}
             {process.env.REACT_APP_NAME === "Citizen" && <div className="pt-update-send-otp-container">
             <button type="button" disabled={this.state.otpButton} style={{ marginRight: "5%" }} className={`button-verify-link ${this.state.otpButton&&'jk-update-send-disabled'}`} onClick={() => this.validateAndSendOtp()} ><Label label="PTUPNO_SENDOTP"></Label></button>
-              {this.state.otpButton && <React.Fragment><Label label="CORE_ANOTHER_OTP" labelStyle={{ color: 'rgba(0, 0, 0, 0.6)', fontSize: "14px" }}></Label>
+              {this.state.otpButton && <React.Fragment><Label label="CORE_ANOTHER_OTP" labelStyle={{ color: '#2947a3', fontSize: "14px" }}></Label>
                 <Counter updateState={() => this.setState({ otpButton: false })} otpButton={this.state.otpButton} />
-                <Label label="CS_RESEND_SECONDS" labelStyle={{ color: 'rgba(0, 0, 0, 0.6)', fontSize: "14px" }}></Label></React.Fragment>}
+                <Label label="CS_RESEND_SECONDS" labelStyle={{ color: '#2947a3', fontSize: "14px" }}></Label></React.Fragment>}
             </div>}
           </div>
           {process.env.REACT_APP_NAME === "Citizen" && !this.state.verifyButton&&<div className="pt-update-verify-container">

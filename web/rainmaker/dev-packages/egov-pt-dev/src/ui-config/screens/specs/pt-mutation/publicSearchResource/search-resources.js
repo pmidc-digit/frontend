@@ -227,7 +227,7 @@ export const searchPropertyDetails = {
             style: {
               color: "white",
               margin: "8px",
-              backgroundColor: "rgba(0, 0, 0, 0.6000000238418579)",
+              backgroundColor: "#2947a3",
               borderRadius: "2px",
               width: "220px",
               height: "48px"

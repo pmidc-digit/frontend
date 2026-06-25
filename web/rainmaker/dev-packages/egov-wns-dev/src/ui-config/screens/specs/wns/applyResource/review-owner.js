@@ -531,36 +531,36 @@ export const activationDetailsContainer = {
       jsonPath: "WaterConnection[0].additionalDetails.avarageMeterReading"
     }),
     button: getCommonContainer({
-      buttonContainer: getCommonContainer({
-        searchButton: {
-          uiFramework: "custom-atoms-local",
-          moduleName: "egov-pt",
-          componentPath: "Button",
-          gridDefination: {
-            xs: 12,
-            sm: 6
-          },
-          props: {
-            variant: "contained",
-            className: "public-domain-search-buttons",
-            style: {
-              color: "white",
-              margin: "8px",
-              backgroundColor: "rgb(254, 122, 81)",
-              borderRadius: "2px",
-              width: "220px",
-              height: "48px"
-            }
-          },
-          children: {
-            buttonLabel: getLabel({
-              labelName: "Update",
-              labelKey: "Update"
-            })
-          },
-          onClickDefination: {
-            action: "condition",
-            callBack: async (state, dispatch) => {
+			buttonContainer: getCommonContainer({
+					searchButton: {
+					uiFramework: "custom-atoms-local",
+					moduleName: "egov-pt",
+					componentPath: "Button",
+					gridDefination: {
+						xs: 12,
+						sm: 6
+					},
+					props: {
+						variant: "contained",
+						className: "public-domain-search-buttons",
+						style: {
+							color: "white",
+							margin: "8px",
+							backgroundColor: "rgb(41, 71, 163)",
+							borderRadius: "2px",
+							width: "220px",
+							height: "48px"
+						}
+					},
+					children: {
+						buttonLabel: getLabel({
+							labelName: "Update",
+							labelKey: "Update"
+						})
+					},
+					onClickDefination: {
+						action: "condition",
+						callBack:  async(state, dispatch) => {
               let tenantid = getQueryArg(window.location.href, "tenantId");
               let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
               let serviceType = getQueryArg(window.location.href, "service");
