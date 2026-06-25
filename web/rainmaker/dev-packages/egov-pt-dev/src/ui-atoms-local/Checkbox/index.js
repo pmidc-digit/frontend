@@ -13,9 +13,9 @@ import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configurat
 
 const styles = {
   root: {
-    color: "#FE7A51",
+    color: "#2947a3",
     "&$checked": {
-      color: "#FE7A51"
+      color: "#2947a3"
     }
   },
   checked: {}

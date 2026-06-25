@@ -13,7 +13,7 @@ const style = {
     flex: 2
   },
   tailText: {
-    color: "rgba(0, 0, 0, 0.6000000238418579)",
+    color: "#2947a3",
     fontSize: 16,
     fontWeight: 400
   },
@@ -202,7 +202,7 @@ export const downloadPrintContainer = (
             label: {labelName : "DOWNLOAD" , labelKey :"BPA_DOWNLOAD"},
              leftIcon: "cloud_download",
             rightIcon: "arrow_drop_down",
-            props: { variant: "outlined", style: { height: "60px", color : "#FE7A51" }, className: "tl-download-button" },
+            props: { variant: "outlined", style: { height: "60px", color : "#2947a3" }, className: "tl-download-button" },
             menu: downloadMenu
           }
         }
@@ -216,7 +216,7 @@ export const downloadPrintContainer = (
             label: {labelName : "PRINT" , labelKey :"BPA_PRINT"},
             leftIcon: "print",
             rightIcon: "arrow_drop_down",
-            props: { variant: "outlined", style: { height: "60px", color : "#FE7A51" }, className: "tl-print-button" },
+            props: { variant: "outlined", style: { height: "60px", color : "#2947a3" }, className: "tl-print-button" },
             menu: printMenu
           }
         }

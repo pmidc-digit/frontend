@@ -36,7 +36,7 @@ const styles = (theme) => ({
     cursor: "pointer",
   },
   icon: {
-    color: "#fe7a51",
+    color: "#2947a3",
   },
   item: {
     padding: 8,

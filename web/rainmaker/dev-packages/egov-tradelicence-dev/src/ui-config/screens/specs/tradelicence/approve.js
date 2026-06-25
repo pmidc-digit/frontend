@@ -73,7 +73,7 @@ const getApproveCard = queryValuePurpose => {
         style: {
           fontSize: 12,
           marginBottom: 0,
-          color: "rgba(0, 0, 0, 0.6000000238418579)"
+          color: "#2947a3"
         }
       }
     ),
@@ -96,7 +96,7 @@ const getApproveCard = queryValuePurpose => {
           fontSize: 12,
           marginBottom: 0,
           marginTop: 5,
-          color: "rgba(0, 0, 0, 0.6000000238418579)"
+          color: "#2947a3"
         }
       }
     ),

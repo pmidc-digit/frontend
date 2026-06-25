@@ -61,7 +61,7 @@ export const billSearchResult = {
                 type="button"
                 style={{
                   color: "#fff",
-                  backgroundColor: "#FE7A51",
+                  backgroundColor: "#2947a3",
                   border: "none",
                   padding: "6px 14px",
                   borderRadius: "4px",

@@ -21,7 +21,7 @@ const theme = createMuiTheme({
         color: '#39CB74!important',
       },
       active: {
-        color: '#fe7a51!important',
+        color: '#2947a3!important',
       },
     },
   },
@@ -134,7 +134,7 @@ const WizardComponent = ({
                   backLabel
                 }
 
-                color="#fe7a51" />
+                color="#2947a3" />
             }
             onClick={() => {
               (selected - 1 === -1
@@ -144,24 +144,24 @@ const WizardComponent = ({
               //   ? ((selected != 4)? (history.push("/property-tax")):(downloadReceipt()))
               //   : (onTabClick(selected - 1)));
             }}
-            labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fe7a51" }}
-            buttonStyle={{ border: "1px solid #fe7a51" }}
+            labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#2947a3" }}
+            buttonStyle={{ border: "1px solid #2947a3" }}
             style={{ marginRight: 45, width: "30%" }}
           />}
           {selected == 5 && <Button
-            label={<Label buttonLabel={true} label={backLabel} color="#fe7a51" />}
+            label={<Label buttonLabel={true} label={backLabel} color="#2947a3" />}
             onClick={() => {
               downloadAcknowledgementForm();
             }}
-            labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fe7a51" }}
-            buttonStyle={{ border: "1px solid #fe7a51" }}
+            labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#2947a3" }}
+            buttonStyle={{ border: "1px solid #2947a3" }}
             style={{ marginRight: 45, width: "30%" }}
           />}
 
           <Button
             label={<Label buttonLabel={true} label={nextLabel} color="#fff" />}
             style={{ width: "30%" }}
-            backgroundColor="#fe7a51"
+            backgroundColor="#2947a3"
             labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fff" }}
             buttonStyle={{ border: 0 }}
             onClick={

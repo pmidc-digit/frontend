@@ -1,4 +1,4 @@
-$primary:#FE7A51;
+$primary:#2947a3;
 $secondary:#000000DE;
 
 .pt-update-popup{
@@ -65,7 +65,7 @@ cursor: pointer;
     height: 60px;
     padding: 20px;
     align-items: center;
-    background: rgba(254, 122, 81, 0.12);
+    background: rgba(41, 71, 163, 0.12);
 
     div{
       color: $primary;
@@ -82,7 +82,7 @@ cursor: pointer;
   display: flex;
     justify-content: center;
     color: red;
-    background: rgba(254, 122, 81, 0.12);;
+    background: rgba(41, 71, 163, 0.12);;
     line-height: 40px;
     div{
       color:red;

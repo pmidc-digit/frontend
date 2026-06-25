@@ -3,7 +3,7 @@ import Label from "egov-ui-kit/utils/translationNode";
 import "./index.css";
 
 const labelStayle = {
-  color: "rgba(0, 0, 0, 0.6)",
+  color: "#2947a3",
   fontWeight: 400,
   letterSpacing: "0.5px",
   lineHeight: "14px",
