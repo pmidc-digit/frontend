@@ -951,7 +951,7 @@ class TableData extends Component {
                 title="Sync Now"
               >
                 <AutorenewIcon style={{
-                  color: "#FE7A51",
+                  color: "#2947a3",
                   animation: this.state.dataLoading ? "spin 1.5s linear infinite" : "none"
                 }} />
               </div>
@@ -969,7 +969,7 @@ class TableData extends Component {
                   inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
                 <span style={{
-                  color: "rgba(0, 0, 0, 0.6)",
+                  color: "#2947a3",
                   fontSize: "14px",
                   fontWeight: 500
                 }}>

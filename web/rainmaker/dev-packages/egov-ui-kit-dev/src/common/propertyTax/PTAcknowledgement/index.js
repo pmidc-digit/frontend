@@ -453,7 +453,7 @@ class PTAcknowledgement extends React.Component {
                   },
                   leftIcon: "cloud_download",
                   rightIcon: "arrow_drop_down",
-                  props: { variant: "outlined", style: { marginLeft: 10, color: "#FE7A51" } },
+                  props: { variant: "outlined", style: { marginLeft: 10, color: "#2947a3" } },
                   menu: downloadButton.menu,
                 }}
               />
@@ -467,7 +467,7 @@ class PTAcknowledgement extends React.Component {
                   },
                   leftIcon: "print",
                   rightIcon: "arrow_drop_down",
-                  props: { variant: "outlined", style: { marginLeft: 10, color: "#FE7A51" } },
+                  props: { variant: "outlined", style: { marginLeft: 10, color: "#2947a3" } },
                   menu: printButton.menu,
                 }}
               />
@@ -511,20 +511,20 @@ class PTAcknowledgement extends React.Component {
                     <div className="ack-sub-body" id="custom-atoms-paragraph">
                       <span>
                         {" "}
-                        <Label label={ptSubMsg.labelKey} color="rgba(0, 0, 0, 0.6)" fontFamily="Roboto" />
+                        <Label label={ptSubMsg.labelKey} color="#2947a3" fontFamily="Roboto" />
                       </span>
                     </div>
                   </div>
                   <div className="ack-text" id="custom-atoms-tail">
-                    {/* {receiptNo&&<h1  className="MuiTypography-root-8 MuiTypography-headline-13" id="material-ui-text" style={{fontSize: '16px' ,fontWeight:"400" ,color: 'rgba(0, 0, 0, 0.6)'}}  > */}
+                    {/* {receiptNo&&<h1  className="MuiTypography-root-8 MuiTypography-headline-13" id="material-ui-text" style={{fontSize: '16px' ,fontWeight:"400" ,color: '#2947a3'}}  > */}
                     <h1
                       className="MuiTypography-root-8 MuiTypography-headline-13"
                       id="material-ui-text"
-                      style={{ fontSize: "16px", fontWeight: "400", color: "rgba(0, 0, 0, 0.6)" }}
+                      style={{ fontSize: "16px", fontWeight: "400", color: "#2947a3" }}
                     >
                       {ptIDLabel.visibility && (
                         <span>
-                          <Label label={ptIDLabel.labelKey} fontSize="16px" fontWeight="400" color="rgba(0, 0, 0, 0.6)" />
+                          <Label label={ptIDLabel.labelKey} fontSize="16px" fontWeight="400" color="#2947a3" />
                         </span>
                       )}
                     </h1>

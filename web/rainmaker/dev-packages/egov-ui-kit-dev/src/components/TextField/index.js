@@ -17,7 +17,7 @@ const floatingLabelBaseStyle = {
 
 const floatingLabelBaseShrinkStyle = {
   fontSize: "12px",
-  color: "rgba(0, 0, 0, 0.6000000238418579)",
+  color: "#2947a3",
   transform: "scale(1) translate(0px, -16px)",
   fontWeight: 500,
   zIndex: 0,

@@ -381,7 +381,7 @@ export const connectionDetailsDownload = getCommonApplyFooter("RIGHT", {
         rightIcon: "arrow_drop_down",
         props: {
           variant: "outlined",
-          style: { height: "60px", color: "#FE7A51", marginRight: "2px" },
+          style: { height: "60px", color: "#2947a3", marginRight: "2px" },
           className: "tl-download-button",
         },
         menu: downloadMenu,
@@ -398,7 +398,7 @@ export const connectionDetailsDownload = getCommonApplyFooter("RIGHT", {
         rightIcon: "arrow_drop_down",
         props: {
           variant: "outlined",
-          style: { height: "60px", color: "#FE7A51" },
+          style: { height: "60px", color: "#2947a3" },
           className: "tl-print-button",
         },
         menu: printMenu,

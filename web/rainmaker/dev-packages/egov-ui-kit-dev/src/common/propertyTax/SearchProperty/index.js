@@ -219,7 +219,7 @@ class SearchProperty extends Component {
                 <Icon
                   action="content"
                   name="add"
-                  color="#fe7a51"
+                  color="#2947a3"
                   style={{ height: 22 }}
                 />
               }

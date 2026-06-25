@@ -5,6 +5,39 @@ import {
   getCommonContainer
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 
+const style = {
+  bodyBox: {
+    marginLeft: 16,
+    flex: 2
+  },
+  tailText: {
+    color: "#2947a3",
+    fontSize: 16,
+    fontWeight: 400
+  },
+  tailNumber: {
+    fontSize: 24,
+    fontWeight: 500
+  },
+  tailBox: {
+    textAlign: "right",
+    justifyContent: "center",
+    flex: 1
+  },
+  bodySub: {
+    marginTop: "8px",
+    marginBottom: "0px",
+    color: "rgba(0, 0, 0, 0.60)",
+    fontFamily: "Roboto"
+  },
+  container: {
+    display: "flex",
+    minHeight: "106px",
+    justifyContent: "center",
+    alignItems: "center"
+  }
+};
+
 const acknowledgementCard = ({
   icon = "done",
   backgroundColor = "#39CB74",

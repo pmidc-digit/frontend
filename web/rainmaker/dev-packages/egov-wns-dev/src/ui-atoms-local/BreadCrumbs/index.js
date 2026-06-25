@@ -8,7 +8,7 @@ const BreadCrumbs = ({ url, history, label }) => {
   return (
     <div className="rainmaker-displayInline wns-breadcrumb-path">
       <Link to="home">
-        <Icon action="action" name="home" color="#fe7a51" />
+        <Icon action="action" name="home" color="#2947a3" />
       </Link>
       <div className="rainmaker-displayInline">
         <div className="wns-breadcrumb-icon"> ❯ </div>

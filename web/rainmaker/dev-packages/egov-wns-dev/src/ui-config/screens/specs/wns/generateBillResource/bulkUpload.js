@@ -119,7 +119,7 @@ export const bulkUpload = getCommonCard({
       style: {
         color: "white",
         margin: "28px",
-        backgroundColor: "#fe7a51",
+        backgroundColor: "#2947a3",
         borderRadius: "2px",
         width: "220px",
         height: "48px",
@@ -143,7 +143,7 @@ export const bulkUpload = getCommonCard({
           style: {
             color: "white",
             margin: "28px",
-            backgroundColor: "#fe7a51",
+            backgroundColor: "#2947a3",
             borderRadius: "2px",
             width: "220px",
             height: "48px",

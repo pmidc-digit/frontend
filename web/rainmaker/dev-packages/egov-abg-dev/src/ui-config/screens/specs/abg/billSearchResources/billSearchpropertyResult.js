@@ -20,7 +20,7 @@ export const billSearchpropertyResult = {
             return (
               <a
                 href={targetUrl}
-                style={{ color: "#fe7a51", cursor: "pointer", textDecoration: "underline" }}
+                style={{ color: "#2947a3", cursor: "pointer", textDecoration: "underline" }}
                 onClick={(e) => {
                   e.preventDefault();
                   window.location.href = `${window.location.origin}${targetUrl}`;
@@ -79,7 +79,7 @@ export const billSearchpropertyResult = {
               <button
                 style={{
                   color: "#fff",
-                  backgroundColor: "#FE7A51",
+                  backgroundColor: "#2947a3",
                   border: "none",
                   padding: "8px 16px",
                   borderRadius: "4px",
@@ -94,7 +94,7 @@ export const billSearchpropertyResult = {
                   e.target.style.backgroundColor = "#E86942";
                 }}
                 onMouseOut={(e) => {
-                  e.target.style.backgroundColor = "#FE7A51";
+                  e.target.style.backgroundColor = "#2947a3";
                 }}
               >
                 View Details

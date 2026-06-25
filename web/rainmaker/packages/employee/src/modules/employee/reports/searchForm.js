@@ -656,7 +656,7 @@ class ShowForm extends Component {
                   <Row>
                     <div style={{ marginTop: "16px", textAlign: "center" }} className="col-xs-12">
                       <RaisedButton
-                        // style={{ height: "48px",borderRadius: "2px", width: "80%", backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+                        // style={{ height: "48px",borderRadius: "2px", width: "80%", backgroundColor: "#2947a3" }}
                         type="submit"
                         //disabled={!isFormValid}
                         primary={true}

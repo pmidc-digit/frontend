@@ -26,7 +26,7 @@ const styles = {
     lineHeight: "19px"
   },
   docs: {
-    color: "rgba(0, 0, 0, 0.6)",
+    color: "#2947a3",
     fontFamily: "Roboto",
     fontSize: "14px",
     fontWeight: 400,
