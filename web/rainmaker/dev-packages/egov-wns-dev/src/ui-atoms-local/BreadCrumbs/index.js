@@ -4,16 +4,14 @@ import Label from "egov-ui-kit/utils/translationNode";
 import { Link } from "react-router-dom";
 import "./index.css";
 
-const style = { marginLeft: 10, marginTop: 2, cursor: "pointer", marginRight: 10 };
-
 const BreadCrumbs = ({ url, history, label }) => {
   return (
-    <div className="rainmaker-displayInline" style={{ paddingLeft: 15 }}>
+    <div className="rainmaker-displayInline wns-breadcrumb-path">
       <Link to="home">
         <Icon action="action" name="home" color="#2947a3" />
       </Link>
       <div className="rainmaker-displayInline">
-        <div style={style}> ❯ </div>
+        <div className="wns-breadcrumb-icon"> ❯ </div>
         <div>
           <Label labelClassName="breadcrum-label-style" label={label ? label : ""} />
         </div>

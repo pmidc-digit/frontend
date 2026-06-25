@@ -45,12 +45,7 @@ const getMultiItem = (billingslabData, classes, style) => {
         <Grid sm={2}>
           <Label
             label={`Rs ${item.rate}`}
-            style={{
-              color: "rgba(0, 0, 0, 0.8700000047683716)",
-              fontSize: "14px",
-              fontWeigt: 400,
-              lineSpacing: "17px"
-            }}
+            className="viewbreakup-amount-label"
           />
         </Grid>
       </Grid>
