@@ -101,6 +101,22 @@ a:active,
   transform: translate(0, 1.5px) scale(1) !important;
 }
 
+.rainmaker-card [class*="MuiTypography-subheading"],
+.rainmaker-card [class*="MuiTypography-title"],
+.rainmaker-card [class*="MuiTypography-headline"],
+.rainmaker-card [class*="MuiTypography-h6"],
+.rainmaker-card [class*="MuiTypography-h5"],
+.rainmaker-card [class*="MuiTypography-subtitle1"],
+[class*="MuiCard-root"] [class*="MuiTypography-subheading"],
+[class*="MuiCard-root"] [class*="MuiTypography-title"],
+[class*="MuiCard-root"] [class*="MuiTypography-headline"],
+[class*="MuiCard-root"] [class*="MuiTypography-h6"],
+[class*="MuiCard-root"] [class*="MuiTypography-h5"],
+[class*="MuiCard-root"] [class*="MuiTypography-subtitle1"] {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+}
+
 [class*="MuiButton-root"] label,
 [class*="MuiButton-root"] .label-text,
 button label,
