@@ -56,7 +56,7 @@ class UiBoundary extends Component {
   };
 
   fetchBoundaryData = async (item) => {
-    let boundaryData = sessionStorage.getItem("boundaryData");
+    let boundaryData = localStorage.getItem("boundaryData");
     if (boundaryData) {
       try {
         boundaryData = JSON.parse(boundaryData);
@@ -72,7 +72,7 @@ class UiBoundary extends Component {
         },
       ];
       boundaryData = await httpRequest("/egov-location/location/v11/boundarys/_search?", "", queryObj, {});
-      sessionStorage.setItem("boundaryData", JSON.stringify(boundaryData));
+      localStorage.setItem("boundaryData", JSON.stringify(boundaryData));
     }
     return boundaryData;
   };
