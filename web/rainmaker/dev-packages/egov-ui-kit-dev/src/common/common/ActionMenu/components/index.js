@@ -23,8 +23,8 @@ const styles = {
     marginLeft: "-10px",
   },
   fibreIconStyle: {
-    height: "21px",
-    width: "21px",
+    height: "28px",
+    width: "28px",
     margin: 0,
     position: "relative",
   },
