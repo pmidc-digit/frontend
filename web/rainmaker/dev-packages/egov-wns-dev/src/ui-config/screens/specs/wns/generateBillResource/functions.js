@@ -132,7 +132,7 @@ export const generateBillApiCall = async (state, dispatch) => {
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
           tenantId = element.tenantId;
-          billGenerationDate = element.auditDetails && element.auditDetails.lastModifiedTime ? convertEpochToDate(element.auditDetails.lastModifiedTime) : "NA";
+          billGenerationDate = element.auditDetails && element.auditDetails.createdTime ? convertEpochToDate(element.auditDetails.createdTime) : "NA";
 
           billRow = {
             "transactionType": transactionType,
@@ -246,7 +246,7 @@ export const searchBillApiCall = async (state, dispatch) => {
           status = element.status;
           tenantId = element.tenantId;
           billformDate = element.billingcycleStartdate;
-          billGenerationDate = element.auditDetails && element.auditDetails.lastModifiedTime ? convertEpochToDate(element.auditDetails.lastModifiedTime) : "NA";
+          billGenerationDate = element.auditDetails && element.auditDetails.createdTime ? convertEpochToDate(element.auditDetails.createdTime) : "NA";
           billRow = {
             "transactionType": transactionType,
             "locality": locality,
@@ -334,7 +334,6 @@ export const searchBillApiCall = async (state, dispatch) => {
           status = element.status;
           tenantId = element.tenantId;
           billGenerationDate = element.auditDetails && element.auditDetails.lastModifiedTime ? convertEpochToDate(element.auditDetails.lastModifiedTime) : "NA";
-
           billRow = {
             "transactionType": transactionType,
             "locality": locality,
