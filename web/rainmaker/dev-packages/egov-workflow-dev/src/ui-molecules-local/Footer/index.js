@@ -445,6 +445,7 @@ class Footer extends React.Component {
     const { open, data, employeeList, nocValid, tlpopUp, licenseData, wFCode, isHAZ } = this.state;
     const { isDocRequired } = data;
     const appName = process.env.REACT_APP_NAME;
+    console.log("contractData",contractData)
     const downloadMenu =
       contractData &&
       contractData.map(item => {
@@ -459,7 +460,7 @@ class Footer extends React.Component {
           }
         };
       });
-
+      debugger
     if (moduleName === "NewTL") {
       const status = get(
         state.screenConfiguration.preparedFinalObject,
@@ -575,7 +576,7 @@ class Footer extends React.Component {
     };
     //console.log("download Menu : "+JSON.stringify(downloadMenu))
     return (
-      <div className="wf-wizard-footer" id="custom-atoms-footer">
+      <div className="wf-wizard-footervdgadgsvdgs" id="custom-atoms-footer">
         {!isEmpty(downloadMenu) && (
           <Container>
             <Item xs={12} sm={12} className="wf-footer-container">

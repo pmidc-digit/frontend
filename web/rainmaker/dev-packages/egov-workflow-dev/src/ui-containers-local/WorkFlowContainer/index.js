@@ -535,9 +535,16 @@ getRedirectUrl = (action, businessId, moduleName) => {
   const payUrl = `/egov-common/pay?consumerCode=${businessId}&tenantId=${tenant}`;
   switch (action) {
     case "PAY": return bservice ? `${payUrl}&businessService=${bservice}` : payUrl;
-    case "EDIT": return isAlreadyEdited
-      ? `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit&edited=true`
-      : `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit${dischragestr}`;
+    case "EDIT": 
+    if((moduleName === "ModifyWSConnection" || moduleName === "ModifySWConnection")){
+     return isAlreadyEdited
+      ? `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit&mode=MODIFY`
+      : `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit${dischragestr}&action=edit&mode=MODIFY`;
+    }else{
+      return isAlreadyEdited
+        ? `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit&edited=true`
+        : `/${baseUrl}/apply?applicationNumber=${businessId}&tenantId=${tenant}&action=edit${dischragestr}`;
+    }
   }
 };
 

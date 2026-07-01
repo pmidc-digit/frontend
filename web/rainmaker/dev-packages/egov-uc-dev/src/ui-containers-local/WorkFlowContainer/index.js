@@ -30,10 +30,10 @@ class WorkFlowContainer extends React.Component {
       "applicationNumber"
     );
     const tenantId = getQueryArg(window.location.href, "tenantId");
+   
     const queryObject = [
       { key: "businessIds", value: applicationNumber },
       { key: "history", value: true },
-      { key: "tenantId", value: tenantId }
     ];
     try {
       const payload = await httpRequest(
@@ -392,6 +392,7 @@ class WorkFlowContainer extends React.Component {
   getRedirectUrl = (action, businessId, moduleName) => {
     const isAlreadyEdited = getQueryArg(window.location.href, "edited");
     const tenant = getQueryArg(window.location.href, "tenantId");
+    const modify = getQueryArg(window.location.href, "mode");
     const { ProcessInstances } = this.props;
     let applicationStatus;
     if (ProcessInstances && ProcessInstances.length > 0) {

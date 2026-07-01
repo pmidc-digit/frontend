@@ -369,7 +369,7 @@ class Footer extends React.Component {
     };
 
     return (
-      <div className="wf-wizard-footer" id="custom-atoms-footer">
+      <div className="wf-wizard-footerdsdsdsdsds" id="custom-atoms-footer">
         <Container>
           <Item xs={12} sm={12} className="wf-footer-container">
             <MenuButton data={buttonItems} className="mnubtn" />
