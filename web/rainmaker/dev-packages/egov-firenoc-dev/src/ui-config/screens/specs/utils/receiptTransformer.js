@@ -14,7 +14,8 @@ import {
   transformById,
   getTransformedLocale,
   getUserDataFromUuid,
-  getQueryArg
+  getQueryArg,
+  getTransformedLocalStorgaeLabels
 } from "egov-ui-framework/ui-utils/commons";
 
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
@@ -767,10 +768,40 @@ export const loadReceiptData = async (consumerCode, tenant) => {
 };
 
 export const loadMdmsData = async tenantid => {
-  let localStorageLabels = JSON.parse(
-    window.localStorage.getItem(`localization_${getLocale()}`)
-  );
-  let localizationLabels = transformById(localStorageLabels, "code");
+  // Try multiple possible localStorage keys for localization data
+  let localizationLabels = {};
+  const possibleKeys = [
+    `localization_${getLocale()}`,
+    `localization_${getLocale()}_common`,
+    `localization_${getLocale()}_firenoc`,
+    "localization_en_IN_common",
+    "localization_en_IN",
+  ];
+
+  //console.log("DEBUG - Available localStorage keys:", Object.keys(window.localStorage).filter(k => k.includes('localization')));
+
+  for (const key of possibleKeys) {
+    const data = window.localStorage.getItem(key);
+    if (data) {
+      try {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localizationLabels = transformById(parsed, "code") || {};
+          console.log(`DEBUG - Loaded localization from key: ${key}`);
+          console.log("DEBUG - localizationLabels:", localizationLabels);
+          break;
+        }
+      } catch (e) {
+        console.warn(`DEBUG - Failed to parse ${key}:`, e);
+      }
+    }
+  }
+
+  if (Object.keys(localizationLabels).length === 0) {
+    console.warn("DEBUG - No localization data found in any key");
+    localizationLabels = {};
+  }
+
   let data = {};
   let queryObject = [
     {
