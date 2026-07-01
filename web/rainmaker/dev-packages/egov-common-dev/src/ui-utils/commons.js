@@ -883,7 +883,7 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 			}
 
 			if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-				
+
 				let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
 				let toTalDue = payloadReceiptDetails.Payments[0].totalDue
 				configKey = "ws-onetime-receipt";
@@ -942,6 +942,9 @@ export const download = async (receiptQueryString, mode = "download", configKey,
 
 								} else if (dd.taxHeadCode == "WS_COMPOSITION_FEE" || dd.taxHeadCode == "SW_COMPOSITION_FEE") {
 									code = "Composition Fee"; amount = dd.adjustedAmount;
+
+								} else if (dd.taxHeadCode == "WS_DOOR_TO_DOOR_COLLECTION_CHARGES" || dd.taxHeadCode == "SW_DOOR_TO_DOOR_COLLECTION_CHARGES") {
+									code = "Door to Door Collection Charges"; amount = dd.adjustedAmount;
 
 								} else if (dd.taxHeadCode == "WS_FORM_FEE" || dd.taxHeadCode == "SW_FORM_FEE") {
 									code = "Form Fee"; amount = dd.adjustedAmount;
@@ -1223,10 +1226,10 @@ export const downloadBill = async (consumerCode, tenantId, configKey = "consolid
 
 			billResponse.Bills[0].additionalDetails = addDetail;
 			if (businesService == "SW") {
-				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.nabha") ? '0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.mohali" || billResponse.Bills[0].tenantId == "pb.nabha") ? '0% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
 			}
 			else if (businesService == "WS") {
-				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.nabha") ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
+				billResponse.Bills[0].additionalDetails.latePaymentc = (billResponse.Bills[0].tenantId == "pb.patiala" || billResponse.Bills[0].tenantId == "pb.mohali" || billResponse.Bills[0].tenantId == "pb.nabha") ? '25% Late payment charges will be applied after due date' : '10% late payment charges For both water and sewerage';
 			}
 			const queryStr = [
 				{ key: "key", value: configKey },
