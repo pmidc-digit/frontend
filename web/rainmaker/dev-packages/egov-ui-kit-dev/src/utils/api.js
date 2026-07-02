@@ -276,7 +276,7 @@ export const loginRequest = async (username = null, password = null, refreshToke
       if (response.data.UserRequest && response.data.UserRequest.roles) {
         const hasApiOnlyRole = response.data.UserRequest.roles.some(role => role.code === "API_ONLY");
         if (hasApiOnlyRole) {
-          window.location.href = "/user/logout";
+          window.location.href = userType === 'EMPLOYEE' ? "/employee/user/logout" : "/citizen/user/logout";
           return;
         }
       }
