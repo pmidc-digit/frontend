@@ -272,6 +272,14 @@ export const loginRequest = async (username = null, password = null, refreshToke
     const response = await loginInstance.post("/user/oauth/token", params);
     const responseStatus = parseInt(response.status, 10);
     if (responseStatus === 200 || responseStatus === 201) {
+      // Check if user has API_ONLY role and logout if they do
+      if (response.data.UserRequest && response.data.UserRequest.roles) {
+        const hasApiOnlyRole = response.data.UserRequest.roles.some(role => role.code === "API_ONLY");
+        if (hasApiOnlyRole) {
+          window.location.href = "/user/logout";
+          return;
+        }
+      }
       return response.data;
     }
   } catch (error) {
