@@ -1870,10 +1870,6 @@ componentDidUpdate(prevProps) {
   const prevFinancialYears = get(prevProps, "common.dropDownData.FinancialYear", []);
   if (financialYears.length > 0 && financialYears !== prevFinancialYears) {
     this.props.setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYears);
-    const yearValue = get(this.props, "prepareFormData.Properties[0].additionalDetails.yearConstruction", null);
-    if (yearValue) {
-      this.props.setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearValue);
-    }
   }
 }
 convertImgToDataURLviaCanvas = (url, callback, outputFormat) => {

@@ -254,7 +254,8 @@ export const generateMultipleBill = async function (state, dispatch, type) {
     }
 
     var filteredBills = filterBills(allBills);
-
+    console.log("batchType",batchType)
+    console.log("integratedBills",integratedBills)
     // ----------------------------
     // Locality Batch Processing
     // ----------------------------
@@ -265,8 +266,10 @@ export const generateMultipleBill = async function (state, dispatch, type) {
       (batchType === "Group" &&
         typeof group === "string" &&
         group.trim() !== "") ||
+      (batchType === "Integrated Bill")  ||
         Array.isArray(locality) && locality.length > 0
 
+      console.log("isValidLocalityOrGroup", isValidLocalityOrGroup)
     if (isValidLocalityOrGroup) {
       try {
         var response = await batchMergeAndDownload(

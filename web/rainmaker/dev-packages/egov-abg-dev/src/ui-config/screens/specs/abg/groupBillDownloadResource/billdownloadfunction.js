@@ -204,10 +204,8 @@ const generateLocalityKey = (state, localityCode) => {
     "screenConfiguration.preparedFinalObject.localitiesData",
     []
   );
-  const localityName = Array.isArray(localitiesData)
-    ? localitiesData.find((item => item.code === localityCode))
-    : null;
-  return localityName ? localityName.name : "-";
+  let localityName = localitiesData.find((item => item.code === localityCode));
+  return localityName.name;
 }
 const showHideTable = (booleanHideOrShow, dispatch) => {
   dispatch(

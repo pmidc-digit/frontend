@@ -117,6 +117,10 @@ export const searchResults = {
         options: {
           display: false
         }
+      },
+      {
+        labelName: "Bill Generation Date",
+        labelKey: "ABG_COMMON_TABLE_COL_BILL_GEN_DATE"
       }
     ],
     title: {

@@ -2,6 +2,7 @@ import { pincode, mohalla, street, colony, houseNumber } from "egov-ui-kit/confi
 import { handleFieldChange, setFieldProperty } from "egov-ui-kit/redux/form/actions";
 import { CITY } from "egov-ui-kit/utils/endPoints";
 import { prepareFormData, fetchFinancialYearData } from "egov-ui-kit/redux/common/actions";
+import { prepareFormData, fetchFinancialYearData } from "egov-ui-kit/redux/common/actions";
 import set from "lodash/set";
 import get from "lodash/get";
 import { getLocale, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
@@ -207,19 +208,6 @@ const formConfig = {
     let tenantId = getTenantId();
     let state = store.getState();
     const { citiesByModule } = state.common;
-    // Load financial year dropdown from Redux
-    const financialYearData = get(state, "common.dropDownData.FinancialYear", []);
-    if (financialYearData.length > 0) {
-      set(action, "form.fields.YearcreationProperty.dropDownData", financialYearData);
-      dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "dropDownData", financialYearData));
-      // Set value if present in preparedFinalObject
-      const yearValue = get(state, 'screenConfiguration.preparedFinalObject.Properties[0].additionalDetails.yearConstruction', null);
-      if (yearValue) {
-        dispatch(setFieldProperty("propertyAddress", "YearcreationProperty", "value", yearValue));
-      }
-    } else {
-      dispatch(fetchFinancialYearData());
-    }
     const { PT } = citiesByModule || {};
     if (PT) {
       const tenants = PT.tenants;

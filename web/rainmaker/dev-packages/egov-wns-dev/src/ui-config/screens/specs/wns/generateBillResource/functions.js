@@ -27,7 +27,7 @@ export const generateBillApiCall = async (state, dispatch) => {
     //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
     // }
     else {
-      
+
       let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
       if (batchtypechk == "Locality") {
         // var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
@@ -132,7 +132,7 @@ export const generateBillApiCall = async (state, dispatch) => {
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
           tenantId = element.tenantId;
-          billGenerationDate = element.auditDetails && element.auditDetails.createdTime ? convertEpochToDate(element.auditDetails.createdTime) : "NA";
+          billGenerationDate = element.auditDetails && element.auditDetails.lastModifiedTime ? convertEpochToDate(element.auditDetails.lastModifiedTime) : "NA";
 
           billRow = {
             "transactionType": transactionType,
@@ -173,7 +173,7 @@ export const generateBillApiCall = async (state, dispatch) => {
 
 export const searchBillApiCall = async (state, dispatch) => {
 
-  
+
   var transactionType;
   // showHideApplicationTable(false, dispatch);
   // showHideConnectionTable(false, dispatch);
@@ -246,7 +246,7 @@ export const searchBillApiCall = async (state, dispatch) => {
           status = element.status;
           tenantId = element.tenantId;
           billformDate = element.billingcycleStartdate;
-          billGenerationDate = element.auditDetails && element.auditDetails.createdTime ? convertEpochToDate(element.auditDetails.createdTime) : "NA";
+          billGenerationDate = element.auditDetails && element.auditDetails.lastModifiedTime ? convertEpochToDate(element.auditDetails.lastModifiedTime) : "NA";
           billRow = {
             "transactionType": transactionType,
             "locality": locality,
@@ -254,13 +254,13 @@ export const searchBillApiCall = async (state, dispatch) => {
             "billingcycleEnddate": billingcycleEnddate,
             "status": status,
             "tenantId": tenantId,
-            "billformDate" : billformDate,
+            "billformDate": billformDate,
             "billGenerationDate": billGenerationDate
           };
           searchBillArray.push(billRow);
         });
         //dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
-        const sortedSearchBillArray = searchBillArray.sort((a,b)=> b.billformDate - a.billformDate);
+        const sortedSearchBillArray = searchBillArray.sort((a, b) => b.billformDate - a.billformDate);
         dispatch(prepareFinalObject("createBillResponse", sortedSearchBillArray));
         if (searchBillArray.length == 0) {
 
@@ -297,7 +297,7 @@ export const searchBillApiCall = async (state, dispatch) => {
       try {
         let tenant_Id = getTenantIdCommon();
         let response = null;
-        
+
         let servicety;
         if (transactionType == "WS") {
           servicety = "Water";
@@ -323,7 +323,7 @@ export const searchBillApiCall = async (state, dispatch) => {
 
         let searchBillArray = [];
         let billRow = null;
-        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billformDate;
+        let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billformDate, billGenerationDate;
         let recourdcount = response.billScheduler.length;
         response.billScheduler.map((element, index) => {
           transactionType = element.transactionType;
@@ -333,6 +333,8 @@ export const searchBillApiCall = async (state, dispatch) => {
           billingcycleEnddate = convertEpochToDate(element.billingcycleEnddate);
           status = element.status;
           tenantId = element.tenantId;
+          billGenerationDate = element.auditDetails && element.auditDetails.lastModifiedTime ? convertEpochToDate(element.auditDetails.lastModifiedTime) : "NA";
+
           billRow = {
             "transactionType": transactionType,
             "locality": locality,
@@ -342,12 +344,13 @@ export const searchBillApiCall = async (state, dispatch) => {
             "tenantId": tenantId,
             "recordcount": recourdcount,
             "service": servicety,
-            "billformDate" : billformDate
+            "billformDate": billformDate,
+            "billGenerationDate": billGenerationDate
           };
           searchBillArray.push(billRow);
         });
         //dispatch(prepareFinalObject("searchBillResponse", searchBillArray));
-        const sortedSearchBillArray = searchBillArray.sort((a,b)=> b.billformDate - a.billformDate);
+        const sortedSearchBillArray = searchBillArray.sort((a, b) => b.billformDate - a.billformDate);
         dispatch(prepareFinalObject("createBillResponse", sortedSearchBillArray));
         if (searchBillArray.length == 0) {
 
@@ -725,4 +728,3 @@ const showApplicationResults = (connections, dispatch) => {
   ));
   showHideApplicationTable(true, dispatch);
 }
-

@@ -136,7 +136,7 @@ const abgSearchAndResult = {
               componentPath: "Div",
               gridDefination: {
                 xs: 12,
-                sm: 4
+                sm: 3
               }
             },
 
@@ -144,7 +144,7 @@ const abgSearchAndResult = {
               componentPath: "Button",
               gridDefination: {
                 xs: 12,
-                sm: 4
+                sm: 3
               },
               props: {
                 variant: "contained",
@@ -156,7 +156,6 @@ const abgSearchAndResult = {
                   height: "48px"
                 }
               },
-              visible: false,
               children: {
                 buttonLabel: getLabel({
                   labelName: "Update All Readings",
@@ -186,4 +185,3 @@ const abgSearchAndResult = {
 };
 
 export default abgSearchAndResult;
-
