@@ -31,13 +31,13 @@ const propertyLocationDetailsHeader = getHeader({
 });
 
 const propertyDetails = getCommonContainer({
-   propertyStatus: getLabelWithValue(
+  propertyStatus: getLabelWithValue(
     {
       labelKey: "WS_PROPERTY_STATUS_LABEL"
     },
     {
       jsonPath:
-      "WaterConnection[0].property.status",
+        "WaterConnection[0].property.status",
       localePrefix: {
         moduleName: "WS",
         masterName: "PROPTYPE"
@@ -50,7 +50,7 @@ const propertyDetails = getCommonContainer({
     },
     {
       jsonPath:
-      "WaterConnection[0].property.propertyType",
+        "WaterConnection[0].property.propertyType",
       localePrefix: {
         moduleName: "WS",
         masterName: "PROPTYPE"
@@ -61,12 +61,13 @@ const propertyDetails = getCommonContainer({
     {
       labelKey: "WS_PROPERTY_USAGE_TYPE_LABEL"
     },
-    { jsonPath: "WaterConnection[0].property.usageCategory",
-    localePrefix: {
-      moduleName: "WS",
-      masterName: "PROPUSGTYPE"
+    {
+      jsonPath: "WaterConnection[0].property.usageCategory",
+      localePrefix: {
+        moduleName: "WS",
+        masterName: "PROPUSGTYPE"
+      }
     }
- }
   ),
   plotSize: getLabelWithValue(
     {
@@ -74,6 +75,14 @@ const propertyDetails = getCommonContainer({
     },
     {
       jsonPath: "WaterConnection[0].property.landArea"
+    }
+  ),
+  buildupplotSize: getLabelWithValue(
+    {
+      labelKey: "WS_SUPER_BUILDUP_AREA_LABEL"
+    },
+    {
+      jsonPath: "WaterConnection[0].property.superBuiltUpArea"
     }
   )
 })
