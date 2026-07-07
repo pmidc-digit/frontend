@@ -133,7 +133,7 @@ const tradeLicenseSearchAndResult = {
     //                   fontSize: "110px",
     //                   width: 120,
     //                   height: 100,
-    //                   color: "rgba(0, 0, 0, 0.6)",
+    //                   color: "#2947a3",
     //                   marginLeft: -22
     //                 },
     //                 iconSize: "110px"

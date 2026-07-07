@@ -76,7 +76,7 @@ export const searchResults = {
                     style={{
                       minWidth: "64px",
                       padding: "4px 12px",
-                      background: "#FE7A51",
+                      background: "#2947a3",
                       border: "none",
                       color: "#fff",
                       borderRadius: "2px",

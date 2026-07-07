@@ -131,18 +131,6 @@ export const getFeesEstimateCard = props => {
   };
 };
 
-const style = {
-  textfieldIcon: {
-    position: "relative",
-    top: "25px",
-    left: "-249%"
-  },
-  headerIcon: {
-    position: "relative",
-    bottom: "2px"
-  }
-};
-
 export const getFeesEstimateOverviewCard = props => {
   const { sourceJsonPath, ...rest } = props;
   return {
@@ -156,8 +144,17 @@ export const getFeesEstimateOverviewCard = props => {
   };
 };
 
+const styleToClassName = {
+  textfieldIcon: "wns-textfield-icon",
+  headerIcon: "wns-header-icon"
+};
+
 export const getIconStyle = key => {
-  return style[key];
+  return {};
+};
+
+export const getIconClassName = key => {
+  return styleToClassName[key] || "";
 };
 
 export const showHideAdhocPopup = (state, dispatch, screenKey) => {

@@ -200,6 +200,7 @@ export const searchBillApiCall = async (state, dispatch) => {
       let groupdataa = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
       let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
       let groupdata = batchtypechk == "Group" ? groupdataa : batchdata;
+      let searchDataParam = batchtypechk == "Group" ? "group" : "batch";
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
       }
@@ -215,7 +216,7 @@ export const searchBillApiCall = async (state, dispatch) => {
         if (transactionType == "WS") {
           response = await httpRequest(
             "post",
-            `ws-calculator/watercharges/scheduler/_search?tenantId=${tenant_Id}&group=${groupdata}`,
+            `ws-calculator/watercharges/scheduler/_search?tenantId=${tenant_Id}&${searchDataParam}=${groupdata}`,
             "_search",
             [],
             {}
@@ -224,7 +225,7 @@ export const searchBillApiCall = async (state, dispatch) => {
         else {
           response = await httpRequest(
             "post",
-            `sw-calculator/seweragecharges/scheduler/_search?tenantId=${tenant_Id}&group=${groupdata}`,
+            `sw-calculator/seweragecharges/scheduler/_search?tenantId=${tenant_Id}&${searchDataParam}=${groupdata}`,
             "_search",
             [],
             {}

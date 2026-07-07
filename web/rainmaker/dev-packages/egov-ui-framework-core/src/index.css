@@ -14,9 +14,120 @@ body {
 
 .bx--progress .bx--progress-step--complete
 {
-  background-color: "#FE7A51"
+  background-color: "#2947a3"
 }
 
 .bx--progress .bx--progress-step--current{
-  background-color: "#FE7A51"
+  background-color: "#2947a3"
+}
+
+/* Global Button Styles */
+button,
+input[type="button"],
+input[type="submit"] {
+  font-family: Roboto, sans-serif !important;
+  border-radius: 8px !important;
+}
+
+[class*="MuiButton-contained"], 
+[class*="MuiButton-raised"],
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1e40af) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.5rem 1rem !important;
+  font-family: Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  text-align: center !important;
+}
+
+[class*="MuiButton-contained"]:hover, 
+[class*="MuiButton-raised"]:hover,
+.btn-primary:hover {
+  opacity: 0.9 !important;
+}
+
+[class*="MuiButton-contained"] span, 
+[class*="MuiButton-raised"] span,
+.btn-primary span {
+  color: #ffffff !important;
+}
+
+/* Global Link Styles */
+a, 
+a:hover, 
+a:visited, 
+a:active,
+.link,
+[class*="link"] {
+  color: #5b68f0 !important;
+}
+
+/* Card Styles */
+.rainmaker-card,
+[class*="MuiCard-root"] {
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #fff, #f8fafb) !important;
+  border: 1px solid #e1e8f0 !important;
+  box-shadow: 0 12px 32px rgba(30, 58, 138, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+.rainmaker-card label,
+.rainmaker-card [class*="MuiFormLabel-root"],
+.rainmaker-card [class*="MuiInputLabel-root"],
+[class*="MuiCard-root"] label,
+[class*="MuiCard-root"] [class*="MuiFormLabel-root"],
+[class*="MuiCard-root"] [class*="MuiInputLabel-root"] {
+  font-size: 16px !important;
+  color: #0f172a;
+}
+
+.rainmaker-card .label-text,
+[class*="MuiCard-root"] .label-text {
+  font-size: 16px !important;
+  color: #0f172a;
+}
+
+.rainmaker-card [class*="MuiInputLabel-shrink"],
+[class*="MuiCard-root"] [class*="MuiInputLabel-shrink"] {
+  transform: translate(0, 1.5px) scale(1) !important;
+}
+
+.rainmaker-card [class*="MuiTypography-subheading"],
+.rainmaker-card [class*="MuiTypography-title"],
+.rainmaker-card [class*="MuiTypography-headline"],
+.rainmaker-card [class*="MuiTypography-h6"],
+.rainmaker-card [class*="MuiTypography-h5"],
+.rainmaker-card [class*="MuiTypography-subtitle1"],
+[class*="MuiCard-root"] [class*="MuiTypography-subheading"],
+[class*="MuiCard-root"] [class*="MuiTypography-title"],
+[class*="MuiCard-root"] [class*="MuiTypography-headline"],
+[class*="MuiCard-root"] [class*="MuiTypography-h6"],
+[class*="MuiCard-root"] [class*="MuiTypography-h5"],
+[class*="MuiCard-root"] [class*="MuiTypography-subtitle1"] {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+}
+
+[class*="MuiButton-root"] label,
+[class*="MuiButton-root"] .label-text,
+button label,
+button .label-text {
+  color: inherit !important;
+  font-size: inherit !important;
+}
+
+[class*="MuiButton-contained"] label,
+[class*="MuiButton-contained"] .label-text,
+[class*="MuiButton-raised"] label,
+[class*="MuiButton-raised"] .label-text {
+  color: #ffffff !important;
 }

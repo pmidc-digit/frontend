@@ -534,7 +534,7 @@ class Property extends Component {
                     <Label buttonLabel={true}
                       //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
                       label={'Make Property Active'} fontSize="11px"
-                      color="#fe7a51" />
+                      color="#2947a3" />
                   }
                   onClick={() => {
                     if (process.env.REACT_APP_NAME == "Citizen") {
@@ -551,8 +551,8 @@ class Property extends Component {
                       }
                     }
                   }}
-                  labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
-                  buttonStyle={{ border: "0.5px solid #fe7a51" }}
+                  labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#2947a3" }}
+                  buttonStyle={{ border: "0.5px solid #2947a3" }}
                   style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
                 />
                 <Button
@@ -560,7 +560,7 @@ class Property extends Component {
                     <Label buttonLabel={true}
                       //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
                       label={'Make Property Inactive'} fontSize="11px"
-                      color="#fe7a51" />
+                      color="#2947a3" />
                   }
                   onClick={() => {
                     if (process.env.REACT_APP_NAME == "Citizen") {
@@ -577,19 +577,19 @@ class Property extends Component {
                       }
                     }
                   }}
-                  labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
-                  buttonStyle={{ border: "0.5px solid #fe7a51" }}
+                  labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#2947a3" }}
+                  buttonStyle={{ border: "0.5px solid #2947a3" }}
                   style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
                 />
                 <Button
                   label={
                     <Label buttonLabel={true}
                       label={formWizardConstants[PROPERTY_FORM_PURPOSE.UPDATE].parentButton} fontSize="11px"
-                      color="#fe7a51" />
+                      color="#2947a3" />
                   }
                   onClick={() => this.onEditPropertyClick()}
-                  labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
-                  buttonStyle={{ border: "0.5px solid #fe7a51" }}
+                  labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#2947a3" }}
+                  buttonStyle={{ border: "0.5px solid #2947a3" }}
                   style={{ lineHeight: "auto", minWidth: "20%", marginRight: "1%" }}
                 />
                 {/* <Button
@@ -597,7 +597,7 @@ class Property extends Component {
                  <Label buttonLabel={true}
                 //  label={formWizardConstants[PROPERTY_FORM_PURPOSE.STATUS].parentButton} fontSize="16px"
                   label={'Make Property active'} fontSize="11px"
-                   color="#fe7a51" />
+                   color="#2947a3" />
                }
                onClick={() => 
                 { 
@@ -608,8 +608,8 @@ class Property extends Component {
                   if(window.confirm("Are you sure you want to make property active?")){
                 this.onStatusChangePropertyClickToActive()}
                 }}}
-              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#fe7a51" }}
-              buttonStyle={{ border: "0.5px solid #fe7a51" }}
+              labelStyle={{ letterSpacing: 0.5, padding: 0, color: "#2947a3" }}
+              buttonStyle={{ border: "0.5px solid #2947a3" }}
               style={{ lineHeight: "auto", minWidth: "20%", marginRight: "2%" }}
             /> */}
                 <Button

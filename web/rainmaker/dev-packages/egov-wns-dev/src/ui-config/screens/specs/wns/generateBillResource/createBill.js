@@ -350,8 +350,8 @@ export const createBill = getCommonCard({
         props: {
           variant: "outlined",
           style: {
-            color: "rgba(0, 0, 0, 0.6000000238418579)",
-            borderColor: "rgba(0, 0, 0, 0.6000000238418579)",
+            color: "#2947a3",
+            borderColor: "#2947a3",
             width: "220px",
             height: "48px",
             margin: "28px",
@@ -376,7 +376,7 @@ export const createBill = getCommonCard({
           style: {
             color: "white",
             margin: "28px",
-            backgroundColor: "rgba(0, 0, 0, 0.6000000238418579)",
+            backgroundColor: "#2947a3",
             borderRadius: "2px",
             width: "220px",
             height: "48px",

@@ -70,7 +70,7 @@ export const searchResults = {
 
                 setRoute(`/receipts/viewReceipt?receiptNumbers=${tableMeta.rowData[0]}&tenantId=${tableMeta.rowData[9]}&businessService=${tableMeta.rowData[10]}`);
               }
-            }} style={{color:tableMeta.rowData[7]=='CANCEL'?'rgb(254, 122, 81)':"inherit",cursor:tableMeta.rowData[7]=='CANCEL'?'pointer':"initial"}}>
+            }} style={{color:tableMeta.rowData[7]=='CANCEL'?'rgb(41, 71, 163)':"inherit",cursor:tableMeta.rowData[7]=='CANCEL'?'pointer':"initial"}}>
               {value}
             </div>
           )

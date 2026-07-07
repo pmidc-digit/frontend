@@ -298,7 +298,7 @@ class InboxData extends React.Component {
       <div>
         <Hidden only={["xs"]}>
           <Table>
-            {loading && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}><style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style><SyncIcon style={{ animation: "spin 2s linear infinite", color: "#FE7A51", marginRight: 8 }} /><span style={{ color: "#767676", fontSize: "14px", fontWeight: 500 }}>Syncing data...</span></div>}
+            {loading && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}><style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style><SyncIcon style={{ animation: "spin 2s linear infinite", color: "#2947a3", marginRight: 8 }} /><span style={{ color: "#767676", fontSize: "14px", fontWeight: 500 }}>Syncing data...</span></div>}
             <TableHead style={{ backgroundColor: "white", borderBottom: "1px solid rgb(211, 211, 211)" }}>
               <TableRow>
                 {data && data.headers && data.headers.map((item, index) => {
@@ -344,7 +344,7 @@ class InboxData extends React.Component {
                           return (
                             <TableCell key={index} className={classNames}>
                               <div onClick={() => getModuleLink(item, row, index)} className="inbox-cell-text">
-                                {<a style={{ color: "#FE7A51" }}>{item.text} </a>}
+                                {<a style={{ color: "#2947a3" }}>{item.text} </a>}
                               </div>
                               <div className="inbox-cell-subtext">
                                 {<Label label={`CS_COMMON_INBOX_${item.subtext.toUpperCase()}`} color="#000000" />}
@@ -408,7 +408,7 @@ class InboxData extends React.Component {
               </div>
             )}
           </div>
-          {loading && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}><style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style><SyncIcon style={{ animation: "spin 2s linear infinite", color: "#FE7A51", marginRight: 8 }} /><span style={{ color: "#767676", fontSize: "14px", fontWeight: 500 }}>Syncing data...</span></div>}
+          {loading && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}><style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style><SyncIcon style={{ animation: "spin 2s linear infinite", color: "#2947a3", marginRight: 8 }} /><span style={{ color: "#767676", fontSize: "14px", fontWeight: 500 }}>Syncing data...</span></div>}
           {data.rows.length === 0 ? (
             <Card textChildren={<Label labelClassName="" label="COMMON_INBOX_NO_DATA" />} />
           ) : (
@@ -420,7 +420,7 @@ class InboxData extends React.Component {
                     textChildren={
                       <div>
                         <div className="head" onClick={() => getModuleLink(row[0], row, 0)}>
-                          <a style={{ color: "#FE7A51" }}>{row[0].text}</a>
+                          <a style={{ color: "#2947a3" }}>{row[0].text}</a>
                         </div>
                         <div className="head">
                           <Label label={`CS_COMMON_INBOX_${row[0].subtext.toUpperCase()}`} color="#000000" />

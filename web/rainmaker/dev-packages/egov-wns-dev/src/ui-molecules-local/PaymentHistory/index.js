@@ -188,10 +188,10 @@ class PaymentHistory extends Component {
                     code = "Interest"; amount = dd.adjustedAmount;
 
                   }
-                  else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY") {
-                    code = "Penalty"; amount = dd.adjustedAmount;
+                  else if (dd.taxHeadCode == "WS_TIME_PENALTY" || dd.taxHeadCode == "SW_TIME_PENALTY" || dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") {
+                  code = (dd.taxHeadCode == "WS_BREAKDOWN_PENALTY" || dd.taxHeadCode == "SW_BREAKDOWN_PENALTY") ? "Breakdown Penalty" : "Penalty"; amount = dd.adjustedAmount;
 
-                  } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
+                 } else if (dd.taxHeadCode == "WS_SCRUTINY_FEE" || dd.taxHeadCode == "SW_SCRUTINY_FEE") {
                     code = "Scrutiny Fee"; amount = dd.adjustedAmount;
 
                   } else if (dd.taxHeadCode == "WS_ROAD_CUTTING_CHARGE" || dd.taxHeadCode == "SW_ROAD_CUTTING_CHARGE") {
@@ -363,7 +363,7 @@ class PaymentHistory extends Component {
       height: "35px",
       backgroundColor: "rgb(242, 242, 242)",
       boxShadow: "none",
-      border: "1px solid rgb(254, 122, 81)",
+      border: "1px solid rgb(41, 71, 163)",
       borderRadius: "2px",
       outline: "none",
       alignItems: "right",
@@ -380,7 +380,7 @@ class PaymentHistory extends Component {
           <div className="col-sm-6 col-xs-12" style={{ marginBottom: 10, marginTop: 5 }}>
             <div className="assess-history" style={{ float: "right" }}>
               <Button
-                label={<Label buttonLabel={true} label="Download Receipt" color="rgb(254, 122, 81)" fontSize="16px" height="35px" labelStyle={labelStyle} />}
+                label={<Label buttonLabel={true} label="Download Receipt" color="rgb(41, 71, 163)" fontSize="16px" height="35px" labelStyle={labelStyle} />}
                 buttonStyle={buttonStyle}
                 onClick={() => {
                   const receiptQueryString = [

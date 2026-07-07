@@ -2,7 +2,7 @@ import React from "react";
 import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 
 const styles = {
-  backgroundColor: "rgba(0, 0, 0, 0.6000000238418579)",
+  backgroundColor: "#2947a3",
   color: "rgba(255, 255, 255, 0.8700000047683716)",
   marginLeft: "8px",
   paddingLeft: "19px",

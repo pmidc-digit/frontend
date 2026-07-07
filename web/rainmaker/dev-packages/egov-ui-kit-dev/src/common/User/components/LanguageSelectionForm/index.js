@@ -11,8 +11,8 @@ const selectedLabelStyle = {
 };
 
 const selectedStyle = {
-  backgroundColor: "#fe7a51",
-  border: "1px solid #fe7a51",
+  backgroundColor: "#2947a3",
+  border: "1px solid #2947a3",
 };
 
 const defaultStyle = {

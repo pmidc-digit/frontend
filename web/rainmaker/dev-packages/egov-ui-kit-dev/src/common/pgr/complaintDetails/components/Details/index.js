@@ -169,7 +169,7 @@ class Details extends Component {
                     style={{
                       height: 'auto',
                       minWidth: '200px',
-                      backgroundColor: '#fe7a51',
+                      backgroundColor: '#2947a3',
                     }}
                     labelStyle={{
                       padding: '8px 16px',

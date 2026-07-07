@@ -84,7 +84,7 @@ class Inbox extends Component {
     const buttonItems = {
       label: { labelName: "Take Action", labelKey: "INBOX_QUICK_ACTION" },
       rightIcon: "arrow_drop_down",
-      props: { variant: "outlined", style: { marginLeft: 5, marginRight: 15, marginTop: 10, backgroundColor: "#FE7A51", color: "#fff", border: "none", height: "40px", width: "200px" } },
+      props: { variant: "outlined", style: { marginLeft: 5, marginRight: 15, marginTop: 10, backgroundColor: "#2947a3", color: "#fff", border: "none", height: "40px", width: "200px" } },
       menu: downloadMenu
     }
 
@@ -103,7 +103,7 @@ class Inbox extends Component {
             <button
               onClick={() => window.open("https://genbidemo.aibott.org/", "_blank", "noopener,noreferrer")}
               style={{
-                backgroundColor: "#FE7A51",
+                backgroundColor: "#2947a3",
                 color: "#fff",
                 border: "none",
                 padding: "10px 24px",
@@ -118,7 +118,7 @@ class Inbox extends Component {
                 margin: "10px 15px 0px 5px"
               }}
               onMouseEnter={(e) => e.target.style.backgroundColor = "#E86A41"}
-              onMouseLeave={(e) => e.target.style.backgroundColor = "#FE7A51"}
+              onMouseLeave={(e) => e.target.style.backgroundColor = "#2947a3"}
             >
               GenBi
             </button>

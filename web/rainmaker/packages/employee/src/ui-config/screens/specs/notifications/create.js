@@ -178,7 +178,7 @@ export const createForm = getCommonCard({
               fontSize: 12,
               marginBottom: 10,
               marginTop: 5,
-              color: "rgba(0, 0, 0, 0.6000000238418579)",
+              color: "#2947a3",
             },
           }
         ),

@@ -339,7 +339,7 @@ export const searchResults = {
             return (
               <button
                 type="button"
-                style={{ backgroundColor: "#fe7a51", borderRadius: "5px", borderColor: "#fe7a51", color: "white", padding: "6px 12px", cursor: "pointer" }}
+                style={{ backgroundColor: "#2947a3", borderRadius: "5px", borderColor: "#2947a3", color: "white", padding: "6px 12px", cursor: "pointer" }}
                 onClick={handleUpdate}
               >
                 Update

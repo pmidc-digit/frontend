@@ -63,12 +63,12 @@ export const searchResults = {
                 <div
                   className="linkStyle"
                   onClick={() => getViewBillDetails(data)}
-                  style={{ color: "#fe7a51", textTransform: "uppercase" }}
+                  style={{ color: "#2947a3", textTransform: "uppercase" }}
                 >
                   <LabelContainer
                     labelKey="WS_COMMON_COLLECT_LABEL"
                     style={{
-                      color: "#fe7a51",
+                      color: "#2947a3",
                       fontSize: 14,
                     }}
                   />

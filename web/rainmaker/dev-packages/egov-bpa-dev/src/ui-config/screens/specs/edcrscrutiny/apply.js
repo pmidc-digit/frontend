@@ -164,9 +164,9 @@ const buildingInfoCard = getCommonCard({
         props: {
           variant: "outlined",
           style: {
-            color: "#FE7A51",
-            // backgroundColor: "#FE7A51",
-            border: "#FE7A51 solid 1px",
+            color: "#2947a3",
+            // backgroundColor: "#2947a3",
+            border: "#2947a3 solid 1px",
             borderRadius: "2px",
             width: window.innerWidth > 480 ? "80%" : "100%",
             height: "48px"
@@ -195,7 +195,7 @@ const buildingInfoCard = getCommonCard({
           variant: "contained",
           style: {
             color: "white",
-            backgroundColor: "#FE7A51",
+            backgroundColor: "#2947a3",
             borderRadius: "2px",
             width: window.innerWidth > 480 ? "80%" : "100%",
             height: "48px"
