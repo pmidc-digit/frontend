@@ -43,249 +43,258 @@ const checkAmount = (totalAmount, customAmount, businessService) => {
 
 
 export const callPGService = async (state, dispatch) => {
-  const BusinessService = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
-  var diffDays;
-  var fireNocConsumerNumber;
-  var fireNOCDetailslength;
-  if (BusinessService.toUpperCase() == "FIRENOC") {
-    var getdate = get(state, "screenConfiguration.preparedFinalObject.FireNOCs[0].auditDetails.createdTime");
-    
-    var fireApplicationNo = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].consumerCode");
-    var tenantId = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].tenantId");
-    var queryObject = [
-      { key: "tenantId", value: tenantId },
-      { key: "applicationNumber", value: fireApplicationNo }
-    ];
-    const FETCHFIREDETAILS = {
-      GET: {
-        URL: "/firenoc-services/v1/_search",
-        ACTION: "_get",
-      },
-    };
-    const fireNOCSearchResponse = await httpRequest("post", FETCHFIREDETAILS.GET.URL, FETCHFIREDETAILS.GET.ACTION, queryObject);
-    if (fireNOCSearchResponse.FireNOCs.length > 0) {
-      fireNocConsumerNumber = fireNOCSearchResponse.FireNOCs[0].fireNOCDetails.applicationNumber;
-      fireNOCDetailslength = Object.keys(fireNOCSearchResponse.FireNOCs[0].fireNOCDetails).length;
+  if (get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].tenantId") == "pb.jalandhar") {
+    //window.location = redirectionUrl;
+    alert("Online payment services are temporarily unavailable due to maintenance. We apologize for the inconvenience and appreciate your patience. Please try again later.");
+  }
+  else {
+
+    const BusinessService = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
+    var diffDays;
+    var fireNocConsumerNumber;
+    var fireNOCDetailslength;
+    if (BusinessService.toUpperCase() == "FIRENOC") {
+      var getdate = get(state, "screenConfiguration.preparedFinalObject.FireNOCs[0].auditDetails.createdTime");
+
+      var fireApplicationNo = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].consumerCode");
+      var tenantId = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].tenantId");
+      var queryObject = [
+        { key: "tenantId", value: tenantId },
+        { key: "applicationNumber", value: fireApplicationNo }
+      ];
+      const FETCHFIREDETAILS = {
+        GET: {
+          URL: "/firenoc-services/v1/_search",
+          ACTION: "_get",
+        },
+      };
+      const fireNOCSearchResponse = await httpRequest("post", FETCHFIREDETAILS.GET.URL, FETCHFIREDETAILS.GET.ACTION, queryObject);
+      if (fireNOCSearchResponse.FireNOCs.length > 0) {
+        fireNocConsumerNumber = fireNOCSearchResponse.FireNOCs[0].fireNOCDetails.applicationNumber;
+        fireNOCDetailslength = Object.keys(fireNOCSearchResponse.FireNOCs[0].fireNOCDetails).length;
+      }
+
+      console.log("testFire" + fireNocConsumerNumber + "--" + fireNOCDetailslength);
+
+      const currentDate = new Date();
+      const appDate = new Date(getdate);
+      const diffTime = Math.abs(appDate - currentDate);
+      diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      console.log(diffTime + " milliseconds");
+      console.log(diffDays + " days");
+    }
+    if (diffDays >= 5 && BusinessService.toUpperCase() == "FIRENOC") {
+      alert("Re-submit application can be applied within 5 days of date of application.");
     }
 
-    console.log("testFire" + fireNocConsumerNumber + "--" + fireNOCDetailslength);
-
-    const currentDate = new Date();
-    const appDate = new Date(getdate);
-    const diffTime = Math.abs(appDate - currentDate);
-    diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    console.log(diffTime + " milliseconds");
-    console.log(diffDays + " days");
-  }
-  if (diffDays >= 5 && BusinessService.toUpperCase() == "FIRENOC") {
-    alert("Re-submit application can be applied within 5 days of date of application.");
-  }
-
-  else {
-    if (BusinessService.toUpperCase() == "FIRENOC" && (fireNocConsumerNumber === '' || fireNocConsumerNumber === null || fireNocConsumerNumber === undefined || fireNOCDetailslength === 0)) {
-      alert("There is an Error while Creating an application please click Ok to Re-Create Your Application");
-      window.location.href = "/fire-noc/apply";
-    } else {
-      const isAdvancePaymentAllowed = get(state, "screenConfiguration.preparedFinalObject.businessServiceInfo.isAdvanceAllowed");
-      const tenantId = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].tenantId");
-      const consumerCode = getQueryArg(window.location.href, "consumerCode");
-      const businessService = get(
-        state,
-        "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService"
-      );
-      const bankBusinessServiceType = get(
-        state,
-        "screenConfiguration.preparedFinalObject.businessServiceInfo.type"
-      );
-      let bankBusinessService = '';
-      if (bankBusinessServiceType == "Adhoc") {
-        bankBusinessService = "MCS";
+    else {
+      if (BusinessService.toUpperCase() == "FIRENOC" && (fireNocConsumerNumber === '' || fireNocConsumerNumber === null || fireNocConsumerNumber === undefined || fireNOCDetailslength === 0)) {
+        alert("There is an Error while Creating an application please click Ok to Re-Create Your Application");
+        window.location.href = "/fire-noc/apply";
       } else {
-        bankBusinessService = businessService
-      }
-
-      const url = isPublicSearch() ? "withoutAuth/egov-common/paymentRedirectPage" : "egov-common/paymentRedirectPage";
-      const redirectUrl = process.env.NODE_ENV === "production" ? `citizen/${url}` : url;
-      // const businessService = getQueryArg(window.location.href, "businessService"); businessService
-      let callbackUrl = `${window.origin}/${redirectUrl}`;
-      const { screenConfiguration = {} } = state;
-      const { preparedFinalObject = {} } = screenConfiguration;
-      const { ReceiptTemp = {} } = preparedFinalObject;
-      const billPayload = ReceiptTemp[0];
-      const taxAmount = Number(get(billPayload, "Bill[0].totalAmount"));
-
-      let amtToPay =
-        state.screenConfiguration.preparedFinalObject.AmountType ===
-          "partial_amount"
-          ? state.screenConfiguration.preparedFinalObject.AmountPaid
-          : taxAmount;
-      amtToPay = amtToPay ? Number(amtToPay) : taxAmount;
-
-      if (amtToPay > taxAmount && !isAdvancePaymentAllowed) {
-        alert("Advance Payment is not allowed");
-        return;
-      }
-      if (amtToPay < taxAmount && process.env.REACT_APP_NAME === "Citizen" && (businessService == "PT" || businessService == "WS" || businessService == "SW")) {
-        alert("Partial Payment is not allowed");
-        return;
-      }
-      let isFormValid = validateFields(
-        "components.div.children.formwizardFirstStep.children.paymentDetails.children.cardContent.children.capturePayerDetails.children.cardContent.children.payerDetailsCardContainer.children",
-        state,
-        dispatch,
-        "pay"
-      );
-      if (!isFormValid) {
-        dispatch(
-          toggleSnackbar(
-            true,
-            {
-              labelName: "Transaction numbers don't match !",
-              labelKey: "ERR_FILL_ALL_FIELDS"
-            },
-            "error"
-          )
+        const isAdvancePaymentAllowed = get(state, "screenConfiguration.preparedFinalObject.businessServiceInfo.isAdvanceAllowed");
+        const tenantId = get(state, "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].tenantId");
+        const consumerCode = getQueryArg(window.location.href, "consumerCode");
+        const businessService = get(
+          state,
+          "screenConfiguration.preparedFinalObject.ReceiptTemp[0].Bill[0].businessService"
         );
-        return;
-      }
-      if (checkAmount(taxAmount, Number(state.screenConfiguration.preparedFinalObject.AmountPaid), businessService)) {
-        dispatch(
-          toggleSnackbar(
-            true,
-            { labelName: "Please enter an amount greater than zero!", labelKey: "ERR_ENTER_AMOUNT_MORE_THAN_ZERO" },
-            "error"
-          )
+        const bankBusinessServiceType = get(
+          state,
+          "screenConfiguration.preparedFinalObject.businessServiceInfo.type"
         );
-        return;
-      }
+        let bankBusinessService = '';
+        if (bankBusinessServiceType == "Adhoc") {
+          bankBusinessService = "MCS";
+        } else {
+          bankBusinessService = businessService
+        }
 
-      if (checkAmount(taxAmount, Number(state.screenConfiguration.preparedFinalObject.AmountPaid), businessService)) {
-        dispatch(
-          toggleSnackbar(
-            true,
-            { labelName: "Please enter an amount greater than zero!", labelKey: "ERR_ENTER_AMOUNT_MORE_THAN_ZERO" },
-            "error"
-          )
+        const url = isPublicSearch() ? "withoutAuth/egov-common/paymentRedirectPage" : "egov-common/paymentRedirectPage";
+        const redirectUrl = process.env.NODE_ENV === "production" ? `citizen/${url}` : url;
+        // const businessService = getQueryArg(window.location.href, "businessService"); businessService
+        let callbackUrl = `${window.origin}/${redirectUrl}`;
+        const { screenConfiguration = {} } = state;
+        const { preparedFinalObject = {} } = screenConfiguration;
+        const { ReceiptTemp = {} } = preparedFinalObject;
+        const billPayload = ReceiptTemp[0];
+        const taxAmount = Number(get(billPayload, "Bill[0].totalAmount"));
+
+        let amtToPay =
+          state.screenConfiguration.preparedFinalObject.AmountType ===
+            "partial_amount"
+            ? state.screenConfiguration.preparedFinalObject.AmountPaid
+            : taxAmount;
+        amtToPay = amtToPay ? Number(amtToPay) : taxAmount;
+
+        if (amtToPay > taxAmount && !isAdvancePaymentAllowed) {
+          alert("Advance Payment is not allowed");
+          return;
+        }
+        if (amtToPay < taxAmount && process.env.REACT_APP_NAME === "Citizen" && (businessService == "PT" || businessService == "WS" || businessService == "SW")) {
+          alert("Partial Payment is not allowed");
+          return;
+        }
+        let isFormValid = validateFields(
+          "components.div.children.formwizardFirstStep.children.paymentDetails.children.cardContent.children.capturePayerDetails.children.cardContent.children.payerDetailsCardContainer.children",
+          state,
+          dispatch,
+          "pay"
         );
-        return;
-      }
-
-      const payerInfo = get(billPayload, "Bill[0].payer", '').replace("COMMON_", '');
-      const user = {
-        name: get(billPayload, "Bill[0].paidBy", get(billPayload, "Bill[0].payerName")),
-        mobileNumber: get(billPayload, "Bill[0].payerMobileNumber", get(billPayload, "Bill[0].mobileNumber")),
-        tenantId
-      };
-      let taxAndPayments = [];
-      taxAndPayments.push({
-        taxAmount: taxAmount,
-        businessService: businessService,
-        billId: get(billPayload, "Bill[0].id"),
-        amountPaid: amtToPay
-      });
-
-      const buttonJsonpath = paybuttonJsonpath + `${(process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? "makePayment" : "generateReceipt"}`;
-      try {
-        dispatch(handleField("pay", buttonJsonpath, "props.disabled", true));
-        const requestBody = {
-          Transaction: {
-            tenantId,
-            txnAmount: amtToPay,
-            module: businessService,
-            billId: get(billPayload, "Bill[0].id"),
-            consumerCode: consumerCode,
-            productInfo: "Common Payment",
-            gateway: "RAZORPAY",
-            taxAndPayments,
-            user,
-            callbackUrl,
-            businessService: bankBusinessService,
-            additionalDetails: {
-              isWhatsapp: localStorage.getItem('pay-channel') == 'whatsapp' ? true : false,
-              paidBy: payerInfo
-            }
-          }
-        };
-
-        const goToPaymentGateway = await httpRequest(
-          "post",
-          "pg-service/transaction/v1/_create",
-          "_create",
-          [],
-          requestBody
-        );
-
-        if (get(goToPaymentGateway, "Transaction.txnAmount") == 0) {
-          const srcQuery = `?tenantId=${get(
-            goToPaymentGateway,
-            "Transaction.tenantId"
-          )}&billIds=${get(goToPaymentGateway, "Transaction.billId")}`;
-
-          let searchResponse = await httpRequest(
-            "post",
-            getPaymentSearchAPI(businessService) + srcQuery,
-            "_search",
-            [],
-            {}
-          );
-
-          let transactionId = get(
-            searchResponse,
-            "Payments[0].paymentDetails[0].receiptNumber"
-          );
-
-          let paymentDetails = get(
-            searchResponse,
-            "Payments[0]",
-            null
-          );
-          dispatch(setPaymentDetails(paymentDetails))
-
-          const ackUrl = `/egov-common/acknowledgement?status=${"success"}&consumerCode=${consumerCode}&tenantId=${tenantId}&receiptNumber=${transactionId}&businessService=${businessService}`;
-          const successUrl = isPublicSearch() ? `/withoutAuth${ackUrl}` : ackUrl;
+        if (!isFormValid) {
           dispatch(
-            setRoute(
-              successUrl
+            toggleSnackbar(
+              true,
+              {
+                labelName: "Transaction numbers don't match !",
+                labelKey: "ERR_FILL_ALL_FIELDS"
+              },
+              "error"
             )
           );
-        } else {
-
-          const redirectionUrl = get(goToPaymentGateway, "Transaction.redirectUrl") || get(goToPaymentGateway, "Transaction.callbackUrl");
-          console.log("reurl", redirectionUrl);
-          // if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.mohali" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.moga" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.khanna" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.hoshiarpur" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.kapurthala" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.mandigobindgarh"|| get(goToPaymentGateway, "Transaction.tenantId")=="pb.handiaya"|| get(goToPaymentGateway, "Transaction.tenantId")=="pb.sultanpurlodhi")
-          //   {
-          //    displayRazorpay(goToPaymentGateway);
-          //   }
-          //   else{
-          //   window.location = redirectionUrl;
-          //   }
-          //if ((get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS") || (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "SW")) {
-          /*  if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && (businessService.toUpperCase() == "WS" ||  businessService.toUpperCase() == "SW")) {
-              window.location = redirectionUrl;
-            }
-  */
-          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
-            window.location = redirectionUrl;
-          }
-          else {
-
-            displayRazorpay(goToPaymentGateway);
-
-          }
+          return;
         }
-      } catch (e) {
-        dispatch(handleField("pay", buttonJsonpath, "props.disabled", false));
-        dispatch(
-          toggleSnackbar(
-            true,
-            { labelName: e.message, labelKey: e.message },
-            "error"
-          )
-        );
-        /*     // }else{
-              moveToFailure(dispatch);
+        if (checkAmount(taxAmount, Number(state.screenConfiguration.preparedFinalObject.AmountPaid), businessService)) {
+          dispatch(
+            toggleSnackbar(
+              true,
+              { labelName: "Please enter an amount greater than zero!", labelKey: "ERR_ENTER_AMOUNT_MORE_THAN_ZERO" },
+              "error"
+            )
+          );
+          return;
+        }
+
+        if (checkAmount(taxAmount, Number(state.screenConfiguration.preparedFinalObject.AmountPaid), businessService)) {
+          dispatch(
+            toggleSnackbar(
+              true,
+              { labelName: "Please enter an amount greater than zero!", labelKey: "ERR_ENTER_AMOUNT_MORE_THAN_ZERO" },
+              "error"
+            )
+          );
+          return;
+        }
+
+        const payerInfo = get(billPayload, "Bill[0].payer", '').replace("COMMON_", '');
+        const user = {
+          name: get(billPayload, "Bill[0].paidBy", get(billPayload, "Bill[0].payerName")),
+          mobileNumber: get(billPayload, "Bill[0].payerMobileNumber", get(billPayload, "Bill[0].mobileNumber")),
+          tenantId
+        };
+        let taxAndPayments = [];
+        taxAndPayments.push({
+          taxAmount: taxAmount,
+          businessService: businessService,
+          billId: get(billPayload, "Bill[0].id"),
+          amountPaid: amtToPay
+        });
+
+        const buttonJsonpath = paybuttonJsonpath + `${(process.env.REACT_APP_NAME === "Citizen" || (((JSON.parse(localStorage.getItem("user-info"))).roles[0].code) === "UC_COWCESS_USER") || values == true) ? "makePayment" : "generateReceipt"}`;
+        try {
+          dispatch(handleField("pay", buttonJsonpath, "props.disabled", true));
+          const requestBody = {
+            Transaction: {
+              tenantId,
+              txnAmount: amtToPay,
+              module: businessService,
+              billId: get(billPayload, "Bill[0].id"),
+              consumerCode: consumerCode,
+              productInfo: "Common Payment",
+              gateway: "RAZORPAY",
+              taxAndPayments,
+              user,
+              callbackUrl,
+              businessService: bankBusinessService,
+              additionalDetails: {
+                isWhatsapp: localStorage.getItem('pay-channel') == 'whatsapp' ? true : false,
+                paidBy: payerInfo
+              }
             }
-        */
+          };
+
+          const goToPaymentGateway = await httpRequest(
+            "post",
+            "pg-service/transaction/v1/_create",
+            "_create",
+            [],
+            requestBody
+          );
+
+          if (get(goToPaymentGateway, "Transaction.txnAmount") == 0) {
+            const srcQuery = `?tenantId=${get(
+              goToPaymentGateway,
+              "Transaction.tenantId"
+            )}&billIds=${get(goToPaymentGateway, "Transaction.billId")}`;
+
+            let searchResponse = await httpRequest(
+              "post",
+              getPaymentSearchAPI(businessService) + srcQuery,
+              "_search",
+              [],
+              {}
+            );
+
+            let transactionId = get(
+              searchResponse,
+              "Payments[0].paymentDetails[0].receiptNumber"
+            );
+
+            let paymentDetails = get(
+              searchResponse,
+              "Payments[0]",
+              null
+            );
+            dispatch(setPaymentDetails(paymentDetails))
+
+            const ackUrl = `/egov-common/acknowledgement?status=${"success"}&consumerCode=${consumerCode}&tenantId=${tenantId}&receiptNumber=${transactionId}&businessService=${businessService}`;
+            const successUrl = isPublicSearch() ? `/withoutAuth${ackUrl}` : ackUrl;
+            dispatch(
+              setRoute(
+                successUrl
+              )
+            );
+          } else {
+
+            const redirectionUrl = get(goToPaymentGateway, "Transaction.redirectUrl") || get(goToPaymentGateway, "Transaction.callbackUrl");
+            console.log("reurl", redirectionUrl);
+            // if( get(goToPaymentGateway, "Transaction.tenantId")=="pb.amritsar" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.mohali" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.moga" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.khanna" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.hoshiarpur" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.kapurthala" || get(goToPaymentGateway, "Transaction.tenantId")=="pb.mandigobindgarh"|| get(goToPaymentGateway, "Transaction.tenantId")=="pb.handiaya"|| get(goToPaymentGateway, "Transaction.tenantId")=="pb.sultanpurlodhi")
+            //   {
+            //    displayRazorpay(goToPaymentGateway);
+            //   }
+            //   else{
+            //   window.location = redirectionUrl;
+            //   }
+            //if ((get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "WS") || (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && businessService.toUpperCase() == "SW")) {
+            /*  if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.amritsar" && (businessService.toUpperCase() == "WS" ||  businessService.toUpperCase() == "SW")) {
+                window.location = redirectionUrl;
+              }
+    */
+
+            if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
+              //window.location = redirectionUrl;
+              alert("Online payment services are temporarily unavailable due to maintenance. We apologize for the inconvenience and appreciate your patience. Please try again later.");
+            }
+            else {
+
+              displayRazorpay(goToPaymentGateway);
+
+            }
+          }
+        } catch (e) {
+          dispatch(handleField("pay", buttonJsonpath, "props.disabled", false));
+          dispatch(
+            toggleSnackbar(
+              true,
+              { labelName: e.message, labelKey: e.message },
+              "error"
+            )
+          );
+          /*     // }else{
+                moveToFailure(dispatch);
+              }
+   } */
+        }
       }
 
 
@@ -632,7 +641,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
     }
 
     if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW.ONE_TIME_FEE" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
-      
+
       let toTalAmountPaid = payloadReceiptDetails.Payments[0].totalAmountPaid;
 
 
@@ -797,7 +806,7 @@ export const download = async (receiptQueryString, mode = "download", configKey 
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].additionalDetails = details;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].fromPeriod = from;
       payloadReceiptDetails.Payments[0].paymentDetails[0].bill.billDetails[0].toPeriod = to;
-      payloadReceiptDetails.Payments[0].validityYears = response.FireNOCs[0].fireNOCDetails.additionalDetail  ? response.FireNOCs[0].fireNOCDetails.additionalDetail.validityYears : 1;
+      payloadReceiptDetails.Payments[0].validityYears = response.FireNOCs[0].fireNOCDetails.additionalDetail ? response.FireNOCs[0].fireNOCDetails.additionalDetail.validityYears : 1;
 
     }
     const queryStr = [
@@ -1471,4 +1480,3 @@ async function displayRazorpay(getOrderData) {
   const paymentObject = new window.Razorpay(options);
   paymentObject.open();
 }
-
