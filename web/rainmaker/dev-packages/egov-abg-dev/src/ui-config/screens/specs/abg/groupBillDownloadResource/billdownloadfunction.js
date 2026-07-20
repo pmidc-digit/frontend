@@ -104,6 +104,8 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
           if (!localityNames) {
             localityNames = "-";
           }
+        } else if (item && item.group) {
+          localityNames = item.group;
         }
 
         return {
