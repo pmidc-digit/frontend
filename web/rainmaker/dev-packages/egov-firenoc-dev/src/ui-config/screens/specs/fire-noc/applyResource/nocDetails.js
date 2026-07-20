@@ -155,6 +155,11 @@ export const loadProvisionalNocData2 = async (state, dispatch) => {
   );
  // }
 
+   if (!oldfireNOCNumber || oldfireNOCNumber.trim() === "") {
+     alert("Please enter a valid Fire NoC number!");
+     return;
+   }
+
   let response = await getSearchResults([
     { key: "FireNOCNumber", value: oldfireNOCNumber }
   ]);
