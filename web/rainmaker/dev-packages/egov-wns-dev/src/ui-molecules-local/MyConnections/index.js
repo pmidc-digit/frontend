@@ -195,7 +195,7 @@ class MyConnections extends React.Component {
                               <LabelContainer
                                 labelKey="CS_COMMON_PAY"
                                 style={{
-                                  color: "#fe7a51",
+                                  color: "#2947a3",
                                   fontSize: 14,
                                 }}
                               />

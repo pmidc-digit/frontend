@@ -14,7 +14,7 @@ const labelStyle = {
 const underlineStyle = {
   position: "absolute",
   bottom: -1,
-  borderBottom: "2px solid #FE7A51",
+  borderBottom: "2px solid #2947a3",
   width: "100%"
 };
 

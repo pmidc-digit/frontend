@@ -89,7 +89,7 @@ export const propertyID = getCommonContainer({
         marginBottom: "10px",
         marginLeft: "10px",
         marginRight: "10px",
-        backgroundColor: "rgba(0, 0, 0, 0.6000000238418579)",
+        backgroundColor: "#2947a3",
         borderRadius: "2px",
         width: "95%",
         height: "32px"

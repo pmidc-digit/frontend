@@ -40,7 +40,7 @@ const getMultiItem = (billingslabData, classes, style) => {
               .toUpperCase()
               .replace(/[.:-\s\/]/g, "_")}`}
             style={{
-              color: "rgba(0, 0, 0, 0.6000000238418579)",
+              color: "#2947a3",
               fontSize: "14px",
               fontWeigt: 400,
               lineSpacing: "17px"

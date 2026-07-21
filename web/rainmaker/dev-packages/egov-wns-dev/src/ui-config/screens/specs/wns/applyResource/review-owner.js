@@ -513,7 +513,7 @@ export const activationDetailsContainer = {
 						style: {
 							color: "white",
 							margin: "8px",
-							backgroundColor: "rgb(254, 122, 81)",
+							backgroundColor: "rgb(41, 71, 163)",
 							borderRadius: "2px",
 							width: "220px",
 							height: "48px"

@@ -123,7 +123,7 @@ const downloadprintMenu = (state, applicationNumber, tenantId, purpose, moduleNa
             label: { labelName: "DOWNLOAD", labelKey: "TL_DOWNLOAD" },
             leftIcon: "cloud_download",
             rightIcon: "arrow_drop_down",
-            props: { variant: "outlined", style: { height: "60px", color: "#FE7A51", visibility, marginRight: "5px" }, className: "pt-download-button" },
+            props: { variant: "outlined", style: { height: "60px", color: "#2947a3", visibility, marginRight: "5px" }, className: "pt-download-button" },
             menu: downloadMenu
           }
         }
@@ -136,7 +136,7 @@ const downloadprintMenu = (state, applicationNumber, tenantId, purpose, moduleNa
             label: { labelName: "PRINT", labelKey: "TL_PRINT" },
             leftIcon: "print",
             rightIcon: "arrow_drop_down",
-            props: { variant: "outlined", style: { height: "60px", color: "#FE7A51", visibility }, className: "pt-print-button" },
+            props: { variant: "outlined", style: { height: "60px", color: "#2947a3", visibility }, className: "pt-print-button" },
             menu: printMenu
           }
         }

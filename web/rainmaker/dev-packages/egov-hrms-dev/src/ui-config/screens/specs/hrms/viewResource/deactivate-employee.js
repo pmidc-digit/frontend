@@ -227,7 +227,7 @@ export const deactivateEmployee = getCommonContainer({
                 marginBottom: 0,
                 marginTop: 5,
                 width: "100%",
-                color: "rgba(0, 0, 0, 0.6000000238418579)"
+                color: "#2947a3"
               }
             }
           ),
@@ -494,7 +494,7 @@ export const ActivateEmployee = getCommonContainer({
                 marginBottom: 0,
                 marginTop: 5,
                 width: "100%",
-                color: "rgba(0, 0, 0, 0.6000000238418579)"
+                color: "#2947a3"
               }
             }
           ),

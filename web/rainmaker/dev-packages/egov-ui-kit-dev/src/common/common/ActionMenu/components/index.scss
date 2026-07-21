@@ -1,7 +1,7 @@
 .actionMenuSearchBox {
-  background-color: #34495E !important;
-  border: 1px solid #fe7a511f;
-  color: white;
+  background-color: #ffffff !important;
+  border: 1px solid #e0e0e0;
+  color: #757575;
   height: 40px !important;
   margin-top: 22px;
 }
@@ -30,25 +30,28 @@
 
 
 @media only screen and (min-width: 768px) {
+  .iconClassHover {
+    fill: #757575 !important;
+  }
   .sideMenuItem:hover,
   .sideMenuItem.selected {
-    background-color: #486480;
+    background-color: #f0f4ff !important;
 
     div:nth-of-type(1) > span {
       background: none !important;
       div > div > div > span {
-        color: #fe7a51 !important;
+        color: #2947a3 !important;
       }
     }
     .iconClassHover {
-      fill: #fe7a51 !important;
+      fill: #2947a3 !important;
     }
- .label-container > .label-text{
-      color : #fe7a51 !important
+    .label-container > .label-text{
+      color : #2947a3 !important;
     } 
   }
   .selected {
-    border-left: 3px solid #fe7a51;
+    border-left: 3px solid #2947a3 !important;
   }
   .drawer-collapse-menu-item {
     position: absolute;
@@ -56,15 +59,15 @@
     height: 42px;
     width: 100%;
     .iconClassHover {
-      border: 1px solid #fe7a511f;
+      border: 1px solid #2947a31f;
       border-radius: 50%;
-      background: #fe7a511f;
+      background: #2947a31f;
       height: 28px !important;
       width: 28px !important;
     }
   }
   .menuStyle > .label-text{
-    color:#fff !important
+    color:#757575 !important;
   }
 }
 
@@ -73,7 +76,7 @@
 }
 
 .menu-item-title {
-  font-size: 16px;
+  font-size: 14px;
   color: black;
   padding: 15px 0 0 5px;
 }
@@ -87,6 +90,91 @@
   width: 100%;
   color: rgba(0, 0, 0, 0.8700000047683716);
 }
+.menuStyle > .label-text {
+  font-size: 14px !important;
+}
 .menuStyle.with-childs {
   margin-right: 15px;
 }
+
+/* Compact layout for menus to avoid vertical scrolling */
+.sideMenuItem {
+  height: 40px !important;
+  margin: 4px 8px !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  border-left: 3px solid transparent;
+
+  > div {
+    height: 40px !important;
+    line-height: 40px !important;
+  }
+
+  .left-icon-color {
+    height: 24px !important;
+    width: 24px !important;
+    font-size: 24px !important;
+    margin: 0 !important;
+  }
+}
+
+/* Submenu Visual Hierarchy Styles */
+.submenu-item {
+  background-color: #ffffff !important;
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+  height: 36px !important;
+  margin: 2px 8px !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+
+  > div {
+    height: 36px !important;
+    line-height: 36px !important;
+  }
+
+  .menuStyle > .label-text {
+    font-size: 13px !important;
+    color: #757575 !important;
+  }
+
+  &:hover {
+    background-color: #f0f4ff !important;
+    .menuStyle > .label-text {
+      color: #2947a3 !important;
+    }
+  }
+
+  &.selected {
+    background-color: #f0f4ff !important;
+    border-left: 3px solid #2947a3 !important;
+    .menuStyle > .label-text {
+      color: #2947a3 !important;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .submenu-item {
+    background-color: #ffffff !important;
+
+    .menuStyle > .label-text {
+      color: #757575 !important;
+    }
+
+    &:hover {
+      background-color: #f0f4ff !important;
+      .menuStyle > .label-text {
+        color: #2947a3 !important;
+      }
+    }
+
+    &.selected {
+      background-color: #f0f4ff !important;
+      .menuStyle > .label-text {
+        color: #2947a3 !important;
+      }
+    }
+  }
+}
+

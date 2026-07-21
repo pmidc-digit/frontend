@@ -552,7 +552,7 @@ export const nocDetails = getCommonCard({
         iconObj: {
           iconName: "search",
           position: "end",
-          color: "#FE7A51",
+          color: "#2947a3",
           onClickDefination: {
             action: "condition",
             callBack: (state, dispatch, fieldInfo) => {
@@ -591,7 +591,7 @@ export const nocDetails = getCommonCard({
         // iconObj: {
         //   iconName: "search",
         //   position: "end",
-        //   color: "#FE7A51",
+        //   color: "#2947a3",
         //   onClickDefination: {
         //     action: "condition",
 
@@ -624,7 +624,7 @@ export const nocDetails = getCommonCard({
         style: {
           marginTop: "14px",
           height: "40px",
-          backgroundColor: "#FE7A51",
+          backgroundColor: "#2947a3",
           color: "#fff",
         },
       },

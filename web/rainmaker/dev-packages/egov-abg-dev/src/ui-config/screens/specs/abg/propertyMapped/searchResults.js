@@ -56,7 +56,7 @@ export const searchResults = {
                 <React.Fragment>
                   <span
                     style={{
-                      color: "#FE7A51",
+                      color: "#2947a3",
                       cursor: "pointer",
                       textDecoration: "underline",
                       fontWeight: 600
@@ -225,7 +225,7 @@ export const searchResults = {
                         minWidth: "40px",
 
                         padding: "4px 10px",
-                        background: "#fe7a51",
+                        background: "#2947a3",
                         border: "none",
                         color: "#fff",
                         borderRadius: "10px",

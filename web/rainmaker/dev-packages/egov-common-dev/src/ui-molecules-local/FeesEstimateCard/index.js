@@ -22,7 +22,7 @@ const styles = {
   },
   whiteCardText: {
     padding: 8,
-    color: "rgba(0, 0, 0, 0.6000000238418579)",
+    color: "#2947a3",
     fontFamily: "Roboto",
     fontSize: 14,
     fontWeight: 400,
@@ -52,7 +52,7 @@ const styles = {
     marginBottom: 16
   },
   taxStylesLeft: {
-    color: "rgba(0, 0, 0, 0.6)",
+    color: "#2947a3",
     fontSize: 14,
     fontWeight: 400,
     lineHeight: "17px",
