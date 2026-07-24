@@ -692,6 +692,7 @@ const parserFunction = (state) => {
             estimationFileStoreId: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.estimationFileStoreId : null,
             sanctionFileStoreId: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.sanctionFileStoreId : null,
             estimationLetterDate: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.estimationLetterDate : null,
+            oldConnectionNo : queryObject && queryObject.oldconnectionno ? queryObject.oldconnectionno : null,
         }
     }
     let waterSubUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreen.additionalDetails.waterSubUsageType", "");
