@@ -34,6 +34,13 @@ class WorkFlowContainer extends React.Component {
       { key: "history", value: true },
       { key: "tenantId", value: tenantId }
     ];
+
+    // Fetch business service data early
+    await this.setBusinessServiceDataToLocalStorage([
+      { key: "tenantId", value: tenantId },
+      { key: "businessServices", value: this.props.moduleName || "" }
+    ]);
+
     if (this.props.moduleName === "NewWS1" || this.props.moduleName === "NewSW1") {
       try {
         const payload = await httpRequest(
@@ -550,30 +557,43 @@ getHeaderName = action => {
 };
 
 getEmployeeRoles = (nextAction, currentAction, moduleName) => {
-  const businessServiceData = JSON.parse(
-    localStorageGet("businessServiceData")
-  );
-  const data = find(businessServiceData, { businessService: moduleName });
-  let roles = [];
-  if (nextAction === currentAction) {
-    data.states &&
-      data.states.forEach(state => {
-        state.actions &&
-          state.actions.forEach(action => {
-            roles = [...roles, ...action.roles];
-          });
-      });
-  } else {
-    const states = data && data.states && find(data.states, { uuid: nextAction });
-    states &&
-      states.actions &&
-      states.actions.forEach(action => {
-        roles = [...roles, ...action.roles];
-      });
+  try {
+    const businessServiceDataStr = localStorageGet("businessServiceData");
+    if (!businessServiceDataStr) {
+      return "";
+    }
+    const businessServiceData = JSON.parse(businessServiceDataStr);
+    if (!businessServiceData || !Array.isArray(businessServiceData) || businessServiceData.length === 0) {
+      return "";
+    }
+    const data = find(businessServiceData, { businessService: moduleName });
+    if (!data) {
+      return "";
+    }
+    let roles = [];
+    if (nextAction === currentAction) {
+      data.states &&
+        data.states.forEach(state => {
+          state.actions &&
+            state.actions.forEach(action => {
+              roles = [...roles, ...action.roles];
+            });
+        });
+    } else {
+      const states = data && data.states && find(data.states, { uuid: nextAction });
+      states &&
+        states.actions &&
+        states.actions.forEach(action => {
+          roles = [...roles, ...action.roles];
+        });
+    }
+    roles = [...new Set(roles)];
+    roles.indexOf("*") > -1 && roles.splice(roles.indexOf("*"), 1);
+    return roles.toString();
+  } catch (error) {
+    console.error("Error fetching employee roles:", error);
+    return "";
   }
-  roles = [...new Set(roles)];
-  roles.indexOf("*") > -1 && roles.splice(roles.indexOf("*"), 1);
-  return roles.toString();
 };
 
 checkIfTerminatedState = (nextStateUUID, moduleName) => {
@@ -660,21 +680,10 @@ prepareWorkflowContract = (data, moduleName) => {
     checkIfDocumentRequired,
     getEmployeeRoles
   } = this;
-  const businessServiceData = JSON.parse(
-    localStorageGet("businessServiceData")
-  );
- // if ( businessServiceData || businessServiceData[0].businessService != data[0].businessService ) {
-    const tenantId = getQueryArg(window.location.href, "tenantId");
-    const queryObject = [
-      { key: "tenantId", value: tenantId },
-      {
-        key: "businessServices",
-        value: data[0].businessService ? data[0].businessService : "NewTL"
-      }
-    ];
 
-    this.setBusinessServiceDataToLocalStorage(queryObject);
- // }
+  const businessServiceData = JSON.parse(
+    localStorageGet("businessServiceData") || "[]"
+  );
   
   let businessService = moduleName === data[0].businessService ? moduleName : data[0].businessService;
   let businessId = get(data[data.length - 1], "businessId");
