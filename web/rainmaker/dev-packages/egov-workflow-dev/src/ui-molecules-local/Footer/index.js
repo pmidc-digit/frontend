@@ -83,6 +83,8 @@ class Footer extends React.Component {
     const { dataPath, state } = this.props;
     let diffDays;
 
+      //console.log("Hello Item",item);
+
     const getdate = get(
       state,
       "screenConfiguration.preparedFinalObject.FireNOCs[0].fireNOCDetails.applicationNumber"
@@ -156,7 +158,7 @@ class Footer extends React.Component {
         setRoute(url);
         return;
       }
-      if (item.showEmployeeList) {
+      if (item.showEmployeeList && item.roles && item.roles.trim() !== "") {
         const tenantId = getTenantId();
         const queryObj = [
           {
@@ -269,7 +271,7 @@ class Footer extends React.Component {
         setRoute(url);
         return;
       }
-      if (item.showEmployeeList) {
+      if (item.showEmployeeList && item.roles && item.roles.trim() !== "") {
         const tenantId = getTenantId();
         const queryObj = [
           {
@@ -451,6 +453,7 @@ class Footer extends React.Component {
     const { open, data, employeeList, nocValid, tlpopUp, licenseData, wFCode, isHAZ } = this.state;
     const { isDocRequired } = data;
     const appName = process.env.REACT_APP_NAME;
+    //console.log("contractData",contractData)
     const downloadMenu =
       contractData &&
       contractData.map(item => {
