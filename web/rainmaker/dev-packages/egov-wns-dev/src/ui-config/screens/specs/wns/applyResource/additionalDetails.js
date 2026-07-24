@@ -194,6 +194,14 @@ export const additionDetails = getCommonCard({
     }),
 
     connectionDetails: getCommonContainer({
+        oldConnectionno: getTextField({
+        label: { labelKey: "WS_SERV_DETAIL_OLD_CONNECTION_NO" },
+        placeholder: { labelKey: "WS_SERV_DETAIL_OLD_CONNECTION_NO_PLACEHOLDER" },
+        gridDefination: { xs: 12, sm: 6 },
+        jsonPath: "applyScreen.oldconnectionno",
+        pattern: "",
+        errorMessage: "ERR_DEFAULT_INPUT_FIELD_MSG",
+      }),
       connectionType: {
         uiFramework: "custom-containers-local",
         moduleName: "egov-wns",
