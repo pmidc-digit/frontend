@@ -22,13 +22,20 @@ export const generateBillApiCall = async (state, dispatch) => {
     if (Object.values(generateBillScreenObject).length <= 1) {
       dispatch(toggleSnackbar(true, { labelName: "Please provide the connection type and mohalla code for generate bill", label: "Please provide the connection type and mohalla code for generate bill" }, "warning"));
     }
-    // else if ((generateBillScreenObject["mohallaData"] === undefined || generateBillScreenObject["mohallaData"].length === 0 || generateBillScreenObject["batch"] === undefined || generateBillScreenObject["batch"].length === 0) &&
-    //   generateBillScreenObject["transactionType"] !== undefined && generateBillScreenObject["transactionType"].length !== 0) {
-    //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
-    // }
     else {
-
       let batchtypechk = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batchtype", {});
+      if (batchtypechk == "Locality" && (!generateBillScreenObject["mohallaData"] || generateBillScreenObject["mohallaData"].length === 0)) {
+        dispatch(toggleSnackbar(true, { labelName: "Please select Locality", label: "Please select Locality" }, "warning"));
+        return;
+      }
+      if (batchtypechk == "Batch" && (!generateBillScreenObject["batch"] || generateBillScreenObject["batch"].length === 0)) {
+        dispatch(toggleSnackbar(true, { labelName: "Please select Batch", label: "Please select Batch" }, "warning"));
+        return;
+      }
+      if (batchtypechk == "Group" && (!generateBillScreenObject["groUp"] || generateBillScreenObject["groUp"].length === 0)) {
+        dispatch(toggleSnackbar(true, { labelName: "Please select Group", label: "Please select Group" }, "warning"));
+        return;
+      }
       if (batchtypechk == "Locality") {
         // var mohallaDataCode = generateBillScreenObject["mohallaData"].substring(
         //   generateBillScreenObject["mohallaData"].lastIndexOf("(") + 1,
@@ -44,8 +51,8 @@ export const generateBillApiCall = async (state, dispatch) => {
           transactionType = "WS";
         }
 
-        let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch");
-        let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp");
+        let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
+        let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
 
         let billSchedulerObject;
 
@@ -190,16 +197,21 @@ export const searchBillApiCall = async (state, dispatch) => {
 
       dispatch(toggleSnackbar(true, { labelName: "Please provide the connection type and mohalla code for search bill", label: "Please provide the connection type and mohalla code for search bill" }, "warning"));
     }
-    // else if ((searchBillScreenObject["mohallaData"] === undefined || searchBillScreenObject["mohallaData"].length === 0) &&
-    //   searchBillScreenObject["transactionType"] !== undefined && searchBillScreenObject["transactionType"].length !== 0) {
+    else if ((searchBillScreenObject["mohallaData"] === undefined || searchBillScreenObject["mohallaData"].length === 0) &&
+      searchBillScreenObject["transactionType"] !== undefined && searchBillScreenObject["transactionType"].length !== 0) {
 
-    //   dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
-    // }
+      dispatch(toggleSnackbar(true, { labelName: "Please select the details", label: "choose the Value" }, "warning"));
+    } else if ((searchBillScreenObject["batch"] === undefined || searchBillScreenObject["batch"].length === 0) &&
+      searchBillScreenObject["transactionType"] !== undefined && searchBillScreenObject["transactionType"].length !== 0) {
+
+      dispatch(toggleSnackbar(true, { labelName: "Please select Batch", label: "choose the Value Batch" }, "warning"));
+    }
     // let groupdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
     else if (batchtypechk == "Group" || batchtypechk == "Batch") {
-      let groupdataa = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp");
-      let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch");
+      let groupdataa = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "groUp", {});
+      let batchdata = get(state.screenConfiguration.preparedFinalObject.generateBillScreen, "batch", {});
       let groupdata = batchtypechk == "Group" ? groupdataa : batchdata;
+      let searchDataParam = batchtypechk == "Group" ? "group" : "batch";
       if (searchBillScreenObject["transactionType"] == "Sewerage") {
         transactionType = "SW";
       }
@@ -215,7 +227,7 @@ export const searchBillApiCall = async (state, dispatch) => {
         if (transactionType == "WS") {
           response = await httpRequest(
             "post",
-            `ws-calculator/watercharges/scheduler/_search?tenantId=${tenant_Id}&group=${groupdata}`,
+            `ws-calculator/watercharges/scheduler/_search?tenantId=${tenant_Id}&${searchDataParam}=${groupdata}`,
             "_search",
             [],
             {}
@@ -224,7 +236,7 @@ export const searchBillApiCall = async (state, dispatch) => {
         else {
           response = await httpRequest(
             "post",
-            `sw-calculator/seweragecharges/scheduler/_search?tenantId=${tenant_Id}&group=${groupdata}`,
+            `sw-calculator/seweragecharges/scheduler/_search?tenantId=${tenant_Id}&${searchDataParam}=${groupdata}`,
             "_search",
             [],
             {}

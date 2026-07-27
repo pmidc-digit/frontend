@@ -141,9 +141,20 @@ export const createBill = getCommonCard({
       },
       afterFieldChange: async (action, state, dispatch) => {
 
-
         let ConectionCategory = await get(state, "screenConfiguration.preparedFinalObject.generateBillScreen.batchtype");
+        const basePath = "components.div.children.createBill.children.cardContent.children.wnsGenerateBill.children.";
+        const localityPath = `${basePath}locality`;
+        const batchPath = `${basePath}batch`;
+        const groupPath = `${basePath}groUp`;
+
         if (ConectionCategory == "Batch") {
+          dispatch(handleField("generateBill", batchPath, "required", true));
+          dispatch(handleField("generateBill", batchPath, "props.required", true));
+          dispatch(handleField("generateBill", localityPath, "required", false));
+          dispatch(handleField("generateBill", localityPath, "props.required", false));
+          dispatch(handleField("generateBill", groupPath, "required", false));
+          dispatch(handleField("generateBill", groupPath, "props.required", false));
+
           try {
             let payload = await httpRequest(
               "post",
@@ -175,6 +186,13 @@ export const createBill = getCommonCard({
           }
         }
         else if (ConectionCategory == "Group") {
+          dispatch(handleField("generateBill", batchPath, "required", false));
+          dispatch(handleField("generateBill", batchPath, "props.required", false));
+          dispatch(handleField("generateBill", localityPath, "required", false));
+          dispatch(handleField("generateBill", localityPath, "props.required", false));
+          dispatch(handleField("generateBill", groupPath, "required", true));
+          dispatch(handleField("generateBill", groupPath, "props.required", true));
+
           let mdmsBody = {
             MdmsCriteria: {
               tenantId: getTenantIdCommon(),
@@ -217,7 +235,12 @@ export const createBill = getCommonCard({
           }
         }
         else {
-          //locality
+          dispatch(handleField("generateBill", batchPath, "required", false));
+          dispatch(handleField("generateBill", batchPath, "props.required", false));
+          dispatch(handleField("generateBill", localityPath, "required", true));
+          dispatch(handleField("generateBill", localityPath, "props.required", true));
+          dispatch(handleField("generateBill", groupPath, "required", false));
+          dispatch(handleField("generateBill", groupPath, "props.required", false));
 
           let response = await httpRequest(
             "post",
@@ -350,8 +373,8 @@ export const createBill = getCommonCard({
         props: {
           variant: "outlined",
           style: {
-            color: "#2947a3",
-            borderColor: "#2947a3",
+            color: "rgba(0, 0, 0, 0.6000000238418579)",
+            borderColor: "rgba(0, 0, 0, 0.6000000238418579)",
             width: "220px",
             height: "48px",
             margin: "28px",
@@ -376,7 +399,7 @@ export const createBill = getCommonCard({
           style: {
             color: "white",
             margin: "28px",
-            backgroundColor: "#2947a3",
+            backgroundColor: "rgba(0, 0, 0, 0.6000000238418579)",
             borderRadius: "2px",
             width: "220px",
             height: "48px",
