@@ -668,7 +668,8 @@ const parserFunction = (state) => {
             dischargeConnection: dischargeConnection ? dischargeConnection : (queryObject.additionalDetails && queryObject.additionalDetails.dischargeConnection ? queryObject.additionalDetails.dischargeConnection : false),
             dischargeFee: dischargeFee ? dischargeFee : (queryObject.additionalDetails && queryObject.additionalDetails.dischargeFee ? queryObject.additionalDetails.dischargeFee : null),
             billingType: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.billingType : null,
-            isMigrated: queryObject && queryObject.additionalDetails && queryObject.additionalDetails.isMigrated && queryObject.additionalDetails.isMigrated !== true ? queryObject.additionalDetails.isMigrated : false,
+            //isMigrated: queryObject && queryObject.additionalDetails && queryObject.additionalDetails.isMigrated && queryObject.additionalDetails.isMigrated !== true ? queryObject.additionalDetails.isMigrated : false,
+            isMigrated:false,
             billingAmount: queryObject && queryObject.additionalDetails && queryObject.additionalDetails.billingAmount ? parseFloat(queryObject.additionalDetails.billingAmount) : null,
             connectionCategory: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.connectionCategory : null,
             ledgerId: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.ledgerId : null,
@@ -691,6 +692,7 @@ const parserFunction = (state) => {
             estimationFileStoreId: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.estimationFileStoreId : null,
             sanctionFileStoreId: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.sanctionFileStoreId : null,
             estimationLetterDate: queryObject && queryObject.additionalDetails ? queryObject.additionalDetails.estimationLetterDate : null,
+            oldConnectionNo : queryObject && queryObject.oldconnectionno ? queryObject.oldconnectionno : null,
         }
     }
     let waterSubUsageType = get(state.screenConfiguration.preparedFinalObject, "applyScreen.additionalDetails.waterSubUsageType", "");
