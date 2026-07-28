@@ -87,7 +87,8 @@
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
-  width: 100%;
+  width: auto;
+  margin-right: 60px;
   color: rgba(0, 0, 0, 0.8700000047683716);
 }
 .menuStyle > .label-text {
