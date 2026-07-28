@@ -23,13 +23,13 @@ const styles = {
     marginLeft: "-10px",
   },
   fibreIconStyle: {
-    height: "28px",
-    width: "28px",
+    height: "21px",
+    width: "21px",
     margin: 0,
     position: "relative",
   },
   arrowIconStyle: {
-    right: "12px",
+    right: "-10px",
   },
   defaultMenuItemStyle: {
     display: "flex",
@@ -51,7 +51,7 @@ const styles = {
   },
   inputStyle: {
     //    color: "white",
-    color: window.innerWidth > 768 ? "#757575" : "black",
+    color: window.innerWidth > 768 ? "white" : "black",
     bottom: "5px",
     height: "auto",
     paddingLeft: "5px",
@@ -68,119 +68,9 @@ class ActionMenuComp extends Component {
       path: "",
       menuItems: [],
       selectedMenuIndex: 0,
-      expandedMenus: {},
     };
     this.setWrapperRef = this.setWrapperRef.bind(this);
   }
-
-  toggleMenuExpansion = (menuName) => {
-    this.setState(prevState => ({
-      expandedMenus: {
-        ...prevState.expandedMenus,
-        [menuName]: !prevState.expandedMenus[menuName]
-      }
-    }));
-  };
-
-  buildMenuTree = (actionList) => {
-    if (!actionList) return [];
-    
-    // 1. Filter valid actions (must have a non-empty path and navigationURL)
-    const validActions = actionList.filter(action => action.path && action.path !== "" && action.navigationURL);
-    
-    // 2. Determine which rootNames are parent categories (have at least one nested child)
-    const parentCategories = new Set();
-    validActions.forEach(action => {
-      const parts = action.path.split(".");
-      if (parts.length > 1) {
-        parentCategories.add(parts[0]);
-      }
-    });
-    
-    const tree = [];
-    const parentsMap = {}; // Maps rootName to its children array
-    
-    validActions.forEach(action => {
-      const parts = action.path.split(".");
-      const rootName = parts[0];
-      
-      if (parentCategories.has(rootName)) {
-        // This rootName is a parent category
-        if (parts.length === 1) {
-          // If there is a top-level action with the same name as the category,
-          // ignore it as the category itself will toggle expansion.
-          return;
-        }
-        
-        if (!parentsMap[rootName]) {
-          parentsMap[rootName] = [];
-          // Find the category icon and details from the first matching category action or child action
-          const categoryAction = validActions.find(a => a.path === rootName) || action;
-          
-          tree.push({
-            name: rootName,
-            path: rootName,
-            url: "",
-            navigationURL: categoryAction.navigationURL,
-            queryParams: categoryAction.queryParams,
-            leftIcon: categoryAction.leftIcon,
-            orderNumber: categoryAction.orderNumber || 0,
-            children: parentsMap[rootName]
-          });
-        }
-        
-        parentsMap[rootName].push({
-          name: action.displayName || action.name,
-          path: action.path,
-          url: action.url,
-          navigationURL: action.navigationURL,
-          queryParams: action.queryParams,
-          leftIcon: action.leftIcon,
-          orderNumber: action.orderNumber || 0
-        });
-      } else {
-        // This is a top-level leaf item (e.g., "Home")
-        tree.push({
-          name: action.displayName || action.name || rootName,
-          path: action.path,
-          url: action.url,
-          navigationURL: action.navigationURL,
-          queryParams: action.queryParams,
-          leftIcon: action.leftIcon,
-          orderNumber: action.orderNumber || 0,
-          children: []
-        });
-      }
-    });
-    
-    // Sort children inside parent categories by orderNumber
-    Object.keys(parentsMap).forEach(rootName => {
-      parentsMap[rootName].sort((a, b) => a.orderNumber - b.orderNumber);
-    });
-    
-    // Sort tree by orderNumber
-    return tree.sort((a, b) => a.orderNumber - b.orderNumber);
-  };
-
-  autoExpandActiveMenu = (actionListArr) => {
-    const activeItmem = localStorageGet("menuName");
-    if (!activeItmem || !actionListArr) return;
-    const tree = this.buildMenuTree(actionListArr);
-    const expandedMenus = { ...this.state.expandedMenus };
-    let changed = false;
-    tree.forEach(item => {
-      if (item.children && item.children.length > 0) {
-        const hasActiveChild = item.children.some(child => child.name === activeItmem);
-        if (hasActiveChild && !expandedMenus[item.name]) {
-          expandedMenus[item.name] = true;
-          changed = true;
-        }
-      }
-    });
-    if (changed) {
-      this.setState({ expandedMenus });
-    }
-  };
 
   setWrapperRef(node) {
     this.wrapperRef = node;
@@ -204,9 +94,6 @@ class ActionMenuComp extends Component {
   componentDidMount() {
     // for better reusability moving out
     this.initialMenuUpdate();
-    if (this.props.actionListArr) {
-      this.autoExpandActiveMenu(this.props.actionListArr);
-    }
   }
   initialMenuUpdate() {
     let pathParam = {};
@@ -241,18 +128,12 @@ class ActionMenuComp extends Component {
       this.setState({
         searchText: "",
       });
-      if (nextProps.actionListArr) {
-        this.autoExpandActiveMenu(nextProps.actionListArr);
-      }
     }
     /**
      * Reset menu after arraylist changes
      */
     if (nextProps && nextProps.actionListArr != this.props.actionListArr) {
       this.initialMenuUpdate();
-      if (nextProps.actionListArr) {
-        this.autoExpandActiveMenu(nextProps.actionListArr);
-      }
     }
   }
   changeModulesActions(modules, items) {
@@ -417,87 +298,59 @@ class ActionMenuComp extends Component {
     const showMenuItem = () => {
       const navigationURL = window.location.href.split("/").pop();
       if (searchText.length == 0) {
-        let tree = this.buildMenuTree(actionListArr);
-        if (process.env.REACT_APP_NAME === "Citizen") {
-          if (JSON.parse(getUserInfo()).roles.some((role) => role.code === 'PESCO')) {
-            tree = tree.filter(menu => menu.name.toUpperCase() === 'SWACH');
-          } else {
-            tree = tree.filter(menu => menu.name.toUpperCase() !== 'SWACH');
-          }
-        }
+        return menuItems.map((item, index) => {
 
-        return tree.map((item, index) => {
           let iconLeft;
           if (item.leftIcon) {
             iconLeft = item.leftIcon.split(":");
           }
-
-          const isExpanded = !!this.state.expandedMenus[item.name];
-
-          if (item.children && item.children.length > 0) {
+          if (!item.url) {
             return (
-              <div key={index}>
-                <div className={`sideMenuItem ${isExpanded ? "expanded-parent" : ""}`}>
-                  <MenuItem
-                    id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
-                    innerDivStyle={styles.defaultMenuItemStyle}
-                    style={{ whiteSpace: "initial" }}
-                    leftIcon={this.renderLeftIcon(iconLeft, item)}
-                    primaryText={
-                      <Label
-                        className="menuStyle with-childs menu-label-style"
-                        label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                      />
-                    }
-                    rightIcon={
-                      menuDrawerOpen ? (
-                        <Icon
-                          name={isExpanded ? "arrow-drop-down" : "chevron-right"}
-                          action="navigation"
-                          className="iconClassHover material-icons"
-                          style={styles.arrowIconStyle}
-                        />
-                      ) : null
-                    }
-                    onClick={() => {
-                      this.toggleMenuExpansion(item.name);
-                    }}
-                  />
-                </div>
-
-                {isExpanded && item.children.map((child, childIndex) => {
-                  return (
-                    <div className={`sideMenuItem submenu-item ${activeItmem == child.name ? "selected" : ""}`} key={`${index}-${childIndex}`}>
-                      <MenuItem
-                        innerDivStyle={{
-                          ...styles.defaultMenuItemStyle,
-                          paddingLeft: "72px"
-                        }}
-                        style={{ whiteSpace: "initial" }}
-                        id={child.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index + "-" + childIndex}
-                        onClick={() => {
-                          if (child.navigationURL === "tradelicence/apply") {
-                            this.props.setRequiredDocumentFlag()
-                          }
-                          document.title = child.name;
-                          toggleDrawer && toggleDrawer();
-                          updateActiveRoute(child.path, child.name);
-                          this.toRedirect(child);
-                        }}
-                        primaryText={
-                          <Label
-                            className="menuStyle submenu-label"
-                            label={child.name ? `ACTION_TEST_${child.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
-                          />
-                        }
-                      />
-                    </div>
-                  );
-                })}
+              <div className="sideMenuItem">
+                {/* <Tooltip
+                  id={"menu-toggle-tooltip"}
+                  title={<Label defaultLabel={menuDrawerOpen ? "" : item.name} label={menuDrawerOpen ? "" : `ACTION_TEST_${item.name}`} />}
+                  placement="right"
+                > */}
+                <MenuItem
+                  key={index}
+                  id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                  innerDivStyle={styles.defaultMenuItemStyle}
+                  style={{ whiteSpace: "initial" }}
+                  leftIcon={this.renderLeftIcon(iconLeft, item)}
+                  primaryText={
+                    <Label
+                      className="menuStyle with-childs menu-label-style"
+                      //defaultLabel={item.name}
+                      label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                    // color="rgba(255, 255, 255, 0.87)"
+                    />
+                  }
+                  rightIcon={
+                    <Icon
+                      name="chevron-right"
+                      action="navigation"
+                      //  color="rgba(255, 255, 255, 0.87)"
+                      className="iconClassHover material-icons whiteColor menu-right-icon"
+                      style={styles.arrowIconStyle}
+                    />
+                  }
+                  onClick={() => {
+                    let pathParam = {
+                      path: !item.path ? item.name : item.path,
+                      parentPath: false,
+                    };
+                    toggleDrawer && toggleDrawer();
+                    menuChange(pathParam);
+                  }}
+                />
+                {/* </Tooltip> */}
               </div>
             );
           } else {
             if (item.navigationURL && item.navigationURL !== "newTab") {
+              //let targetPath = toRedirect(item);
+
               return (
                 <div className={`sideMenuItem ${activeItmem == item.name ? "selected" : ""}`} key={index}>
                   <MenuItem
@@ -511,6 +364,8 @@ class ActionMenuComp extends Component {
                       document.title = item.name;
                       toggleDrawer && toggleDrawer();
                       updateActiveRoute(item.path, item.name);
+                      
+                      // Conditional navigation: digit-ui → href, else → history.push
                       this.toRedirect(item)
                     }}
                     leftIcon={this.renderLeftIcon(iconLeft, item)}
@@ -525,12 +380,18 @@ class ActionMenuComp extends Component {
               );
             } else {
               return (
-                <a href={item.url} target="_blank" rel="noopener noreferrer" key={index}>
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
                   <div className="sideMenuItem">
+                    {/* <Tooltip
+                      id={"menu-toggle-tooltip"}
+                      title={<Label defaultLabel={menuDrawerOpen ? "" : item.name} label={menuDrawerOpen ? "" : `ACTION_TEST_${item.name}`} />}
+                      placement="right"
+                    > */}
                     <MenuItem
                       innerDivStyle={styles.defaultMenuItemStyle}
                       style={{ whiteSpace: "initial" }}
                       id={item.name.toUpperCase().replace(/[\s]/g, "-") + "-" + index}
+                      key={index}
                       onClick={() => {
                         localStorageSet("menuPath", item.path);
                         document.title = item.name;
@@ -539,10 +400,13 @@ class ActionMenuComp extends Component {
                       primaryText={
                         <Label
                           className="menuStyle"
+                          //defaultLabel={item.name}
                           label={item.name ? `ACTION_TEST_${item.name.toUpperCase().replace(/[.:-\s\/]/g, "_")}` : ""}
+                        // color="rgba(255, 255, 255, 0.87)"
                         />
                       }
                     />
+                    {/* </Tooltip> */}
                   </div>
                 </a>
               );
