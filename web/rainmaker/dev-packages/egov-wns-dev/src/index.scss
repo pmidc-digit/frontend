@@ -297,3 +297,39 @@ body {
 
 .video-card-style {
   min-height: 270px; }
+
+.abg-ack-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.abg-ack-body-box {
+  margin-left: 16px;
+}
+.abg-ack-body-sub {
+  margin-top: 8px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+}
+.abg-ack-tail-box {
+  text-align: right;
+}
+.abg-ack-tail-text {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.abg-ack-tail-number {
+  font-size: 24px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+@media only screen and (max-width: 768px) {
+  .abg-ack-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .abg-ack-tail-box {
+    text-align: left;
+    margin-top: 16px;
+  }
+}

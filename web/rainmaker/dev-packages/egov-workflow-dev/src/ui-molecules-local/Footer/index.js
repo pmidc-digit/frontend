@@ -3,6 +3,7 @@ import MenuButton from "egov-ui-framework/ui-molecules/MenuButton";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
 import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
+import { getQueryArg } from "egov-ui-framework/ui-utils/commons";
 import { hideSpinner, showSpinner } from "egov-ui-kit/redux/common/actions";
 import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import get from "lodash/get";
@@ -82,7 +83,7 @@ class Footer extends React.Component {
   openActionDialog = async (item, label) => {
     const { dataPath, state } = this.props;
     let diffDays;
-
+    console.log('label- here in dialog', label , item)
       //console.log("Hello Item",item);
 
     const getdate = get(
@@ -225,6 +226,14 @@ class Footer extends React.Component {
 
         onDialogButtonClick(label, false);
 
+      }
+      const isModifySubmit =
+        getQueryArg(window.location.href, "mode") === "MODIFY" &&
+        (label === "SUBMIT" || item.buttonLabel === "SUBMIT_APPLICATION");
+
+      if (isModifySubmit) {
+        onDialogButtonClick(label, false);
+        return;
       }
       else {
         this.setState({ open: true, data: item, employeeList });
