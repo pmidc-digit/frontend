@@ -36,9 +36,16 @@ class WorkFlowContainer extends React.Component {
     ];
 
     // Fetch business service data early
+    // Get the full business service name from ProcessInstances
+    let businessServiceName = this.props.moduleName || "";
+    if (this.props.ProcessInstances && this.props.ProcessInstances.length > 0) {
+      businessServiceName = get(this.props.ProcessInstances[0], "businessService", businessServiceName);
+    }
+    console.log("Using full businessService:", businessServiceName);
+
     await this.setBusinessServiceDataToLocalStorage([
       { key: "tenantId", value: tenantId },
-      { key: "businessServices", value: this.props.moduleName || "" }
+      { key: "businessServices", value: businessServiceName }
     ]);
 
     if (this.props.moduleName === "NewWS1" || this.props.moduleName === "NewSW1") {
@@ -563,15 +570,19 @@ getHeaderName = action => {
 getEmployeeRoles = (nextAction, currentAction, moduleName) => {
   try {
     const businessServiceDataStr = localStorageGet("businessServiceData");
+    console.log("getEmployeeRoles - moduleName:", moduleName, "nextAction:", nextAction, "currentAction:", currentAction);
     if (!businessServiceDataStr) {
+      console.warn("No businessServiceData in localStorage");
       return "";
     }
     const businessServiceData = JSON.parse(businessServiceDataStr);
     if (!businessServiceData || !Array.isArray(businessServiceData) || businessServiceData.length === 0) {
+      console.warn("businessServiceData is empty");
       return "";
     }
     const data = find(businessServiceData, { businessService: moduleName });
     if (!data) {
+      console.warn("No matching business service found for:", moduleName);
       return "";
     }
     let roles = [];
@@ -593,6 +604,7 @@ getEmployeeRoles = (nextAction, currentAction, moduleName) => {
     }
     roles = [...new Set(roles)];
     roles.indexOf("*") > -1 && roles.splice(roles.indexOf("*"), 1);
+    console.log("Extracted roles for", moduleName, ":", roles.toString());
     return roles.toString();
   } catch (error) {
     console.error("Error fetching employee roles:", error);
@@ -655,13 +667,14 @@ getActionIfEditable = (status, businessId, moduleName, applicationState) => {
 
 setBusinessServiceDataToLocalStorage = async (
   queryObject,
-) => { 
+) => {
   const payload = await httpRequest(
     "post",
     "egov-workflow-v2/egov-wf/businessservice/_search",
     "_search",
     queryObject
   );
+  console.log("API Response - BusinessServices:", payload);
   if (
     payload &&
     payload.BusinessServices &&
@@ -671,6 +684,7 @@ setBusinessServiceDataToLocalStorage = async (
       "businessServiceData",
       JSON.stringify(get(payload, "BusinessServices"))
     );
+    console.log("Stored in localStorage:", get(payload, "BusinessServices"));
   }
 }
 
