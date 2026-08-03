@@ -480,8 +480,12 @@ class WorkFlowContainer extends React.Component {
     const PTStatus = get(preparedFinalObject,"Property.workflow.action", []);
     const WSassigneePresent = get(preparedFinalObject,"WaterConnection[0].assignee", []) ? get(preparedFinalObject,"WaterConnection[0].assignee", []).length > 0 : false;
     const WSassigneeAction = get(preparedFinalObject,"WaterConnection[0].action", "");
+    const isModifySubmit =
+            getQueryArg(window.location.href, "mode") === "MODIFY" &&
+            (label === "SUBMIT_APPLICATION" || label === "RESUBMIT_APPLICATION");
     
-      if(assigneePresent || FirenocassigneePresent ||window.location.pathname.includes("bill-amend")|| PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "APPROVE_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || assigneeAction=== "REJECT" || assigneeAction ===  "CANCEL"|| assigneeAction ===  "RESUBMIT" || assigneeAction === "SENDBACKTOCITIZEN" ||WSassigneeAction ==="SEND_BACK_TO_CITIZEN"|| WSassigneeAction === "RESUBMIT_APPLICATION" || WSassigneeAction === "REJECT" || FireNOCassigneeAction ==="RESUBMIT" || FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || FireNOCassigneeAction === "CANCEL" || PTassigneeAction === "REJECT" ||PTassigneeAction === "SENDBACKTOCITIZEN" || assigneeStatus === "INITIATED"){
+    
+      if(assigneePresent || FirenocassigneePresent ||window.location.pathname.includes("bill-amend")|| PTassigneePresent || WSassigneePresent || assigneeStatus === "PENDINGAPPROVAL" || fireNOCassigneeStatus === "PENDINGAPPROVAL" || PTStatus === "APPROVE" || WSassigneeAction === "APPROVE" || WSassigneeAction === "APPROVE_FOR_CONNECTION" || WSassigneeAction === "APPROVE_CONNECTION" || WSassigneeAction === "ACTIVATE_CONNECTION" || WSassigneeAction === "FORWARD_FOR_FEE" || assigneeAction=== "REJECT" || assigneeAction ===  "CANCEL"|| assigneeAction ===  "RESUBMIT" || assigneeAction === "SENDBACKTOCITIZEN" ||WSassigneeAction ==="SEND_BACK_TO_CITIZEN"|| WSassigneeAction === "RESUBMIT_APPLICATION" || WSassigneeAction === "REJECT" || FireNOCassigneeAction ==="RESUBMIT" || FireNOCassigneeAction === "REJECT" || FireNOCassigneeAction === "SENDBACKTOCITIZEN" || FireNOCassigneeAction === "CANCEL" || PTassigneeAction === "REJECT" ||PTassigneeAction === "SENDBACKTOCITIZEN" || assigneeStatus === "INITIATED" || isModifySubmit){
         this.wfUpdate(label);
       }
       
