@@ -48,6 +48,15 @@ export const billSearchResult = {
         labelName: "Business Service",
         labelKey: "ABG_BUSINESS_SERVICE"
       },
+       {
+        labelName: "STATUS",
+        labelKey: "ABG_STATUS",
+        options: {
+          display: false,
+          viewColumns: false,
+          filter: false
+        }
+      },
       {
         labelName: "Action",
         labelKey: "ABG_ACTION",
@@ -56,7 +65,11 @@ export const billSearchResult = {
             var rowData = tableMeta.rowData;
             var tenantId = rowData[1];    // Tenant ID
             var filestoreId = rowData[2];
+            var fileStatus= rowData[8];
+            //console.log("Hello rowData",fileStatus)
+            
             return (
+              fileStatus === 'DONE' ?
               <button
                 type="button"
                 style={{
@@ -72,7 +85,7 @@ export const billSearchResult = {
                 onClick={()=>getPDFFile(tenantId,filestoreId)}
               >
                 Download
-              </button>
+              </button> : "INPROGRESS"
             );
           }
         }
