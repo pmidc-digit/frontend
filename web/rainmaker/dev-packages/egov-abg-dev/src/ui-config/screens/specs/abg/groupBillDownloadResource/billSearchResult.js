@@ -65,8 +65,8 @@ export const billSearchResult = {
             var rowData = tableMeta.rowData;
             var tenantId = rowData[1];    // Tenant ID
             var filestoreId = rowData[2];
-            var fileStatus= rowData[8];
-            //console.log("Hello rowData",fileStatus)
+            var fileStatus= rowData[7];
+            //console.log("Hello rowData",rowData)
             
             return (
               fileStatus === 'DONE' ?
