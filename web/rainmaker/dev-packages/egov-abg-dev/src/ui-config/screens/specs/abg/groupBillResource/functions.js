@@ -18,7 +18,6 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
   let bills;
- 
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -97,21 +96,20 @@ export const searchApiCall = async (state, dispatch) => {
       const codes = batchlocality.children.map(item => item.code);
       searchScreenObject.locality = codes;
       if (searchScreenObject.businesService == 'WS') {
-        searchScreenObject.url = "/egov-searcher/bill-genie/wsbatchbilling/_get";
+        searchScreenObject.url = "/egov-searcher/bill-genie/wsbatchbilling_summary/_get";
       } else {
-        searchScreenObject.url = "/egov-searcher/bill-genie/swbatchbilling/_get";
+        searchScreenObject.url = "/egov-searcher/bill-genie/swbatchbilling_summary/_get";
       }
     }
-    else if (batchtype == 'Group' && searchScreenObject.businesService == 'SW') {
-      searchScreenObject.url = "/egov-searcher/bill-genie/groupbillssw/_get";
-    }
     else if (batchtype == 'Group') {
-      searchScreenObject.url = "/egov-searcher/bill-genie/groupbills/_get";
-    }
-    else if (batchtype == 'Integrated Bill') {
+      searchScreenObject.url = searchScreenObject.businesService === 'SW' ? "/egov-searcher/bill-genie/groupbillssw_summary/_get" : "/egov-searcher/bill-genie/groupbills_summary/_get"
+      //searchScreenObject.url = "/egov-searcher/bill-genie/groupbillssw/_get";
+      //searchScreenObject.url = "/egov-searcher/bill-genie/groupbills_summary/_get";
+    }else if(batchtype == 'Locality' ){
+      searchScreenObject.url = searchScreenObject.businesService === 'WS' ? "/egov-searcher/bill-genie/waterbills_summary/_get" : "/egov-searcher/bill-genie/seweragebills_summary/_get"
+    }else if (batchtype == 'Integrated Bill') {
       searchScreenObject.url = "/egov-searcher/bill-genie/integratedbills/_get";  //added Url for integratedbills
-    }
-    else {
+    }else {
       searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     }
 

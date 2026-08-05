@@ -63,8 +63,11 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
         return;
       }
 
-      var filteredBillData = billRecords.filter(function (item) {
-        return item.status === "DONE";
+      // var filteredBillData = billRecords.filter(function (item) {
+      //   return item.status === "DONE";
+      // });
+      var filteredBillData = billRecords.sort(function (a, b) {
+        return (b.lastmodifiedtime || 0) - (a.lastmodifiedtime || 0);
       });
       //console.table("tableData",filteredBillData);
       //make table data
@@ -143,6 +146,8 @@ export var searchApiCall = function (state, dispatch, limit, offset) {
             item && item.bussinessService
               ? item.bussinessService
               : "-",
+          ABG_STATUS : item && item.status 
+            ? item.status : "-"
         };
       });
 
