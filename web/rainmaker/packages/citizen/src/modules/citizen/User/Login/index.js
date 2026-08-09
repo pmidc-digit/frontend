@@ -14,9 +14,9 @@ class Login extends Component {
 
     return (
       <Banner bannerUrl={bannerUrl} logoUrl={logoUrl}>
-        <marquee style={{ color: "white", fontStyle: "italic", fontSize: "20px", margin: "20px 0" }}>
-         Scheduled Maintenance Notice: The mSeva Portal will undergo scheduled maintenance and database optimization from 7:00 PM on 07 August 2026 to 6:00 PM on 09 August 2026. Services may be temporarily unavailable or experience intermittent interruptions during this period. We regret the inconvenience caused and appreciate your patience and cooperation. - Team mSeva, Punjab Municipal Infrastructure Development Company (PMIDC)
-      </marquee>
+        {/* <marquee style={{ color: "white", fontStyle: "italic", fontSize: "20px", margin: "20px 0" }}>
+         Planned Downtime Notice: The mSeva Punjab application will be unavailable from 15th August 2025 to 18th August 2025 due to scheduled maintenance. We regret the inconvenience and appreciate your understanding.
+      </marquee> */}
         <LoginFormHOC logoUrl={logoUrl} qrCodeURL={qrCodeURL} enableWhatsApp={enableWhatsApp}/>
       </Banner>
     );
