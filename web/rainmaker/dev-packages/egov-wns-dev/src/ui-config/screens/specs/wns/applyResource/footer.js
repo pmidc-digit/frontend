@@ -215,6 +215,7 @@ const getMdmsData = async (state, dispatch) => {
 const callBackForNext = async (state, dispatch) => {
   window.scrollTo(0, 0);
   let activeStep = get(state.screenConfiguration.screenConfig["apply"], "components.div.children.stepper.props.activeStep", 0);
+  await pushTheDocsUploadedToRedux(state, dispatch);
   let isFormValid = true;
   let hasFieldToaster = false;
   /* validations for property details screen */
