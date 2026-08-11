@@ -25,7 +25,7 @@ export const pushTheDocsUploadedToRedux = async (state, dispatch) => {
     let uploadedDocs = [];
     if (reduxDocuments !== null && reduxDocuments !== undefined) {
         dispatch(prepareFinalObject("DocumentsData", []));
-        Object.keys(reduxDocuments).forEach(async key => {
+        for (const key of Object.keys(reduxDocuments)) {
             if (reduxDocuments !== undefined && reduxDocuments[key] !== undefined && reduxDocuments[key].documents !== undefined) {
                 reduxDocuments[key].documents.forEach(element => {
                     if (reduxDocuments[key].dropdown !== undefined) {
@@ -63,9 +63,9 @@ export const pushTheDocsUploadedToRedux = async (state, dispatch) => {
                     dispatch(prepareFinalObject("WaterConnection[0]", applyScreenObj));
                 }
             }
-        });
+        }
     }
-}
+};
 export const updateTradeDetails = async requestBody => {
     try {
         const payload = await httpRequest(
