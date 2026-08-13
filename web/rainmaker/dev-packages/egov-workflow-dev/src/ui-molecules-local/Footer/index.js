@@ -159,6 +159,7 @@ class Footer extends React.Component {
         setRoute(url);
         return;
       }
+      //console.log("item",item)
       if (item.showEmployeeList && item.roles && item.roles.trim() !== "") {
         const tenantId = getTenantId();
         const queryObj = [
@@ -195,7 +196,7 @@ class Footer extends React.Component {
           queryObj
         );
         empList = payload && payload.Employees.map((item, index) => {
-          // Add only User With Active Status 
+          // Add only User With Active Status
           const active = JSON.stringify(item.user.active);
           if (active == "true") {
             const name = get(item, "user.name");
@@ -218,6 +219,54 @@ class Footer extends React.Component {
         })
         for (var i of empList) {
           employeeList.push(i);
+        }
+      } else{
+       // console.warn("Warning: showEmployeeList is true but roles is missing or empty for action:", item.buttonLabel);
+       // console.warn("Item details:", item);
+       // console.warn("Fetching ALL employees as fallback");
+
+        const tenantId = getTenantId();
+        const queryObj = [
+          {
+            key: "tenantId",
+            value: tenantId
+          }
+        ];
+
+        try {
+          const payload = await httpRequest(
+            "post",
+            "/egov-hrms/employees/_search",
+            "",
+            queryObj
+          );
+          empList = payload && payload.Employees.map((item, index) => {
+            const active = JSON.stringify(item.user.active);
+            if (active == "true") {
+              const name = get(item, "user.name");
+              return {
+                value: item.uuid,
+                label: name
+              };
+            }
+            else {
+              return {
+                value: item.uuid,
+                label: 'blank'
+              };
+            }
+          });
+          empList.forEach((res, index) => {
+            if (res.label == 'blank') {
+              empList.splice(index, 1);
+            };
+          })
+          for (var i of empList) {
+            employeeList.push(i);
+          }
+        } catch (error) {
+          console.error("Error fetching all employees:", error);
+          employeeList = [];
         }
       }
 
@@ -310,7 +359,7 @@ class Footer extends React.Component {
           queryObj
         );
         empList = payload && payload.Employees.map((item, index) => {
-          // Add only User With Active Status 
+          // Add only User With Active Status
           const active = JSON.stringify(item.user.active);
           if (active == "true") {
             const name = get(item, "user.name");
@@ -333,6 +382,54 @@ class Footer extends React.Component {
         })
         for (var i of empList) {
           employeeList.push(i);
+        }
+      } else if (item.showEmployeeList && (!item.roles || item.roles.trim() === "")) {
+        console.warn("Warning: showEmployeeList is true but roles is missing or empty for action:", item.buttonLabel);
+        console.warn("Item details:", item);
+        console.warn("Fetching ALL employees as fallback");
+
+        const tenantId = getTenantId();
+        const queryObj = [
+          {
+            key: "tenantId",
+            value: tenantId
+          }
+        ];
+
+        try {
+          const payload = await httpRequest(
+            "post",
+            "/egov-hrms/employees/_search",
+            "",
+            queryObj
+          );
+          empList = payload && payload.Employees.map((item, index) => {
+            const active = JSON.stringify(item.user.active);
+            if (active == "true") {
+              const name = get(item, "user.name");
+              return {
+                value: item.uuid,
+                label: name
+              };
+            }
+            else {
+              return {
+                value: item.uuid,
+                label: 'blank'
+              };
+            }
+          });
+          empList.forEach((res, index) => {
+            if (res.label == 'blank') {
+              empList.splice(index, 1);
+            };
+          })
+          for (var i of empList) {
+            employeeList.push(i);
+          }
+        } catch (error) {
+          console.error("Error fetching all employees:", error);
+          employeeList = [];
         }
       }
 
