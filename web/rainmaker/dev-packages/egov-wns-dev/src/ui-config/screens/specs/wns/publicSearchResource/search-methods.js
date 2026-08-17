@@ -52,14 +52,14 @@ const getAddress = (item) => {
   if (item && item.address) {
     let mohalla =
       item.address.locality.name &&
-      item.address.locality.name != null &&
-      item.address.locality.name != "NA"
+        item.address.locality.name != null &&
+        item.address.locality.name != "NA"
         ? item.address.locality.name + ","
         : "";
     let city =
       item.address.city &&
-      item.address.city != null &&
-      item.address.city != "NA"
+        item.address.city != null &&
+        item.address.city != "NA"
         ? item.address.city
         : "";
     if (mohalla == "" && city == "") {
@@ -97,6 +97,18 @@ export const getPayload = (searchScreenObject) => {
       querryObject.push({
         key: "tenantId",
         value: searchScreenObject.tenantId,
+      });
+    }
+    if (searchScreenObject.transactionType == "Sewerage") {
+      querryObject.push({
+        key: "transactionType",
+        value: "SW",
+      });
+    }
+    if (searchScreenObject.transactionType == "Water") {
+      querryObject.push({
+        key: "transactionType",
+        value: "WS",
       });
     }
     querryObject.push({
@@ -205,15 +217,15 @@ const searchApiCall = async (state, dispatch) => {
       let finalArray = [];
       const waterConnections = waterFinalResponse
         ? waterFinalResponse.WaterConnection.map((e) => {
-            e.service = serviceConst.WATER;
-            return e;
-          })
+          e.service = serviceConst.WATER;
+          return e;
+        })
         : [];
       const sewerageConnections = waterFinalResponse
         ? sewerageFinalResponse.SewerageConnections.map((e) => {
-            e.service = serviceConst.SEWERAGE;
-            return e;
-          })
+          e.service = serviceConst.SEWERAGE;
+          return e;
+        })
         : [];
       let combinedSearchResults =
         waterFinalResponse || waterFinalResponse
