@@ -52,14 +52,14 @@ const getAddress = (item) => {
   if (item && item.address) {
     let mohalla =
       item.address.locality.name &&
-      item.address.locality.name != null &&
-      item.address.locality.name != "NA"
+        item.address.locality.name != null &&
+        item.address.locality.name != "NA"
         ? item.address.locality.name + ","
         : "";
     let city =
       item.address.city &&
-      item.address.city != null &&
-      item.address.city != "NA"
+        item.address.city != null &&
+        item.address.city != "NA"
         ? item.address.city
         : "";
     if (mohalla == "" && city == "") {
@@ -97,6 +97,18 @@ export const getPayload = (searchScreenObject) => {
       querryObject.push({
         key: "tenantId",
         value: searchScreenObject.tenantId,
+      });
+    }
+    if (searchScreenObject.transactionType == "Sewerage") {
+      querryObject.push({
+        key: "transactionType",
+        value: "SW",
+      });
+    }
+    if (searchScreenObject.transactionType == "Water") {
+      querryObject.push({
+        key: "transactionType",
+        value: "WS",
       });
     }
     querryObject.push({
@@ -168,58 +180,81 @@ const searchApiCall = async (state, dispatch) => {
     let tenantId = searchScreenObject.tenantId;
     try {
       payloadbillingPeriod = await getMdmsDataForBill(tenantId);
-      let getSearchResult = await getOpenSearchResultsForWater(
-        queryObject,
-        requestBody,
-        dispatch
-      );
-      let getSearchResultForSewerage = await getOpenSearchResultsForSewerage(
-        queryObject,
-        requestBody,
-        dispatch
-      );
-      let waterBillResponse = await fetchBill(
-        getSearchResult,
-        searchScreenObject.tenantId,
-        "WS",
-        "WATER",
-        payloadbillingPeriod
-      );
-      let sewerageBillResponse = await fetchBill(
-        getSearchResultForSewerage,
-        searchScreenObject.tenantId,
-        "SW",
-        "SEWERAGE",
-        payloadbillingPeriod
-      );
-      let waterFinalResponse = await getPropertyWithBillAmount(
-        getSearchResult,
-        waterBillResponse,
-        "WATER"
-      );
-      let sewerageFinalResponse = await getPropertyWithBillAmount(
-        getSearchResultForSewerage,
-        sewerageBillResponse,
-        "SEWERAGE"
-      );
+      const selectedConnectionType = searchScreenObject.transactionType;
+      const shouldSearchWater =
+        !selectedConnectionType || selectedConnectionType === "Water";
+      const shouldSearchSewerage =
+        !selectedConnectionType || selectedConnectionType === "Sewerage";
+
+      let getSearchResult = null;
+      let getSearchResultForSewerage = null;
+      let waterBillResponse = null;
+      let sewerageBillResponse = null;
+      let waterFinalResponse = null;
+      let sewerageFinalResponse = null;
+
+      if (shouldSearchWater) {
+        getSearchResult = await getOpenSearchResultsForWater(
+          queryObject,
+          requestBody,
+          dispatch
+        );
+        waterBillResponse = await fetchBill(
+          getSearchResult,
+          searchScreenObject.tenantId,
+          "WS",
+          "WATER",
+          payloadbillingPeriod
+        );
+        waterFinalResponse = await getPropertyWithBillAmount(
+          getSearchResult,
+          waterBillResponse,
+          "WATER"
+        );
+      }
+
+      if (shouldSearchSewerage) {
+        getSearchResultForSewerage = await getOpenSearchResultsForSewerage(
+          queryObject,
+          requestBody,
+          dispatch
+        );
+        sewerageBillResponse = await fetchBill(
+          getSearchResultForSewerage,
+          searchScreenObject.tenantId,
+          "SW",
+          "SEWERAGE",
+          payloadbillingPeriod
+        );
+        sewerageFinalResponse = await getPropertyWithBillAmount(
+          getSearchResultForSewerage,
+          sewerageBillResponse,
+          "SEWERAGE"
+        );
+      }
+
       let finalArray = [];
       const waterConnections = waterFinalResponse
         ? waterFinalResponse.WaterConnection.map((e) => {
-            e.service = serviceConst.WATER;
-            return e;
-          })
+          e.service = serviceConst.WATER;
+          return e;
+        })
         : [];
-      const sewerageConnections = waterFinalResponse
+      const sewerageConnections = sewerageFinalResponse
         ? sewerageFinalResponse.SewerageConnections.map((e) => {
-            e.service = serviceConst.SEWERAGE;
-            return e;
-          })
+          e.service = serviceConst.SEWERAGE;
+          return e;
+        })
         : [];
-      let combinedSearchResults =
-        waterFinalResponse || waterFinalResponse
-          ? sewerageConnections.concat(waterConnections)
-          : [];
-      finalArray = combinedSearchResults;
+
+      if (selectedConnectionType === "Water") {
+        finalArray = waterConnections;
+      } else if (selectedConnectionType === "Sewerage") {
+        finalArray = sewerageConnections;
+      } else {
+        finalArray = sewerageConnections.concat(waterConnections);
+      }
+
       showResults(finalArray, tenantId, dispatch);
     } catch (err) {
       console.log(err);

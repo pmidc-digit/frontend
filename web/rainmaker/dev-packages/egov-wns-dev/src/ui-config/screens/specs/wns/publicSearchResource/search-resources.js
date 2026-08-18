@@ -65,11 +65,11 @@ export const searchApplications = {
 						try {
 							let storageList = localStorage.getItem("storedModulesList");
 
-							if(storageList) {
-							storageList = JSON.parse(storageList);
-							const index = storageList.indexOf(`rainmaker-${action.value}`);
-							let finalList = storageList.splice(index, 1); finalList = JSON.stringify(storageList);
-							if (index > -1) {localStorage.setItem("storedModulesList", finalList)};
+							if (storageList) {
+								storageList = JSON.parse(storageList);
+								const index = storageList.indexOf(`rainmaker-${action.value}`);
+								let finalList = storageList.splice(index, 1); finalList = JSON.stringify(storageList);
+								if (index > -1) { localStorage.setItem("storedModulesList", finalList) };
 							}
 
 							dispatch(fetchLocalizationLabelForOpenScreens(getLocale(), action.value, action.value));
@@ -86,6 +86,50 @@ export const searchApplications = {
 							console.log(e);
 						}
 					}
+				}
+			},
+			applicationtype: {
+				uiFramework: "custom-containers-local",
+				moduleName: "egov-wns",
+				componentPath: "AutosuggestContainer",
+				jsonPath: "searchScreen.transactionType",
+				props: {
+					label: {
+						labelName: "Connection Type",
+						labelKey: "WS_GENERATE_BILL_CONNECTION_TYPE_LABEL"
+					},
+					labelPrefix: {
+						moduleName: "TENANT",
+						masterName: "TENANTS"
+					},
+					optionLabel: "name",
+					placeholder: {
+						labelName: "Connection Type",
+						labelKey: "WS_GENERATE_BILL_CONNECTION_TYPE_PLACEHOLDER"
+					},
+					required: true,
+					labelsFromLocalisation: true,
+					data: [
+						{
+							code: "Water",
+							value: "WS",
+						},
+						{
+							code: "Sewerage",
+							value: "SW",
+						}
+
+					],
+
+					className: "autocomplete-dropdown",
+					jsonPath: "searchScreen.transactionType",
+
+				},
+				required: true,
+
+				gridDefination: {
+					xs: 12,
+					sm: 4
 				}
 			},
 			locality: {
