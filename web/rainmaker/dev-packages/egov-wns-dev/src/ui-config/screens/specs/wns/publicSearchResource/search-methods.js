@@ -121,7 +121,6 @@ export const getPayload = (searchScreenObject) => {
 
 const searchApiCall = async (state, dispatch) => {
   showHideTable(false, dispatch);
-  debugger;
 
   let queryObject = [
     { key: "offset", value: "0" },
@@ -160,14 +159,15 @@ const searchApiCall = async (state, dispatch) => {
       searchScreenObject.ids ||
       searchScreenObject.mobileNumber ||
       searchScreenObject.ownerName ||
-      searchScreenObject.connectionNumber
+      searchScreenObject.connectionNumber ||
+      searchScreenObject.locality
     )
   ) {
     store.dispatch(
       toggleSnackbar(
         true,
         {
-          labelName: "Please fill at least one field along with city",
+          labelName: "Please fill at least one field along with Locality, Mobile Number, Property ID, or Consumer Number",
           labelKey:
             "PT_SEARCH_SELECT_AT_LEAST_ONE_FIELD_WITH_CITY_AND_LOCALITY",
         },
