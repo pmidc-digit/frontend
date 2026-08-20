@@ -126,7 +126,6 @@ export const generateBillApiCall = async (state, dispatch) => {
         let locality, billingcycleStartdate, billingcycleEnddate, status, tenantId, billGenerationDate;
 
         response.billScheduler.map((element, index) => {
-          console.log(element ,"element")
           transactionType = element.transactionType;
           locality = element.locality ? element.locality : element.grup;
           billingcycleStartdate = convertEpochToDate(element.billingcycleStartdate);
