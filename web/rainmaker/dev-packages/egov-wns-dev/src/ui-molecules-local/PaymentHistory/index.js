@@ -124,6 +124,7 @@ class PaymentHistory extends Component {
   };
 
   downloadReceiptpt = async (receiptQueryString) => {
+    const state = store.getState();
     const configKey = "ws-onetime-receipt";
     const FETCHRECEIPT = {
       GET: {
@@ -159,6 +160,14 @@ class PaymentHistory extends Component {
         }
         if (payloadReceiptDetails.Payments[0].paidBy != null) {
           payloadReceiptDetails.Payments[0].paidBy = payloadReceiptDetails.Payments[0].paidBy.trim();
+        }
+        // Add Institute Name if ownershipCategory does not contain INDIVIDUAL from state
+        const stateOwnershipCategory = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.ownershipCategory");
+        if (stateOwnershipCategory && !stateOwnershipCategory.includes("INDIVIDUAL")) {
+          const instituteName = get(state, "screenConfiguration.preparedFinalObject.WaterConnection[0].property.institution.name");
+          if (instituteName && payloadReceiptDetails.Payments[0].payerName) {
+            payloadReceiptDetails.Payments[0].payerName = payloadReceiptDetails.Payments[0].payerName + " / " + instituteName.trim();
+          }
         }
 
         if (payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "WS" || payloadReceiptDetails.Payments[0].paymentDetails[0].businessService == "SW") {
