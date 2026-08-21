@@ -363,6 +363,14 @@ const getPropertyDetails = {
   type: "array"
 };
 
+export const instituteName = getLabelWithValue(
+  {
+    labelName: "Institute Name",
+    labelKey: "WS_OWN_DETAIL_INSTITUTE_NAME_LABEL"
+  },
+  { jsonPath: "WaterConnection[0].property.institution.name" }
+);
+
 export const propertyOwnerDetail={
   mobileNumber: getLabelWithValue(
    {
@@ -468,7 +476,15 @@ export const propertyOwnerDetail={
    },  {
     labelKey: "WS_OLD_LABEL_NAME"
   },
-  { jsonPath: "WaterConnectionOld[0].property.owners[0].ownerType", callBack: handleNA },)
+  { jsonPath: "WaterConnectionOld[0].property.owners[0].ownerType", callBack: handleNA },),
+ instituteNameField: {
+   ...instituteName,
+   visible: (state) => {
+     return state && state.WaterConnection && state.WaterConnection[0] &&
+            state.WaterConnection[0].property &&
+            !state.WaterConnection[0].property.ownershipCategory.includes("INDIVIDUAL");
+   }
+ }
 }
 
 const ownerDetails = {
