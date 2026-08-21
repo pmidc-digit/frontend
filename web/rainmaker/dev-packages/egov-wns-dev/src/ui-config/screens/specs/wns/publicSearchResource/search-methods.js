@@ -121,6 +121,7 @@ export const getPayload = (searchScreenObject) => {
 
 const searchApiCall = async (state, dispatch) => {
   showHideTable(false, dispatch);
+
   let queryObject = [
     { key: "offset", value: "0" },
     { key: "limit", value: 50 },
@@ -158,14 +159,15 @@ const searchApiCall = async (state, dispatch) => {
       searchScreenObject.ids ||
       searchScreenObject.mobileNumber ||
       searchScreenObject.ownerName ||
-      searchScreenObject.connectionNumber
+      searchScreenObject.connectionNumber ||
+      searchScreenObject.locality
     )
   ) {
     store.dispatch(
       toggleSnackbar(
         true,
         {
-          labelName: "Please fill at least one field along with city",
+          labelName: "Please fill at least one field along with Locality, Mobile Number, Property ID, or Consumer Number",
           labelKey:
             "PT_SEARCH_SELECT_AT_LEAST_ONE_FIELD_WITH_CITY_AND_LOCALITY",
         },
@@ -194,43 +196,42 @@ const searchApiCall = async (state, dispatch) => {
         getSearchResult,
         searchScreenObject.tenantId,
         "WS",
-        "WATER",
-        payloadbillingPeriod
+        "WATER"
       );
       let sewerageBillResponse = await fetchBill(
         getSearchResultForSewerage,
         searchScreenObject.tenantId,
         "SW",
-        "SEWERAGE",
-        payloadbillingPeriod
+        "SEWERAGE"
       );
       let waterFinalResponse = await getPropertyWithBillAmount(
         getSearchResult,
         waterBillResponse,
-        "WATER"
+        "WATER",
+        payloadbillingPeriod
       );
       let sewerageFinalResponse = await getPropertyWithBillAmount(
         getSearchResultForSewerage,
         sewerageBillResponse,
-        "SEWERAGE"
+        "SEWERAGE",
+        payloadbillingPeriod
       );
       let finalArray = [];
-      const waterConnections = waterFinalResponse
-        ? waterFinalResponse.WaterConnection.map((e) => {
-          e.service = serviceConst.WATER;
-          return e;
-        })
-        : [];
-      const sewerageConnections = waterFinalResponse
-        ? sewerageFinalResponse.SewerageConnections.map((e) => {
-          e.service = serviceConst.SEWERAGE;
-          return e;
-        })
-        : [];
-      let combinedSearchResults =
-        waterFinalResponse || waterFinalResponse
-          ? sewerageConnections.concat(waterConnections)
+      const waterConnections =
+        waterFinalResponse && Array.isArray(waterFinalResponse.WaterConnection)
+          ? waterFinalResponse.WaterConnection.map((e) => {
+            e.service = serviceConst.WATER;
+            return e;
+          })
           : [];
+      const sewerageConnections =
+        sewerageFinalResponse && Array.isArray(sewerageFinalResponse.SewerageConnections)
+          ? sewerageFinalResponse.SewerageConnections.map((e) => {
+            e.service = serviceConst.SEWERAGE;
+            return e;
+          })
+          : [];
+      let combinedSearchResults = sewerageConnections.concat(waterConnections);
       finalArray = combinedSearchResults;
       showResults(finalArray, tenantId, dispatch);
     } catch (err) {
