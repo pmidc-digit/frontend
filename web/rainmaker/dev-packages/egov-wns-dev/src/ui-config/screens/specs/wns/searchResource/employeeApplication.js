@@ -10,7 +10,7 @@ import {
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { searchApiCall } from "./functions";
 import { resetFieldsForConnection } from '../../utils';
-import { prepareFinalObject, handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { prepareFinalObject , handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
 import { httpRequest } from "../../../../../ui-utils/api";
 import store from "../../../../../ui-redux/store";
@@ -55,9 +55,9 @@ export const wnsApplication = getCommonCard({
         required: true,
       },
       required: true,
-      beforeFieldChange: async (action, state, dispatch) => {
+       beforeFieldChange: async (action, state, dispatch) => {
         //Below only runs for citizen - not required here in employee
-
+          
         try {
           let payload = await httpRequest(
             "post",
@@ -86,6 +86,10 @@ export const wnsApplication = getCommonCard({
               return result;
             }, []);
 
+          console.log(mohallaData, "mohallaData")
+
+
+
           dispatch(
             prepareFinalObject(
               "applyScreenMdmsData.searchConnection.locality",
@@ -104,7 +108,7 @@ export const wnsApplication = getCommonCard({
             moduleName: action.value,
             masterName: "REVENUE"
           };
-
+          
           dispatch(
             handleField(
               "apply",
@@ -114,9 +118,9 @@ export const wnsApplication = getCommonCard({
             )
           );
 
-          dispatch(
-            fetchLocalizationLabel(getLocale(), action.value, action.value)
-          );
+           dispatch(
+             fetchLocalizationLabel(getLocale(), action.value, action.value)
+           );
 
         } catch (e) {
           console.log(e);
@@ -242,26 +246,6 @@ export const wnsApplication = getCommonCard({
       // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
       errorMessage: "ERR_INVALID_PROPERTY_ID",
       jsonPath: "searchConnection.ownerName",
-      disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
-    }),
-    guardianname: getTextField({
-      label: {
-        labelName: "Guardian Name",
-        labelKey: "Guardian Name"
-      },
-      placeholder: {
-        labelName: "Enter Guardian Name",
-        labelKey: "Guardian Name"
-      },
-      gridDefination: {
-        xs: 12,
-        sm: 4,
-
-      },
-      required: false,
-      // pattern: /^[^\$\"'<>?\\\\~`!@$%^()+={}\[\]*:;“”‘’]{1,64}$/i,
-      errorMessage: "ERR_INVALID_PROPERTY_ID",
-      jsonPath: "searchConnection.guardianName",
       disabled: process.env.REACT_APP_NAME === "Citizen" ? true : false,
     }),
     //-------------------End Owner Name--------------------------------
