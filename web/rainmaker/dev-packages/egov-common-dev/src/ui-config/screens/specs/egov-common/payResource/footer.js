@@ -324,10 +324,24 @@ export const callPGService = async (state, dispatch) => {
 
           const selectedGateway = get(goToPaymentGateway, "Transaction.gateway", gateway);
 
-          if (!selectedGateway.toUpperCase().includes("RAZORPAY")) {
-            window.location = redirectionUrl;
+          const gatewayName = (selectedGateway || "").toUpperCase();
+
+          if (
+            gatewayName.includes("CCAVENUE") ||
+            gatewayName.includes("CCAVANUE")
+          ) {
+              const link = document.createElement("a");
+              link.href = redirectionUrl;
+              link.target = "_self";
+              link.rel = "noreferrer";
+
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+          } else if (!gatewayName.includes("RAZORPAY")) {
+              window.location = redirectionUrl;
           } else {
-            displayRazorpay(goToPaymentGateway);
+              displayRazorpay(goToPaymentGateway);
           }
         }
       } catch (e) {
