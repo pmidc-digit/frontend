@@ -1,5 +1,9 @@
 
-FROM egovio/alpine-node-builder-10:yarn AS build  
+FROM egovio/alpine-node-builder-10:yarn AS build
+ 
+RUN apk add --no-cache python2 make g++ && \
+    ln -sf /usr/bin/python2 /usr/bin/python 
+
 ARG WORK_DIR
 WORKDIR /app
 ENV NODE_OPTIONS "--max-old-space-size=4000"
