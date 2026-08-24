@@ -1,5 +1,5 @@
 const commonConfig = {
-  MAP_API_KEY: "AIzaSyDjSk-Bw1OuiOE-5K7jsP6KGN2rbcN7iBk",
+  MAP_API_KEY: "AIzaSyDV5EwEiAzdbpPWkqref9S-17kI5Xvsr7Q",
   tenantId: process.env.REACT_APP_DEFAULT_TENANT_ID
   // forgotPasswordTenant: "pb.amritsar",
 };

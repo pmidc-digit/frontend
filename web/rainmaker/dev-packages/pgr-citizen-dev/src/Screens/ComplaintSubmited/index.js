@@ -16,7 +16,7 @@ class ComplaintSubmitted extends Component {
   };
 
   continueComplaintSubmit = () => {
-    this.props.history.push("/");
+    window.location.href = `${window.location.origin}/digit-ui/citizen`;
   };
 
   // the retrival logic to be changed!

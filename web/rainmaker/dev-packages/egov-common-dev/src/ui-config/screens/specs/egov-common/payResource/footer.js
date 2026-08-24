@@ -22,6 +22,49 @@ const PAYMENTSEARCH = {
     ACTION: "_search",
   },
 };
+const getPaymentGatewayConfig = async (tenantId, businessService) => {
+  const mdmsBody = {
+    MdmsCriteria: {
+      tenantId: tenantId,
+      moduleDetails: [
+        {
+          moduleName: "PAYMENT",
+          masterDetails: [{ name: "PaymentGateway" }],
+          filter: `$.*.[?(@.businessService contains '${businessService}')]`,
+        }
+      ]
+    }
+  };
+
+  const response = await httpRequest(
+    "post",
+    "/egov-mdms-service/v1/_search",
+    "_search",
+    [],
+    mdmsBody
+  );
+
+  const gateways = get(response, "MdmsRes.PAYMENT.PaymentGateway", []);
+
+  return gateways.find((item) =>
+    item.active === true &&
+    Array.isArray(item.businessService) &&
+    item.businessService.indexOf(businessService) !== -1
+  );
+};
+
+const createGatewayCallbackUrl = (originalCallbackUrl, gateway) => {
+  const callbackBase = process.env.REACT_APP_GATEWAY_CALLBACK_BASE_URL || window.location.origin;
+
+  return (
+    callbackBase.replace(/\/$/, "") +
+    "/customization/open/punjab-pt/" +
+    gateway.toLowerCase() +
+    "/confirm?original_callback=" +
+    encodeURIComponent(originalCallbackUrl)
+  );
+};
+
 const getPaymentSearchAPI = (businessService = '') => {
   if (businessService == '-1') {
     return `${PAYMENTSEARCH.GET.URL}${PAYMENTSEARCH.GET.ACTION}`
@@ -108,7 +151,20 @@ export const callPGService = async (state, dispatch) => {
       const url = isPublicSearch() ? "withoutAuth/egov-common/paymentRedirectPage" : "egov-common/paymentRedirectPage";
       const redirectUrl = process.env.NODE_ENV === "production" ? `citizen/${url}` : url;
       // const businessService = getQueryArg(window.location.href, "businessService"); businessService
-      let callbackUrl = `${window.origin}/${redirectUrl}`;
+      let callbackUrl = `${window.location.origin}/${redirectUrl}`;
+      const paymentGatewayConfig = await getPaymentGatewayConfig(
+        tenantId,
+        bankBusinessService
+      );
+
+      const gateway = get(paymentGatewayConfig, "gateway");
+
+      if (!gateway) {
+        throw new Error(`No active payment gateway configured for ${bankBusinessService}`);
+      }
+
+      callbackUrl = createGatewayCallbackUrl(callbackUrl, gateway);
+
       const { screenConfiguration = {} } = state;
       const { preparedFinalObject = {} } = screenConfiguration;
       const { ReceiptTemp = {} } = preparedFinalObject;
@@ -196,7 +252,7 @@ export const callPGService = async (state, dispatch) => {
             billId: get(billPayload, "Bill[0].id"),
             consumerCode: consumerCode,
             productInfo: "Common Payment",
-            gateway: "RAZORPAY",
+            gateway,
             taxAndPayments,
             user,
             callbackUrl,
@@ -266,14 +322,26 @@ export const callPGService = async (state, dispatch) => {
             }
   */
 
-          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
-            window.location = redirectionUrl;
-            //   alert("Online payment services are temporarily unavailable due to maintenance. We apologize for the inconvenience and appreciate your patience. Please try again later.");
-          }
-          else {
+          const selectedGateway = get(goToPaymentGateway, "Transaction.gateway", gateway);
 
-            displayRazorpay(goToPaymentGateway);
+          const gatewayName = (selectedGateway || "").toUpperCase();
 
+          if (
+            gatewayName.includes("CCAVENUE") ||
+            gatewayName.includes("CCAVANUE")
+          ) {
+              const link = document.createElement("a");
+              link.href = redirectionUrl;
+              link.target = "_self";
+              link.rel = "noreferrer";
+
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+          } else if (!gatewayName.includes("RAZORPAY")) {
+              window.location = redirectionUrl;
+          } else {
+              displayRazorpay(goToPaymentGateway);
           }
         }
       } catch (e) {

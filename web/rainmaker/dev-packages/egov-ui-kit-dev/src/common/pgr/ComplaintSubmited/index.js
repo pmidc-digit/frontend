@@ -9,7 +9,7 @@ import "./index.css";
 
 class ComplaintSubmitted extends Component {
   continueComplaintSubmit = () => {
-    this.props.history.push(this.props.homeRoute);
+    window.location.href = `${window.location.origin}/digit-ui/citizen`;
   };
 
   // the retrival logic to be changed!
