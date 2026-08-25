@@ -6,6 +6,9 @@ ENV NODE_OPTIONS "--max-old-space-size=4000"
 
 # copy the project files
 COPY ${WORK_DIR} .
+
+ENV YARN_NETWORK_TIMEOUT=300000
+
 RUN yarn run prod:citizen
 
 # Create runtime image
