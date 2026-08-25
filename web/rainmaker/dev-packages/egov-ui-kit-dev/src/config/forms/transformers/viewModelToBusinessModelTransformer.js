@@ -155,19 +155,19 @@ const transformer = (formKey, form = {}, state = {}) => {
         formData.services[0].phone = userPhone;
       } catch (error) {}
 
-      try {
+      // try {
 
-        const { latitude={}, longitude={} } = form.fields;
-        if (latitude.value && longitude.value) {
-          const tenantId = await getTenantForLatLng(latitude.value, longitude.value);
-          formData.services[0].tenantId = tenantId;
-        }
-        else {
-          formData.services[0].tenantId =get(formData,"services.0.addressDetail.city");
-        }
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      //   const { latitude={}, longitude={} } = form.fields;
+      //   if (latitude.value && longitude.value) {
+      //     const tenantId = await getTenantForLatLng(latitude.value, longitude.value);
+      //     formData.services[0].tenantId = tenantId;
+      //   }
+      //   else {
+      //     formData.services[0].tenantId =get(formData,"services.0.addressDetail.city");
+      //   }
+      // } catch (error) {
+      //   throw new Error(error.message);
+      // }
       return formData;
     },
   };
