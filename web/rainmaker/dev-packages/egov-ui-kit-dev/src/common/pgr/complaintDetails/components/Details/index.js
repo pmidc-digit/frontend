@@ -35,6 +35,7 @@ class Details extends Component {
     const { status, phone,complaint, applicationNo, description, submittedDate, address, addressDetail, mapAction, images, action, role, dgr_grievance_id, dgr_employee_name } = this.props;
     const { houseNoAndStreetName, landmark, mohalla, city, locality } = addressDetail || "";
     const icon = {};
+    //console.log("images",this.props)
     icon.name = "location";
     icon.style = {
       display: "block",
@@ -121,7 +122,8 @@ class Details extends Component {
                   </div>
                 )}
                 <div style={{ marginTop: "16px" }} className="complaint-image-cont">
-                  {images &&
+                  {
+                  images &&
                     images.map((image, index) => {
                       return (
                         image && (
@@ -165,7 +167,7 @@ class Details extends Component {
                   <div className="complaint-more-details-section" style={{ marginTop: '16px', marginBottom: '16px' }}>
                   <Button
                     primary={true}
-                    label={<Label buttonLabel={true} label="Track Grievance" color="#ffffff" />}
+                    label={<Label buttonLabel={true} label="Track Grievances" color="#ffffff" />}
                     style={{
                       height: 'auto',
                       minWidth: '200px',
@@ -270,31 +272,31 @@ class Details extends Component {
                     />
                   </div>
                 )}
-                {/* <div style={{ marginTop: 10 }}>
-                  {mapAction && complaintLoc.lat && (
+                {addressDetail && addressDetail.latitude && addressDetail.longitude && (
+                  <div style={{ marginTop: 16, marginBottom: 16 }}>
                     <Button
-                      className="employee-complaint-summary-mapBtn"
+                      className="complaint-details-map-btn"
                       primary={true}
-                      label={<Label buttonLabel={true} label={"ES_COMPLAINT_SUMMARY_MAP"} color="#ffffff" />}
+                      label={<Label buttonLabel={true} label={"View on Map"} color="#ffffff" />}
                       style={{
                         height: "auto",
-                        lineHeight: "auto",
-                        minWidth: "inherit",
+                        minWidth: "200px",
+                        backgroundColor: "#2947a3",
                       }}
                       labelStyle={{
-                        padding: "0 12px 0 0 ",
+                        padding: "8px 16px",
                         letterSpacing: "0.6px",
-                        display: "inline-block",
-                        height: "22px",
-                        lineHeight: "22px",
+                        textTransform: "none",
                       }}
                       icon={<Icon action="maps" name="place" style={mapIconStyle} color={"#ffffff"} />}
                       onClick={(e) => {
-                        this.props.redirectToMap(true);
+                        const lat = addressDetail.latitude;
+                        const lng = addressDetail.longitude;
+                        window.open(`https://www.google.com/maps/?q=${lat},${lng}`, 'mapPopup', 'width=800,height=600,left=100,top=100,resizable=yes,scrollbars=yes');
                       }}
                     />
-                  )}
-                </div> */}
+                  </div>
+                )}
                 {/* {description && (
                   <div className="rainmaker-displayInline">
                     <Icon action="editor" name="format-quote" style={iconStyle} color={"#969696"} />
