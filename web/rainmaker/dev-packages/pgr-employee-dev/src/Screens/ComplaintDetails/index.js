@@ -501,9 +501,7 @@ const mapStateToProps = (state, ownProps) => {
         : {},
       latitude: selectedComplaint.lat,
       longitude: selectedComplaint.long,
-      images: fetchImages(selectedComplaint.actions).filter(imageSource =>
-        isImage(imageSource)
-      ),
+      images: fetchImages(selectedComplaint.actions),
       complaintStatus: selectedComplaint.status
         ? getLatestStatus(selectedComplaint.status)
         : "",
