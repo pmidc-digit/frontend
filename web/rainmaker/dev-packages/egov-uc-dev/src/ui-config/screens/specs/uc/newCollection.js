@@ -490,6 +490,21 @@ const newCollection = {
         newCollectionFooter,
       },
     },
+    adhocDialog: {
+  uiFramework: "custom-containers-local",
+  moduleName: "egov-uc",
+  componentPath: "DialogContainer",
+  props: {
+    open: false,
+    maxWidth: "sm",
+    screenKey: "newCollection"
+  },
+  children: {
+    message: getLabel({
+      labelKey: "MCOLLECT_CATEGORY_POPUP_MESSAGE"
+    })
+  }
+}
   },
 };
 

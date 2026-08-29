@@ -16,6 +16,20 @@ import "./index.css";
 import { setServiceCategory } from "../../utils";
 const tenantId = getTenantId();
 
+const matchesPopupService = value => {
+  const code = String(
+    typeof value === "object" ? value.code || value.value || value.name : value || ""
+  )
+    .replace(/[_\s.-]/g, "")
+    .toLowerCase();
+
+  return ["advt", "chb", "noduescertificate", "noduecertificate"].some(item => {
+    const isMatch = code.includes(item);
+    console.log("code, item, isMatch", code, item, isMatch);
+    return isMatch;
+  });
+};
+
 export const newCollectionServiceDetailsCard = getCommonCard(
   {
     header: getCommonTitle(
@@ -228,6 +242,28 @@ export const newCollectionServiceDetailsCard = getCommonCard(
               "preparedFinalObject.applyScreenMdmsData.nestedServiceData",
               {}
             );
+            const selectedCategory = action.value;
+            const categoryData = serviceData[selectedCategory] || {};
+            const childServices = Array.isArray(categoryData.child)
+              ? categoryData.child
+              : [];
+
+            const shouldShowPopup =
+              matchesPopupService(selectedCategory) ||
+              childServices.some(matchesPopupService);
+
+              console.log(shouldShowPopup , selectedCategory,childServices, "shouldShowPopup selectedCategory childServices" )
+
+            if (shouldShowPopup) {
+              dispatch(
+                handleField(
+                  "newCollection",
+                  "components.adhocDialog",
+                  "props.open",
+                  true,
+                ),
+              );
+            }
             if (action.value) {
 
               let visibleFlag = false;
