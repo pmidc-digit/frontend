@@ -724,7 +724,12 @@ export const downloadReceiptpt = (receiptQueryString) => {
         ];
         const responseForPT =  await httpRequest(FETCHPROPERTYDETAILS.GET.URL, FETCHPROPERTYDETAILS.GET.ACTION,queryObjectForPT);
         const responseForAssessment = await httpRequest(FETCHASSESSMENTDETAILS.GET.URL, FETCHASSESSMENTDETAILS.GET.ACTION,queryObjectForPT);
-
+        let tenantId = "";
+        receiptQueryString.forEach(query => {
+          if (query.key === "tenantId") {
+            tenantId = query.value;
+          }
+        });
   let uuid=responseForPT && responseForPT.Properties[0]?responseForPT.Properties[0].auditDetails.lastModifiedBy:null;
   let data = {};
   let bodyObject = {
@@ -939,7 +944,7 @@ export const downloadReceiptpt = (receiptQueryString) => {
      
       const paymentStatus = get(payloadReceiptDetails.Payments[0], "paymentStatus")
       if(oldFileStoreId && paymentStatus!="CANCELLED"){
-        downloadReceiptFromFilestoreID(oldFileStoreId,"download");
+        downloadReceiptFromFilestoreID(oldFileStoreId,"download", tenantId);
       } 
       else if(oldFileStoreId && paymentStatus=="CANCELLED"){
         getFileUrlFromAPI(oldFileStoreId).then((fileRes) => {
