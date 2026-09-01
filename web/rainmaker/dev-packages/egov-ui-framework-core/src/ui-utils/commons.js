@@ -250,26 +250,12 @@ export const getFileUrlFromAPI = async (fileStoreId, tenantId) => {
   //   ];
   // }
   try {
-    let fileUrl = await httpRequest(
+    const fileUrl = await httpRequest(
       "get",
       "/filestore/v1/files/url",
       "",
       queryObject
     );
-    if (
-      tenantId &&
-      tenantId !== commonConfig.tenantId &&
-      (!fileUrl || !fileUrl[fileStoreId])
-    ) {
-      queryObject[0].value = commonConfig.tenantId;
-
-      fileUrl = await httpRequest(
-        "get",
-        "/filestore/v1/files/url",
-        "",
-        queryObject,
-      );
-    }
     return fileUrl;
   } catch (e) {
     console.log(e);

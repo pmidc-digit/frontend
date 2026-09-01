@@ -2,7 +2,7 @@ import { downloadReceiptFromFilestoreID } from "egov-common/ui-utils/commons";
 import { getCreatePropertyResponse, setPTDocuments } from "egov-ui-kit/config/forms/specs/PropertyTaxPay/propertyCreateUtils";
 import { toggleSnackbarAndSetText } from "egov-ui-kit/redux/app/actions";
 import { httpRequest } from "egov-ui-kit/utils/api";
-import { transformById ,getPaymentSearchAPI } from "egov-ui-kit/utils/commons";
+import { transformById ,getPaymentSearchAPI, downloadPdf } from "egov-ui-kit/utils/commons";
 import { BOUNDARY, DOWNLOADRECEIPT, DRAFT, FETCHASSESSMENTS, FETCHBILL, FETCHRECEIPT, PGService, PROPERTY, RECEIPT } from "egov-ui-kit/utils/endPoints";
 import { getLatestPropertyDetails } from "egov-ui-kit/utils/PTCommon";
 import { getCommonTenant } from "egov-ui-kit/utils/PTCommon/FormWizardUtils/formUtils";
@@ -685,6 +685,41 @@ export const getFileUrlFromAPI = async fileStoreId => {
   }
 };
 
+const getPTFileUrlFromAPI = async (fileStoreId, tenantId) => {
+  try {
+    const fileResponse = await httpRequest(
+      "/filestore/v1/files/url",
+      "",
+      [
+        { key: "tenantId", value: tenantId },
+        { key: "fileStoreIds", value: fileStoreId }
+      ],
+      {},
+      [],
+      {},
+      false,
+      true
+    );
+
+    if (fileResponse && fileResponse[fileStoreId]) {
+      return fileResponse;
+    }
+  } catch (e) {
+    console.log("PT tenant FileStore lookup failed", e);
+  }
+
+  // stateID fallback if filestoreid not resolved by tenantID
+  return getFileUrlFromAPI(fileStoreId);
+};
+
+const downloadPTReceiptFromFilestoreID = async (fileStoreId, tenantId) => {
+  const fileResponse = await getPTFileUrlFromAPI(fileStoreId, tenantId);
+
+  if (fileResponse && fileResponse[fileStoreId]) {
+    downloadPdf(fileResponse[fileStoreId]);
+  }
+};
+
 export const downloadReceiptpt = (receiptQueryString) => {
   return async (dispatch) => {
    
@@ -946,7 +981,10 @@ export const downloadReceiptpt = (receiptQueryString) => {
      
       const paymentStatus = get(payloadReceiptDetails.Payments[0], "paymentStatus")
       if(oldFileStoreId && paymentStatus!="CANCELLED"){
-        downloadReceiptFromFilestoreID(oldFileStoreId,"download", tenantId);
+        downloadPTReceiptFromFilestoreID(
+          oldFileStoreId,
+          tenantId
+        );
       } 
       else if(oldFileStoreId && paymentStatus=="CANCELLED"){
         getFileUrlFromAPI(oldFileStoreId).then((fileRes) => {
