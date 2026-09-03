@@ -595,6 +595,7 @@ export const validateFields = (
     objectJsonPath,
     {}
   );
+  //debugger
   let isFormValid = true;
   for (var variable in fields) {
     if (fields.hasOwnProperty(variable)) {
@@ -963,6 +964,45 @@ export const validateFieldsNew = (
       )
       console.log("value variable", value, variable);
       if (!value || value == null) {
+        !validate(
+          screen,
+          {
+            ...fields[variable],
+            value: get(
+              state.screenConfiguration.preparedFinalObject,
+              fields[variable].jsonPath
+            )
+          },
+          dispatch,
+          true
+        )
+        isFormValid = false;
+      }
+    }
+  }
+  return isFormValid;
+};
+
+export const validateFieldsCheckNA = (
+  objectJsonPath,
+  state,
+  dispatch,
+  screen = "apply"
+) => {
+  const fields = get(
+    state.screenConfiguration.screenConfig[screen],
+    objectJsonPath,
+    {}
+  );
+  let isFormValid = true;
+  for (var variable in fields) {
+    if (variable && fields[variable].required) {
+      let value = get(
+        state.screenConfiguration.preparedFinalObject,
+        fields[variable].jsonPath
+      )
+      console.log("value variable", value, variable);
+      if (!value || value == null || value == 'NA' || value === 'na') {
         !validate(
           screen,
           {
