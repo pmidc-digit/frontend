@@ -4,7 +4,7 @@ import {
 } from "egov-ui-framework/ui-config/screens/specs/utils";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
 import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { getQueryArg, validateFields, validateFieldsNew } from "egov-ui-framework/ui-utils/commons";
+import { getQueryArg, validateFields, validateFieldsNew, validateFieldsCheckNA } from "egov-ui-framework/ui-utils/commons";
 import { getTenantIdCommon } from "egov-ui-kit/utils/localStorageUtils";
 import get from "lodash/get";
 import set from 'lodash/set';
@@ -498,14 +498,14 @@ const callBackForNext = async (state, dispatch) => {
       let usageTypes = [];
       if (propertyUsageType) {
         subUsageType && subUsageType.map(items => {
-          if (items["parentUsageType"] === propertyUsageType) {
+          if (items["parentUsageType"] === (propertyUsageType.split(".")[1]) || items["parentUsageType"] === propertyUsageType) {
             let obj = {};
-             obj.code = items.code;  
-            obj.name = items.name; 
-              obj.parentUsageType = items.parentUsageType,
-              obj.active = items.active
+            obj.code = items.name;
+            obj.name = items.code;
+            obj.parentUsageType = items.parentUsageType;
+            obj.active = items.active;
             usageTypes.push(obj);
-            if (waterSubUsageType === items.name) {
+            if (waterSubUsageType === items.code) {
               dispatch(prepareFinalObject("applyScreen.additionalDetails.waterSubUsageType", items.name));
             }
           }
@@ -513,6 +513,8 @@ const callBackForNext = async (state, dispatch) => {
       } else {
         console.log("Property Usage Type is empty/undefined");
       }
+      //dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", true));
+      //dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "props.required", true));
       dispatch(prepareFinalObject("applyScreenMdmsData.ws-services-masters.subUsageType", usageTypes));
     }
   }
@@ -521,8 +523,11 @@ const callBackForNext = async (state, dispatch) => {
   if (activeStep === 1) {
 
     if (isModifyMode()) {
+      dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", true));
+      dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "props.required", true));
+      let validateConnectiondetails = validateFieldsCheckNA("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
       let validate = validateFields("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.modificationsEffectiveFrom.children.cardContent.children.modificationEffectiveDate.children", state, dispatch)
-      if (validate) {
+      if (validate && validateConnectiondetails) {
         isFormValid = true;
         hasFieldToaster = false;
       } else {
