@@ -162,9 +162,9 @@ const transformer = (formKey, form = {}, state = {}) => {
       try {
         const { latitude, longitude } = form.fields;
         let tenantIdFromAddress = "";
-        if (get(form, "fields.address.value")) {
-          tenantIdFromAddress = await getTenantForLatLng(latitude.value, longitude.value);
-        }
+        //  if (get(form, "fields.address.value")) {
+        //    tenantIdFromAddress = await getTenantForLatLng(latitude.value, longitude.value);
+        //  }
         const tenantIdFromCity = get(formData, "services[0].addressDetail.city");
         if (tenantIdFromAddress === tenantIdFromCity || (!tenantIdFromAddress && tenantIdFromCity)) {
           formData.services[0].tenantId = tenantIdFromCity;

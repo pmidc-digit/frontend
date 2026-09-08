@@ -95,8 +95,24 @@ export const correspondenceAddress = getLabelWithValue(
   },
   { jsonPath: "WaterConnection[0].property.owners[0].correspondenceAddress" }
 )
+export const instituteName = getLabelWithValue(
+  {
+    labelName: "Institute Name",
+    labelKey: "WS_OWN_DETAIL_INSTITUTE_NAME_LABEL"
+  },
+  { jsonPath: "WaterConnection[0].property.institution.name" }
+)
 
 export const getOwnerDetails = (isEditable = true) => {
+  const instituteNameWithVisibility = {
+    ...instituteName,
+    visible: (state) => {
+      return state && state.WaterConnection && state.WaterConnection[0] &&
+             state.WaterConnection[0].property &&
+             !state.WaterConnection[0].property.ownershipCategory.includes("INDIVIDUAL");
+    }
+  };
+
   return getCommonGrayCard({
     headerDiv: {
       uiFramework: "custom-atoms",
@@ -111,7 +127,7 @@ export const getOwnerDetails = (isEditable = true) => {
             sm: 10
           },
           ...getCommonSubHeader({
-            labelKey: "WS_COMMON_OWN_DETAIL"
+            labelKey: "WS_COMMON_OWN_DETAILsddadada"
           })
         },
         editSection: {
@@ -160,7 +176,8 @@ export const getOwnerDetails = (isEditable = true) => {
             guardianName,
             ownerCategory,
             email,
-            correspondenceAddress
+            correspondenceAddress,
+            instituteNameWithVisibility
           }),
         }),
         items: [],
@@ -182,7 +199,7 @@ const holderHeader = getHeader({
 export const connectionHolderDetails={
   mobileNumber: getLabelWithValueForModifiedLabel(
     {
-      labelKey: "WS_CONN_HOLDER_OWN_DETAIL_MOBILE_NO_LABEL"
+      labelKey: "WS_CONN_HOLDER_OWN_DETAIL_MOBILE_NO_LABELsdsdsdfs"
     },
     { jsonPath: "WaterConnection[0].connectionHolders[0].mobileNumber" },
     {

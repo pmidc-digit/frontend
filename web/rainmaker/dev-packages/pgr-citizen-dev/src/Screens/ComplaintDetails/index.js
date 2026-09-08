@@ -63,6 +63,9 @@ const mapStateToProps = (state, ownProps) => {
   }
   const reopenValidChecker = get(state, "common.pgrContants.RAINMAKER-PGR.UIConstants[0].REOPENSLA", 4232000000)
   if (selectedComplaint) {
+    const fetchedImages = fetchImages(selectedComplaint.actions);
+   // const filteredImages = fetchedImages.filter((imageSource) => isImage(imageSource));
+   // console.log("filteredImages",fetchedImages)
     let details = {
       status: selectedComplaint.status || "",
       complaint: mapCompIDToName(complaints.categoriesById, selectedComplaint.serviceCode),
@@ -72,7 +75,7 @@ const mapStateToProps = (state, ownProps) => {
       landMark: selectedComplaint.landmark,
       address: selectedComplaint.address,
       addressDetail: selectedComplaint.addressDetail ? selectedComplaint.addressDetail : {},
-      images: fetchImages(selectedComplaint.actions).filter((imageSource) => isImage(imageSource)),
+      images: fetchedImages,
       feedback: selectedComplaint.feedback,
       rating: selectedComplaint.rating,
       dgr_grievance_id: selectedComplaint.dgr_grievance_id || "",        

@@ -23,6 +23,13 @@ const iconStyle = {
 };
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pdcType: null
+    };
+  }
+
   componentDidMount = () => {
     const { fetchComplaints, resetFiles, removeForm } = this.props;
     this.props.fetchpgrConstants();
@@ -36,15 +43,29 @@ class Home extends Component {
       resetFiles("reopenComplaint");
       removeForm("complaint");
     }
+
+    // Get type parameter from URL and set it in state
+    const params = new URLSearchParams(window.location.search);
+    const typeFromUrl = params.get("type");
+
+    // Only set pdcType if URL has the "type" parameter
+    if (typeFromUrl) {
+      console.log("✓ Type parameter found in URL:", typeFromUrl);
+      this.setState({ pdcType: typeFromUrl });
+    } else {
+      console.log("✗ No type parameter in URL");
+      this.setState({ pdcType: null });
+    }
   };
 
   getCardItems = () => {
     const { updates } = this.props;
+    const { pdcType } = this.state;
     return [
       {
         label: "CS_HOME_FILE_COMPLAINT",
         icon: <Icon style={iconStyle} action="custom" name="comment-plus" />,
-        route: "/add-complaint"
+        route: pdcType === 'pdc' ? "/add-complaint?type=pdc" : "/add-complaint"
       },
       {
         label: "CS_HOME_MY_COMPLAINTS_CARD_LABEL",

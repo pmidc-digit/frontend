@@ -167,16 +167,16 @@ const transformer = (formKey, form = {}, state = {}) => {
         formData.services[0].phone = userPhone;
       } catch (error) {}
 
-      try {
-        const { latitude, longitude } = form.fields;
-        const tenantId = await getTenantForLatLng(
-          latitude.value,
-          longitude.value
-        );
-        formData.services[0].tenantId = tenantId;
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      // try {
+      //   const { latitude, longitude } = form.fields;
+      //   const tenantId = await getTenantForLatLng(
+      //     latitude.value,
+      //     longitude.value
+      //   );
+      //   formData.services[0].tenantId = tenantId;
+      // } catch (error) {
+      //   throw new Error(error.message);
+      // }
       return formData;
     }
   };
