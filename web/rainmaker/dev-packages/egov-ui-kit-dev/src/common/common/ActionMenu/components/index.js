@@ -181,32 +181,82 @@ class ActionMenuComp extends Component {
       path,
     });
   };
+
+  addCitizenSidebarMenus = (linkData, menuItems) => {
+    const keys = Object.keys(linkData).sort((x, y) => y.localeCompare(x));
+    keys.forEach((key) => {
+      if (linkData[key] && linkData[key][0] && linkData[key][0].sidebar === "digit-ui-links") {
+        const firstItem = linkData[key][0];
+        const sidebarURL = firstItem.sidebarURL || "";
+        menuItems.splice(1, 0, {
+          type: sidebarURL.includes("digit-ui") ? "link" : "external-link",
+          text: key,
+          links: linkData[key],
+          icon: firstItem.leftIcon,
+          link: sidebarURL,
+        });
+      }
+    });
+    return menuItems;
+  };
   menuChange = (pathParam) => {
     let path = pathParam.path;
     let { role, actionListArr } = this.props;
-    let actionList = actionListArr;
+
+    // Filter and group actionList by parentModule
+    let linkData = actionListArr
+      .filter((el) => el.enabled === true && (el.url === "digit-ui-card" || (el.url === "mseva-ui-card" && el.name === "PT_MY_PROPERTIES")))
+      .reduce((a, b) => {
+        a[b.parentModule] = a[b.parentModule] && a[b.parentModule].length > 0 ? [b, ...a[b.parentModule]] : [b];
+        return a;
+      }, {});
+
     let menuItems = [];
-    for (var i = 0; i < (actionList && actionList.length); i++) {
-      if (actionList[i].path !== "") {
-        if (path && !path.parentMenu && actionList[i].path.startsWith(path + ".")) {
-          let splitArray = actionList[i].path && actionList[i].path.split(path + ".")[1].split(".");
-          let leftIconArray = actionList[i] && actionList[i].leftIcon && actionList[i].leftIcon.split(".");
-          let leftIcon =
-            leftIconArray &&
-            (leftIconArray.length > path.split(".").length
-              ? leftIconArray[path.split(".").length]
-              : leftIconArray.length >= 1
-                ? leftIconArray[leftIconArray.length - 1]
-                : null);
-          this.addMenuItems(path, splitArray, menuItems, i, leftIcon);
-        } else if (pathParam && pathParam.parentMenu && actionList[i].navigationURL) {
-          let splitArray = actionList[i].path && actionList[i].path.split(".");
-          let leftIconArray = actionList[i] && actionList[i].leftIcon && actionList[i].leftIcon.split(".");
-          let leftIcon = leftIconArray && leftIconArray.length >= 1 ? leftIconArray[0] : null;
-          this.addMenuItems(path, splitArray, menuItems, i, leftIcon);
+
+    // Filter FSM entries with valid id and link
+    if (linkData && linkData.FSM) {
+      let FSM = [];
+      linkData.FSM.forEach((ele) => {
+        if (ele.id && ele.link) {
+          FSM.push(ele);
         }
-      }
+      });
+      linkData.FSM = FSM;
     }
+
+    console.log("linkData", linkData);
+
+    // Process linkData and add citizen sidebar menus
+    menuItems = this.addCitizenSidebarMenus(linkData, menuItems);
+
+    // Update state with processed menuItems
+    this.setState({
+      menuItems,
+      path,
+    });
+
+
+    // for (var i = 0; i < (actionList && actionList.length); i++) {
+    //   if (actionList[i].path !== "") {
+    //     if (path && !path.parentMenu && actionList[i].path.startsWith(path + ".")) {
+    //       let splitArray = actionList[i].path && actionList[i].path.split(path + ".")[1].split(".");
+    //       let leftIconArray = actionList[i] && actionList[i].leftIcon && actionList[i].leftIcon.split(".");
+    //       let leftIcon =
+    //         leftIconArray &&
+    //         (leftIconArray.length > path.split(".").length
+    //           ? leftIconArray[path.split(".").length]
+    //           : leftIconArray.length >= 1
+    //             ? leftIconArray[leftIconArray.length - 1]
+    //             : null);
+    //       this.addMenuItems(path, splitArray, menuItems, i, leftIcon);
+    //     } else if (pathParam && pathParam.parentMenu && actionList[i].navigationURL) {
+    //       let splitArray = actionList[i].path && actionList[i].path.split(".");
+    //       let leftIconArray = actionList[i] && actionList[i].leftIcon && actionList[i].leftIcon.split(".");
+    //       let leftIcon = leftIconArray && leftIconArray.length >= 1 ? leftIconArray[0] : null;
+    //       this.addMenuItems(path, splitArray, menuItems, i, leftIcon);
+    //     }
+    //   }
+    // }
   };
 
   changeLevel = (path) => {
@@ -296,6 +346,7 @@ class ActionMenuComp extends Component {
       }
     }
     const showMenuItem = () => {
+      console.log("menuItems",menuItems)
       const navigationURL = window.location.href.split("/").pop();
       if (searchText.length == 0) {
         return menuItems.map((item, index) => {

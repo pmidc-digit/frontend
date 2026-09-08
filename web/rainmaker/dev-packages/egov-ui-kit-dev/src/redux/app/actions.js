@@ -434,10 +434,27 @@ export const fetchCurrentLocation = () => {
 };
 export const fetchActionItems = (role, ts) => {
   return async (dispatch, getState) => {
+    const requestBody = {
+      MdmsCriteria: {
+        tenantId: commonConfig.tenantId,
+        moduleDetails: [
+          {
+            moduleName: "ACCESSCONTROL-ACTIONS-TEST",
+            masterDetails: [
+              {
+                name: "actions-test",
+                 filter: "[?(@.url == 'digit-ui-card' || (@.url == 'mseva-ui-card' && @.name == 'PT_MY_PROPERTIES'))]",
+              },
+            ],
+          },
+        ],
+      },
+    };
     try {
-      const payload = await httpRequest(ACTIONMENU.GET.URL, ACTIONMENU.GET.ACTION, [], role, [], ts);
-
-      dispatch(setActionItems(payload.actions));
+      console.log("dklfsjkdbn")
+      //const payload = await httpRequest(ACTIONMENU.GET.URL, ACTIONMENU.GET.ACTION, [], role, [], ts);
+        const payload = await httpRequest(MDMS.GET.URL, MDMS.GET.ACTION, [], requestBody);
+      dispatch(setActionItems(payload.MdmsRes["ACCESSCONTROL-ACTIONS-TEST"]["actions-test"]));
     } catch (error) {
       // dispatch(complaintFetchError(error.message));
     }
