@@ -665,13 +665,12 @@ export const getData = async (action, state, dispatch) => {
           showHideFieldsFirstStep(dispatch, "", false);
         }
       }
-      const isModifyEditFlow = actionType && actionType.toUpperCase() === "EDIT";
       // For Modify connection details
-      if (isModifyMode() && !isModifyModeAction() && !isModifyEditFlow) {
+      if (isModifyMode() && !isModifyModeAction()) {
         // this delete for initiate modify connection
-        // Preserve documents added in edit modify connection mode by making document deletion conditional
+        if (!window.location.href.includes("mode=MODIFY&action=edit"))  
           delete combinedArray[0].id;
-          combinedArray[0].documents = [];
+        combinedArray[0].documents = [];
         
       }
       if (isModifyMode() && !isModifyModeAction()) {
