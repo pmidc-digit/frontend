@@ -127,7 +127,7 @@ export const getOwnerDetails = (isEditable = true) => {
             sm: 10
           },
           ...getCommonSubHeader({
-            labelKey: "WS_COMMON_OWN_DETAILsddadada"
+            labelKey: "WS_COMMON_OWN_DETAIL"
           })
         },
         editSection: {
