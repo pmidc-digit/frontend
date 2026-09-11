@@ -29,8 +29,12 @@ import { httpRequest } from "../../../../ui-utils";
 const tenantId = getQueryArg(window.location.href, "tenantId");
 let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
 let service = getQueryArg(window.location.href, "service");
-let serviceModuleName = service === serviceConst.WATER ? "NewWS1" : "NewSW1";
-let serviceUrl = serviceModuleName === "NewWS1" ? "/ws-services/wc/_update" : "/sw-services/swc/_update";
+const hasDC = applicationNumber && applicationNumber.includes("/DC-");
+
+let serviceModuleName = hasDC
+  ? (service === serviceConst.WATER ? "DisconnectWSConnection" : "DisconnectSWConnection")
+  : (service === serviceConst.WATER ? "NewWS1" : "NewSW1");
+let serviceUrl = serviceModuleName === "NewWS1" ? "/ws-services/wc/_update" : (serviceModuleName === "DisconnectWSConnection" ? "/ws-services/wc/_update" : "/sw-services/swc/_update");
 let redirectQueryString = `applicationNumber=${applicationNumber}&tenantId=${tenantId}`;
 let isAlreadyEdited = getQueryArg(window.location.href, "edited", false);
 let editredirect = `apply?${redirectQueryString}&action=edit`;
@@ -39,8 +43,10 @@ let headerLabel = "WS_TASK_DETAILS"
 const resetData = () => {
   applicationNumber = getQueryArg(window.location.href, "applicationNumber");
   service = getQueryArg(window.location.href, "service");
-  serviceModuleName = service === serviceConst.WATER ? "NewWS1" : "NewSW1";
-  serviceUrl = serviceModuleName === "NewWS1" ? "/ws-services/wc/_update" : "/sw-services/swc/_update";
+  serviceModuleName = hasDC
+    ? (service === serviceConst.WATER ? "DisconnectWSConnection" : "DisconnectSWConnection")
+    : (service === serviceConst.WATER ? "NewWS1" : "NewSW1");
+  serviceUrl = serviceModuleName === "NewWS1" ? "/ws-services/wc/_update" : (serviceModuleName === "DisconnectWSConnection" ? "/ws-services/wc/_update" : "/sw-services/swc/_update");
   redirectQueryString = `applicationNumber=${applicationNumber}&tenantId=${tenantId}`;
   editredirect = isAlreadyEdited ? `apply?${redirectQueryString}&action=edit&edited=true` : `apply?${redirectQueryString}&action=edit`;
   if (isModifyMode()) {

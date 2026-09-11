@@ -525,7 +525,7 @@ const callBackForNext = async (state, dispatch) => {
     if (isModifyMode()) {
       dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "required", true));
       dispatch(handleField("apply", "components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", "props.required", true));
-      let validateConnectiondetails = validateFieldsCheckNA("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children", state, dispatch);
+      let validateConnectiondetails = validateFieldsCheckNA("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.connectiondetailscontainer.children.cardContent.children.connectionDetails.children.subUsageType", state, dispatch);
       let validate = validateFields("components.div.children.formwizardThirdStep.children.additionDetails.children.cardContent.children.modificationsEffectiveFrom.children.cardContent.children.modificationEffectiveDate.children", state, dispatch)
       if (validate && validateConnectiondetails) {
         isFormValid = true;
