@@ -1002,7 +1002,7 @@ export const validateFieldsCheckNA = (
         fields[variable].jsonPath
       )
       console.log("value variable", value, variable);
-      if (!value || value == null || value == 'NA' || value === 'na') {
+      if (!value || value == null || value == 'NA' || value === 'na' || value === 'USAGE_DOM_NA') {
         !validate(
           screen,
           {
