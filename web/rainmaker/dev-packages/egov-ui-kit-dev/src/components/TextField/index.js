@@ -74,12 +74,44 @@ const TextField = ({
   toolTipMessage,
   ...rest
 }) => {
+  const sanitizeValue = (val) => {
+    if (typeof val !== "string") return val;
+    if (rest.allowSpecialChars || rest.disallowSpecialChars === false) return val;
+    if (type === "password") return val;
+    if (rest.customDisallowRegex) return val.replace(rest.customDisallowRegex, "");
+    return val.replace(/[<>$\^~{}\[\]\\%*]/g, "");
+  };
+
+  const handleInputChange = (event, newValue) => {
+    let val = typeof newValue === "string" ? newValue : (event && event.target && event.target.value ? event.target.value : "");
+    if (
+      typeof val === "string" &&
+      type !== "password" &&
+      type !== "date" &&
+      type !== "time" &&
+      type !== "number" &&
+      !rest.allowSpecialChars &&
+      rest.disallowSpecialChars !== false
+    ) {
+      const sanitized = sanitizeValue(val);
+      if (sanitized !== val) {
+        val = sanitized;
+        if (event && event.target) {
+          event.target.value = sanitized;
+        }
+      }
+    }
+    if (onChange) {
+      onChange(event, val);
+    }
+  };
+
   return (
     <MaterialUITextField
       errorText={errorText}
       errorStyle={errorStyle}
       value={value}
-      onChange={onChange}
+      onChange={handleInputChange}
       disabled={disabled}
       inputStyle={{ ...inputBaseStyle, ...inputStyle }}
       className={`textfield ${className}`}
