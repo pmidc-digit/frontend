@@ -45,6 +45,33 @@ const TextAreaUi = ({
   id,
   ...rest
 }) => {
+  const sanitizeTextAreaValue = (val) => {
+    if (typeof val !== "string") return val;
+    if (rest.allowSpecialChars || rest.disallowSpecialChars === false) return val;
+    if (rest.customDisallowRegex) return val.replace(rest.customDisallowRegex, "");
+    return val.replace(/[<>\^~{}\[\]\\]/g, "");
+  };
+
+  const handleTextAreaChange = (event, newValue) => {
+    let val = typeof newValue === "string" ? newValue : (event && event.target && event.target.value ? event.target.value : "");
+    if (
+      typeof val === "string" &&
+      !rest.allowSpecialChars &&
+      rest.disallowSpecialChars !== false
+    ) {
+      const sanitized = sanitizeTextAreaValue(val);
+      if (sanitized !== val) {
+        val = sanitized;
+        if (event && event.target) {
+          event.target.value = sanitized;
+        }
+      }
+    }
+    if (onChange) {
+      onChange(event, val);
+    }
+  };
+
   return (
     <TextField
       className={className}
@@ -54,7 +81,7 @@ const TextAreaUi = ({
       rows={rows}
       rowsMax={rowsMax}
       disabled={disabled}
-      onChange={onChange}
+      onChange={handleTextAreaChange}
       style={{ ...defaultStyle, ...style }}
       hintText={hintText}
       inputStyle={inputStyle}
