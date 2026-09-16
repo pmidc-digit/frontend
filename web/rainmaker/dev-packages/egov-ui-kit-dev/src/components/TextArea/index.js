@@ -49,7 +49,7 @@ const TextAreaUi = ({
     if (typeof val !== "string") return val;
     if (rest.allowSpecialChars || rest.disallowSpecialChars === false) return val;
     if (rest.customDisallowRegex) return val.replace(rest.customDisallowRegex, "");
-    return val.replace(/[<>\^~{}\[\]\\]/g, "");
+    return val.replace(/[<>\^~{}\[\]\\!;'"`]/g, "");
   };
 
   const handleTextAreaChange = (event, newValue) => {

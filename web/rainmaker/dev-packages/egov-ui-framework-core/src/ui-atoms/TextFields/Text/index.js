@@ -10,14 +10,14 @@ const MihyText=(props)=> {
       if (rest.allowSpecialChars || rest.disallowSpecialChars === false) return val;
       if (rest.type === "password") return val;
       if (rest.customDisallowRegex) return val.replace(rest.customDisallowRegex, "");
-      return val.replace(/[<>$\^~{}\[\]\\%*]/g, "");
+      return val.replace(/[<>$\^~{}\[\]\\%*!;'"`]/g, "");
     };
 
     const sanitizeTextAreaValue = (val) => {
       if (typeof val !== "string") return val;
       if (rest.allowSpecialChars || rest.disallowSpecialChars === false) return val;
       if (rest.customDisallowRegex) return val.replace(rest.customDisallowRegex, "");
-      return val.replace(/[<>\^~{}\[\]\\]/g, "");
+      return val.replace(/[<>\^~{}\[\]\\!;'"`]/g, "");
     };
 
     const handleChange = (e) => {
