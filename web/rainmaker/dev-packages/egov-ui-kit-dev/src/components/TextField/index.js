@@ -79,7 +79,7 @@ const TextField = ({
     if (rest.allowSpecialChars || rest.disallowSpecialChars === false) return val;
     if (type === "password") return val;
     if (rest.customDisallowRegex) return val.replace(rest.customDisallowRegex, "");
-    return val.replace(/[<>$\^~{}\[\]\\%*]/g, "");
+    return val.replace(/[<>$\^~{}\[\]\\%*!;'"`]/g, "");
   };
 
   const handleInputChange = (event, newValue) => {
