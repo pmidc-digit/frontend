@@ -12,6 +12,7 @@ import LabelContainer from "egov-ui-framework/ui-containers/LabelContainer";
 import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
 import { convertEpochToDate } from "../../ui-config/screens/specs/utils";
 import {addMeterReading} from "../../ui-config/screens/specs/wns/meter-reading"
+import { getDateFromEpoch } from "egov-ui-kit/utils/commons";
 const styles = {
   card: {
     marginLeft: 8,
@@ -32,6 +33,7 @@ const styles = {
 class MeterReading extends React.Component {
   render() {
     const { consumptionDetails, onActionClick, classes } = this.props;
+    console.log("consumptionDetails",consumptionDetails)
     //console.log("fdfd",this.props)
     // if (consumptionDetails.length > 0) {
     //   var lastReadingDate = convertEpochToDate(consumptionDetails[0].lastReadingDate)
@@ -156,6 +158,77 @@ class MeterReading extends React.Component {
                           style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.87" }}
                         />
                       </Grid>
+                      
+                    </Grid>
+                     <Grid container style={{ marginBottom: 12 }}>
+                      <Grid item md={4} xs={6}>
+                        <LabelContainer
+                          labelKey="WS_CONSUMPTION_DETAILS_CREATED_BY"
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.60" }}
+                        />
+                      </Grid>
+                      <Grid item md={8} xs={6}>
+                        <Label
+                          labelName={item.createdByName || 'NA'}
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.87" }}
+                        />
+                      </Grid>
+                      
+                    </Grid>
+                     <Grid container style={{ marginBottom: 12 }}>
+                      <Grid item md={4} xs={6}>
+                        <LabelContainer
+                          labelKey="WS_CONSUMPTION_DETAILS_CREATED_DATE"
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.60" }}
+                        />
+                      </Grid>
+                      <Grid item md={8} xs={6}>
+                        <Label
+                          labelName={getDateFromEpoch(item.auditDetails.createdTime) || 'NA'}
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.87" }}
+                        />
+                      </Grid>
+                      
+                    </Grid>
+                       <Grid container style={{ marginBottom: 12 }}>
+                      <Grid item md={4} xs={6}>
+                        <LabelContainer
+                          labelKey="WS_CONSUMPTION_DETAILS_LAST_MODIFIED_BY"
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.60" }}
+                        />
+                      </Grid>
+                      <Grid item md={8} xs={6}>
+                        <Label
+                          labelName={item.lastModifiedByName || 'NA'}
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.87" }}
+                        />
+                      </Grid>
+                      
+                    </Grid>
+                     <Grid container style={{ marginBottom: 12 }}>
+                      <Grid item md={4} xs={6}>
+                        <LabelContainer
+                          labelKey="WS_CONSUMPTION_DETAILS_LAST_MODIFIED_DATE"
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.60" }}
+                        />
+                      </Grid>
+                      <Grid item md={8} xs={6}>
+                        <Label
+                          labelName={getDateFromEpoch(item.auditDetails.lastModifiedTime) || 'NA'}
+                          fontSize={14}
+                          style={{ fontSize: 14, color: "rgba(0, 0, 0, 0.87" }}
+                        />
+                      </Grid>
+                      
+                    </Grid>
+                    <Grid>
                       <Grid container style={{ justifyContent: "flex-end" }}>
                         {index === 0 && (
                           <Button
