@@ -313,6 +313,7 @@ const getAcknowledgementCard = (
       )
     };
   } else if (purpose === "approve" && status === "success") {
+    searchResults(dispatch, applicationNumber, tenant);
     loadReceiptGenerationData(applicationNumber, tenant);
     return {
       header: getCommonContainer({

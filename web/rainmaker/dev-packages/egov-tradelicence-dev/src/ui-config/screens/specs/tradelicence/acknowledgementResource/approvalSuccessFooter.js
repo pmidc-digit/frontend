@@ -56,7 +56,7 @@ export const approvalSuccessFooter = getCommonApplyFooter({
     onClickDefination: {
       action: "condition",
       callBack: (state, dispatch) => {
-        downloadCertificateForm(state.screenConfiguration.preparedFinalObject.Licenses, state.screenConfiguration.preparedFinalObject.applicationDataForReceipt.applicationNumber,getTenantId());
+        downloadCertificateForm(state.screenConfiguration.preparedFinalObject.Licenses);
       }
     }
   },
@@ -80,7 +80,8 @@ export const approvalSuccessFooter = getCommonApplyFooter({
     onClickDefination: {
       action: "condition",
       callBack: (state, dispatch) => {
-        downloadCertificateForm(state.screenConfiguration.preparedFinalObject.Licenses, state.screenConfiguration.preparedFinalObject.applicationDataForReceipt.applicationNumber,getTenantId(),"print");
+        //console.log("statesdasfdhfvadgfvajdv",state.screenConfiguration.preparedFinalObject.Licenses)
+        downloadCertificateForm(state.screenConfiguration.preparedFinalObject.Licenses,"print");
       }
     }
   }
