@@ -1,5 +1,6 @@
 import {
   handleScreenConfigurationFieldChange as handleField,
+  hideSpinner,
   toggleSnackbar,
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import {
@@ -39,23 +40,27 @@ export const searchApiCall = async (state, dispatch) => {
     "searchScreen.mobileNumber",
     {}
   );
-  if (currentSearchTab === "SEARCH_CONNECTION") {
-    resetFieldsForApplication(state, dispatch);
-    await renderSearchConnectionTable(state, dispatch);
-  } else if (searchScreenObject["mobileNumber"] === "9999999999") {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill From Date",
-          labelKey: "ERR_FILL_FROM_DATE_DEFAULT_NUMBER",
-        },
-        "warning"
-      )
-    );
-  } else {
-    resetFieldsForConnection(state, dispatch);
-    await renderSearchApplicationTable(state, dispatch);
+  try {
+    if (currentSearchTab === "SEARCH_CONNECTION") {
+      resetFieldsForApplication(state, dispatch);
+      await renderSearchConnectionTable(state, dispatch);
+    } else if (searchScreenObject["mobileNumber"] === "9999999999") {
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Please fill From Date",
+            labelKey: "ERR_FILL_FROM_DATE_DEFAULT_NUMBER",
+          },
+          "warning"
+        )
+      );
+    } else {
+      resetFieldsForConnection(state, dispatch);
+      await renderSearchApplicationTable(state, dispatch);
+    }
+  } finally {
+    dispatch(hideSpinner());
   }
 };
 
@@ -214,15 +219,15 @@ const renderSearchConnectionTable = async (state, dispatch) => {
       }
       const waterConnections = searchWaterConnectionResults
         ? searchWaterConnectionResults.WaterConnection.map((e) => {
-            e.service = serviceConst.WATER;
-            return e;
-          })
+          e.service = serviceConst.WATER;
+          return e;
+        })
         : [];
       const sewerageConnections = searcSewerageConnectionResults
         ? searcSewerageConnectionResults.SewerageConnections.map((e) => {
-            e.service = serviceConst.SEWERAGE;
-            return e;
-          })
+          e.service = serviceConst.SEWERAGE;
+          return e;
+        })
         : [];
       //console.log("waterConnections"+JSON.stringify(waterConnections))
       let combinedSearchResults =
@@ -302,45 +307,45 @@ const renderSearchConnectionTable = async (state, dispatch) => {
 
           billResults && billResults.Bill.length > 0
             ? finalArray.push({
-                isLeagcy: element.additionalDetails.islegacy,
-                due: billResults.Bill[0].totalAmount,
-                dueDate: updatedDueDate,
-                service: element.service,
-                connectionNo: element.connectionNo,
-                name: element.property ? element.property.owners[0].name : "",
-                mobile: element.property
-                  ? element.property.owners[0].mobileNumber
-                  : "",
-                // name: element.connectionHolders[0].name,
-                status: element.status,
-                address: handleAddress(element),
-                connectionType: element.connectionType,
-                tenantId: element.tenantId,
-                dischargeFee: element.additionalDetails.dischargeFee,
-                dischargeConnection:
-                  element.additionalDetails.dischargeConnection,
-              })
+              isLeagcy: element.additionalDetails.islegacy,
+              due: billResults.Bill[0].totalAmount,
+              dueDate: updatedDueDate,
+              service: element.service,
+              connectionNo: element.connectionNo,
+              name: element.property ? element.property.owners[0].name : "",
+              mobile: element.property
+                ? element.property.owners[0].mobileNumber
+                : "",
+              // name: element.connectionHolders[0].name,
+              status: element.status,
+              address: handleAddress(element),
+              connectionType: element.connectionType,
+              tenantId: element.tenantId,
+              dischargeFee: element.additionalDetails.dischargeFee,
+              dischargeConnection:
+                element.additionalDetails.dischargeConnection,
+            })
             : finalArray.push({
-                isLeagcy: element.additionalDetails.islegacy,
-                due:
-                  billResults && billResults.Bill.length > 0
-                    ? billResults.Bill[0].totalAmount
-                    : "0",
-                dueDate: "NA",
-                service: element.service,
-                connectionNo: element.connectionNo,
-                name: element.property ? element.property.owners[0].name : "",
-                mobile: element.property
-                  ? element.property.owners[0].mobileNumber
-                  : "",
-                status: element.status,
-                address: handleAddress(element),
-                connectionType: element.connectionType,
-                tenantId: element.tenantId,
-                dischargeFee: element.additionalDetails.dischargeFee,
-                dischargeConnection:
-                  element.additionalDetails.dischargeConnection,
-              });
+              isLeagcy: element.additionalDetails.islegacy,
+              due:
+                billResults && billResults.Bill.length > 0
+                  ? billResults.Bill[0].totalAmount
+                  : "0",
+              dueDate: "NA",
+              service: element.service,
+              connectionNo: element.connectionNo,
+              name: element.property ? element.property.owners[0].name : "",
+              mobile: element.property
+                ? element.property.owners[0].mobileNumber
+                : "",
+              status: element.status,
+              address: handleAddress(element),
+              connectionType: element.connectionType,
+              tenantId: element.tenantId,
+              dischargeFee: element.additionalDetails.dischargeFee,
+              dischargeConnection:
+                element.additionalDetails.dischargeConnection,
+            });
         }
       }
       // console.log("jfdhegfwefbwk"+JSON.stringify(finalArray))
@@ -468,15 +473,15 @@ const renderSearchApplicationTable = async (state, dispatch) => {
       }
       const waterConnections = searchWaterConnectionResults
         ? searchWaterConnectionResults.WaterConnection.map((e) => {
-            e.service = serviceConst.WATER;
-            return e;
-          })
+          e.service = serviceConst.WATER;
+          return e;
+        })
         : [];
       const sewerageConnections = searcSewerageConnectionResults
         ? searcSewerageConnectionResults.SewerageConnections.map((e) => {
-            e.service = serviceConst.SEWERAGE;
-            return e;
-          })
+          e.service = serviceConst.SEWERAGE;
+          return e;
+        })
         : [];
       let combinedSearchResults =
         searchWaterConnectionResults || searcSewerageConnectionResults
@@ -569,8 +574,8 @@ const renderSearchApplicationTable = async (state, dispatch) => {
               applicationType: element.applicationType,
               name:
                 element.property &&
-                element.property !== "NA" &&
-                element.property.owners
+                  element.property !== "NA" &&
+                  element.property.owners
                   ? element.property.owners[0].name
                   : "",
               mobile: element.property.owners[0].mobileNumber,
@@ -600,18 +605,18 @@ const renderSearchApplicationTable = async (state, dispatch) => {
 const handleAddress = (element) => {
   let city =
     element.property &&
-    element.property !== "NA" &&
-    element.property.address !== undefined &&
-    element.property.address.city !== undefined &&
-    element.property.address.city !== null
+      element.property !== "NA" &&
+      element.property.address !== undefined &&
+      element.property.address.city !== undefined &&
+      element.property.address.city !== null
       ? element.property.address.city
       : "";
   let localityName =
     element.property &&
-    element.property !== "NA" &&
-    element.property.address.locality !== undefined &&
-    element.property.address.locality !== null &&
-    element.property.address.locality.name !== null
+      element.property !== "NA" &&
+      element.property.address.locality !== undefined &&
+      element.property.address.locality !== null &&
+      element.property.address.locality.name !== null
       ? element.property.address.locality.name
       : "";
 
@@ -746,5 +751,5 @@ export const exceldatadownload = () => {
   //       var wb = XLSX.utils.book_new();
   //       XLSX.utils.book_append_sheet(wb, ws, "People");
   //       XLSX.writeFile(wb,filename);
-  alert("test");
-};
+
+}
