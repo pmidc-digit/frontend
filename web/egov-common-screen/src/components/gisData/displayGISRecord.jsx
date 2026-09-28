@@ -2,7 +2,6 @@ import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { showError } from "../../utils/toast";
 import { searchPropertyBySurvey, getAddressArray, createTenantIDfromCity } from "./function"
-import './index.css'
 
 const DisplayGISRecord = () => {
     const [missingParams, setMissingParams] = useState(false);
