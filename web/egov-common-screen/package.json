@@ -2,7 +2,7 @@
   "name": "commonscreen",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://mseva-dev.lgpunjab.gov.in/common/",
+  "homepage": "https://mseva-dev.lgpunjab.gov.in/",
   "proxy": "https://mseva-dev.lgpunjab.gov.in",
   "type": "module",
   "scripts": {
