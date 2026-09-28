@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    base: "/common",
+    base: "/",
 
     server: {
       host: "localhost",
@@ -27,6 +27,12 @@ export default defineConfig(({ mode }) => {
           rewrite: (path) => path.replace(/^\/api/, ""),
         },
         "/property-services": {
+          target: env.VITE_API_HOST,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, ""),
+        },
+        "/egov-mdms-service": {
           target: env.VITE_API_HOST,
           changeOrigin: true,
           secure: false,

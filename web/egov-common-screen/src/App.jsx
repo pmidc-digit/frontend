@@ -7,6 +7,7 @@ import Privacy from './components/Privacy'
 import Impersonation from './components/Impersonation'
 import PropertyQRData from './components/propertyQRData'
 import DisplayPropertyRecord from './components/propertyQRData/displayPropertyRecord'
+import DisplayGISRecord from './components/gisData/displayGISRecord'
 import './App.css'
 import PrivateRoute from './utils/privateRoute'
 import { Toaster } from 'react-hot-toast'
@@ -14,10 +15,12 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 function App() {
   const Layout = ({ children }) => {
     const location = useLocation();
-
-    const hideHeaderFooter = location.pathname === "/propertyQRData" || location.pathname === "/displayPropertyRecord";
-
+    const hideHeaderFooter = ["/propertyQRData", "/displayPropertyRecord", "/gis"].some(path =>
+      location.pathname === path || location.pathname === path + "/"
+    );
+    console.log("hideHeaderFooter", hideHeaderFooter, "pathname:", location.pathname, "search:", location.search)
     return (
+     
       <>
         {!hideHeaderFooter && <Header />}
         {children}
@@ -30,7 +33,7 @@ function App() {
     <>
 
       {/* //basename="/common" */}
-      <BrowserRouter basename="/common">
+      <BrowserRouter basename="/">
 
 
         <Layout>
@@ -47,6 +50,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route path="/gis" element={<DisplayGISRecord />} />
             <Route path="*" element={<Card />} />
           </Routes>
         </Layout>
