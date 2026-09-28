@@ -8,6 +8,7 @@ import Petimg from '../../assets/img/icons/11.png';
 import obps from '../../assets/img/icons/13.png';
 import pgr from '../../assets/img/icons/1q.png';
 import slideone from '../../assets/img/pmidcgurughar.jpg';
+import mfimg from '../../assets/img/mf.png';
 import Faq from '../Faqs'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -25,7 +26,7 @@ export default function Card() {
             <div className="popup-overlay"></div>
             <div className="mypop">
                 <button className="popup-close" onClick={hidePopup}>✕</button>
-                <img src="https://lgpunjab.gov.in/mf.png" alt="Punjab Plantation" />
+                <img src={mfimg} alt="Punjab Plantation" />
             </div>
             <div>
                 <div className="row">
