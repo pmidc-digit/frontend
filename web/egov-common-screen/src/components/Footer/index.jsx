@@ -158,7 +158,7 @@ export default function Footer() {
                                     Contact Us
                                 </a><br />
                                 <a
-                                    href="https://mseva-uat.lgpunjab.gov.in/common/privacy"
+                                    href="https://sdc-uat.lgpunjab.gov.in/common/privacy"
                                     id="flink"
                                     //className={classes.block}
                                     target="_blank"
@@ -166,7 +166,7 @@ export default function Footer() {
                                     Privacy policy
                                 </a><br />
                                 <a
-                                    href="https://mseva-uat.lgpunjab.gov.in/common/impersonation"
+                                    href="https://sdc-uat.lgpunjab.gov.in/common/impersonation"
                                     id="flink"
                                     //className={classes.block}
                                     target="_blank"
