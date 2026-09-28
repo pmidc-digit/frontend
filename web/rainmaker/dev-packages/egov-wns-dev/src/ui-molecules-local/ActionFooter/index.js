@@ -184,10 +184,8 @@ class Footer extends React.Component {
               window.location.reload();
             }, 30000);
           } catch (e) {
-            alert(
-              "Unable to Demand Cancel for this  Connection Number : " +
-                connectionNumber
-            );
+            const errorMessage = e.data.message || "Unable to Cancel Demand for this Water Connection Number : " + connectionNumber;
+            alert(errorMessage);
           }
         } else if (swservice == "WATER") {
           const queryObjectForConn = [
@@ -223,7 +221,7 @@ class Footer extends React.Component {
                 ],
               }
             );
-            //console.log("shdshfdsh-2")
+            console.log("shdshfdsh-2",payload)
             alert(
               "Demand Cancel has been Successfully for this Connection Number : " +
                 connectionNumber +
@@ -234,10 +232,9 @@ class Footer extends React.Component {
               window.location.reload();
             }, 30000);
           } catch (e) {
-            alert(
-              "Unable to Cancel Demand for this Water Connection Number : " +
-                connectionNumber
-            );
+            //console.log("error",e)
+            const errorMessage = e.data.message || "Unable to Cancel Demand for this Water Connection Number : " + connectionNumber;
+            alert(errorMessage);
             //console.log("shdshfdsh-3")
           }
         }

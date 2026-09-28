@@ -82,6 +82,7 @@ export const httpRequest = async (
       apiError = "INVALID_TOKEN";
     } else {
       apiError =
+        (data.hasOwnProperty("message") && data.message) ||
         (data.hasOwnProperty("Errors") &&
           data.Errors &&
           data.Errors.length &&
