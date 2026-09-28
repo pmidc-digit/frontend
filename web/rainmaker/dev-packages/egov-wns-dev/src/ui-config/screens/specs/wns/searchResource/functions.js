@@ -1,6 +1,7 @@
 import {
   handleScreenConfigurationFieldChange as handleField,
   hideSpinner,
+  showSpinner,
   toggleSnackbar,
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import {
@@ -26,6 +27,7 @@ import {
 import { httpRequest } from "../../../../../ui-utils";
 // import exportFromJSON from 'export-from-json'
 export const searchApiCall = async (state, dispatch) => {
+  dispatch(showSpinner());
   showHideApplicationTable(false, dispatch);
   showHideConnectionTable(false, dispatch);
 
