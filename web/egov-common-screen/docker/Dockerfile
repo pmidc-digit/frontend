@@ -12,11 +12,11 @@ RUN npm i && npm run build
 
 # Create runtime image
 FROM nginx:mainline-alpine
-ENV WEB_DIR=/var/web/common
+ENV WEB_DIR=/var/web/
 RUN ls -la
 RUN mkdir -p ${WEB_DIR}
 
 COPY --from=build /app/dist ${WEB_DIR}/
 RUN ls -la /var/web
-RUN ls -la /var/web/common
+RUN ls -la /var/web/
 COPY --from=build /app/docker/nginx.conf /etc/nginx/conf.d/default.conf
