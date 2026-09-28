@@ -60,3 +60,164 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* GIS Page Header */
+.gis-page-header {
+  background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+  color: #ffffff;
+  padding: 50px 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(30, 60, 114, 0.2);
+}
+
+.gis-page-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+}
+
+.gis-page-subtitle {
+  font-size: 16px;
+  margin: 0;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .gis-page-header {
+    padding: 40px 15px;
+  }
+
+  .gis-page-title {
+    font-size: 28px;
+  }
+
+  .gis-page-subtitle {
+    font-size: 15px;
+  }
+}
+
+/* GIS Container styling */
+.gis_card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: flex-start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa, #e9ecef);
+}
+
+.gis-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.gis-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* GIS ID */
+.gis-id {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b2d42;
+  margin-bottom: 12px;
+}
+
+/* Label + Value row */
+.gis-row {
+  margin-bottom: 8px;
+  font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gis-label {
+  font-weight: 600;
+  color: #6c757d;
+  margin-right: 6px;
+}
+
+.gis-value {
+  color: #212529;
+  font-weight: 500;
+}
+
+/* Address */
+.gis-address {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.5;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Status Colors */
+.status-active {
+  background: #e6f7ee;
+  color: #1b8a5a;
+}
+
+.status-inworkflow {
+  background: #fff4e5;
+  color: #d97706;
+}
+
+/* GIS Button */
+.gis-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gis-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gis_card-container {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .gis-card {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.property_card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: flex-start;
+}
