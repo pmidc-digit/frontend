@@ -2,8 +2,8 @@
   "name": "commonscreen",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://sdc-uat.lgpunjab.gov.in/",
-  "proxy": "https://sdc-uat.lgpunjab.gov.in",
+  "homepage": "https://mseva.lgpunjab.gov.in/",
+  "proxy": "https://mseva.lgpunjab.gov.in",
   "type": "module",
   "scripts": {
     "dev": "vite",
