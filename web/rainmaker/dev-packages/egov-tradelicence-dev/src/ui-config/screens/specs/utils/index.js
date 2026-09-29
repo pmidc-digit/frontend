@@ -1173,7 +1173,7 @@ export const downloadCertificateForm = async (Licenses, mode = 'download') => {
 
   const queryStr = [
     { key: "key", value:workflowCode==="DIRECTRENEWAL"?"tlrenewalcertificate": "tlcertificate" },
-    { key: "tenantId", value: tenantId ? tenantId.split(".")[0] : commonConfig.tenantId }
+    { key: "tenantId", value: tenantId }
   ]
   const DOWNLOADRECEIPT = {
     GET: {
