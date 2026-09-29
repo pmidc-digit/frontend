@@ -26,30 +26,31 @@ class MyLink extends React.Component {
 
   render() {
     const { classes } = this.props;
-    return (
-      <div className={classes.root}>
-        <List component="nav" onClick={this.clickHandler}>
-          <ListItem button>
-            <ListItemText
-              primary={
-                <LabelContainer
-                  labelKey="How to apply & pay WS"
-                  style={{
-                    fontSize: 14,
-                    color: "rgba(0, 0, 0, 0.8700000047683716)"
-                  }}
-                />
-              }
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end">
-                <KeyboardRightIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-      </div>
-    );
+    // return (
+    //   <div className={classes.root}>
+    //     <List component="nav" onClick={this.clickHandler}>
+    //       <ListItem button>
+    //         <ListItemText
+    //           primary={
+    //             <LabelContainer
+    //               labelKey="How to apply & pay WS"
+    //               style={{
+    //                 fontSize: 14,
+    //                 color: "rgba(0, 0, 0, 0.8700000047683716)"
+    //               }}
+    //             />
+    //           }
+    //         />
+    //         <ListItemSecondaryAction>
+    //           <IconButton edge="end">
+    //             <KeyboardRightIcon />
+    //           </IconButton>
+    //         </ListItemSecondaryAction>
+    //       </ListItem>
+    //     </List>
+    //   </div>
+    // );
+    return null;
   }
 }
 
