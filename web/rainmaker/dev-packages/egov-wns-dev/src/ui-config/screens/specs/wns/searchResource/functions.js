@@ -1,5 +1,7 @@
 import {
   handleScreenConfigurationFieldChange as handleField,
+  hideSpinner,
+  showSpinner,
   toggleSnackbar,
 } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import {
@@ -25,6 +27,7 @@ import {
 import { httpRequest } from "../../../../../ui-utils";
 // import exportFromJSON from 'export-from-json'
 export const searchApiCall = async (state, dispatch) => {
+  dispatch(showSpinner());
   showHideApplicationTable(false, dispatch);
   showHideConnectionTable(false, dispatch);
 
@@ -39,23 +42,27 @@ export const searchApiCall = async (state, dispatch) => {
     "searchScreen.mobileNumber",
     {}
   );
-  if (currentSearchTab === "SEARCH_CONNECTION") {
-    resetFieldsForApplication(state, dispatch);
-    await renderSearchConnectionTable(state, dispatch);
-  } else if (searchScreenObject["mobileNumber"] === "9999999999") {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill From Date",
-          labelKey: "ERR_FILL_FROM_DATE_DEFAULT_NUMBER",
-        },
-        "warning"
-      )
-    );
-  } else {
-    resetFieldsForConnection(state, dispatch);
-    await renderSearchApplicationTable(state, dispatch);
+  try {
+    if (currentSearchTab === "SEARCH_CONNECTION") {
+      resetFieldsForApplication(state, dispatch);
+      await renderSearchConnectionTable(state, dispatch);
+    } else if (searchScreenObject["mobileNumber"] === "9999999999") {
+      dispatch(
+        toggleSnackbar(
+          true,
+          {
+            labelName: "Please fill From Date",
+            labelKey: "ERR_FILL_FROM_DATE_DEFAULT_NUMBER",
+          },
+          "warning"
+        )
+      );
+    } else {
+      resetFieldsForConnection(state, dispatch);
+      await renderSearchApplicationTable(state, dispatch);
+    }
+  } finally {
+    dispatch(hideSpinner());
   }
 };
 
@@ -108,50 +115,36 @@ const renderSearchConnectionTable = async (state, dispatch) => {
       )
     );
   }
-  else if (
-    searchScreenObject["locality"] &&
-    searchScreenObject["locality"].trim() !== "" &&
-    (
-      (!searchScreenObject["ownerName"] ||
-        searchScreenObject["ownerName"].trim() === "") &&
-      (!searchScreenObject["guardianName"] ||
-        searchScreenObject["guardianName"].trim() === "")
-    )
-  ) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please enter either Owner Name or Guardian Name.",
-          labelKey: "ERR_WS_OWNER_OR_GUARDIAN_REQUIRED",
-        },
-        "error"
-      )
-    );
-  }
-  else if (
-    (
-      (searchScreenObject["ownerName"] &&
-        searchScreenObject["ownerName"].trim() !== "") ||
-      (searchScreenObject["guardianName"] &&
-        searchScreenObject["guardianName"].trim() !== "")
-    ) &&
-    (
-      !searchScreenObject["locality"] ||
-      searchScreenObject["locality"].trim() === ""
-    )
-  ) {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please select a locality when searching by owner or guardian name.",
-          labelKey: "ERR_WS_OWNER_NAME_LOCALITY_REQUIRED",
-        },
-        "error"
-      )
-    );
-  }
+  //  else if (
+  //  searchScreenObject["locality"] && searchScreenObject["locality"].trim() !== "" && 
+  //   (!searchScreenObject["ownerName"] || searchScreenObject["ownerName"].trim() === "")
+  // ) {
+  //   dispatch(
+  //     toggleSnackbar(
+  //       true,
+  //       {
+  //         labelName: "Please select a locality when searching by owner name.",
+  //         labelKey: "ERR_WS_OWNER_NAME_LOCALITY_REQUIRED",
+  //       },
+  //       "error"
+  //     )
+  //   );
+  // } else if (
+  //  searchScreenObject["ownerName"] && 
+  //   searchScreenObject["ownerName"].trim() !== "" && 
+  //   (!searchScreenObject["locality"] || searchScreenObject["locality"].trim() === "")
+  // ) {
+  //   dispatch(
+  //     toggleSnackbar(
+  //       true,
+  //       {
+  //         labelName: "Please select a locality when searching by owner name.",
+  //         labelKey: "ERR_WS_OWNER_NAME_LOCALITY_REQUIRED",
+  //       },
+  //       "error"
+  //     )
+  //   );
+  // } 
   else {
     for (var key in searchScreenObject) {
       if (
@@ -760,5 +753,5 @@ export const exceldatadownload = () => {
   //       var wb = XLSX.utils.book_new();
   //       XLSX.utils.book_append_sheet(wb, ws, "People");
   //       XLSX.writeFile(wb,filename);
-  alert("test");
-};
+
+}
