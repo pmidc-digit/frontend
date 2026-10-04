@@ -475,11 +475,11 @@ export const propertyOwnerDetail={
    {
      labelKey: "WS_OWN_DETAIL_CROSADD"
    },
-   { jsonPath: "WaterConnection[0].property.owners[0].correspondenceAddress",
+   { jsonPath: "WaterConnection[0].property.owners[0].permanentAddress",
    callBack: handleNA },  {
     labelKey: "WS_OLD_LABEL_NAME"
   },
-  { jsonPath: "WaterConnectionOld[0].property.owners[0].correspondenceAddress", callBack: handleNA },
+  { jsonPath: "WaterConnectionOld[0].property.owners[0].permanentAddress", callBack: handleNA },
  ), specialApplicantCategory: getLabelWithValue(
    {
      labelKey: "WS_OWN_DETAIL_SPECIAL_APPLICANT_LABEL"
