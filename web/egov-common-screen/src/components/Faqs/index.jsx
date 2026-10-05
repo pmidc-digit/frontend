@@ -6,15 +6,98 @@ const data = {
     rows: [
         {
             title: "How do I pay my property tax?",
-            content: `You can pay your property tax by searching your property either with Unique Property Id / Old Property Id or with property details like mohalla, door number and owner name and using credit / debit cards, netbanking to make an online payment`,
+            content: `There are two easy ways:
+<br /><br />
+Option 1: mSeva Portal
+
+Go to https://mseva.lgpunjab.gov.in/citizen/user/login
+Register (if you're a new user) or Login (if you already have an account)
+Click on "Search and Pay", or go to "My Properties"
+If your property is linked to your registered mobile number, it will show automatically in "My Properties"
+Select your property and verify your details
+If your property is not yet assessed, complete the assessment first, then proceed to pay
+If your property is already assessed, you can pay directly
+Complete the payment
+<br /><br />
+Option 2: WhatsApp Chatbot
+
+Save this number: +91 87509 75975
+Send "Hi" on WhatsApp to this number
+Choose the option "Pay Property Tax"
+Follow the steps to search your property and complete the payment`,
         },
         {
             title: "How to apply & pay Fire NOC?",
-            content: `Fire NOC issued by the respective state fire service verifies that a building is resistant or unlikely to observe any fire related accidents. By meeting certain guidelines laid down by the fire department, an applicant can obtain NOC for his residential/ commercial building.`,
+            content: `If you mean Punjab mSeva – Fire NOC, the basic process is:
+<br /><br />
+* Open mSeva Punjab and select Fire NOC / Fire Safety. mSeva supports applying for fire safety certificates online.<br />
+* Choose the required service, such as New/Provisional Fire NOC or Renewal.<br />
+* Enter applicant/property/building details.
+* Upload the required documents. For a new NOC, the Punjab Fire Services FAQ lists:<br />
+Ownership proof
+Fire drawing/map/plan
+Owner checklist/questionnaire
+Applicant ID proof
+* Submit the application.<br />
+* The applicable fee is calculated by the system.<br />
+* Click Pay Now and complete payment through the available online payment method.<br />
+* Save the application number and payment receipt.<br />
+* After approval, the NOC can be downloaded from the Citizen Service Panel; a physical visit is generally not required just to collect the NOC.<br />
+<br /><br />
+* If payment fails: You normally don't need to create a new application. Log in through Citizen Services → OTP → My Applications, open the existing application, and use the payment option again.`,
         },
         {
             title: "How can I apply for water connection?",
-            content: `You can apply for water connection by register on mSeva portal as customer. To apply for water connection you can enter information like property id , name and mobile number with address.`,
+            content: `
+
+New Water Connection – mSeva flow
+<br /><br />
+1. **Login/Register**<br />
+
+   * Open mSeva Punjab.<br />
+   * Login using your mobile number/OTP.<br /><br />
+
+2. Go to **Water & Sewerage**<br /><br />
+
+   * Select **New Water Connection** / **Apply New Water Sewer Connection**. <br /><br />
+
+3. **Select connection details**<br /><br />
+
+   * Water connection<br />
+   * Domestic/Commercial, as applicable<br />
+   * Enter applicant and property details.<br /><br />
+
+4. **Fill application**<br /><br />
+
+   * Applicant name<br />
+   * Father/Husband name<br />
+   * Mobile number<br />
+   * Address<br />
+   * Locality/ULB<br />
+   * Property-related details.<br /><br />
+
+5. **Upload required documents**<br /><br />
+
+   * ID/ownership documents as required by the ULB.<br />
+   * Submit the application.<br /><br />
+
+6. **Application number**<br /><br />
+
+   * After submission, an **application/reference number** is generated.<br />
+   * Use it to track the application.<br />
+
+7. **Payment**<br /><br />
+
+   * After the department calculates/raises the applicable connection charges, the citizen can see the **payment/demand** in the application/dashboard.<br />
+   * Click **Pay Now** and complete payment through the available online payment gateway.<br />
+   * Download/save the payment receipt.<br />
+
+8. **Connection approval**<br /><br />
+
+   * The department processes the application.<br />
+   * After approval and completion of required field work, the water connection is provided.<br />
+
+`,
         },
         {
             title: "What is the difference between Property Unique ID and Old Property ID?",
@@ -56,14 +139,22 @@ const data = {
     ],
 };
 const styles = {
-    // bgColor: 'white',
-    titleTextColor: "black",
-    rowTitleColor: "black",
-    rowTitleTextSize: "16px",
-    // rowContentColor: 'grey',
-    // arrowColor: "red",   
-    rowContentPaddingTop: "12px",
-
+    bgColor: "#f5f6f7",
+    titleTextColor: "#15181d",
+    rowTitleColor: "#161b22",
+    rowTitleTextSize: "18px",
+    rowContentColor: "#4d5966",
+    rowContentTextSize: "15px",
+    arrowColor: "#f47738",
+    rowContentPaddingTop: "16px",
+    rowContentPaddingBottom: "20px",
+    rowContentPaddingLeft: "24px",
+    rowContentPaddingRight: "24px",
+    rowTitlePaddingTop: "18px",
+    rowTitlePaddingBottom: "18px",
+    rowTitlePaddingLeft: "24px",
+    rowTitlePaddingRight: "24px",
+    borderRadius: "16px",
 };
 
 const config = {
