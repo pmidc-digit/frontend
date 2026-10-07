@@ -18,6 +18,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
   let bills;
+  let integratedbills;
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -108,7 +109,7 @@ export const searchApiCall = async (state, dispatch) => {
     }else if(batchtype == 'Locality' ){
       searchScreenObject.url = searchScreenObject.businesService === 'WS' ? "/egov-searcher/bill-genie/waterbills_summary/_get" : "/egov-searcher/bill-genie/seweragebills_summary/_get"
     }else if (batchtype == 'Integrated Bill') {
-      searchScreenObject.url = "/egov-searcher/bill-genie/integratedbills/_get";  //added Url for integratedbills
+      searchScreenObject.url = "/egov-searcher/bill-genie/integratedbillsnew/_get";  //added Url for integratedbills
     }else {
       searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     }
@@ -121,23 +122,34 @@ export const searchApiCall = async (state, dispatch) => {
     const uiConfigs = get(state.screenConfiguration.preparedFinalObject, "searchScreenMdmsData.common-masters.uiCommonPay");
     const configObject = uiConfigs.filter(item => item.code === searchScreenObject.businesService);
     if (batchtype == 'Integrated Bill') {
-      bills = (responseFromAPI && responseFromAPI.Bills) || [];
+      debugger
+      integratedbills = (responseFromAPI && responseFromAPI.IntegratedBills) || [];
       dispatch(
-        prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
+        prepareFinalObject("searchScreenMdmsData.billSearchResponse", integratedbills)
       );
-      for (let i = 0; i < bills.length; i++) {
-        if (get(bills[i], "connection.propertyTotalAmount") > 0) {
+      for (let i = 0; i < integratedbills.length; i++) {
+        const item = integratedbills[i];
+        const bills = get(item, "bills") || [];
+
+        let propertyTotalAmount = 0;
+        const waterBillAmount = get(bills, "waterBill.totalAmount")  || 0;
+        const sewerageBillAmount = get(bills, "sewerageBill.totalAmount") || 0;
+        propertyTotalAmount = waterBillAmount + sewerageBillAmount;
+
+        console.log("propertyTotalAmount", propertyTotalAmount);
+
+        if (propertyTotalAmount > 0) {
           response.push({
-            propertyID: get(bills[i], "propertyId"),
-            waterconsumerId: get(bills[i], "connection.waterDetails[0].consumerCode"),
-            waterbillDate: get(bills[i], "connection.waterDetails[0].billDate"),
-            waterbillNo: get(bills[i], "connection.waterDetails[0].billNumber"),
-            sewerageconsumerId: get(bills[i], "connection.sewerageDetails[0].consumerCode"),
-            seweragebillNo: get(bills[i], "connection.sewerageDetails[0].billNumber"),
-            totalAmount: get(bills[i], "connection.propertyTotalAmount"),
+            propertyID: get(item, "propertyId"),
+            waterconsumerId: get(item, "bills.waterBill.consumerCode"),
+            waterbillDate: get(item, "bills.waterBill.billDate"),
+            waterbillNo: get(item, "bills.waterBill.billNumber"),
+            sewerageconsumerId: get(item, "bills.sewerageBill.consumerCode"),
+            seweragebillNo: get(item, "bills.sewerageBill.billNumber"),
+            totalAmount: propertyTotalAmount,
             tenantId: tenantId,
-            mobileno: get(bills[i], "mobileNo")
-          })
+            mobileno: get(item, "mobileNumber")
+          });
         }
       }
       try {
