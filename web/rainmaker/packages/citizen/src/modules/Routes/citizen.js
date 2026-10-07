@@ -1,4 +1,5 @@
 // user routes
+import React, { Component } from "react";
 import Register from "modules/citizen/User/Register";
 import Login from "modules/citizen/User/Login";
 import OTP from "modules/citizen/User/OTP";
@@ -30,6 +31,17 @@ import ptRoutes from "pt-citizen/Routes/pt-routes";
 //Whatsapp Screen 
 import  WhatsAppCity from "modules/citizen/WhatsAppScreen/City";
 import  WhatsAppLocality from "modules/citizen/WhatsAppScreen/Locality";
+const isLocal = ["localhost"].includes(window.location.hostname);
+
+class RedirectToNewCitizenUi extends Component {
+  componentDidMount() {
+    window.location.replace("/digit-ui/citizen/select-location");
+  }
+
+  render() {
+    return null;
+  }
+}
 
 const routes = [
   {
@@ -40,7 +52,7 @@ const routes = [
   },
   {
     path: "user/login",
-    component: Login,
+    component: isLocal ? Login : RedirectToNewCitizenUi,
     needsAuthentication: false,
     redirectionUrl: "/",
   },
@@ -52,7 +64,7 @@ const routes = [
   },
   {
     path: "language-selection",
-    component: LanguageSelection,
+    component: isLocal ? LanguageSelection : RedirectToNewCitizenUi,
     needsAuthentication: false,
     redirectionUrl: "/user/register",
   },
