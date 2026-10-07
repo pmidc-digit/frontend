@@ -1,5 +1,6 @@
 // User related routes
 import Login from "modules/employee/User/Login";
+import React, { Component } from "react";
 import OTP from "modules/employee/User/OTP";
 import LanguageSelection from "modules/employee/User/LanguageSelection";
 import ChangePassword from "modules/employee/User/ChangePassword";
@@ -28,11 +29,22 @@ import externalRoutes from "./exterenalURL";
 
 //Redirection Url
 const redirectionUrl = "/user/login";
+const isLocal = ["localhost"].includes(window.location.hostname);
+
+class RedirectToNewEmployeeUi extends Component {
+  componentDidMount() {
+    window.location.replace("/digit-ui/employee/user/login");
+  }
+
+  render() {
+    return null;
+  }
+}
 
 const routes = [
   {
     path: "user/login",
-    component: Login,
+    component: isLocal ? Login : RedirectToNewEmployeeUi,
     needsAuthentication: false,
     redirectionUrl: "/inbox",
   },
@@ -50,7 +62,7 @@ const routes = [
   },
   {
     path: "language-selection",
-    component: LanguageSelection,
+    component: isLocal ? LanguageSelection : RedirectToNewEmployeeUi,
     needsAuthentication: false,
     redirectionUrl: "/user/login",
   },
