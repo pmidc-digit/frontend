@@ -30,7 +30,11 @@ const tenantId = getQueryArg(window.location.href, "tenantId");
 let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
 let service = getQueryArg(window.location.href, "service");
 const hasDC = applicationNumber && applicationNumber.includes("/DC-");
-
+ const editedParam = getQueryArg(window.location.href, "edited");
+  // Strip quotes from the parameter value (e.g., "true" becomes true)
+  const cleanedParam = editedParam ? editedParam.replace(/"/g, "") : "";
+  const isEdited = cleanedParam === "true";
+  console.log("search-preview - edited param:", editedParam, "- cleaned:", cleanedParam, "- isEdited:", isEdited);
 let serviceModuleName = hasDC
   ? (service === serviceConst.WATER ? "DisconnectWSConnection" : "DisconnectSWConnection")
   : (service === serviceConst.WATER ? "NewWS1" : "NewSW1");
@@ -932,9 +936,21 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
     appid = applyScreenObject ? applyScreenObject.additionalDetails.appid : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.appid");
     iPin = applyScreenObject ? applyScreenObject.additionalDetails.iPin : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.iPin");
     thirdPartyCode = applyScreenObject ? applyScreenObject.additionalDetails.thirdPartyCode : get(state.screenConfiguration.prepareFinalObject, "WaterConnection[0].additionalDetails.thirdPartyCode");
-
+      const editedParamVal = getQueryArg(window.location.href, "edited");
+      const cleanedParamVal = editedParamVal ? editedParamVal.replace(/"/g, "") : "";
+      const isEditedVal = cleanedParamVal === "true";
+      console.log("beforeInitFn - edited param:", editedParamVal, "- cleaned:", cleanedParamVal, "- isEditedVal:", isEditedVal)
     // to set documents 
-    if (payload.WaterConnection[0].documents !== null && payload.WaterConnection[0].documents !== "NA") {
+    if(isEditedVal === true){
+      await setDocuments(
+        state.screenConfiguration.preparedFinalObject,
+        "applyScreen.documents",
+        "DocumentsData",
+        dispatch,
+        "WS"
+      );
+    }else{
+       if (payload.WaterConnection[0].documents !== null && payload.WaterConnection[0].documents !== "NA") {
       await setDocuments(
         state.screenConfiguration.preparedFinalObject,
         "WaterConnection[0].documents",
@@ -942,7 +958,9 @@ const searchResults = async (action, state, dispatch, applicationNumber, process
         dispatch,
         "WS"
       );
+     }
     }
+   
 
     // Fetch bill for water connection BEFORE estimation
     const consumerCode = (payload.WaterConnection && payload.WaterConnection[0]) ? 
