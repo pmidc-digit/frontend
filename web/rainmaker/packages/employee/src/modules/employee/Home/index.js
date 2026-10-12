@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 class Home extends Component {
   componentDidMount() {
-    this.props.history.push("/inbox");
+    this.props.history.push("digit-ui/employee/inbox");
   }
   render() {
     return (
