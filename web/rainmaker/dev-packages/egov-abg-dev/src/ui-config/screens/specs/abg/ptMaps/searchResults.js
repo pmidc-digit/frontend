@@ -37,6 +37,15 @@ export const searchResults = {
       { labelName: "Usage Category", labelKey: "Usage Category" },
       { labelName: "No of Floors", labelKey: "No of Floors" },
       {
+        labelName: "Survey ID",
+        labelKey: "Survey ID",
+        options: {
+          display: false,
+          viewColumns: false,
+          filter: false
+        }
+      },
+      {
         labelName: "Locality",
         labelKey: "Locality",
         options: {
@@ -64,8 +73,9 @@ export const searchResults = {
               const propertyType = row[4] || "";
               const usageCategory = row[5] || "";
               const noOfFloors = row[6] || "";
-              const locality = row[7] || "";
-              const address = row[8] || "";
+              const surveyId = row[7] || "";
+              const locality = row[8] || "";
+              const address = row[9] || "";
               const handleOpen = () => setOpen(true);
               const handleClose = () => setOpen(false);
 
@@ -105,6 +115,7 @@ export const searchResults = {
                       propertyType={propertyType}
                       usageCategory={usageCategory}
                       noOfFloors={noOfFloors}
+                      surveyId={surveyId}
                       locality={locality}
                       address={address}
                       onClose={handleClose}

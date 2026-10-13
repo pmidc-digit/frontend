@@ -31,13 +31,21 @@ const propertyLocationDetailsHeader = getHeader({
 });
 
 const propertyDetails = getCommonContainer({
+<<<<<<< HEAD
   propertyStatus: getLabelWithValue(
+=======
+   propertyStatus: getLabelWithValue(
+>>>>>>> mono_ui_prod
     {
       labelKey: "WS_PROPERTY_STATUS_LABEL"
     },
     {
       jsonPath:
+<<<<<<< HEAD
         "WaterConnection[0].property.status",
+=======
+      "WaterConnection[0].property.status",
+>>>>>>> mono_ui_prod
       localePrefix: {
         moduleName: "WS",
         masterName: "PROPTYPE"

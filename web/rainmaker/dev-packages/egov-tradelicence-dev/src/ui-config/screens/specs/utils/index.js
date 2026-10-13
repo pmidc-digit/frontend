@@ -1173,7 +1173,7 @@ export const downloadCertificateForm = async (Licenses, mode = 'download') => {
 
   const queryStr = [
     { key: "key", value:workflowCode==="DIRECTRENEWAL"?"tlrenewalcertificate": "tlcertificate" },
-    { key: "tenantId", value: tenantId ? tenantId.split(".")[0] : commonConfig.tenantId }
+    { key: "tenantId", value: tenantId }
   ]
   const DOWNLOADRECEIPT = {
     GET: {
@@ -1192,7 +1192,7 @@ export const downloadCertificateForm = async (Licenses, mode = 'download') => {
   Licenses = get(LicensesPayload, "Licenses");
   const oldFileStoreId = get(Licenses[0], "fileStoreId")
   if (oldFileStoreId) {
-    downloadReceiptFromFilestoreID(oldFileStoreId, mode)
+    downloadReceiptFromFilestoreID(oldFileStoreId ,mode, tenantId)
   }
   else {
     try {
@@ -1201,7 +1201,7 @@ export const downloadCertificateForm = async (Licenses, mode = 'download') => {
           res.filestoreIds[0]
           if (res && res.filestoreIds && res.filestoreIds.length > 0) {
             res.filestoreIds.map(fileStoreId => {
-              downloadReceiptFromFilestoreID(fileStoreId, mode)
+              downloadReceiptFromFilestoreID(fileStoreId,mode, tenantId)
             })
           } else {
             console.log("Error In Acknowledgement form Download");

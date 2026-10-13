@@ -30,11 +30,15 @@ const tenantId = getQueryArg(window.location.href, "tenantId");
 let applicationNumber = getQueryArg(window.location.href, "applicationNumber");
 let service = getQueryArg(window.location.href, "service");
 const hasDC = applicationNumber && applicationNumber.includes("/DC-");
+<<<<<<< HEAD
  const editedParam = getQueryArg(window.location.href, "edited");
   // Strip quotes from the parameter value (e.g., "true" becomes true)
   const cleanedParam = editedParam ? editedParam.replace(/"/g, "") : "";
   const isEdited = cleanedParam === "true";
   console.log("search-preview - edited param:", editedParam, "- cleaned:", cleanedParam, "- isEdited:", isEdited);
+=======
+
+>>>>>>> mono_ui_prod
 let serviceModuleName = hasDC
   ? (service === serviceConst.WATER ? "DisconnectWSConnection" : "DisconnectSWConnection")
   : (service === serviceConst.WATER ? "NewWS1" : "NewSW1");

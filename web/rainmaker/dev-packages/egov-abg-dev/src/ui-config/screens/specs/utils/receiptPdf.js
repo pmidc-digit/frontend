@@ -169,11 +169,19 @@ const getMutlipleBillsData = transformedDataArray => {
 export const generateMultipleBill = async function (state, dispatch, type) {
   try {
     dispatch(toggleSpinner());
+<<<<<<< HEAD
     debugger
     var preparedData = get(state, "screenConfiguration.preparedFinalObject", {});
 
     var allBills = get(preparedData, "searchScreenMdmsData.billSearchResponse", []);
     //var integratedBills = get(preparedData, "searchScreenMdmsData.IntegratedBills", []);
+=======
+
+    var preparedData = get(state, "screenConfiguration.preparedFinalObject", {});
+
+    var allBills = get(preparedData, "searchScreenMdmsData.billSearchResponse", []);
+    var integratedBills = get(preparedData, "searchScreenMdmsData.intergratedBills", []);
+>>>>>>> mono_ui_prod
     var commonPayDetails = get(preparedData, "searchScreenMdmsData.common-masters.uiCommonPay", []);
     var searchCriteria = get(preparedData, "searchCriteria");
     var businessService = get(preparedData, "searchCriteria.businesService", "");
@@ -222,7 +230,10 @@ export const generateMultipleBill = async function (state, dispatch, type) {
     // Filter Bills
     // ----------------------------
     function filterBills(bills) {
+<<<<<<< HEAD
       //debugger
+=======
+>>>>>>> mono_ui_prod
       if (!bills || !bills.length) return [];
 
       var result = [];
@@ -231,11 +242,18 @@ export const generateMultipleBill = async function (state, dispatch, type) {
         var bill = bills[i];
 
         if (batchType === "Integrated Bill") {
+<<<<<<< HEAD
           let waterBill = bill.bills.waterBill.totalAmount || 0;
           let sewerageBill = bill.bills.sewerageBill.totalAmount || 0;
           let propertyTotalAmount = (waterBill + sewerageBill);
           if (
             propertyTotalAmount > 0
+=======
+          if (
+            bill &&
+            bill.connection &&
+            bill.connection.propertyTotalAmount > 0
+>>>>>>> mono_ui_prod
           ) {
             result.push(bill);
           }
@@ -255,8 +273,13 @@ export const generateMultipleBill = async function (state, dispatch, type) {
       return result;
     }
 
+<<<<<<< HEAD
     var filteredBills =  filterBills(allBills);
     //console.log("filteredBills",filteredBills)
+=======
+    var filteredBills = filterBills(allBills);
+
+>>>>>>> mono_ui_prod
     // ----------------------------
     // Locality Batch Processing
     // ----------------------------
@@ -264,9 +287,15 @@ export const generateMultipleBill = async function (state, dispatch, type) {
       (batchType === "Locality" &&
         typeof locality === "string" &&
         locality.trim() !== "") ||
+<<<<<<< HEAD
        (batchType === "Group" &&
          typeof group === "string" &&
          group.trim() !== "") ||
+=======
+      (batchType === "Group" &&
+        typeof group === "string" &&
+        group.trim() !== "") ||
+>>>>>>> mono_ui_prod
         Array.isArray(locality) && locality.length > 0
 
     if (isValidLocalityOrGroup) {

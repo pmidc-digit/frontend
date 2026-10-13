@@ -594,6 +594,22 @@ export const getDCBDetail = async (queryObject, dispatch) => {
         dcbArray.push(dcbRow);
       };
 
+<<<<<<< HEAD
+=======
+      interestAmount=interestAmount+dd.taxAmount;
+      interestCollected=interestCollected+dd.collectionAmount;
+      interestBalance=interestAmount-interestCollected;
+    }
+    if(dd.taxHeadMasterCode=='WS_TIME_PENALTY' || dd.taxHeadMasterCode=='SW_TIME_PENALTY' || dd.taxHeadMasterCode == 'WS_BREAKDOWN_PENALTY' || dd.taxHeadMasterCode == 'SW_BREAKDOWN_PENALTY'){
+      penaltyAmount=penaltyAmount+dd.taxAmount;
+      penaltyCollected=penaltyCollected+dd.collectionAmount;
+      penaltyBalance=penaltyAmount-penaltyCollected;
+     
+    } if(dd.taxHeadMasterCode == "SW_ADVANCE_CARRYFORWARD" || dd.taxHeadMasterCode == "WS_ADVANCE_CARRYFORWARD" )
+    {
+    advance=advance+dd.taxAmount;
+    }
+>>>>>>> mono_ui_prod
     });
     let length = response.Demands.length;
     let netAdvance = 0;

@@ -10,7 +10,11 @@ const LoginFormHOC = formHoc({ formKey: "employeeLogin" })(LoginForm);
 const Login = ({ bannerUrl, logoUrl }) => {
   return (
     <Banner hideBackButton={false} bannerUrl={bannerUrl} logoUrl={logoUrl}>
+<<<<<<< HEAD
       <div
+=======
+      {/* <div
+>>>>>>> mono_ui_prod
   style={{
     maxWidth: "1200px",
     width: "100%",
@@ -48,7 +52,11 @@ const Login = ({ bannerUrl, logoUrl }) => {
     <b>Team mSeva</b>, Punjab Municipal Infrastructure Development Company
     (PMIDC)
   </marquee>
+<<<<<<< HEAD
 </div>
+=======
+</div> */}
+>>>>>>> mono_ui_prod
       <LoginFormHOC logoUrl={logoUrl} />
     </Banner>
   );

@@ -40,7 +40,7 @@ export const updatesingleReading = async (consumerId, tenantId, currentReading, 
       process.env.NODE_ENV === "development"
         ? "/ws-calculator/meterReading/_update"
         : "/ws-calculator/meterReading/_update";
-    
+
     return Promise.resolve({ success: true, data: payload });
   } catch (e) {
     console.error(e);
@@ -151,7 +151,7 @@ export const showViewPopup = (state, dispatch, rowObject = {}) => {
   }
 };
 export const searchApiCall = async (state, dispatch) => {
-  debugger;
+
   showHideTable(false, dispatch);
   //showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -232,10 +232,10 @@ export const searchApiCall = async (state, dispatch) => {
     if (serviceObject[0] && serviceObject[0].billGineiURL) {
       searchScreenObject.url = serviceObject[0].billGineiURL;
     }
-    searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    if (getTenantId() != "pb.punjab") {
+      searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ? getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    }
     const getGroupBillSearch = async (dispatch, searchScreenObject) => {
-      debugger;
-
       try {
         dispatch(toggleSpinner(true));
         const requestBody = {
@@ -256,9 +256,6 @@ export const searchApiCall = async (state, dispatch) => {
         }
 
         const response = await httpRequest("post", url, "_search", []);
-        // dispatch(toggleSpinner(false));
-        // return response;
-        debugger;
         const ptreveresponce = (response && response) || [];
         dispatch(
           prepareFinalObject("searchScreenMdmsData.ptreveresponce", ptreveresponce)
@@ -456,7 +453,7 @@ export const searchApiCall = async (state, dispatch) => {
         ["TENANT_ID"]: item.tenantId
       }));
 
-     
+
       dispatch(
         handleField(
           "ptmapped",
@@ -474,12 +471,12 @@ export const searchApiCall = async (state, dispatch) => {
         )
       );
       showHideTable(true, dispatch);
-    
+
       try {
         const store = require("egov-ui-framework/ui-redux/store").default;
         const current = store.getState();
         const cfg = (current && current.screenConfiguration && current.screenConfiguration.screenConfig && current.screenConfiguration.screenConfig.ptmapped && current.screenConfiguration.screenConfig.ptmapped.components && current.screenConfiguration.screenConfig.ptmapped.components.div && current.screenConfiguration.screenConfig.ptmapped.components.div.children && current.screenConfiguration.screenConfig.ptmapped.components.div.children.searchResults) || {};
-      
+
       } catch (e) {
         console.warn("searchApiCall: could not read store for debug:", e);
       }

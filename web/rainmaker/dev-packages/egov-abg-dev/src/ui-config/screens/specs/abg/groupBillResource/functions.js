@@ -18,7 +18,10 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 const tenantId = getTenantId();
 export const searchApiCall = async (state, dispatch) => {
   let bills;
+<<<<<<< HEAD
   let integratedbills;
+=======
+>>>>>>> mono_ui_prod
   showHideTable(false, dispatch);
   showHideMergeButton(false, dispatch);
   let searchScreenObject = get(
@@ -109,7 +112,11 @@ export const searchApiCall = async (state, dispatch) => {
     }else if(batchtype == 'Locality' ){
       searchScreenObject.url = searchScreenObject.businesService === 'WS' ? "/egov-searcher/bill-genie/waterbills_summary/_get" : "/egov-searcher/bill-genie/seweragebills_summary/_get"
     }else if (batchtype == 'Integrated Bill') {
+<<<<<<< HEAD
       searchScreenObject.url = "/egov-searcher/bill-genie/integratedbillsnew/_get";  //added Url for integratedbills
+=======
+      searchScreenObject.url = "/egov-searcher/bill-genie/integratedbills/_get";  //added Url for integratedbills
+>>>>>>> mono_ui_prod
     }else {
       searchScreenObject.url = serviceObject && serviceObject[0] && serviceObject[0].billGineiURL;
     }

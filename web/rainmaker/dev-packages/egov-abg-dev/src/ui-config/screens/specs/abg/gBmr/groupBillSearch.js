@@ -404,7 +404,11 @@ export const abgSearchCard = getCommonCard({
           placeholder: { labelName: "Select Zone", labelKey: "Select Zone" },
           optionLabel: "name",
           required: false,
+<<<<<<< HEAD
           labelsFromLocalisation: true,
+=======
+          labelsFromLocalisation: false,
+>>>>>>> mono_ui_prod
           className: "autocomplete-dropdown",
           sourceJsonPath: "applyScreenMdmsData.tenant.zone",
           jsonPath: "searchCriteria.zone",
@@ -455,7 +459,11 @@ export const abgSearchCard = getCommonCard({
           placeholder: { labelName: "Select Batch", labelKey: "Select Batch" },
           optionLabel: "name",
           required: false,
+<<<<<<< HEAD
           labelsFromLocalisation: true,
+=======
+          labelsFromLocalisation: false,
+>>>>>>> mono_ui_prod
           className: "autocomplete-dropdown",
           sourceJsonPath: "applyScreenMdmsData.tenant.batchs",
           jsonPath: "searchCriteria.batch",
@@ -492,7 +500,11 @@ export const abgSearchCard = getCommonCard({
           placeholder: { labelName: "Select maholla", labelKey: "WS_GENERATE_BILL_LOCALITY_PLACEHOLDER" },
           optionLabel: "name",
           required: false,
+<<<<<<< HEAD
           labelsFromLocalisation: true,
+=======
+          labelsFromLocalisation: false,
+>>>>>>> mono_ui_prod
           className: "autocomplete-dropdown",
           sourceJsonPath: "applyScreenMdmsData.tenant.mohaladata",
           jsonPath: "searchCriteria.locality",
@@ -516,7 +528,11 @@ export const abgSearchCard = getCommonCard({
           placeholder: { labelName: "Select Group", labelKey: "Select Group" },
           optionLabel: "name",
           required: false,
+<<<<<<< HEAD
           labelsFromLocalisation: true,
+=======
+          labelsFromLocalisation: false,
+>>>>>>> mono_ui_prod
           className: "autocomplete-dropdown",
           sourceJsonPath: "applyScreenMdmsData.tenant.groups",
           jsonPath: "searchCriteria.group",

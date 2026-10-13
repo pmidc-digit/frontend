@@ -276,7 +276,11 @@ export const loginRequest = async (username = null, password = null, refreshToke
       if (response.data.UserRequest && response.data.UserRequest.roles) {
         const hasApiOnlyRole = response.data.UserRequest.roles.some(role => role.code === "API_ONLY");
         if (hasApiOnlyRole) {
+<<<<<<< HEAD
           window.location.href = userType === 'EMPLOYEE' ? "/employee/user/logout" : "/citizen/user/logout";
+=======
+          window.location.href = "/user/logout";
+>>>>>>> mono_ui_prod
           return;
         }
       }

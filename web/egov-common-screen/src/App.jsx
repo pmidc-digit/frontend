@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, } from 'react'
 import Card from './components/Card'
 import Header from './components/Header'
 import Faq from './components/Faqs'
@@ -9,7 +9,9 @@ import PropertyQRData from './components/propertyQRData'
 import DisplayPropertyRecord from './components/propertyQRData/displayPropertyRecord'
 import DisplayGISRecord from './components/gisData/displayGISRecord'
 import './App.css'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PrivateRoute from './utils/privateRoute'
+import { Toaster } from 'react-hot-toast'
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 function App() {
   const Layout = ({ children }) => {
     const location = useLocation();
@@ -29,10 +31,17 @@ function App() {
 
   return (
     <>
+<<<<<<< HEAD
       <Header />
       {/* //basename="/common" */}
       <BrowserRouter basename="/">
 
+=======
+
+      {/* //basename="/common" */}
+      <BrowserRouter basename="/">
+
+>>>>>>> mono_ui_prod
 
         <Layout>
           <Routes>
@@ -74,7 +83,7 @@ function App() {
         }}>
       </div>
       <Faq /> */}
-      <Footer />
+
     </>
   )
 }

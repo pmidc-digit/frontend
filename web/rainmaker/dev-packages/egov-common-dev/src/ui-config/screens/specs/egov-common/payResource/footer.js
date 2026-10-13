@@ -321,6 +321,15 @@ export const callPGService = async (state, dispatch) => {
               window.location = redirectionUrl;
             }
   */
+<<<<<<< HEAD
+=======
+
+          if (get(goToPaymentGateway, "Transaction.tenantId") == "pb.jalandhar" || get(goToPaymentGateway, "Transaction.tenantId") == "pb.testing") {
+            window.location = redirectionUrl;
+            //   alert("Online payment services are temporarily unavailable due to maintenance. We apologize for the inconvenience and appreciate your patience. Please try again later.");
+          }
+          else {
+>>>>>>> mono_ui_prod
 
           const selectedGateway = get(goToPaymentGateway, "Transaction.gateway", gateway);
 

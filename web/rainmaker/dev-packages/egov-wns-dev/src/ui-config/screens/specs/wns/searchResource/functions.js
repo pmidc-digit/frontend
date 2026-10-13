@@ -115,6 +115,7 @@ const renderSearchConnectionTable = async (state, dispatch) => {
       )
     );
   }
+<<<<<<< HEAD
   //  else if (
   //  searchScreenObject["locality"] && searchScreenObject["locality"].trim() !== "" && 
   //   (!searchScreenObject["ownerName"] || searchScreenObject["ownerName"].trim() === "")
@@ -145,6 +146,52 @@ const renderSearchConnectionTable = async (state, dispatch) => {
   //     )
   //   );
   // } 
+=======
+  else if (
+    searchScreenObject["locality"] &&
+    searchScreenObject["locality"].trim() !== "" &&
+    (
+      (!searchScreenObject["ownerName"] ||
+        searchScreenObject["ownerName"].trim() === "") &&
+      (!searchScreenObject["guardianName"] ||
+        searchScreenObject["guardianName"].trim() === "")
+    )
+  ) {
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Please enter either Owner Name or Guardian Name.",
+          labelKey: "ERR_WS_OWNER_OR_GUARDIAN_REQUIRED",
+        },
+        "error"
+      )
+    );
+  }
+  else if (
+    (
+      (searchScreenObject["ownerName"] &&
+        searchScreenObject["ownerName"].trim() !== "") ||
+      (searchScreenObject["guardianName"] &&
+        searchScreenObject["guardianName"].trim() !== "")
+    ) &&
+    (
+      !searchScreenObject["locality"] ||
+      searchScreenObject["locality"].trim() === ""
+    )
+  ) {
+    dispatch(
+      toggleSnackbar(
+        true,
+        {
+          labelName: "Please select a locality when searching by owner or guardian name.",
+          labelKey: "ERR_WS_OWNER_NAME_LOCALITY_REQUIRED",
+        },
+        "error"
+      )
+    );
+  }
+>>>>>>> mono_ui_prod
   else {
     for (var key in searchScreenObject) {
       if (
@@ -753,5 +800,10 @@ export const exceldatadownload = () => {
   //       var wb = XLSX.utils.book_new();
   //       XLSX.utils.book_append_sheet(wb, ws, "People");
   //       XLSX.writeFile(wb,filename);
+<<<<<<< HEAD
 
 }
+=======
+  alert("test");
+};
+>>>>>>> mono_ui_prod
