@@ -14,20 +14,20 @@ import Faq from '../Faqs'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../myindex.css';
 
-function hidePopup(event) {
-    if (event) event.preventDefault();
-    document.querySelector('.popup-overlay').style.display = 'none';
-    document.querySelector('.mypop').style.display = 'none';
-}
+// function hidePopup(event) {
+//     if (event) event.preventDefault();
+//     document.querySelector('.popup-overlay').style.display = 'none';
+//     document.querySelector('.mypop').style.display = 'none';
+// }
 
 export default function Card() {
     return (
         <>
-            <div className="popup-overlay"></div>
+            {/* <div className="popup-overlay"></div>
             <div className="mypop">
                 <button className="popup-close" onClick={hidePopup}>✕</button>
                 <img src={mfimg} alt="Punjab Plantation" />
-            </div>
+            </div> */}
             <div>
                 <div className="row">
                     <div className="col-sm-12 col-md-12">

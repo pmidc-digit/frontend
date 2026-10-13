@@ -1,126 +1,110 @@
-.faq-row {
-    margin-left: 15px;
-}
-
-.row-title-text {
-    border-bottom: 10px #f49666;
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 24px;
-
-}
-
-.styles_row-content-text__2sgAB {
-    font-family: Roboto;
-    font-style: normal;
-    font-size: 14px !important;
-    font-weight: 400;
-    line-height: 20px;
-    color: rgba(0, 0, 0, 0.6) !important;
-}
-
-.faq-row-wrapper {
-    background: #FFFFFF;
-    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
-}
-
-
-#flex-container {
-    display: flex;
-    background-color: #FFF;
-    height: 64px;
-}
-
-#flex-container>div {
-    margin: 1px;
-    font-size: 16px;
-}
-
-.styles_faq-row-wrapper__3vA1D .styles_row-body__1NvUo .styles_faq-row__2YF3c .styles_row-title__1YiiY .styles_icon-wrapper__2cftw {
-    color: #F47738 !important;
-}
-
 #faqs {
-    margin-left: 10%;
-    margin-right: 10%;
-    margin-top: 3%;
-
+    max-width: 1240px;
+    margin: 32px auto;
+    padding: 0 24px;
 }
 
+#faqs .faq-row {
+    margin: 0;
+}
 
-@media only screen and (max-width: 1920px) {
+#faqs .faq-row-wrapper {
+    background: #ffffff;
+    border: 1px solid #e7e7e7;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+    margin-bottom: 18px;
+    transition: all 0.2s ease;
+}
 
+#faqs .faq-row-wrapper:hover {
+    border-color: #f8c5a7;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+#faqs .styles_row-title__1YiiY {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 0;
+}
+
+#faqs .row-title-text {
+    font-family: "Roboto", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #161b22;
+    padding: 20px 24px;
+    margin: 0;
+}
+
+#faqs .styles_row-body__1NvUo {
+    border-top: 1px solid #f2f2f2;
+}
+
+#faqs .styles_row-content-text__2sgAB {
+    font-family: "Roboto", sans-serif;
+    font-style: normal;
+    font-size: 15px !important;
+    line-height: 1.8;
+    font-weight: 400;
+    color: #4d5966 !important;
+    padding: 0 24px 22px !important;
+    margin: 0;
+}
+
+#faqs .styles_icon-wrapper__2cftw {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    border-radius: 50%;
+    /* background: #fff3ec; */
+    color: #f47738 !important;
+    font-size: 28px !important;
+    line-height: 1;
+    font-weight: 300;
+    transition: all 0.2s ease;
+}
+
+#faqs .faq-row-wrapper[aria-expanded="true"] .styles_icon-wrapper__2cftw {
+    background: #fff0e6;
+    transform: rotate(45deg);
+}
+
+#faqs a {
+    color: #f47738;
+    text-decoration: underline;
+}
+
+@media only screen and (max-width: 768px) {
     #faqs {
-        margin-left: 10%;
-        margin-right: 10%;
+        padding: 0 16px;
+        margin: 20px auto;
     }
 
-
-}
-
-@media only screen and (max-width: 1600px) {
-
-    #faqs {
-        margin-left: 10%;
-        margin-right: 10%;
-    }
-}
-
-
-@media only screen and (max-width: 1440px) {
-
-    #faqs {
-        margin-left: 10%;
-        margin-right: 10%;
+    #faqs .row-title-text {
+        font-size: 16px;
+        padding: 18px 16px;
     }
 
-
-}
-
-@media only screen and (max-width: 1367px) {
-
-
-    /*     #links {
-        display: inline-flex;
-        margin-left: 58%;
-    }
-   */
-
-}
-
-
-
-
-
-
-@media only screen and (max-width: 900px) {
-
-
-    #faqs {
-        margin-left: 10%;
-        margin-right: 10%;
+    #faqs .styles_row-content-text__2sgAB {
+        padding: 0 16px 18px !important;
+        font-size: 14px !important;
     }
 
-}
-
-
-@media only screen and (max-width: 800px) {
-
-
-    #faqs {
-        margin-left: 10%;
-        margin-right: 10%;
-    }
-
-}
-
-@media only screen and (max-width: 576px) {
-
-    #faqs {
-        margin-left: 10%;
-        margin-right: 10%;
+    #faqs .styles_icon-wrapper__2cftw {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        margin-right: 12px;
+        font-size: 22px !important;
     }
 }
