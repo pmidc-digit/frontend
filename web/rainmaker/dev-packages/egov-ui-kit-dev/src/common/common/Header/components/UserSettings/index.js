@@ -57,7 +57,7 @@ class UserSettings extends Component {
       marginBottom: "24px",
     },
   };
-
+   
   onChange = (event, index, value) => {
     this.setState({ ...this.state, languageSelected: value });
     this.props.fetchLocalizationLabel(value);
@@ -89,8 +89,8 @@ class UserSettings extends Component {
     let tenantId = getTenantId();
 
     if (process.env.REACT_APP_NAME === "Citizen") {
-      const tenantInfo=getQueryArg(window.location.href, "tenantId")
       const userInfo = JSON.parse(getUserInfo());
+      const tenantInfo=getQueryArg(window.location.href, "tenantId")
       tenantId = userInfo && userInfo.permanentCity;
       tenantId = tenantInfo?tenantInfo:tenantId;
     }
@@ -124,9 +124,10 @@ class UserSettings extends Component {
   };
 
   render() {
+    const userInfo = JSON.parse(getUserInfo());
     const { languageSelected, displayAccInfo, tenantSelected, open } = this.state;
     const { style } = this;
-    const { onIconClick, userInfo, handleItemClick, hasLocalisation, languages, fetchLocalizationLabel, isUserSetting } = this.props;
+    const { onIconClick, getUserInfo ,handleItemClick, hasLocalisation, languages, fetchLocalizationLabel, isUserSetting } = this.props;
 
     /**
      * Get All tenant id's from (user info -> roles) to populate dropdown
