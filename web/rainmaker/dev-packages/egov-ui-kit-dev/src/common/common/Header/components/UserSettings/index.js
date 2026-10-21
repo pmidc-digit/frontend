@@ -127,7 +127,7 @@ class UserSettings extends Component {
     const userInfo = JSON.parse(getUserInfo());
     const { languageSelected, displayAccInfo, tenantSelected, open } = this.state;
     const { style } = this;
-    const { onIconClick, getUserInfo ,handleItemClick, hasLocalisation, languages, fetchLocalizationLabel, isUserSetting } = this.props;
+    const { onIconClick, handleItemClick, hasLocalisation, languages, fetchLocalizationLabel, isUserSetting } = this.props;
 
     /**
      * Get All tenant id's from (user info -> roles) to populate dropdown
