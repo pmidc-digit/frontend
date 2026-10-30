@@ -261,13 +261,14 @@ export const generateMultipleBill = async function (state, dispatch, type) {
     // Locality Batch Processing
     // ----------------------------
     var isValidLocalityOrGroup =
+      (batchType === 'Integrated Bill') ||
       (batchType === "Locality" &&
         typeof locality === "string" &&
         locality.trim() !== "") ||
        (batchType === "Group" &&
          typeof group === "string" &&
          group.trim() !== "") ||
-        Array.isArray(locality) && locality.length > 0
+        Array.isArray(locality) && locality.length > 0 
 
     if (isValidLocalityOrGroup) {
       try {
