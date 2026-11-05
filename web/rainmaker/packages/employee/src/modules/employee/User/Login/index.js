@@ -10,7 +10,7 @@ const LoginFormHOC = formHoc({ formKey: "employeeLogin" })(LoginForm);
 const Login = ({ bannerUrl, logoUrl }) => {
   return (
     <Banner hideBackButton={false} bannerUrl={bannerUrl} logoUrl={logoUrl}>
-      <div
+      {/* <div
   style={{
     maxWidth: "1200px",
     width: "100%",
@@ -48,7 +48,7 @@ const Login = ({ bannerUrl, logoUrl }) => {
     <b>Team mSeva</b>, Punjab Municipal Infrastructure Development Company
     (PMIDC)
   </marquee>
-</div>
+</div> */}
       <LoginFormHOC logoUrl={logoUrl} />
     </Banner>
   );
