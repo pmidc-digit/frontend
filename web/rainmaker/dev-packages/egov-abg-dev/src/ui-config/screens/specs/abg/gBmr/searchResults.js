@@ -241,6 +241,7 @@ export const searchResults = {
           display: false
         }
       },
+      { labelName: "Old Connection No", labelKey: "Old Connection No" },
       {
         labelName: "Action",
         labelKey: "ABG_COMMON_TABLE_COL_ACTION",
@@ -261,6 +262,7 @@ export const searchResults = {
               const lastReading = status == "Replacement" ? 0 : Number(tableMeta.rowData && tableMeta.rowData[2]) || 0;
               const currentReadingDate = tableMeta.rowData && tableMeta.rowData[3] ? getEpochForDate(tableMeta.rowData[3]) : null;
               const lastReadingDate = currentReadingDate;
+              const oldConnectionNo = tableMeta.rowData && tableMeta.rowData[10];
 
               // Get the input value using Consumer ID
               const readingInput = document.querySelector(`input.bulk-new-reading[data-consumer-id="${consumerId}"]`);
@@ -282,7 +284,7 @@ export const searchResults = {
               if (["Locked", "Breakdown"].includes(status)) {
                 currentReading = lastReading;
                 try {
-                  const resp = await updatesingleReading(consumerId, lastReading, lastReading, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, isBulkMeter);
+                  const resp = await updatesingleReading(consumerId, lastReading, lastReading, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, oldConnectionNo, null, null);
                   if (resp.meterReadingslist[0].status == "FAILED") {
                     alert("Update failed for Consumer ID: " + (consumerId || ""));
                   } else {
@@ -323,7 +325,7 @@ export const searchResults = {
               }
 
               try {
-                const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, isBulkMeter);
+                const resp = await updatesingleReading(consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, oldConnectionNo, null, null);
                 // updatesingleReading may return response or throw on error
                 if (resp.meterReadingslist[0].status == "FAILED") {
                   alert("Update failed for Consumer ID: " + (consumerId || ""));
@@ -408,6 +410,7 @@ export const updateAllReadings = async (state, dispatch) => {
     const statusFromRow = isArrayRow ? row[4] : row["Meter Status"];
     const status = statusFromStorage || statusFromRow || "";
     const tenantId = isArrayRow ? row[9] : row["TENANT_ID"];
+    const oldConnectionNo = isArrayRow ? row[10] : row["Old Connection No"];
 
     const isEditableStatus = ["Working", "Reset", "Replacement", "Locked", "Breakdown"].includes(status);
     if (!isEditableStatus) {
@@ -458,6 +461,7 @@ export const updateAllReadings = async (state, dispatch) => {
             billingPeriod: billingPeriod,
             meterStatus: status,
             connectionNo: consumerId,
+            oldConnectionNo: oldConnectionNo || "-",
             lastReading: status === "Replacement" ? 0 : lastReading,
             lastReadingDate: lastReadingDate,
             tenantId: tenantId,
@@ -524,6 +528,7 @@ export const updateAllReadings = async (state, dispatch) => {
           billingPeriod: billingPeriod,
           meterStatus: status,
           connectionNo: consumerId,
+          oldConnectionNo: oldConnectionNo || "-",
           lastReading: status === "Replacement" ? 0 : lastReading,
           lastReadingDate: lastReadingDate,
           tenantId: tenantId,
