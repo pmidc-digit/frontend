@@ -117,7 +117,7 @@ export const getPropertyObj = async (waterConnection, locality, tenantId, isFrom
                     // queryObject1 = [{ key: "propertyIds", value: uuids }, { key: "tenantId", value: waterConnection[i].tenantId }];
                     //queryObject1 = [{ key: "propertyIds", value: uuids }];
                 } else {
-                    queryObject1 = [{ key: "tenantId", value: getTenantIdCommon() }, { key: "propertyIds", value: uuids }];
+                    queryObject1 = [{ key: "tenantId", value: waterConnection[i].tenantId }, { key: "propertyIds", value: uuids }];
                 }
 
                 if (locality) {
