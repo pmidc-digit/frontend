@@ -18,7 +18,7 @@ import { loadUlbLogo } from "../../utils/receiptTransformer";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
-export const updatesingleReading = async (consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, state = null, dispatch = null) => {
+export const updatesingleReading = async (consumerId, lastReading, currentReadingRaw, currentReading, billingPeriod, status, readingDate, lastReadingDate, tenantId, oldConnectionNo = null, state = null, dispatch = null) => {
 
   const payload = {
     meterReadingslist: [
@@ -28,6 +28,7 @@ export const updatesingleReading = async (consumerId, lastReading, currentReadin
         billingPeriod: billingPeriod,
         meterStatus: status,
         connectionNo: consumerId,
+        oldConnectionNo: oldConnectionNo || "-",
         lastReading: lastReading,
         lastReadingDate: lastReadingDate,
         tenantId: tenantId,
@@ -202,7 +203,7 @@ export const searchApiCall = async (state, dispatch) => {
 
     response.push({
       connectionNo: get(bills[i], "connectionNo"),
-
+      oldConnectionNo: get(bills[i], "oldConnectionNo") || "-",
       lastReading: get(bills[i], "currentReading"),
       // currentReading may come from API (per consumer). Use existing field if present.
       currentReading: get(bills[i], "currentReading") || "",
@@ -230,7 +231,8 @@ export const searchApiCall = async (state, dispatch) => {
         convertEpochToDate(item.currentReadingDate) || "-",
       ["Billing Period"]: item.billingPeriod || "-",
       ["Meter Status"]: item.meterStatus || "-",
-      ["TENANT_ID"]: item.tenantId
+      ["TENANT_ID"]: item.tenantId,
+      ["Old Connection No"]: item.oldConnectionNo || "-"
     }));
     dispatch(
       handleField(
@@ -282,11 +284,3 @@ const showHideUpdateAllButton = (isVisible, dispatch) => {
     )
   );
 };
-
-
-
-
-
-
-
-
